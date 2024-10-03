@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+grpc:
+  auditing_service:
+    address: "localhost:50052"
+  user_service:
+    address: "localhost:50054"
+  business_service:
+    address: "localhost:50051"
+  list_service:
+    address: "localhost:50053"
