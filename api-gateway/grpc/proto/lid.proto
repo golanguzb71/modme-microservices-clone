@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package lid;
+
+option go_package = "grpc/proto/pb";
+
+
+service LidService {
+
+}

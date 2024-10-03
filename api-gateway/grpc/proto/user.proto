@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "grpc/proto/pb";
+
+
+service UserService {
+
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+  repeated string requiredRoles = 2;
+}

@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "grpc/proto/pb";
+
