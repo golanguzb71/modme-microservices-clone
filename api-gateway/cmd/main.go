@@ -2,6 +2,7 @@ package main
 
 import (
 	"api-gateway/config"
+	_ "api-gateway/docs"
 	"api-gateway/grpc"
 	"api-gateway/internal/handlers"
 	"api-gateway/internal/routes"
@@ -10,7 +11,7 @@ import (
 	"log"
 )
 
-// @title Examify Swagger
+// @title Modme Swagger
 
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
