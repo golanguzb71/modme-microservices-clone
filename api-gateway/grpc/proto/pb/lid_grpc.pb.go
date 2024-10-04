@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: grpc/proto/lid.proto
+// source: grpc/proto/lead.proto
 
 package pb
 
@@ -72,5 +72,5 @@ var LidService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LidServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "grpc/proto/lid.proto",
+	Metadata:    "grpc/proto/lead.proto",
 }

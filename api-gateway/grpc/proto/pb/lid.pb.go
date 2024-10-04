@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.34.2
 // 	protoc        v3.21.12
-// source: grpc/proto/lid.proto
+// source: grpc/proto/lead.proto
 
 package pb
 
