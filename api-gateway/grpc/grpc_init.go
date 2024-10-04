@@ -14,26 +14,27 @@ type Clients struct {
 }
 
 func InitializeGrpcClients(cfg *config.Config) *Clients {
-	businessClient, err := client.NewBusinessClient(cfg.Grpc.BusinessService.Address)
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-	auditClient, err := client.NewAuditClient(cfg.Grpc.AuditingService.Address)
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+	//businessClient, err := client.NewBusinessClient(cfg.Grpc.BusinessService.Address)
+	//if err != nil {
+	//	log.Fatalf("%v", err)
+	//}
+	//auditClient, err := client.NewAuditClient(cfg.Grpc.AuditingService.Address)
+	//if err != nil {
+	//	log.Fatalf("%v", err)
+	//}
+	//userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
+	//if err != nil {
+	//	return nil
+	//}
 	lidClient, err := client.NewLidClient(cfg.Grpc.LidService.Address)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
-	if err != nil {
-		return nil
-	}
+
 	return &Clients{
-		AuditClient:    auditClient,
-		UserClient:     userClient,
+		AuditClient:    &client.AuditClient{},
+		UserClient:     &client.UserClient{},
 		LidClient:      lidClient,
-		BusinessClient: businessClient,
+		BusinessClient: &client.BusinessClient{},
 	}
 }

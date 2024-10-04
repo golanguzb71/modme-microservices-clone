@@ -8,7 +8,10 @@ import (
 )
 
 type LidClient struct {
-	client pb.LidServiceClient
+	leadClient     pb.LeadServiceClient
+	expectClient   pb.ExpectServiceClient
+	setClient      pb.SetServiceClient
+	leadDataClient pb.LeadDataServiceClient
 }
 
 // NewLidClient creates a new gRPC client for LidService
@@ -18,17 +21,21 @@ func NewLidClient(addr string) (*LidClient, error) {
 		return nil, err
 	}
 
-	client := pb.NewLidServiceClient(conn)
-	return &LidClient{client: client}, nil
+	leadClient := pb.NewLeadServiceClient(conn)
+	expectClient := pb.NewExpectServiceClient(conn)
+	setClient := pb.NewSetServiceClient(conn)
+	leadDataClient := pb.NewLeadDataServiceClient(conn)
+
+	return &LidClient{leadClient: leadClient, expectClient: expectClient, setClient: setClient, leadDataClient: leadDataClient}, nil
 }
 
-// CreateLead sends a request to create a new lead
+// LeadService methods
 func (lc *LidClient) CreateLead(ctx context.Context, title string) (*pb.AbsResponse, error) {
 	req := &pb.CreateLeadRequest{
 		Title: title,
 	}
 
-	resp, err := lc.client.CreateLead(ctx, req)
+	resp, err := lc.leadClient.CreateLead(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create lead: %w", err)
 	}
@@ -36,14 +43,13 @@ func (lc *LidClient) CreateLead(ctx context.Context, title string) (*pb.AbsRespo
 	return resp, nil
 }
 
-// GetLeadCommon retrieves common lead information by type and id
-func (lc *LidClient) GetLeadCommon(ctx context.Context, leadType, id string) (*pb.GetLeadCommonResponse, error) {
+func (lc *LidClient) GetLeadCommon(ctx context.Context, leadType, id *string) (*pb.GetLeadCommonResponse, error) {
 	req := &pb.GetLeadCommonRequest{
-		Type: leadType,
-		Id:   id,
+		Type: *leadType,
+		Id:   *id,
 	}
 
-	resp, err := lc.client.GetLeadCommon(ctx, req)
+	resp, err := lc.leadClient.GetLeadCommon(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get lead common: %w", err)
 	}
@@ -51,14 +57,13 @@ func (lc *LidClient) GetLeadCommon(ctx context.Context, leadType, id string) (*p
 	return resp, nil
 }
 
-// UpdateLead sends a request to update a lead's title
 func (lc *LidClient) UpdateLead(ctx context.Context, id, title string) (*pb.AbsResponse, error) {
 	req := &pb.UpdateLeadRequest{
 		Id:    id,
 		Title: title,
 	}
 
-	resp, err := lc.client.UpdateLead(ctx, req)
+	resp, err := lc.leadClient.UpdateLead(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update lead: %w", err)
 	}
@@ -66,15 +71,117 @@ func (lc *LidClient) UpdateLead(ctx context.Context, id, title string) (*pb.AbsR
 	return resp, nil
 }
 
-// DeleteLead sends a request to delete a lead by id
 func (lc *LidClient) DeleteLead(ctx context.Context, id string) (*pb.AbsResponse, error) {
 	req := &pb.DeleteAbsRequest{
 		Id: id,
 	}
 
-	resp, err := lc.client.DeleteLead(ctx, req)
+	resp, err := lc.leadClient.DeleteLead(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to delete lead: %w", err)
+	}
+
+	return resp, nil
+}
+
+// ExpectService methods
+func (lc *LidClient) CreateExpect(ctx context.Context, title string) (*pb.AbsResponse, error) {
+	req := &pb.CreateExpectRequest{
+		Title: title,
+	}
+
+	resp, err := lc.expectClient.CreateExpect(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create expectation: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (lc *LidClient) UpdateExpect(ctx context.Context, id, title string) (*pb.AbsResponse, error) {
+	req := &pb.UpdateExpectRequest{
+		Id:    id,
+		Title: title,
+	}
+
+	resp, err := lc.expectClient.UpdateExpect(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update expectation: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (lc *LidClient) DeleteExpect(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	req := &pb.DeleteAbsRequest{
+		Id: id,
+	}
+
+	resp, err := lc.expectClient.DeleteExpect(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to delete expectation: %w", err)
+	}
+
+	return resp, nil
+}
+
+// SetService methods
+func (lc *LidClient) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.setClient.CreateSet(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create set: %w", err)
+	}
+	return resp, nil
+}
+
+func (lc *LidClient) UpdateSet(ctx context.Context, req *pb.UpdateSetRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.setClient.UpdateSet(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update set: %w", err)
+	}
+	return resp, nil
+}
+
+func (lc *LidClient) DeleteSet(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	req := &pb.DeleteAbsRequest{
+		Id: id,
+	}
+
+	resp, err := lc.setClient.DeleteSet(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to delete set: %w", err)
+	}
+
+	return resp, nil
+}
+
+// LeadDataService methods
+func (lc *LidClient) CreateLeadData(ctx context.Context, req *pb.CreateLeadDataRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.leadDataClient.CreateLeadData(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create lead data: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (lc *LidClient) UpdateLeadData(ctx context.Context, req *pb.UpdateLeadDataRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.leadDataClient.UpdateLeadData(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update lead data: %w", err)
+	}
+
+	return resp, nil
+}
+
+func (lc *LidClient) DeleteLeadData(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	req := &pb.DeleteAbsRequest{
+		Id: id,
+	}
+
+	resp, err := lc.leadDataClient.DeleteLeadData(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to delete lead data: %w", err)
 	}
 
 	return resp, nil
