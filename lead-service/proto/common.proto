@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package common;
 
-option go_package = "grpc/proto/pb";
+option go_package = "proto/pb";
 
 message AbsResponse {
   int32 status = 1;

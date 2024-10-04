@@ -4,6 +4,7 @@ import (
 	"api-gateway/config"
 	"api-gateway/grpc"
 	"api-gateway/internal/handlers"
+	"api-gateway/internal/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -33,8 +34,9 @@ func main() {
 	router.Use(cors.New(corsConfig))
 
 	grpcClients := grpc.InitializeGrpcClients(cfg)
-
 	handlers.InitClients(grpcClients)
+	routes.SetUpRoutes(router, grpcClients.UserClient)
+
 	port := cfg.Server.Port
 	log.Printf("Starting api gateway on port %s", port)
 	if err = router.Run(":" + port); err != nil {

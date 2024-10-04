@@ -1,0 +1,11 @@
+server:
+  port: 50053
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "lid_modme_db"
+  sslmode: "disable"
+  action: "up"

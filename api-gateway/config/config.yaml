@@ -3,10 +3,10 @@ server:
 
 grpc:
   auditing_service:
+    address: "localhost:50051"
+  business_service:
     address: "localhost:50052"
+  lid_service:
+    address: "localhost:50053"
   user_service:
     address: "localhost:50054"
-  business_service:
-    address: "localhost:50051"
-  list_service:
-    address: "localhost:50053"
