@@ -21,6 +21,7 @@ message GetLeadCommonResponse{
   repeated Section expectations = 2;
   repeated Section sets = 3;
 }
+
 message GetLeadCommonRequest{
   string type = 1;
   string id = 2;
@@ -38,6 +39,7 @@ message Lead {
   string createdAt = 3;
   string phoneNumber = 4;
 }
+
 message UpdateLeadRequest{
   string id = 1;
   string title = 2;
@@ -107,6 +109,8 @@ message CreateLeadDataRequest{
 }
 message UpdateLeadDataRequest{
   string id = 4;
+  string type = 5;
+  string sectionId = 6;
   string name = 1;
   string phoneNumber = 2;
   string comment = 3;

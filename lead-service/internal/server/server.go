@@ -25,15 +25,15 @@ func RunServer() {
 	defer db.Close()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 
-	lidRepo := repository.NewLidRepository(db)
 	expectRepo := repository.NewExpectRepository(db)
 	setRepo := repository.NewSetRepository(db)
-	lidUserRepo := repository.NewLidUserRepository(db)
+	leadRepo := repository.NewLeadRepository(db)
+	leadDataRepo := repository.NewLeadDataRepository(db)
 
-	lidService := service.NewLidService(lidRepo)
+	leadService := service.NewLeadService(leadRepo)
 	expectService := service.NewExpectService(expectRepo)
 	setService := service.NewSetService(setRepo)
-	lidUserService := service.NewLidUserService(lidUserRepo)
+	leadDataService := service.NewLeadDataService(leadDataRepo)
 
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
@@ -41,8 +41,8 @@ func RunServer() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterLidUserServiceServer(grpcServer, lidUserService)
-	pb.RegisterLidServiceServer(grpcServer, lidService)
+	pb.RegisterLeadServiceServer(grpcServer, leadService)
+	pb.RegisterLeadDataServiceServer(grpcServer, leadDataService)
 	pb.RegisterExpectServiceServer(grpcServer, expectService)
 	pb.RegisterSetServiceServer(grpcServer, setService)
 

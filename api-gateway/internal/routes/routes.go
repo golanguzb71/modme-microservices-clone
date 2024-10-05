@@ -8,8 +8,7 @@ import (
 )
 
 func SetUpRoutes(r *gin.Engine, userClient *client.UserClient) {
-	r.GET("/swag", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api := r.Group("/api")
 	{
 		LeadRoutes(api, userClient)
