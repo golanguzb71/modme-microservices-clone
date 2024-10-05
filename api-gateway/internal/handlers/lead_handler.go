@@ -1,0 +1,363 @@
+package handlers
+
+import (
+	"api-gateway/grpc/proto/pb"
+	"api-gateway/internal/utils"
+	"context"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
+)
+
+// CreateLead godoc
+// @Summary ADMIN
+// @Description Create a new lead with the given title.
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Param title query string true "Title of the lead"
+// @Success 200 {object} utils.AbsResponse "Lead successfully created"
+// @Failure 409 {object} utils.AbsResponse "Lead creation conflict"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/lead/create [post]
+func CreateLead(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	value := ctx.Query("title")
+	resp, err := leadClient.CreateLead(ctxR, value)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// GetLeadCommon godoc
+// @Summary ADMIN
+// @Description Get a common lead by ID and type.
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Param id query string false "Lead ID"
+// @Param type query string false "Lead Type"
+// @Success 200 {object} pb.GetLeadCommonResponse "Lead details retrieved"
+// @Failure 400 {object} utils.AbsResponse "Bad Request"
+// @Failure 500 {object} utils.AbsResponse "Internal Server Error"
+// @Security Bearer
+// @Router /api/lead/get-lead-common [get]
+func GetLeadCommon(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Query("id")
+	leadType := ctx.Query("type")
+	response, err := leadClient.GetLeadCommon(ctxR, &leadType, &id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
+}
+
+// UpdateLead godoc
+// @Summary ADMIN
+// @Description Update an existing lead by ID.
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Param id path string true "Lead ID"
+// @Param title query string true "Title of the lead"
+// @Success 200 {object} utils.AbsResponse "Lead updated successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/lead/update/{id} [put]
+func UpdateLead(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	title := ctx.Query("title")
+	resp, err := leadClient.UpdateLead(ctxR, id, title)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+
+}
+
+// DeleteLead godoc
+// @Summary ADMIN
+// @Description Delete a lead by ID.
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Param id path string true "Lead ID"
+// @Success 200 {object} utils.AbsResponse "Lead deleted successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/lead/delete/{id} [delete]
+func DeleteLead(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := leadClient.DeleteLead(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// CreateExpectation godoc
+// @Summary ADMIN
+// @Description Create a new expectation.
+// @Tags expectations
+// @Accept json
+// @Produce json
+// @Param title query string true "Title of the expectation"
+// @Success 200 {object} utils.AbsResponse "Expectation created successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/expectation/create [post]
+func CreateExpectation(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	title := ctx.Query("title")
+	resp, err := leadClient.CreateExpect(ctxR, title)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// UpdateExpectation godoc
+// @Summary ADMIN
+// @Description Update an existing expectation by ID.
+// @Tags expectations
+// @Accept json
+// @Produce json
+// @Param id path string true "Expectation ID"
+// @Param title query string true "Title of the expectation"
+// @Success 200 {object} utils.AbsResponse "Expectation updated successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/expectation/update/{id} [put]
+func UpdateExpectation(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	title := ctx.Query("title")
+	resp, err := leadClient.UpdateExpect(ctxR, id, title)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// DeleteExpectation godoc
+// @Summary ADMIN
+// @Description Delete an expectation by ID.
+// @Tags expectations
+// @Accept json
+// @Produce json
+// @Param id path string true "Expectation ID"
+// @Success 200 {object} utils.AbsResponse "Expectation deleted successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/expectation/delete/{id} [delete]
+func DeleteExpectation(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := leadClient.DeleteExpect(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// CreateSet godoc
+// @Summary ADMIN
+// @Description Create a new set.
+// @Tags sets
+// @Accept json
+// @Produce json
+// @Param data body pb.CreateSetRequest true "Set data"
+// @Success 200 {object} utils.AbsResponse "Set created successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/set/create [post]
+func CreateSet(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateSetRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.CreateSet(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// UpdateSet godoc
+// @Summary ADMIN
+// @Description Update an existing set by ID.
+// @Tags sets
+// @Accept json
+// @Produce json
+// @Param data body pb.UpdateSetRequest true "Set data"
+// @Success 200 {object} utils.AbsResponse "Set updated successfully"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/set/update [put]
+func UpdateSet(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.UpdateSetRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.UpdateSet(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// DeleteSet godoc
+// @Summary ADMIN
+// @Description Delete a set by ID.
+// @Tags sets
+// @Accept json
+// @Produce json
+// @Param id path string true "Set ID"
+// @Success 200 {object} utils.AbsResponse "Set deleted successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/set/delete/{id} [delete]
+func DeleteSet(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := leadClient.DeleteSet(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// CreateLeadData godoc
+// @Summary ADMIN
+// @Description Create lead data.
+// @Tags leadData
+// @Accept json
+// @Produce json
+// @Param data body pb.CreateLeadDataRequest true "Lead data"
+// @Success 200 {object} utils.AbsResponse "Lead data created successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/leadData/create [post]
+func CreateLeadData(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateLeadDataRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.CreateLeadData(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// DeleteLeadData godoc
+// @Summary ADMIN
+// @Description Delete lead data by ID.
+// @Tags leadData
+// @Accept json
+// @Produce json
+// @Param id path string true "Lead data ID"
+// @Success 200 {object} utils.AbsResponse "Lead data deleted successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/leadData/delete/{id} [delete]
+func DeleteLeadData(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := leadClient.DeleteLeadData(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// UpdateLeadData godoc
+// @Summary ADMIN
+// @Description Update lead data by ID.
+// @Tags leadData
+// @Accept json
+// @Produce json
+// @Param data body pb.UpdateLeadDataRequest true "Lead data"
+// @Success 200 {object} utils.AbsResponse "Lead data updated successfully"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/leadData/update [put]
+func UpdateLeadData(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.UpdateLeadDataRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.UpdateLeadData(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}

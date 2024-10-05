@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "proto/pb";
+
+message AbsResponse {
+  int32 status = 1;
+  string message = 2;
+}

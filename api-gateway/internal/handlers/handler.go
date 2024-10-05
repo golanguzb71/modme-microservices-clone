@@ -9,12 +9,12 @@ var (
 	auditingClient *client.AuditClient
 	userClient     *client.UserClient
 	businessClient *client.BusinessClient
-	lidClient      *client.LidClient
+	leadClient     *client.LidClient
 )
 
 func InitClients(client *grpc.Clients) {
 	auditingClient = client.AuditClient
 	userClient = client.UserClient
 	businessClient = client.BusinessClient
-	lidClient = client.LidClient
+	leadClient = client.LidClient
 }

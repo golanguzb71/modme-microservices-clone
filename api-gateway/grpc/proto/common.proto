@@ -4,3 +4,7 @@ package common;
 
 option go_package = "grpc/proto/pb";
 
+message AbsResponse {
+  int32 status = 1;
+  string message = 2;
+}

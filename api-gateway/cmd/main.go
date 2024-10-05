@@ -2,14 +2,16 @@ package main
 
 import (
 	"api-gateway/config"
+	_ "api-gateway/docs"
 	"api-gateway/grpc"
 	"api-gateway/internal/handlers"
+	"api-gateway/internal/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
-// @title Examify Swagger
+// @title Modme Swagger
 
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
@@ -33,8 +35,9 @@ func main() {
 	router.Use(cors.New(corsConfig))
 
 	grpcClients := grpc.InitializeGrpcClients(cfg)
-
 	handlers.InitClients(grpcClients)
+	routes.SetUpRoutes(router, grpcClients.UserClient)
+
 	port := cfg.Server.Port
 	log.Printf("Starting api gateway on port %s", port)
 	if err = router.Run(":" + port); err != nil {

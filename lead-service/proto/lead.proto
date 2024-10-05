@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package lead;
+
+option go_package = "proto/pb";
+import "proto/common.proto";
+
+
+// lead_service_start
+service LeadService {
+  rpc CreateLead(CreateLeadRequest) returns (common.AbsResponse);
+  rpc GetLeadCommon(GetLeadCommonRequest) returns(GetLeadCommonResponse);
+  rpc UpdateLead(UpdateLeadRequest) returns (common.AbsResponse);
+  rpc DeleteLead(DeleteAbsRequest) returns (common.AbsResponse);
+}
+message CreateLeadRequest{
+  string title = 1;
+}
+message GetLeadCommonResponse{
+  repeated Section leads = 1;
+  repeated Section expectations = 2;
+  repeated Section sets = 3;
+}
+message GetLeadCommonRequest{
+  string type = 1;
+  string id = 2;
+}
+message Section{
+  string id = 5;
+  string name = 1;
+  int32 leadsCount = 2;
+  repeated Lead leads = 3;
+  string type = 4;
+}
+message Lead {
+  string id = 1;
+  string comment = 2;
+  string createdAt = 3;
+  string phoneNumber = 4;
+}
+message UpdateLeadRequest{
+  string id = 1;
+  string title = 2;
+}
+message DeleteAbsRequest{
+  string id = 1;
+}
+// lead_service_end
+
+
+
+// expect_service_start
+service ExpectService{
+  rpc CreateExpect(CreateExpectRequest) returns (common.AbsResponse);
+  rpc UpdateExpect(UpdateExpectRequest) returns (common.AbsResponse);
+  rpc DeleteExpect(DeleteAbsRequest) returns (common.AbsResponse);
+}
+message CreateExpectRequest{
+  string title = 1;
+}
+message UpdateExpectRequest{
+  string id = 1;
+  string title = 2;
+}
+// expect_service_end
+
+
+
+//set_service_start
+service SetService{
+  rpc CreateSet(CreateSetRequest) returns (common.AbsResponse);
+  rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
+  rpc DeleteSet(DeleteAbsRequest) returns (common.AbsResponse);
+}
+message CreateSetRequest{
+  string title = 1;
+  string courseId = 2;
+  string teacherId = 3;
+  string dateType = 4;
+  repeated string date = 5;
+  string lessonStartTime = 6;
+}
+message UpdateSetRequest{
+  string id = 7;
+  string title = 1;
+  string courseId = 2;
+  string teacherId = 3;
+  string dateType = 4;
+  repeated string date = 5;
+  string lessonStartTime = 6;
+}
+//set_service_end
+
+
+
+//lead_service_start
+service LeadDataService {
+  rpc CreateLeadData(CreateLeadDataRequest) returns (common.AbsResponse);
+  rpc UpdateLeadData(UpdateLeadDataRequest) returns (common.AbsResponse);
+  rpc DeleteLeadData(DeleteAbsRequest) returns (common.AbsResponse);
+}
+message CreateLeadDataRequest{
+  string name = 1;
+  string phoneNumber = 2;
+  string leadId = 3;
+  string comment = 4;
+}
+message UpdateLeadDataRequest{
+  string id = 4;
+  string type = 5;
+  string sectionId = 6;
+  string name = 1;
+  string phoneNumber = 2;
+  string comment = 3;
+}
+// lead_service_end
