@@ -1,11 +1,11 @@
 server:
-  port: 50053
+  port: 8080
 
 database:
-  host: "localhost"
+  host: "postgres"  # Updated to match the Docker service name
   port: 5432
-  user: "postgres"
-  password: "postgres"
-  dbname: "lid_modme_db"
+  user: "lead_user"  # Matches the environment variables in Docker Compose
+  password: "lead_password"
+  dbname: "sphere_lead_db"
   sslmode: "disable"
   action: "up"
