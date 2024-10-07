@@ -7,6 +7,6 @@ grpc:
   business_service:
     address: "localhost:50052"
   lid_service:
-    address: "localhost:50053"
+    address: "lead-service:8080"  # Updated to point to the lead-service in Docker
   user_service:
     address: "localhost:50054"
