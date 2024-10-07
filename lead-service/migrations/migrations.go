@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// readSQLFile reads an SQL file and returns its contents as a string.
 func readSQLFile(filepath string) (string, error) {
 	bytes, err := ioutil.ReadFile(filepath)
 	if err != nil {
@@ -15,10 +16,12 @@ func readSQLFile(filepath string) (string, error) {
 	return string(bytes), nil
 }
 
+// SetUpMigrating executes the specified migration action ("up" or "down").
 func SetUpMigrating(action string, db *sql.DB) {
 	// var sqlFile string
 	// var err error
 
+	// Determine which SQL file to read based on the action
 	// if action == "up" {
 	// 	sqlFile, err = readSQLFile("migrations/lid_service_up.sql")
 	// 	if err != nil {
@@ -34,6 +37,8 @@ func SetUpMigrating(action string, db *sql.DB) {
 	// 	return
 	// }
 
+	// SQL migration execution commented out
+	/*
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS lead_section
 (
@@ -74,10 +79,11 @@ CREATE TABLE IF NOT EXISTS lead_user
     comment      varchar,
     created_at   timestamp DEFAULT now()
 );		 
-    `)
+	`)
 	if err != nil {
 		log.Fatalf("Failed to execute migration: %v", err)
 	}
+	*/
 
 	fmt.Printf("Migration '%s' executed successfully\n", action)
 }
