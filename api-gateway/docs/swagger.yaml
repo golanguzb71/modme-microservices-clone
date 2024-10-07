@@ -1,10 +1,545 @@
+definitions:
+  pb.CreateLeadDataRequest:
+    properties:
+      comment:
+        type: string
+      leadId:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.CreateSetRequest:
+    properties:
+      courseId:
+        type: string
+      date:
+        items:
+          type: string
+        type: array
+      dateType:
+        type: string
+      lessonStartTime:
+        type: string
+      teacherId:
+        type: string
+      title:
+        type: string
+    type: object
+  pb.GetLeadCommonResponse:
+    properties:
+      expectations:
+        items:
+          $ref: '#/definitions/pb.Section'
+        type: array
+      leads:
+        items:
+          $ref: '#/definitions/pb.Section'
+        type: array
+      sets:
+        items:
+          $ref: '#/definitions/pb.Section'
+        type: array
+    type: object
+  pb.Lead:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.Section:
+    properties:
+      id:
+        type: string
+      leads:
+        items:
+          $ref: '#/definitions/pb.Lead'
+        type: array
+      leadsCount:
+        type: integer
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  pb.UpdateLeadDataRequest:
+    properties:
+      comment:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      sectionId:
+        type: string
+      type:
+        type: string
+    type: object
+  pb.UpdateSetRequest:
+    properties:
+      courseId:
+        type: string
+      date:
+        items:
+          type: string
+        type: array
+      dateType:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      teacherId:
+        type: string
+      title:
+        type: string
+    type: object
+  utils.AbsResponse:
+    properties:
+      message:
+        type: string
+      statusCode:
+        type: integer
+    type: object
 info:
   contact: {}
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Examify Swagger
-paths: {}
+  title: Modme Swagger
+paths:
+  /api/expectation/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new expectation.
+      parameters:
+      - description: Title of the expectation
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Expectation created successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - expectations
+  /api/expectation/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an expectation by ID.
+      parameters:
+      - description: Expectation ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Expectation deleted successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - expectations
+  /api/expectation/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing expectation by ID.
+      parameters:
+      - description: Expectation ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Title of the expectation
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Expectation updated successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - expectations
+  /api/lead/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new lead with the given title.
+      parameters:
+      - description: Title of the lead
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead successfully created
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Lead creation conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leads
+  /api/lead/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a lead by ID.
+      parameters:
+      - description: Lead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead deleted successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leads
+  /api/lead/get-lead-common:
+    get:
+      consumes:
+      - application/json
+      description: Get a common lead by ID and type.
+      parameters:
+      - description: Lead ID
+        in: query
+        name: id
+        type: string
+      - description: Lead Type
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead details retrieved
+          schema:
+            $ref: '#/definitions/pb.GetLeadCommonResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leads
+  /api/lead/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing lead by ID.
+      parameters:
+      - description: Lead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Title of the lead
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead updated successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leads
+  /api/leadData/create:
+    post:
+      consumes:
+      - application/json
+      description: Create lead data.
+      parameters:
+      - description: Lead data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateLeadDataRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead data created successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leadData
+  /api/leadData/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete lead data by ID.
+      parameters:
+      - description: Lead data ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead data deleted successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leadData
+  /api/leadData/update:
+    put:
+      consumes:
+      - application/json
+      description: Update lead data by ID.
+      parameters:
+      - description: Lead data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateLeadDataRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead data updated successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - leadData
+  /api/set/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new set.
+      parameters:
+      - description: Set data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateSetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Set created successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - sets
+  /api/set/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a set by ID.
+      parameters:
+      - description: Set ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Set deleted successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - sets
+  /api/set/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing set by ID.
+      parameters:
+      - description: Set data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateSetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Set updated successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict occurred
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN
+      tags:
+      - sets
 securityDefinitions:
   Bearer:
     in: header

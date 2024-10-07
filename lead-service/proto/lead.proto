@@ -107,6 +107,8 @@ message CreateLeadDataRequest{
 }
 message UpdateLeadDataRequest{
   string id = 4;
+  string type = 5;
+  string sectionId = 6;
   string name = 1;
   string phoneNumber = 2;
   string comment = 3;
