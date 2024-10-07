@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 # Build the Go binary with static linking to ensure compatibility with Alpine
-RUN CGO_ENABLED=0 GOOS=linux go build -o lead-service ./lead-service/cmd/main.go  # Adjust path as needed
+RUN CGO_ENABLED=0 GOOS=linux go build -o lead-service ./cmd/main.go  # Adjust path as needed
 
 # Final stage
 FROM alpine:latest
