@@ -13,7 +13,7 @@ FROM alpine:latest
 WORKDIR /app
 # Copy the binary from the builder stage to the current directory
 COPY --from=builder /app/api-gateway /app/api-gateway
-COPY --from=builder /app/config /app/config  # Copy the config directory
+COPY --from=builder /app/config/config.yaml /app/config/config.yaml  # Copy the config.yaml file
 # Ensure the binary has execution permissions
 RUN chmod +x /app/api-gateway
 # Verify that the binary exists
