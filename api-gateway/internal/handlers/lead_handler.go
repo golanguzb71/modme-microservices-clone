@@ -396,3 +396,28 @@ func ChangeLeadData(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, resp.Status, resp.Message)
 	return
 }
+
+// GetAllLead godoc
+// @Summary ALL
+// @Description Update the data associated with a lead
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} pb.GetLeadListResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 401 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/lead/get-all [get]
+func GetAllLead(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	resp, err := leadClient.GetAllLead(ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

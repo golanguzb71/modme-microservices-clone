@@ -271,6 +271,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/lead/get-all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the data associated with a lead",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leads"
+                ],
+                "summary": "ALL",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetLeadListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/lead/get-lead-common": {
             "post": {
                 "security": [
@@ -810,6 +856,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.DynamicSection": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.GetLeadCommonRequest": {
             "type": "object",
             "properties": {
@@ -840,6 +897,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.Section"
+                    }
+                }
+            }
+        },
+        "pb.GetLeadListResponse": {
+            "type": "object",
+            "properties": {
+                "sections": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.DynamicSection"
                     }
                 }
             }

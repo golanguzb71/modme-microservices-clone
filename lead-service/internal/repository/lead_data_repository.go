@@ -59,9 +59,9 @@ func (r *LeadDataRepository) DeleteLeadData(id string) error {
 	return nil
 }
 
-func (r *LeadDataRepository) ChangeLeadPlace(sectionID string, sectionType string, itemId string) error {
+func (r *LeadDataRepository) ChangeLeadPlace(sectionID, sectionType, itemId *string) error {
 	query := `UPDATE lead_user SET `
-	switch sectionType {
+	switch *sectionType {
 	case "set":
 		query += `set_id=$1 , expect_id=null,lead_id=null`
 	case "expectation":
@@ -73,7 +73,7 @@ func (r *LeadDataRepository) ChangeLeadPlace(sectionID string, sectionType strin
 	}
 
 	query += ` where id=$2`
-	_, err := r.db.Exec(query, sectionID, itemId)
+	_, err := r.db.Exec(query, *sectionID, *itemId)
 	if err != nil {
 		return err
 	}

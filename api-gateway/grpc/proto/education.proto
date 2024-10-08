@@ -5,6 +5,6 @@ package business;
 option go_package = "grpc/proto/pb";
 
 
-service BusinessService {
+service EducationService {
 
 }

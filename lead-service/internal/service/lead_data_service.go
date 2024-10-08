@@ -43,7 +43,7 @@ func (s *LeadDataService) DeleteLeadData(ctx context.Context, req *pb.DeleteAbsR
 }
 
 func (s *LeadDataService) ChangeLeadPlace(ctx context.Context, req *pb.ChangeLeadPlaceRequest) (*pb.AbsResponse, error) {
-	err := s.repo.ChangeLeadPlace(req.ChangedSet.Id, req.ChangedSet.SectionType, req.LeadDataId)
+	err := s.repo.ChangeLeadPlace(&req.ChangedSet.Id, &req.ChangedSet.SectionType, &req.LeadDataId)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to change lead data: " + err.Error()}, err
 	}

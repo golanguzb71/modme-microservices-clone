@@ -5,12 +5,16 @@ package lead;
 option go_package = "grpc/proto/pb";
 import "common.proto";
 
+
+import "google/protobuf/empty.proto";
+
 // lead_service_start
 service LeadService {
   rpc CreateLead(CreateLeadRequest) returns (common.AbsResponse);
   rpc GetLeadCommon(GetLeadCommonRequest) returns(GetLeadCommonResponse);
   rpc UpdateLead(UpdateLeadRequest) returns (common.AbsResponse);
   rpc DeleteLead(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc GetListSection(google.protobuf.Empty)returns(GetLeadListResponse);
 }
 message CreateLeadRequest{
   string title = 1;
@@ -20,16 +24,13 @@ message GetLeadCommonResponse{
   repeated Section expectations = 2;
   repeated Section sets = 3;
 }
-
 message GetLeadCommonRequest {
   repeated LeadCommonRequest requests = 1;
 }
-
 message LeadCommonRequest {
   string type = 1;
   string id = 2;
 }
-
 message Section{
   string id = 5;
   string name = 1;
@@ -43,15 +44,22 @@ message Lead {
   string createdAt = 3;
   string phoneNumber = 4;
 }
-
 message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
-
 message DeleteAbsRequest{
   string id = 1;
 }
+
+message GetLeadListResponse{
+  repeated DynamicSection sections = 1;
+}
+message DynamicSection{
+  string id = 1;
+  string name = 2;
+}
+
 // lead_service_end
 
 

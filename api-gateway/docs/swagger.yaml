@@ -41,6 +41,13 @@ definitions:
       title:
         type: string
     type: object
+  pb.DynamicSection:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   pb.GetLeadCommonRequest:
     properties:
       requests:
@@ -61,6 +68,13 @@ definitions:
       sets:
         items:
           $ref: '#/definitions/pb.Section'
+        type: array
+    type: object
+  pb.GetLeadListResponse:
+    properties:
+      sections:
+        items:
+          $ref: '#/definitions/pb.DynamicSection'
         type: array
     type: object
   pb.Lead:
@@ -302,6 +316,35 @@ paths:
       security:
       - Bearer: []
       summary: ADMIN
+      tags:
+      - leads
+  /api/lead/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Update the data associated with a lead
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetLeadListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ALL
       tags:
       - leads
   /api/lead/get-lead-common:

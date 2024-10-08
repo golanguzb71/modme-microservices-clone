@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type LidClient struct {
@@ -76,6 +77,11 @@ func (lc *LidClient) DeleteLead(ctx context.Context, id string) (*pb.AbsResponse
 	}
 
 	return resp, nil
+}
+
+func (lc *LidClient) GetAllLead(ctx context.Context) (*pb.GetLeadListResponse, error) {
+	emptyRequest := &emptypb.Empty{}
+	return lc.leadClient.GetListSection(ctx, emptyRequest)
 }
 
 // ExpectService methods

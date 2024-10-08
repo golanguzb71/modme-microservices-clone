@@ -7,14 +7,14 @@ import (
 )
 
 type Clients struct {
-	AuditClient    *client.AuditClient
-	UserClient     *client.UserClient
-	LidClient      *client.LidClient
-	BusinessClient *client.BusinessClient
+	AuditClient     *client.AuditClient
+	UserClient      *client.UserClient
+	LidClient       *client.LidClient
+	EducationClient *client.EducationClient
 }
 
 func InitializeGrpcClients(cfg *config.Config) *Clients {
-	//businessClient, err := client.NewBusinessClient(cfg.Grpc.BusinessService.Address)
+	//educationClient, err := client.NewEducationClient(cfg.Grpc.EducationService.Address)
 	//if err != nil {
 	//	log.Fatalf("%v", err)
 	//}
@@ -32,9 +32,9 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 	}
 
 	return &Clients{
-		AuditClient:    &client.AuditClient{},
-		UserClient:     &client.UserClient{},
-		LidClient:      lidClient,
-		BusinessClient: &client.BusinessClient{},
+		AuditClient:     &client.AuditClient{},
+		UserClient:      &client.UserClient{},
+		LidClient:       lidClient,
+		EducationClient: &client.EducationClient{},
 	}
 }

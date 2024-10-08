@@ -193,3 +193,33 @@ func (r *LeadRepository) DeleteLead(id string) error {
 	}
 	return nil
 }
+
+func (r *LeadRepository) GetAllLeads() (*pb.GetLeadListResponse, error) {
+	query := `SELECT id, title FROM lead_section`
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	result := &pb.GetLeadListResponse{}
+
+	for rows.Next() {
+		var id, title string
+		if err := rows.Scan(&id, &title); err != nil {
+			return nil, err
+		}
+
+		section := &pb.DynamicSection{
+			Id:   id,
+			Name: title,
+		}
+		result.Sections = append(result.Sections, section)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
