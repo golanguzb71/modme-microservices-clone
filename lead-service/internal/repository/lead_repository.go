@@ -27,19 +27,18 @@ func (r *LeadRepository) CreateLead(title string) error {
 func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
 	resp := &pb.GetLeadCommonResponse{}
 
-	// Iterate over each request
+	fetchAllSections(resp, r.db)
+
 	for _, request := range req.Requests {
 		id := request.Id
 		sectionType := request.Type
-
-		// Call appropriate calculation based on the section type
 		switch sectionType {
 		case "set":
-			calculateSet(resp, r.db, &id, &sectionType)
+			calculateSet(resp, r.db, &id)
 		case "expectation":
-			calculateExpectations(resp, r.db, &id, &sectionType)
+			calculateExpectations(resp, r.db, &id)
 		case "lead":
-			calculateLeads(resp, r.db, &id, &sectionType)
+			calculateLeads(resp, r.db, &id)
 		default:
 			log.Printf("Unknown section type: %s", sectionType)
 		}
@@ -48,12 +47,16 @@ func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLea
 	return resp, nil
 }
 
-func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *string) {
+func fetchAllSections(p *pb.GetLeadCommonResponse, db *sql.DB) {
+	calculateSet(p, db, nil)
+	calculateExpectations(p, db, nil)
+	calculateLeads(p, db, nil)
+}
+
+func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
 	query := `
-        SELECT ss.id, ss.title, COUNT(lu.id) as leads_count
+        SELECT ss.id, ss.title
         FROM set_section ss
-        LEFT JOIN lead_user lu ON lu.set_id = ss.id
-        GROUP BY ss.id
     `
 	rows, err := db.Query(query)
 	if err != nil {
@@ -65,29 +68,24 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *stri
 	var sections []*pb.Section
 	for rows.Next() {
 		section := &pb.Section{}
-		if err := rows.Scan(&section.Id, &section.Name, &section.LeadsCount); err != nil {
+		if err := rows.Scan(&section.Id, &section.Name); err != nil {
 			log.Printf("Error scanning set section row: %v", err)
 			return
 		}
 
-		if id != nil && *sectionType == "set" && section.Id == *id {
-			section.Leads = fetchLeadsForSection(db, section.Id, "set")
-		} else {
-			section.Leads = []*pb.Lead{}
-		}
-
+		// Fetch leads for this section
+		section.Leads = fetchLeadsForSection(db, section.Id, "set")
+		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "set"
 		sections = append(sections, section)
 	}
 	p.Sets = sections
 }
 
-func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *string) {
+func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
 	query := `
-        SELECT es.id, es.title, COUNT(lu.id) as leads_count
+        SELECT es.id, es.title
         FROM expect_section es
-        LEFT JOIN lead_user lu ON lu.expect_id = es.id
-        GROUP BY es.id, es.title
     `
 	rows, err := db.Query(query)
 	if err != nil {
@@ -99,29 +97,24 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionT
 	var sections []*pb.Section
 	for rows.Next() {
 		section := &pb.Section{}
-		if err := rows.Scan(&section.Id, &section.Name, &section.LeadsCount); err != nil {
+		if err := rows.Scan(&section.Id, &section.Name); err != nil {
 			log.Printf("Error scanning expectation section row: %v", err)
 			return
 		}
 
-		if id != nil && *sectionType == "expectation" && section.Id == *id {
-			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
-		} else {
-			section.Leads = []*pb.Lead{}
-		}
-
+		// Fetch leads for this section
+		section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
+		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "expectation"
 		sections = append(sections, section)
 	}
 	p.Expectations = sections
 }
 
-func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *string) {
+func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
 	query := `
-        SELECT ls.id, ls.title, COUNT(lu.id) as leads_count
+        SELECT ls.id, ls.title
         FROM lead_section ls
-        LEFT JOIN lead_user lu ON lu.lead_id = ls.id
-        GROUP BY ls.id
     `
 	rows, err := db.Query(query)
 	if err != nil {
@@ -133,17 +126,14 @@ func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *st
 	var sections []*pb.Section
 	for rows.Next() {
 		section := &pb.Section{}
-		if err := rows.Scan(&section.Id, &section.Name, &section.LeadsCount); err != nil {
+		if err := rows.Scan(&section.Id, &section.Name); err != nil {
 			log.Printf("Error scanning lead section row: %v", err)
 			return
 		}
 
-		if id != nil && *sectionType == "lead" && section.Id == *id {
-			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
-		} else {
-			section.Leads = []*pb.Lead{}
-		}
-
+		// Fetch leads for this section
+		section.Leads = fetchLeadsForSection(db, section.Id, "lead")
+		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "lead"
 		sections = append(sections, section)
 	}
