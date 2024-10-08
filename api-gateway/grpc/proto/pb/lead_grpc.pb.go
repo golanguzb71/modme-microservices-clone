@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: grpc/proto/lead.proto
+// source: lead.proto
 
 package pb
 
@@ -235,7 +235,7 @@ var LeadService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/proto/lead.proto",
+	Metadata: "lead.proto",
 }
 
 const (
@@ -417,7 +417,7 @@ var ExpectService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/proto/lead.proto",
+	Metadata: "lead.proto",
 }
 
 const (
@@ -599,13 +599,14 @@ var SetService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/proto/lead.proto",
+	Metadata: "lead.proto",
 }
 
 const (
-	LeadDataService_CreateLeadData_FullMethodName = "/lead.LeadDataService/CreateLeadData"
-	LeadDataService_UpdateLeadData_FullMethodName = "/lead.LeadDataService/UpdateLeadData"
-	LeadDataService_DeleteLeadData_FullMethodName = "/lead.LeadDataService/DeleteLeadData"
+	LeadDataService_CreateLeadData_FullMethodName  = "/lead.LeadDataService/CreateLeadData"
+	LeadDataService_UpdateLeadData_FullMethodName  = "/lead.LeadDataService/UpdateLeadData"
+	LeadDataService_DeleteLeadData_FullMethodName  = "/lead.LeadDataService/DeleteLeadData"
+	LeadDataService_ChangeLeadPlace_FullMethodName = "/lead.LeadDataService/ChangeLeadPlace"
 )
 
 // LeadDataServiceClient is the client API for LeadDataService service.
@@ -617,6 +618,7 @@ type LeadDataServiceClient interface {
 	CreateLeadData(ctx context.Context, in *CreateLeadDataRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	UpdateLeadData(ctx context.Context, in *UpdateLeadDataRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteLeadData(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	ChangeLeadPlace(ctx context.Context, in *ChangeLeadPlaceRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
 
 type leadDataServiceClient struct {
@@ -657,6 +659,16 @@ func (c *leadDataServiceClient) DeleteLeadData(ctx context.Context, in *DeleteAb
 	return out, nil
 }
 
+func (c *leadDataServiceClient) ChangeLeadPlace(ctx context.Context, in *ChangeLeadPlaceRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, LeadDataService_ChangeLeadPlace_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LeadDataServiceServer is the server API for LeadDataService service.
 // All implementations must embed UnimplementedLeadDataServiceServer
 // for forward compatibility.
@@ -666,6 +678,7 @@ type LeadDataServiceServer interface {
 	CreateLeadData(context.Context, *CreateLeadDataRequest) (*AbsResponse, error)
 	UpdateLeadData(context.Context, *UpdateLeadDataRequest) (*AbsResponse, error)
 	DeleteLeadData(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
+	ChangeLeadPlace(context.Context, *ChangeLeadPlaceRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedLeadDataServiceServer()
 }
 
@@ -684,6 +697,9 @@ func (UnimplementedLeadDataServiceServer) UpdateLeadData(context.Context, *Updat
 }
 func (UnimplementedLeadDataServiceServer) DeleteLeadData(context.Context, *DeleteAbsRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteLeadData not implemented")
+}
+func (UnimplementedLeadDataServiceServer) ChangeLeadPlace(context.Context, *ChangeLeadPlaceRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeLeadPlace not implemented")
 }
 func (UnimplementedLeadDataServiceServer) mustEmbedUnimplementedLeadDataServiceServer() {}
 func (UnimplementedLeadDataServiceServer) testEmbeddedByValue()                         {}
@@ -760,6 +776,24 @@ func _LeadDataService_DeleteLeadData_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LeadDataService_ChangeLeadPlace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeLeadPlaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LeadDataServiceServer).ChangeLeadPlace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LeadDataService_ChangeLeadPlace_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LeadDataServiceServer).ChangeLeadPlace(ctx, req.(*ChangeLeadPlaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LeadDataService_ServiceDesc is the grpc.ServiceDesc for LeadDataService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -779,7 +813,11 @@ var LeadDataService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "DeleteLeadData",
 			Handler:    _LeadDataService_DeleteLeadData_Handler,
 		},
+		{
+			MethodName: "ChangeLeadPlace",
+			Handler:    _LeadDataService_ChangeLeadPlace_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "grpc/proto/lead.proto",
+	Metadata: "lead.proto",
 }

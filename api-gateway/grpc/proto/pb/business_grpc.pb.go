@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: grpc/proto/business.proto
+// source: business.proto
 
 package pb
 
@@ -72,5 +72,5 @@ var BusinessService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*BusinessServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "grpc/proto/business.proto",
+	Metadata:    "business.proto",
 }

@@ -1,4 +1,11 @@
 definitions:
+  pb.ChangeLeadPlaceRequest:
+    properties:
+      changedSet:
+        $ref: '#/definitions/pb.UpdateLeadRequest'
+      leadDataId:
+        type: string
+    type: object
   pb.CreateLeadDataRequest:
     properties:
       comment:
@@ -27,6 +34,13 @@ definitions:
       title:
         type: string
     type: object
+  pb.GetLeadCommonRequest:
+    properties:
+      requests:
+        items:
+          $ref: '#/definitions/pb.LeadCommonRequest'
+        type: array
+    type: object
   pb.GetLeadCommonResponse:
     properties:
       expectations:
@@ -51,6 +65,13 @@ definitions:
       id:
         type: string
       phoneNumber:
+        type: string
+    type: object
+  pb.LeadCommonRequest:
+    properties:
+      id:
+        type: string
+      type:
         type: string
     type: object
   pb.Section:
@@ -81,6 +102,13 @@ definitions:
       sectionId:
         type: string
       type:
+        type: string
+    type: object
+  pb.UpdateLeadRequest:
+    properties:
+      id:
+        type: string
+      title:
         type: string
     type: object
   pb.UpdateSetRequest:
@@ -277,19 +305,17 @@ paths:
       tags:
       - leads
   /api/lead/get-lead-common:
-    get:
+    post:
       consumes:
       - application/json
       description: Get a common lead by ID and type.
       parameters:
       - description: Lead ID
-        in: query
-        name: id
-        type: string
-      - description: Lead Type
-        in: query
-        name: type
-        type: string
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GetLeadCommonRequest'
       produces:
       - application/json
       responses:
@@ -346,6 +372,42 @@ paths:
       summary: ADMIN
       tags:
       - leads
+  /api/leadData/change-lead-data:
+    patch:
+      consumes:
+      - application/json
+      description: Update the data associated with a lead
+      parameters:
+      - description: Lead change request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ChangeLeadPlaceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Change lead data
+      tags:
+      - leadData
   /api/leadData/create:
     post:
       consumes:

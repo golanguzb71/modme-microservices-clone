@@ -43,17 +43,11 @@ func (lc *LidClient) CreateLead(ctx context.Context, title string) (*pb.AbsRespo
 	return resp, nil
 }
 
-func (lc *LidClient) GetLeadCommon(ctx context.Context, leadType, id *string) (*pb.GetLeadCommonResponse, error) {
-	req := &pb.GetLeadCommonRequest{
-		Type: *leadType,
-		Id:   *id,
-	}
-
+func (lc *LidClient) GetLeadCommon(ctx context.Context, req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
 	resp, err := lc.leadClient.GetLeadCommon(ctx, req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get lead common: %w", err)
 	}
-
 	return resp, nil
 }
 
@@ -184,5 +178,13 @@ func (lc *LidClient) DeleteLeadData(ctx context.Context, id string) (*pb.AbsResp
 		return nil, fmt.Errorf("failed to delete lead data: %w", err)
 	}
 
+	return resp, nil
+}
+
+func (lc *LidClient) ChangeLeadPlace(ctx context.Context, p *pb.ChangeLeadPlaceRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.leadDataClient.ChangeLeadPlace(ctx, p)
+	if err != nil {
+		return nil, err
+	}
 	return resp, nil
 }

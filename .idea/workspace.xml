@@ -6,6 +6,33 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/lead.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/lead.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/audit.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/audit_grpc.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/business.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/business_grpc.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/common.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead_grpc.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user_grpc.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/lead_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/lead_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/lead_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/lead_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/lead_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/lead_routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/migrations/migrations.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/migrations/migrations.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/lead.proto" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/lead.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/common.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/common.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/lead.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/lead.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/lead_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/lead_grpc.pb.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +46,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file://$USER_HOME$/go/go1.23.1" />
+  <component name="GOROOT" url="file://$USER_HOME$/sdk/go1.23.2" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -41,7 +68,7 @@
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;lead__service__branch&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/elon/GolandProjects/modme/user-service/internal/utils&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/abdulaziz&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,

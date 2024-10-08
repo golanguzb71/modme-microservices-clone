@@ -40,19 +40,23 @@ func CreateLead(ctx *gin.Context) {
 // @Tags leads
 // @Accept json
 // @Produce json
-// @Param id query string false "Lead ID"
-// @Param type query string false "Lead Type"
+// @Param req body pb.GetLeadCommonRequest true "Lead ID"
 // @Success 200 {object} pb.GetLeadCommonResponse "Lead details retrieved"
 // @Failure 400 {object} utils.AbsResponse "Bad Request"
 // @Failure 500 {object} utils.AbsResponse "Internal Server Error"
 // @Security Bearer
-// @Router /api/lead/get-lead-common [get]
+// @Router /api/lead/get-lead-common [post]
 func GetLeadCommon(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	id := ctx.Query("id")
-	leadType := ctx.Query("type")
-	response, err := leadClient.GetLeadCommon(ctxR, &leadType, &id)
+
+	var req pb.GetLeadCommonRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response, err := leadClient.GetLeadCommon(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
@@ -354,6 +358,37 @@ func UpdateLeadData(ctx *gin.Context) {
 		return
 	}
 	resp, err := leadClient.UpdateLeadData(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// ChangeLeadData godoc
+// @Summary Change lead data
+// @Description Update the data associated with a lead
+// @Tags leadData
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.ChangeLeadPlaceRequest true "Lead change request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 401 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/leadData/change-lead-data [patch]
+func ChangeLeadData(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.ChangeLeadPlaceRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.ChangeLeadPlace(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return

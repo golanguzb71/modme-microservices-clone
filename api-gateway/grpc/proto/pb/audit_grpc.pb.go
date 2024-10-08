@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: grpc/proto/audit.proto
+// source: audit.proto
 
 package pb
 
@@ -72,5 +72,5 @@ var AuditService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuditServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "grpc/proto/audit.proto",
+	Metadata:    "audit.proto",
 }
