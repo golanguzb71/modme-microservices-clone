@@ -5,40 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/education-service/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/grpc_init.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/grpc_init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/business.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/lead.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/lead.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/business.pb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/business_grpc.pb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/lead_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/businness_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/lead_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/lead_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/lead_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/lead_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/lead_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/lead_routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/vendor/modules.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/service.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/repository/lead_data_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/repository/lead_data_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/repository/lead_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/repository/lead_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/service/lead_data_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/service/lead_data_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/service/lead_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/service/lead_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/proto/lead.proto" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/lead.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/lead.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/lead.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/lead_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/lead_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/vendor/modules.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/payment-service/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/payment-service/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/proto/service.proto" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
