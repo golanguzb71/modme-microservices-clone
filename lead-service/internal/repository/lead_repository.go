@@ -24,12 +24,28 @@ func (r *LeadRepository) CreateLead(title string) error {
 	return nil
 }
 
-func (r *LeadRepository) GetLeadCommon(id, sectionType *string) (*pb.GetLeadCommonResponse, error) {
-	resp := pb.GetLeadCommonResponse{}
-	calculateLeads(&resp, r.db, id, sectionType)
-	calculateExpectations(&resp, r.db, id, sectionType)
-	calculateSet(&resp, r.db, id, sectionType)
-	return &resp, nil
+func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
+	resp := &pb.GetLeadCommonResponse{}
+
+	// Iterate over each request
+	for _, request := range req.Requests {
+		id := request.Id
+		sectionType := request.Type
+
+		// Call appropriate calculation based on the section type
+		switch sectionType {
+		case "set":
+			calculateSet(resp, r.db, &id, &sectionType)
+		case "expectation":
+			calculateExpectations(resp, r.db, &id, &sectionType)
+		case "lead":
+			calculateLeads(resp, r.db, &id, &sectionType)
+		default:
+			log.Printf("Unknown section type: %s", sectionType)
+		}
+	}
+
+	return resp, nil
 }
 
 func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *string) {
@@ -54,7 +70,7 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *stri
 			return
 		}
 
-		if id != nil && sectionType != nil && *sectionType == "set" && section.Id == *id {
+		if id != nil && *sectionType == "set" && section.Id == *id {
 			section.Leads = fetchLeadsForSection(db, section.Id, "set")
 		} else {
 			section.Leads = []*pb.Lead{}
@@ -88,7 +104,7 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionT
 			return
 		}
 
-		if id != nil && sectionType != nil && *sectionType == "expectation" && section.Id == *id {
+		if id != nil && *sectionType == "expectation" && section.Id == *id {
 			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
 		} else {
 			section.Leads = []*pb.Lead{}
@@ -122,7 +138,7 @@ func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id, sectionType *st
 			return
 		}
 
-		if id != nil && sectionType != nil && *sectionType == "lead" && section.Id == *id {
+		if id != nil && *sectionType == "lead" && section.Id == *id {
 			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
 		} else {
 			section.Leads = []*pb.Lead{}
@@ -147,8 +163,8 @@ func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead 
 	case "lead":
 		query += ` lead_id=$1`
 	}
-	rows, err := db.Query(query, sectionId)
 
+	rows, err := db.Query(query, sectionId)
 	if err != nil {
 		log.Printf("Error fetching leads for section: %v", err)
 		return nil

@@ -3,7 +3,8 @@ syntax = "proto3";
 package lead;
 
 option go_package = "grpc/proto/pb";
-import "grpc/proto/common.proto";
+
+import "common.proto";
 
 
 // lead_service_start
@@ -22,10 +23,15 @@ message GetLeadCommonResponse{
   repeated Section sets = 3;
 }
 
-message GetLeadCommonRequest{
+message GetLeadCommonRequest {
+  repeated LeadCommonRequest requests = 1;
+}
+
+message LeadCommonRequest {
   string type = 1;
   string id = 2;
 }
+
 message Section{
   string id = 5;
   string name = 1;
@@ -44,6 +50,7 @@ message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
+
 message DeleteAbsRequest{
   string id = 1;
 }
@@ -100,6 +107,7 @@ service LeadDataService {
   rpc CreateLeadData(CreateLeadDataRequest) returns (common.AbsResponse);
   rpc UpdateLeadData(UpdateLeadDataRequest) returns (common.AbsResponse);
   rpc DeleteLeadData(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc ChangeLeadPlace(ChangeLeadPlaceRequest) returns(common.AbsResponse);
 }
 message CreateLeadDataRequest{
   string name = 1;
@@ -114,5 +122,10 @@ message UpdateLeadDataRequest{
   string name = 1;
   string phoneNumber = 2;
   string comment = 3;
+}
+
+message ChangeLeadPlaceRequest{
+  string leadDataId = 1;
+  UpdateLeadRequest changedSet = 2;
 }
 // lead_service_end

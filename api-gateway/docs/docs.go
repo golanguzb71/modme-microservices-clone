@@ -272,7 +272,7 @@ const docTemplate = `{
             }
         },
         "/api/lead/get-lead-common": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -291,16 +291,13 @@ const docTemplate = `{
                 "summary": "ADMIN",
                 "parameters": [
                     {
-                        "type": "string",
                         "description": "Lead ID",
-                        "name": "id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Lead Type",
-                        "name": "type",
-                        "in": "query"
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetLeadCommonRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -374,6 +371,63 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/leadData/change-lead-data": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the data associated with a lead",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "leadData"
+                ],
+                "summary": "Change lead data",
+                "parameters": [
+                    {
+                        "description": "Lead change request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ChangeLeadPlaceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -691,6 +745,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "pb.ChangeLeadPlaceRequest": {
+            "type": "object",
+            "properties": {
+                "changedSet": {
+                    "$ref": "#/definitions/pb.UpdateLeadRequest"
+                },
+                "leadDataId": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.CreateLeadDataRequest": {
             "type": "object",
             "properties": {
@@ -734,6 +799,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetLeadCommonRequest": {
+            "type": "object",
+            "properties": {
+                "requests": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.LeadCommonRequest"
+                    }
+                }
+            }
+        },
         "pb.GetLeadCommonResponse": {
             "type": "object",
             "properties": {
@@ -770,6 +846,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.LeadCommonRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -816,6 +903,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.UpdateLeadRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

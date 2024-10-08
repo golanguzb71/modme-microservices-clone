@@ -11,7 +11,7 @@ func LeadRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	lead := api.Group("/lead")
 	{
 		lead.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateLead)
-		lead.GET("/get-lead-common", middleware.AuthMiddleware([]string{}, userClient), handlers.GetLeadCommon)
+		lead.POST("/get-lead-common", middleware.AuthMiddleware([]string{}, userClient), handlers.GetLeadCommon)
 		lead.PUT("/update/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateLead)
 		lead.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteLead)
 	}
@@ -32,6 +32,6 @@ func LeadRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		leadData.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateLeadData)
 		leadData.PUT("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateLeadData)
 		leadData.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteLeadData)
+		leadData.PATCH("/change-lead-data", middleware.AuthMiddleware([]string{}, userClient), handlers.ChangeLeadData)
 	}
-
 }

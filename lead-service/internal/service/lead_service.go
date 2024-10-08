@@ -24,7 +24,7 @@ func (s *LeadService) CreateLead(ctx context.Context, req *pb.CreateLeadRequest)
 }
 
 func (s *LeadService) GetLeadCommon(ctx context.Context, req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
-	return s.repo.GetLeadCommon(&req.Id, &req.Type)
+	return s.repo.GetLeadCommon(req)
 }
 
 func (s *LeadService) UpdateLead(ctx context.Context, req *pb.UpdateLeadRequest) (*pb.AbsResponse, error) {
