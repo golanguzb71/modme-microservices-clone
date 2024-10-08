@@ -3,9 +3,7 @@ syntax = "proto3";
 package lead;
 
 option go_package = "grpc/proto/pb";
-
 import "common.proto";
-
 
 // lead_service_start
 service LeadService {
@@ -126,6 +124,10 @@ message UpdateLeadDataRequest{
 
 message ChangeLeadPlaceRequest{
   string leadDataId = 1;
-  UpdateLeadRequest changedSet = 2;
+  ChangeLeadDataRequest changedSet = 2;
+}
+message ChangeLeadDataRequest{
+  string id = 1;
+  string sectionType = 2;
 }
 // lead_service_end

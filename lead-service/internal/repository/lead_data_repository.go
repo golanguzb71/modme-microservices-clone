@@ -58,3 +58,24 @@ func (r *LeadDataRepository) DeleteLeadData(id string) error {
 	}
 	return nil
 }
+
+func (r *LeadDataRepository) ChangeLeadPlace(sectionID string, sectionType string, itemId string) error {
+	query := `UPDATE lead_user SET `
+	switch sectionType {
+	case "set":
+		query += `set_id=$1 , expect_id=null,lead_id=null`
+	case "expectation":
+		query += `set_id=null , expect_id=$1 , lead_id=null`
+	case "lead":
+		query += `set_id=null, expect_id=null,lead_id=$1`
+	default:
+		return errors.New("section type should include : set , expectation , lead")
+	}
+
+	query += ` where id=$2`
+	_, err := r.db.Exec(query, sectionID, itemId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

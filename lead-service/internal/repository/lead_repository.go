@@ -26,34 +26,22 @@ func (r *LeadRepository) CreateLead(title string) error {
 
 func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
 	resp := &pb.GetLeadCommonResponse{}
-
-	fetchAllSections(resp, r.db)
-
+	requestedSections := make(map[string][]string)
 	for _, request := range req.Requests {
-		id := request.Id
-		sectionType := request.Type
-		switch sectionType {
-		case "set":
-			calculateSet(resp, r.db, &id)
-		case "expectation":
-			calculateExpectations(resp, r.db, &id)
-		case "lead":
-			calculateLeads(resp, r.db, &id)
-		default:
-			log.Printf("Unknown section type: %s", sectionType)
-		}
+		requestedSections[request.Type] = append(requestedSections[request.Type], request.Id)
 	}
+	fetchAllSections(resp, r.db, requestedSections)
 
 	return resp, nil
 }
 
-func fetchAllSections(p *pb.GetLeadCommonResponse, db *sql.DB) {
-	calculateSet(p, db, nil)
-	calculateExpectations(p, db, nil)
-	calculateLeads(p, db, nil)
+func fetchAllSections(p *pb.GetLeadCommonResponse, db *sql.DB, requestedSections map[string][]string) {
+	calculateSet(p, db, requestedSections["set"])
+	calculateExpectations(p, db, requestedSections["expectation"])
+	calculateLeadsWithDetails(p, db, requestedSections["lead"])
 }
 
-func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
+func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ss.id, ss.title
         FROM set_section ss
@@ -72,17 +60,19 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
 			log.Printf("Error scanning set section row: %v", err)
 			return
 		}
-
-		// Fetch leads for this section
-		section.Leads = fetchLeadsForSection(db, section.Id, "set")
-		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "set"
+
+		if containsString(requestedIds, section.Id) {
+			section.Leads = fetchLeadsForSection(db, section.Id, "set")
+			section.LeadsCount = int32(len(section.Leads))
+		}
+
 		sections = append(sections, section)
 	}
 	p.Sets = sections
 }
 
-func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
+func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT es.id, es.title
         FROM expect_section es
@@ -101,17 +91,19 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) 
 			log.Printf("Error scanning expectation section row: %v", err)
 			return
 		}
-
-		// Fetch leads for this section
-		section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
-		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "expectation"
+
+		if containsString(requestedIds, section.Id) {
+			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
+			section.LeadsCount = int32(len(section.Leads))
+		}
+
 		sections = append(sections, section)
 	}
 	p.Expectations = sections
 }
 
-func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
+func calculateLeadsWithDetails(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ls.id, ls.title
         FROM lead_section ls
@@ -130,28 +122,30 @@ func calculateLeads(p *pb.GetLeadCommonResponse, db *sql.DB, id *string) {
 			log.Printf("Error scanning lead section row: %v", err)
 			return
 		}
-
-		// Fetch leads for this section
-		section.Leads = fetchLeadsForSection(db, section.Id, "lead")
-		section.LeadsCount = int32(len(section.Leads))
 		section.Type = "lead"
+
+		// Check if this section's leads should be fetched
+		if containsString(requestedIds, section.Id) {
+			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
+			section.LeadsCount = int32(len(section.Leads))
+		}
+
 		sections = append(sections, section)
 	}
 	p.Leads = sections
 }
 
 func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead {
-	query := `
-        SELECT id, comment, created_at, phone_number
-        FROM lead_user WHERE 
-    `
+	var query string
 	switch sectionType {
 	case "set":
-		query += ` set_id=$1`
+		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
 	case "expectation":
-		query += ` expect_id=$1`
+		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
 	case "lead":
-		query += ` lead_id=$1`
+		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
+	default:
+		return nil
 	}
 
 	rows, err := db.Query(query, sectionId)
@@ -171,6 +165,15 @@ func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead 
 		leads = append(leads, lead)
 	}
 	return leads
+}
+
+func containsString(slice []string, str string) bool {
+	for _, s := range slice {
+		if s == str {
+			return true
+		}
+	}
+	return false
 }
 
 func (r *LeadRepository) UpdateLead(id, title string) error {

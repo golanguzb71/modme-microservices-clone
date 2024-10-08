@@ -745,11 +745,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "pb.ChangeLeadDataRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "sectionType": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.ChangeLeadPlaceRequest": {
             "type": "object",
             "properties": {
                 "changedSet": {
-                    "$ref": "#/definitions/pb.UpdateLeadRequest"
+                    "$ref": "#/definitions/pb.ChangeLeadDataRequest"
                 },
                 "leadDataId": {
                     "type": "string"
@@ -903,17 +914,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "pb.UpdateLeadRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "title": {
                     "type": "string"
                 }
             }
