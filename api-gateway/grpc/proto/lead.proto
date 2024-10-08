@@ -40,6 +40,7 @@ message Section{
 }
 message Lead {
   string id = 1;
+  string name = 5;
   string comment = 2;
   string createdAt = 3;
   string phoneNumber = 4;

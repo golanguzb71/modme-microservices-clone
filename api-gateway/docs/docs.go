@@ -924,6 +924,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "name": {
+                    "type": "string"
+                },
                 "phoneNumber": {
                     "type": "string"
                 }

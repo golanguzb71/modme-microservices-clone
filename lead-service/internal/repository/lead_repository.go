@@ -139,11 +139,11 @@ func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead 
 	var query string
 	switch sectionType {
 	case "set":
-		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
+		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
 	case "expectation":
-		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
+		query = `SELECT id,full_name, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
 	case "lead":
-		query = `SELECT id, comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
+		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
 	default:
 		return nil
 	}
@@ -158,7 +158,7 @@ func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead 
 	var leads []*pb.Lead
 	for rows.Next() {
 		lead := &pb.Lead{}
-		if err := rows.Scan(&lead.Id, &lead.Comment, &lead.CreatedAt, &lead.PhoneNumber); err != nil {
+		if err := rows.Scan(&lead.Id, &lead.Name, &lead.Comment, &lead.CreatedAt, &lead.PhoneNumber); err != nil {
 			log.Printf("Error scanning lead row: %v", err)
 			return nil
 		}
