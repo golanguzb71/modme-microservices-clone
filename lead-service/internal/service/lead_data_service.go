@@ -26,7 +26,7 @@ func (s *LeadDataService) CreateLeadData(ctx context.Context, req *pb.CreateLead
 
 // UpdateLeadData handles lead data updates
 func (s *LeadDataService) UpdateLeadData(ctx context.Context, req *pb.UpdateLeadDataRequest) (*pb.AbsResponse, error) {
-	err := s.repo.UpdateLeadData(req.Id, req.PhoneNumber, req.Comment, req.Type, req.SectionId)
+	err := s.repo.UpdateLeadData(req.Id, req.PhoneNumber, req.Comment, req.Name)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to update lead data: " + err.Error()}, err
 	}
