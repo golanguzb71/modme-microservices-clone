@@ -29,21 +29,20 @@ func (r *LeadDataRepository) CreateLeadData(phoneNumber, leadID, expectID, setID
 func (r *LeadDataRepository) UpdateLeadData(id, phoneNumber, comment, sectionType, sectionId string) error {
 	query := `
 		UPDATE lead_user 
-		SET phone_number = $1, comment = $2 `
+		SET phone_number = $1, comment = $2 WHERE id = $3`
 
-	switch sectionType {
-	case "SET":
-		query += `, set_id=$3 , expect_id=null , lead_id=null `
-	case "EXPECTATION":
-		query += `, expect_id=$3 , set_id=null , lead_id=null `
-	case "LEAD":
-		query += `, lead_id=$3, expect_id=null , set_id=null `
-	default:
-		return errors.New("section type should include : SET , EXPECTATION , LEAD")
-	}
+	//switch sectionType {
+	//case "SET":
+	//	query += `, set_id=$3 , expect_id=null , lead_id=null `
+	//case "EXPECTATION":
+	//	query += `, expect_id=$3 , set_id=null , lead_id=null `
+	//case "LEAD":
+	//	query += `, lead_id=$3, expect_id=null , set_id=null `
+	//default:
+	//	return errors.New("section type should include : SET , EXPECTATION , LEAD")
+	//}
 
-	query += ` WHERE id = $4`
-	_, err := r.db.Exec(query, phoneNumber, comment, sectionId, id)
+	_, err := r.db.Exec(query, phoneNumber, comment, id)
 	if err != nil {
 		return fmt.Errorf("failed to update lead data: %w", err)
 	}
