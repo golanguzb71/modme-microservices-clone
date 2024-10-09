@@ -19,11 +19,13 @@ service LeadService {
 message CreateLeadRequest{
   string title = 1;
 }
+
 message GetLeadCommonResponse{
   repeated Section leads = 1;
   repeated Section expectations = 2;
   repeated Section sets = 3;
 }
+
 message GetLeadCommonRequest {
   repeated LeadCommonRequest requests = 1;
 }
@@ -31,6 +33,7 @@ message LeadCommonRequest {
   string type = 1;
   string id = 2;
 }
+
 message Section{
   string id = 5;
   string name = 1;

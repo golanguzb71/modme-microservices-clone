@@ -64,9 +64,8 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string
 
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "set")
-			section.LeadsCount = int32(len(section.Leads))
 		}
-
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where set_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Sets = sections
@@ -95,9 +94,8 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds
 
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
-			section.LeadsCount = int32(len(section.Leads))
 		}
-
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where expect_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Expectations = sections
@@ -123,13 +121,10 @@ func calculateLeadsWithDetails(p *pb.GetLeadCommonResponse, db *sql.DB, requeste
 			return
 		}
 		section.Type = "lead"
-
-		// Check if this section's leads should be fetched
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
-			section.LeadsCount = int32(len(section.Leads))
 		}
-
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where lead_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Leads = sections
