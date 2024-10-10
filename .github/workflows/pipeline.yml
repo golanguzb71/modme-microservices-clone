@@ -1,0 +1,21 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy to Server
+        env:
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          cd modme-microservices-clone && git pull origin master && docker-compose build && docker-compose up -d

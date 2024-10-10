@@ -317,6 +317,25 @@ paths:
       summary: ADMIN
       tags:
       - courses
+  /api/course/get-by-id/{id}:
+    get:
+      description: Retrieve course by id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.AbsCourse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - courses
   /api/course/update:
     put:
       consumes:

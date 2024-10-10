@@ -214,3 +214,25 @@ func GetAllCourse(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rooms)
 	return
 }
+
+// GetCourseById godoc
+// @Summary ADMIN
+// @Description Retrieve course by id
+// @Tags courses
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} pb.AbsCourse
+// @Failure 500 {object} utils.AbsResponse
+// @Router /api/course/get-by-id/{id} [get]
+func GetCourseById(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := educationClient.GetCourseById(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

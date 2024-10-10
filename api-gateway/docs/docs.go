@@ -141,6 +141,37 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/course/get-by-id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve course by id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "courses"
+                ],
+                "summary": "ADMIN",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.AbsCourse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/course/update": {
             "put": {
                 "security": [

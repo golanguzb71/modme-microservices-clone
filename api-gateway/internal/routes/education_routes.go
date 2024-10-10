@@ -21,5 +21,6 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		course.PUT("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateCourse)
 		course.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteCourse)
 		course.GET("/get-all", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllCourse)
+		course.GET("/get-by-id/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.GetCourseById)
 	}
 }

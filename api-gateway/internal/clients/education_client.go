@@ -62,3 +62,7 @@ func (lc *EducationClient) DeleteCourse(ctx context.Context, id string) (*pb.Abs
 func (lc *EducationClient) GetCourse(ctx context.Context) (*pb.GetUpdateCourseAbs, error) {
 	return lc.courseClient.GetCourses(ctx, &emptypb.Empty{})
 }
+
+func (lc *EducationClient) GetCourseById(ctx context.Context, id string) (*pb.GetCourseByIdResponse, error) {
+	return lc.courseClient.GetCourseById(ctx, &pb.GetCourseByIdRequest{Id: id})
+}

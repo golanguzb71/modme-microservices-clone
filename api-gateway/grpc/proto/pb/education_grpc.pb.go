@@ -240,10 +240,11 @@ var RoomService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	CourseService_CreateCourse_FullMethodName = "/education.CourseService/CreateCourse"
-	CourseService_GetCourses_FullMethodName   = "/education.CourseService/GetCourses"
-	CourseService_UpdateCourse_FullMethodName = "/education.CourseService/UpdateCourse"
-	CourseService_DeleteCourse_FullMethodName = "/education.CourseService/DeleteCourse"
+	CourseService_CreateCourse_FullMethodName  = "/education.CourseService/CreateCourse"
+	CourseService_GetCourses_FullMethodName    = "/education.CourseService/GetCourses"
+	CourseService_GetCourseById_FullMethodName = "/education.CourseService/GetCourseById"
+	CourseService_UpdateCourse_FullMethodName  = "/education.CourseService/UpdateCourse"
+	CourseService_DeleteCourse_FullMethodName  = "/education.CourseService/DeleteCourse"
 )
 
 // CourseServiceClient is the client API for CourseService service.
@@ -254,6 +255,7 @@ const (
 type CourseServiceClient interface {
 	CreateCourse(ctx context.Context, in *CreateCourseRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetCourses(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetUpdateCourseAbs, error)
+	GetCourseById(ctx context.Context, in *GetCourseByIdRequest, opts ...grpc.CallOption) (*GetCourseByIdResponse, error)
 	UpdateCourse(ctx context.Context, in *AbsCourse, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteCourse(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
@@ -280,6 +282,16 @@ func (c *courseServiceClient) GetCourses(ctx context.Context, in *emptypb.Empty,
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUpdateCourseAbs)
 	err := c.cc.Invoke(ctx, CourseService_GetCourses_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseServiceClient) GetCourseById(ctx context.Context, in *GetCourseByIdRequest, opts ...grpc.CallOption) (*GetCourseByIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCourseByIdResponse)
+	err := c.cc.Invoke(ctx, CourseService_GetCourseById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -314,6 +326,7 @@ func (c *courseServiceClient) DeleteCourse(ctx context.Context, in *DeleteAbsReq
 type CourseServiceServer interface {
 	CreateCourse(context.Context, *CreateCourseRequest) (*AbsResponse, error)
 	GetCourses(context.Context, *emptypb.Empty) (*GetUpdateCourseAbs, error)
+	GetCourseById(context.Context, *GetCourseByIdRequest) (*GetCourseByIdResponse, error)
 	UpdateCourse(context.Context, *AbsCourse) (*AbsResponse, error)
 	DeleteCourse(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedCourseServiceServer()
@@ -331,6 +344,9 @@ func (UnimplementedCourseServiceServer) CreateCourse(context.Context, *CreateCou
 }
 func (UnimplementedCourseServiceServer) GetCourses(context.Context, *emptypb.Empty) (*GetUpdateCourseAbs, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCourses not implemented")
+}
+func (UnimplementedCourseServiceServer) GetCourseById(context.Context, *GetCourseByIdRequest) (*GetCourseByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCourseById not implemented")
 }
 func (UnimplementedCourseServiceServer) UpdateCourse(context.Context, *AbsCourse) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCourse not implemented")
@@ -395,6 +411,24 @@ func _CourseService_GetCourses_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CourseService_GetCourseById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCourseByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourseServiceServer).GetCourseById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CourseService_GetCourseById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourseServiceServer).GetCourseById(ctx, req.(*GetCourseByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CourseService_UpdateCourse_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AbsCourse)
 	if err := dec(in); err != nil {
@@ -445,6 +479,10 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCourses",
 			Handler:    _CourseService_GetCourses_Handler,
+		},
+		{
+			MethodName: "GetCourseById",
+			Handler:    _CourseService_GetCourseById_Handler,
 		},
 		{
 			MethodName: "UpdateCourse",
