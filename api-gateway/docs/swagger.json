@@ -138,23 +138,32 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieve course by id",
+                "description": "Retrieves a course by its ID for admin users.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "courses"
                 ],
-                "summary": "ADMIN",
+                "summary": "Retrieve course by ID (ADMIN)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Course ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Successful response with course details",
                         "schema": {
                             "$ref": "#/definitions/pb.AbsCourse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
