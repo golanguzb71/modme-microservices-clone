@@ -20,4 +20,4 @@ database:
   password: "password"
   dbname: "sphere_education_db"
   sslmode: "disable"
-  action: "up"
+  action: "no"
