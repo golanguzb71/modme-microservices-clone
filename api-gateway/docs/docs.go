@@ -1234,6 +1234,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "lessonDuration": {
                     "type": "integer"
                 },

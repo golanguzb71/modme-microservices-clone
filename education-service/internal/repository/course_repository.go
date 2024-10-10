@@ -56,7 +56,6 @@ func (r *CourseRepository) GetCourse() (*pb.GetUpdateCourseAbs, error) {
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(&res)
 		courses = append(courses, &res)
 	}
 	result.Courses = courses

@@ -5,6 +5,8 @@ definitions:
         type: integer
       description:
         type: string
+      id:
+        type: string
       lessonDuration:
         type: integer
       name:
