@@ -112,3 +112,105 @@ func GetAllRoom(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rooms)
 	return
 }
+
+// CreateCourse godoc
+// @Summary ADMIN
+// @Description Create a new course based on the provided request data
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.CreateCourseRequest true "Request to create a course"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Router /api/course/create [post]
+func CreateCourse(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var req pb.CreateCourseRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.CreateCourse(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// UpdateCourse godoc
+// @Summary ADMIN
+// @Description Update the details of an existing course based on the provided request data
+// @Tags courses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.AbsCourse true "Request to update course"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Router /api/course/update [put]
+func UpdateCourse(ctx *gin.Context) {
+	var req pb.AbsCourse
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.UpdateCourse(ctx, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// DeleteCourse godoc
+// @Summary ADMIN
+// @Description Delete a course by its ID
+// @Tags courses
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Course ID"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Router /api/course/delete/{id} [delete]
+func DeleteCourse(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := educationClient.DeleteCourse(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// GetAllCourse godoc
+// @Summary ADMIN
+// @Description Retrieve all courses
+// @Tags courses
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} pb.GetUpdateCourseAbs
+// @Failure 500 {object} utils.AbsResponse
+// @Router /api/course/get-all [get]
+func GetAllCourse(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	rooms, err := educationClient.GetCourse(ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, rooms)
+	return
+}

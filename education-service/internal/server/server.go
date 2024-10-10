@@ -26,6 +26,8 @@ func RunServer() {
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 	roomRepo := repository.NewRoomRepository(db)
 	roomService := service.NewRoomService(roomRepo)
+	courseRepo := repository.NewCourseRepository(db)
+	courseService := service.NewCourseService(courseRepo)
 
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
@@ -34,6 +36,7 @@ func RunServer() {
 
 	grpcServer := grpc.NewServer()
 	pb.RegisterRoomServiceServer(grpcServer, roomService)
+	pb.RegisterCourseServiceServer(grpcServer, courseService)
 
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := grpcServer.Serve(lis); err != nil {

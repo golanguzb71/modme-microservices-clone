@@ -8,7 +8,8 @@ import (
 )
 
 type EducationClient struct {
-	roomClient pb.RoomServiceClient
+	roomClient   pb.RoomServiceClient
+	courseClient pb.CourseServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -18,7 +19,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	}
 
 	roomClient := pb.NewRoomServiceClient(conn)
-	return &EducationClient{roomClient: roomClient}, nil
+	courseClient := pb.NewCourseServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient}, nil
 }
 
 // Education Service method client
@@ -40,4 +42,23 @@ func (lc *EducationClient) DeleteRoom(ctx context.Context, id string) (*pb.AbsRe
 
 func (lc *EducationClient) GetRoom(ctx context.Context) (*pb.GetUpdateRoomAbs, error) {
 	return lc.roomClient.GetRooms(ctx, &emptypb.Empty{})
+}
+
+func (lc *EducationClient) CreateCourse(ctx context.Context, req *pb.CreateCourseRequest) (*pb.AbsResponse, error) {
+	return lc.courseClient.CreateCourse(ctx, req)
+}
+
+func (lc *EducationClient) UpdateCourse(ctx context.Context, req *pb.AbsCourse) (*pb.AbsResponse, error) {
+	return lc.courseClient.UpdateCourse(ctx, req)
+}
+
+func (lc *EducationClient) DeleteCourse(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	req := pb.DeleteAbsRequest{
+		Id: id,
+	}
+	return lc.courseClient.DeleteCourse(ctx, &req)
+}
+
+func (lc *EducationClient) GetCourse(ctx context.Context) (*pb.GetUpdateCourseAbs, error) {
+	return lc.courseClient.GetCourses(ctx, &emptypb.Empty{})
 }

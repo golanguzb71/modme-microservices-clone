@@ -34,3 +34,32 @@ message AbsRoom{
 
 
 // room service end
+
+// course service start
+service CourseService{
+  rpc CreateCourse(CreateCourseRequest)returns(common.AbsResponse);
+  rpc GetCourses(google.protobuf.Empty)returns(GetUpdateCourseAbs);
+  rpc UpdateCourse(AbsCourse)returns(common.AbsResponse);
+  rpc DeleteCourse(common.DeleteAbsRequest)returns(common.AbsResponse);
+}
+
+message CreateCourseRequest{
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+}
+
+message GetUpdateCourseAbs{
+  repeated AbsCourse courses = 1;
+}
+
+message AbsCourse{
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+}
+// course service end

@@ -1,4 +1,17 @@
 definitions:
+  pb.AbsCourse:
+    properties:
+      courseDuration:
+        type: integer
+      description:
+        type: string
+      lessonDuration:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+    type: object
   pb.AbsRoom:
     properties:
       capacity:
@@ -46,6 +59,19 @@ definitions:
         type: string
       teacherId:
         type: string
+    type: object
+  pb.CreateCourseRequest:
+    properties:
+      courseDuration:
+        type: integer
+      description:
+        type: string
+      lessonDuration:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
     type: object
   pb.CreateLeadDataRequest:
     properties:
@@ -116,6 +142,13 @@ definitions:
       sections:
         items:
           $ref: '#/definitions/pb.DynamicSection'
+        type: array
+    type: object
+  pb.GetUpdateCourseAbs:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/pb.AbsCourse'
         type: array
     type: object
   pb.GetUpdateRoomAbs:
@@ -208,6 +241,115 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Modme Swagger
 paths:
+  /api/course/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new course based on the provided request data
+      parameters:
+      - description: Request to create a course
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateCourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - courses
+  /api/course/delete/{id}:
+    delete:
+      description: Delete a course by its ID
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - courses
+  /api/course/get-all:
+    get:
+      description: Retrieve all courses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetUpdateCourseAbs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - courses
+  /api/course/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing course based on the provided
+        request data
+      parameters:
+      - description: Request to update course
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.AbsCourse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - courses
   /api/expectation/create:
     post:
       consumes:
