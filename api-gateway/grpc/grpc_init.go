@@ -14,10 +14,10 @@ type Clients struct {
 }
 
 func InitializeGrpcClients(cfg *config.Config) *Clients {
-	//educationClient, err := client.NewEducationClient(cfg.Grpc.EducationService.Address)
-	//if err != nil {
-	//	log.Fatalf("%v", err)
-	//}
+	educationClient, err := client.NewEducationClient(cfg.Grpc.EducationService.Address)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
 	//auditClient, err := client.NewAuditClient(cfg.Grpc.AuditingService.Address)
 	//if err != nil {
 	//	log.Fatalf("%v", err)
@@ -35,6 +35,6 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 		AuditClient:     &client.AuditClient{},
 		UserClient:      &client.UserClient{},
 		LidClient:       lidClient,
-		EducationClient: &client.EducationClient{},
+		EducationClient: educationClient,
 	}
 }

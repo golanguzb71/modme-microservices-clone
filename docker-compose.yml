@@ -1,39 +1,69 @@
-version: '3.8'
-
 services:
-  postgres:
+  postgres-sphere-lead:
     image: postgres:15-alpine
-    container_name: postgres-db
+    container_name: postgres-lead-db
     environment:
       POSTGRES_DB: sphere_lead_db
-      POSTGRES_USER: lead_user
-      POSTGRES_PASSWORD: lead_password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
       - "9012:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_lead_data:/var/lib/postgresql/data
     networks:
       - app-network
 
-  lead-service:
+  postgres-sphere-education:
+    image: postgres:15-alpine
+    container_name: postgres-education-db
+    environment:
+      POSTGRES_DB: sphere_education_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "9015:5432"
+    volumes:
+      - postgres_education_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  sphere-lead-service:
     build:
       context: ./lead-service
       dockerfile: Dockerfile
     container_name: lead-service
     environment:
-      DB_HOST: postgres
+      DB_HOST: postgres-sphere-lead
       DB_PORT: 5432
       DB_USER: lead_user
       DB_PASSWORD: lead_password
       DB_NAME: sphere_lead_db
     depends_on:
-      - postgres
+      - postgres-sphere-lead
     ports:
       - "9014:8080"
     networks:
       - app-network
 
-  api-gateway:
+  sphere-education-service:
+    build:
+      context: ./education-service
+      dockerfile: Dockerfile
+    container_name: education-service
+    environment:
+      DB_HOST: postgres-sphere-education
+      DB_PORT: 5432
+      DB_USER: education_user
+      DB_PASSWORD: education_password
+      DB_NAME: sphere_education_db
+    depends_on:
+      - postgres-sphere-education
+    ports:
+      - "9016:8080"
+    networks:
+      - app-network
+
+  sphere-api-gateway:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile
@@ -48,4 +78,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
+  postgres_lead_data:
+  postgres_education_data:

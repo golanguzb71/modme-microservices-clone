@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "education-service/internal/server"
 
+func main() {
+	server.RunServer()
 }

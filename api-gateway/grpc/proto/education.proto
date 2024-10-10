@@ -1,10 +1,36 @@
 syntax = "proto3";
 
-package business;
+package education;
 
 option go_package = "grpc/proto/pb";
 
+import "common.proto";
 
-service EducationService {
+import "google/protobuf/empty.proto";
 
+
+// room service start
+service RoomService{
+  rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
+  rpc GetRooms(google.protobuf.Empty)returns(GetUpdateRoomAbs);
+  rpc UpdateRoom(AbsRoom)returns(common.AbsResponse);
+  rpc DeleteRoom(common.DeleteAbsRequest)returns(common.AbsResponse);
 }
+
+message CreateRoomRequest{
+  string name = 1;
+  int32 capacity = 2;
+}
+
+message GetUpdateRoomAbs{
+  repeated AbsRoom rooms = 1;
+}
+
+message AbsRoom{
+  string id = 1;
+  int32 capacity = 2;
+  string name = 3;
+}
+
+
+// room service end

@@ -2,16 +2,16 @@ server:
   port: 8080
 
 database:
-  host: "postgres"
+  host: "postgres-sphere-lead"
   port: 5432
-  user: "lead_user"
-  password: "lead_password"
+  user: "postgres"
+  password: "password"
   dbname: "sphere_lead_db"
   sslmode: "disable"
   action: "no"
 
 
-#
+
 #server:
 #  port: 50053
 #

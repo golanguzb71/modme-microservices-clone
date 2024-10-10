@@ -1,4 +1,13 @@
 definitions:
+  pb.AbsRoom:
+    properties:
+      capacity:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   pb.ChangeLeadDataRequest:
     properties:
       id:
@@ -47,6 +56,13 @@ definitions:
       name:
         type: string
       phoneNumber:
+        type: string
+    type: object
+  pb.CreateRoomRequest:
+    properties:
+      capacity:
+        type: integer
+      name:
         type: string
     type: object
   pb.CreateSetRequest:
@@ -100,6 +116,13 @@ definitions:
       sections:
         items:
           $ref: '#/definitions/pb.DynamicSection'
+        type: array
+    type: object
+  pb.GetUpdateRoomAbs:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/pb.AbsRoom'
         type: array
     type: object
   pb.Lead:
@@ -573,6 +596,118 @@ paths:
       summary: ADMIN
       tags:
       - leadData
+  /api/room/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new room based on the provided request data
+      parameters:
+      - description: Request to create a room
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - rooms
+  /api/room/delete/{id}:
+    delete:
+      description: Delete a room by its ID
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - rooms
+  /api/room/get-all:
+    get:
+      description: Retrieve all rooms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetUpdateRoomAbs'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - rooms
+  /api/room/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing room based on the provided request
+        data
+      parameters:
+      - in: query
+        name: capacity
+        type: integer
+      - in: query
+        name: id
+        type: string
+      - in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - rooms
   /api/set/change-to-group:
     patch:
       consumes:

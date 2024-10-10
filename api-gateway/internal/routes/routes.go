@@ -12,5 +12,6 @@ func SetUpRoutes(r *gin.Engine, userClient *client.UserClient) {
 	api := r.Group("/api")
 	{
 		LeadRoutes(api, userClient)
+		EducationRoutes(api, userClient)
 	}
 }
