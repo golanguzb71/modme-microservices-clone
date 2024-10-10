@@ -216,13 +216,14 @@ func GetAllCourse(ctx *gin.Context) {
 }
 
 // GetCourseById godoc
-// @Summary ADMIN
-// @Description Retrieve course by id
+// @Summary Retrieve course by ID (ADMIN)
+// @Description Retrieves a course by its ID for admin users.
 // @Tags courses
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} pb.AbsCourse
-// @Failure 500 {object} utils.AbsResponse
+// @Param id path string true "Course ID"
+// @Success 200 {object} pb.AbsCourse "Successful response with course details"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/course/get-by-id/{id} [get]
 func GetCourseById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
