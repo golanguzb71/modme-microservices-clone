@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/education_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/education_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/course_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/course_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/service/course_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/course_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" afterDir="false" />
-    </list>
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
