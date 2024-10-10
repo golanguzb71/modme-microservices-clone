@@ -43,3 +43,7 @@ func (s *CourseService) DeleteCourse(ctx context.Context, req *pb.DeleteAbsReque
 func (s *CourseService) GetCourses(ctx context.Context, req *emptypb.Empty) (*pb.GetUpdateCourseAbs, error) {
 	return s.repo.GetCourse()
 }
+
+func (s *CourseService) GetCourseById(ctx context.Context, req *pb.GetCourseByIdRequest) (*pb.GetCourseByIdResponse, error) {
+	return s.repo.GetCourseById(req.Id)
+}

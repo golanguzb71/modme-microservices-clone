@@ -62,3 +62,14 @@ func (r *CourseRepository) GetCourse() (*pb.GetUpdateCourseAbs, error) {
 	result.Courses = courses
 	return &result, nil
 }
+
+func (r *CourseRepository) GetCourseById(id string) (*pb.GetCourseByIdResponse, error) {
+	query := "SELECT id, title, duration_lesson, course_duration, price, description FROM courses WHERE id = $1"
+	var response pb.GetCourseByIdResponse
+	err := r.db.QueryRow(query, id).Scan(&response.Id, &response.Name, &response.LessonDuration, &response.CourseDuration, &response.Price, &response.Description)
+	if err != nil {
+		return nil, err
+	}
+	response.StudentCount = 5 // it should be updated
+	return &response, nil
+}
