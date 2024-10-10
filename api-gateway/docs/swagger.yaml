@@ -13,6 +13,31 @@ definitions:
       leadDataId:
         type: string
     type: object
+  pb.ChangeToSetRequest:
+    properties:
+      courseId:
+        type: string
+      dateType:
+        type: string
+      days:
+        items:
+          type: string
+        type: array
+      end_date:
+        type: string
+      name:
+        type: string
+      roomId:
+        type: string
+      setId:
+        type: string
+      startDate:
+        type: string
+      startTime:
+        type: string
+      teacherId:
+        type: string
+    type: object
   pb.CreateLeadDataRequest:
     properties:
       comment:
@@ -548,6 +573,38 @@ paths:
       summary: ADMIN
       tags:
       - leadData
+  /api/set/change-to-group:
+    patch:
+      consumes:
+      - application/json
+      description: Change the lead set to a group based on the provided request data
+      parameters:
+      - description: Request to change set to group
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ChangeToSetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - sets
   /api/set/create:
     post:
       consumes:

@@ -194,3 +194,11 @@ func (lc *LidClient) ChangeLeadPlace(ctx context.Context, p *pb.ChangeLeadPlaceR
 	}
 	return resp, nil
 }
+
+func (lc *LidClient) ChangeSetToGroup(ctx context.Context, p *pb.ChangeToSetRequest) (*pb.AbsResponse, error) {
+	resp, err := lc.setClient.ChangeToSet(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

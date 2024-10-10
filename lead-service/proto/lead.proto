@@ -5,7 +5,6 @@ package lead;
 option go_package = "proto/pb";
 import "common.proto";
 
-
 import "google/protobuf/empty.proto";
 
 // lead_service_start
@@ -19,13 +18,11 @@ service LeadService {
 message CreateLeadRequest{
   string title = 1;
 }
-
 message GetLeadCommonResponse{
   repeated Section leads = 1;
   repeated Section expectations = 2;
   repeated Section sets = 3;
 }
-
 message GetLeadCommonRequest {
   repeated LeadCommonRequest requests = 1;
 }
@@ -33,7 +30,6 @@ message LeadCommonRequest {
   string type = 1;
   string id = 2;
 }
-
 message Section{
   string id = 5;
   string name = 1;
@@ -52,7 +48,6 @@ message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
-
 message DeleteAbsRequest{
   string id = 1;
 }
@@ -66,6 +61,7 @@ message DynamicSection{
 }
 
 // lead_service_end
+
 
 
 // expect_service_start
@@ -90,7 +86,9 @@ service SetService{
   rpc CreateSet(CreateSetRequest) returns (common.AbsResponse);
   rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
   rpc DeleteSet(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc ChangeToSet(ChangeToSetRequest) returns(common.AbsResponse);
 }
+
 message CreateSetRequest{
   string title = 1;
   string courseId = 2;
@@ -107,6 +105,19 @@ message UpdateSetRequest{
   string dateType = 4;
   repeated string date = 5;
   string lessonStartTime = 6;
+}
+
+message ChangeToSetRequest{
+  string name = 1;
+  string roomId = 2;
+  string courseId = 3;
+  string teacherId = 4;
+  string dateType = 5;
+  repeated string days = 6;
+  string startTime = 7;
+  string startDate = 8;
+  string end_date = 9;
+  string setId = 10;
 }
 //set_service_end
 

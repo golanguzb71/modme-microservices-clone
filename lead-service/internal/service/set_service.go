@@ -38,3 +38,12 @@ func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*
 	}
 	return &pb.AbsResponse{Status: 200, Message: "Set deleted successfully"}, nil
 }
+
+func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest) (*pb.AbsResponse, error) {
+	err := s.repo.DeleteSet(req.SetId)
+	if err != nil {
+		return nil, err
+	}
+	// educationservice.creategroup should implement
+	return &pb.AbsResponse{Status: 200, Message: "Set changed to group successfully"}, nil
+}

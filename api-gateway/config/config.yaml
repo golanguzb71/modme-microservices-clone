@@ -1,25 +1,25 @@
-server:
-  port: 8080
-
-grpc:
-  auditing_service:
-    address: "localhost:50051"
-  business_service:
-    address: "localhost:50052"
-  lid_service:
-    address: "lead-service:8080"
-  user_service:
-    address: "localhost:50054"
-
 #server:
 #  port: 8080
 #
 #grpc:
 #  auditing_service:
 #    address: "localhost:50051"
-#  education_service:
+#  business_service:
 #    address: "localhost:50052"
 #  lid_service:
-#    address: "localhost:50053"
+#    address: "lead-service:8080"
 #  user_service:
 #    address: "localhost:50054"
+
+server:
+  port: 8080
+
+grpc:
+  auditing_service:
+    address: "localhost:50051"
+  education_service:
+    address: "localhost:50052"
+  lid_service:
+    address: "localhost:50053"
+  user_service:
+    address: "localhost:50054"

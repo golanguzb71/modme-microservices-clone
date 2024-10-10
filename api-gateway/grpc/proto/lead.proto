@@ -87,7 +87,9 @@ service SetService{
   rpc CreateSet(CreateSetRequest) returns (common.AbsResponse);
   rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
   rpc DeleteSet(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc ChangeToSet(ChangeToSetRequest) returns(common.AbsResponse);
 }
+
 message CreateSetRequest{
   string title = 1;
   string courseId = 2;
@@ -104,6 +106,19 @@ message UpdateSetRequest{
   string dateType = 4;
   repeated string date = 5;
   string lessonStartTime = 6;
+}
+
+message ChangeToSetRequest{
+  string name = 1;
+  string roomId = 2;
+  string courseId = 3;
+  string teacherId = 4;
+  string dateType = 5;
+  repeated string days = 6;
+  string startTime = 7;
+  string startDate = 8;
+  string end_date = 9;
+  string setId = 10;
 }
 //set_service_end
 

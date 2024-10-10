@@ -632,6 +632,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/set/change-to-group": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Change the lead set to a group based on the provided request data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sets"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "description": "Request to change set to group",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ChangeToSetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/set/create": {
             "post": {
                 "security": [
@@ -809,6 +860,44 @@ const docTemplate = `{
                     "$ref": "#/definitions/pb.ChangeLeadDataRequest"
                 },
                 "leadDataId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.ChangeToSetRequest": {
+            "type": "object",
+            "properties": {
+                "courseId": {
+                    "type": "string"
+                },
+                "dateType": {
+                    "type": "string"
+                },
+                "days": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "string"
+                },
+                "setId": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "teacherId": {
                     "type": "string"
                 }
             }

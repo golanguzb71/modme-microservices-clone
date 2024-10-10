@@ -460,9 +460,10 @@ var ExpectService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	SetService_CreateSet_FullMethodName = "/lead.SetService/CreateSet"
-	SetService_UpdateSet_FullMethodName = "/lead.SetService/UpdateSet"
-	SetService_DeleteSet_FullMethodName = "/lead.SetService/DeleteSet"
+	SetService_CreateSet_FullMethodName   = "/lead.SetService/CreateSet"
+	SetService_UpdateSet_FullMethodName   = "/lead.SetService/UpdateSet"
+	SetService_DeleteSet_FullMethodName   = "/lead.SetService/DeleteSet"
+	SetService_ChangeToSet_FullMethodName = "/lead.SetService/ChangeToSet"
 )
 
 // SetServiceClient is the client API for SetService service.
@@ -474,6 +475,7 @@ type SetServiceClient interface {
 	CreateSet(ctx context.Context, in *CreateSetRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	UpdateSet(ctx context.Context, in *UpdateSetRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteSet(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	ChangeToSet(ctx context.Context, in *ChangeToSetRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
 
 type setServiceClient struct {
@@ -514,6 +516,16 @@ func (c *setServiceClient) DeleteSet(ctx context.Context, in *DeleteAbsRequest, 
 	return out, nil
 }
 
+func (c *setServiceClient) ChangeToSet(ctx context.Context, in *ChangeToSetRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, SetService_ChangeToSet_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SetServiceServer is the server API for SetService service.
 // All implementations must embed UnimplementedSetServiceServer
 // for forward compatibility.
@@ -523,6 +535,7 @@ type SetServiceServer interface {
 	CreateSet(context.Context, *CreateSetRequest) (*AbsResponse, error)
 	UpdateSet(context.Context, *UpdateSetRequest) (*AbsResponse, error)
 	DeleteSet(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
+	ChangeToSet(context.Context, *ChangeToSetRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedSetServiceServer()
 }
 
@@ -541,6 +554,9 @@ func (UnimplementedSetServiceServer) UpdateSet(context.Context, *UpdateSetReques
 }
 func (UnimplementedSetServiceServer) DeleteSet(context.Context, *DeleteAbsRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSet not implemented")
+}
+func (UnimplementedSetServiceServer) ChangeToSet(context.Context, *ChangeToSetRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeToSet not implemented")
 }
 func (UnimplementedSetServiceServer) mustEmbedUnimplementedSetServiceServer() {}
 func (UnimplementedSetServiceServer) testEmbeddedByValue()                    {}
@@ -617,6 +633,24 @@ func _SetService_DeleteSet_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SetService_ChangeToSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeToSetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SetServiceServer).ChangeToSet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SetService_ChangeToSet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SetServiceServer).ChangeToSet(ctx, req.(*ChangeToSetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SetService_ServiceDesc is the grpc.ServiceDesc for SetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -635,6 +669,10 @@ var SetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteSet",
 			Handler:    _SetService_DeleteSet_Handler,
+		},
+		{
+			MethodName: "ChangeToSet",
+			Handler:    _SetService_ChangeToSet_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

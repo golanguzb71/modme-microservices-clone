@@ -421,3 +421,33 @@ func GetAllLead(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// ChangeToSet godoc
+// @Summary ADMIN
+// @Description Change the lead set to a group based on the provided request data
+// @Tags sets
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.ChangeToSetRequest true "Request to change set to group"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/set/change-to-group [patch]
+func ChangeToSet(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var req pb.ChangeToSetRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := leadClient.ChangeSetToGroup(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
