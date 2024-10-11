@@ -44,6 +44,11 @@ func (r *GroupRepository) DeleteGroup(id string) error {
 }
 func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 	log.Println("Starting GetGroup function")
+	if r.db == nil {
+		log.Println("Database connection is nil")
+		return nil, fmt.Errorf("database connection is not initialized")
+	}
+
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               g.teacher_id, 'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
