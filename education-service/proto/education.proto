@@ -126,6 +126,7 @@ message GetGroupAbsResponse{
   string createdAt = 9;
   string startDate = 10;
   string endDate = 11;
+  repeated string days = 12;
 }
 
 message GetGroupsResponse{

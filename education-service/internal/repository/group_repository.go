@@ -51,7 +51,7 @@ func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGro
        g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
        g.name, 
        COUNT(gs.id) as student_count, 
-       g.created_at
+       g.created_at , g.days
 FROM groups g
 LEFT JOIN courses c ON g.course_id = c.id
 LEFT JOIN rooms r ON g.room_id = r.id
@@ -79,7 +79,7 @@ LIMIT $2 OFFSET $3;`
 			&group.Id, &course.Id, &course.Name,
 			&group.TeacherName, &room.Id, &room.Name, &room.Capacity,
 			&dateType, &startTime, &group.StartDate, &group.EndDate,
-			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
+			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days),
 		)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
@@ -116,7 +116,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
               g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
               g.name, 
               CASE WHEN COUNT(gs.id) = 0 THEN 10 ELSE COUNT(gs.id) END as student_count, 
-              g.created_at
+              g.created_at , g.days
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -134,7 +134,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 		&group.Id, &course.Id, &course.Name,
 		&group.TeacherName, &room.Id, &room.Name, &room.Capacity,
 		&dateType, &startTime, &group.StartDate, &group.EndDate,
-		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
+		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days),
 	)
 
 	if err != nil {
