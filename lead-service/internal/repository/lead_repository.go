@@ -25,7 +25,11 @@ func (r *LeadRepository) CreateLead(title string) error {
 }
 
 func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
-	resp := &pb.GetLeadCommonResponse{}
+	resp := &pb.GetLeadCommonResponse{
+		Sets:         []*pb.Section{},
+		Expectations: []*pb.Section{},
+		Leads:        []*pb.Section{},
+	}
 	requestedSections := make(map[string][]string)
 	for _, request := range req.Requests {
 		requestedSections[request.Type] = append(requestedSections[request.Type], request.Id)
@@ -36,9 +40,15 @@ func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLea
 }
 
 func fetchAllSections(p *pb.GetLeadCommonResponse, db *sql.DB, requestedSections map[string][]string) {
-	calculateSet(p, db, requestedSections["set"])
-	calculateExpectations(p, db, requestedSections["expectation"])
-	calculateLeadsWithDetails(p, db, requestedSections["lead"])
+	if requestedSections["set"] != nil {
+		calculateSet(p, db, requestedSections["set"])
+	}
+	if requestedSections["expectation"] != nil {
+		calculateExpectations(p, db, requestedSections["expectation"])
+	}
+	if requestedSections["lead"] != nil {
+		calculateLeadsWithDetails(p, db, requestedSections["lead"])
+	}
 }
 
 func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
@@ -64,6 +74,9 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string
 
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "set")
+			if section.Leads == nil {
+				section.Leads = []*pb.Lead{}
+			}
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where set_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
@@ -94,6 +107,9 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds
 
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
+			if section.Leads == nil {
+				section.Leads = []*pb.Lead{}
+			}
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where expect_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
@@ -121,8 +137,12 @@ func calculateLeadsWithDetails(p *pb.GetLeadCommonResponse, db *sql.DB, requeste
 			return
 		}
 		section.Type = "lead"
+
 		if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
+			if section.Leads == nil {
+				section.Leads = []*pb.Lead{}
+			}
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where lead_id=$1`, section.Id).Scan(&section.LeadsCount)
 		sections = append(sections, section)
@@ -134,11 +154,11 @@ func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead 
 	var query string
 	switch sectionType {
 	case "set":
-		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
+		query = `SELECT id, full_name, comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
 	case "expectation":
-		query = `SELECT id,full_name, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
+		query = `SELECT id, full_name, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
 	case "lead":
-		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
+		query = `SELECT id, full_name, comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
 	default:
 		return nil
 	}

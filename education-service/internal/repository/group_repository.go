@@ -109,7 +109,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
-              CASE WHEN COUNT(gs.id) = 0 THEN 1 ELSE COUNT(gs.id) END as student_count, 
+              COUNT(gs.id)  as student_count, 
               g.created_at , g.days , g.start_time , g.date_type
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
