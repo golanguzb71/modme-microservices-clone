@@ -79,7 +79,7 @@ message GetCourseByIdRequest{
 // group service start
 service GroupService{
   rpc CreateGroup(CreateGroupRequest)returns(common.AbsResponse);
-  rpc GetGroups(google.protobuf.Empty)returns(GetGroupsResponse);
+  rpc GetGroups(GetGroupsRequest)returns(GetGroupsResponse);
   rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
@@ -130,5 +130,11 @@ message GetGroupAbsResponse{
 
 message GetGroupsResponse{
   repeated GetGroupAbsResponse groups = 1;
+  int32 totalPageCount = 2;
+}
+
+message GetGroupsRequest{
+  bool isArchived = 1;
+  common.PageRequest page = 2;
 }
 // group service end

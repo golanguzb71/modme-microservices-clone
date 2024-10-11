@@ -4,7 +4,6 @@ import (
 	"context"
 	"education-service/internal/repository"
 	"education-service/proto/pb"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 )
 
@@ -41,9 +40,9 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *pb.DeleteAbsRequest
 	return &pb.AbsResponse{Status: 200, Message: "Group deleted successfully"}, nil
 }
 
-func (s *GroupService) GetGroups(ctx context.Context, req *emptypb.Empty) (*pb.GetGroupsResponse, error) {
+func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) (*pb.GetGroupsResponse, error) {
 	log.Println("Received GetGroups request")
-	group, err := s.repo.GetGroup()
+	group, err := s.repo.GetGroup(req.Page.Page, req.Page.Size, req.IsArchived)
 	if err != nil {
 		log.Printf("Error in GetGroups: %v", err)
 		return nil, err

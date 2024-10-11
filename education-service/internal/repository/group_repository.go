@@ -43,20 +43,24 @@ func (r *GroupRepository) DeleteGroup(id string) error {
 	}
 	return nil
 }
-func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
+func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
+	offset := (page - 1) * size
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
        'something' as teacher_name, 
-       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title,  r.capacity,
+       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity,
        g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
        g.name, 
-       CASE WHEN COUNT(gs.id) = 0 THEN 10 ELSE COUNT(gs.id) END as student_count, 
+       COUNT(gs.id) as student_count, 
        g.created_at
 FROM groups g
 LEFT JOIN courses c ON g.course_id = c.id
 LEFT JOIN rooms r ON g.room_id = r.id
 LEFT JOIN group_students gs ON g.id = gs.group_id
-GROUP BY g.id, c.title, r.title, r.capacity;`
-	rows, err := r.db.Query(query)
+WHERE g.is_archived = $1
+GROUP BY g.id, c.title, r.title, r.capacity
+LIMIT $2 OFFSET $3;`
+
+	rows, err := r.db.Query(query, isArchive, size, offset)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
 		return nil, fmt.Errorf("error querying database: %w", err)
@@ -67,7 +71,7 @@ GROUP BY g.id, c.title, r.title, r.capacity;`
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
 		var dateType, startTime sql.NullString
-		var studentCount sql.NullInt32
+		var studentCount int32
 		var course pb.AbsCourse
 		var room pb.AbsRoom
 
@@ -83,7 +87,7 @@ GROUP BY g.id, c.title, r.title, r.capacity;`
 		}
 		group.Course = &course
 		group.Room = &room
-		group.StudentCount = studentCount.Int32
+		group.StudentCount = studentCount
 		group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
 		groups = append(groups, &group)
@@ -92,8 +96,17 @@ GROUP BY g.id, c.title, r.title, r.capacity;`
 	if err = rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
+	var totalCount int32
+	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1;`
+	err = r.db.QueryRow(countQuery, isArchive).Scan(&totalCount)
+	if err != nil {
+		log.Printf("Error counting total groups: %v", err)
+		return nil, fmt.Errorf("error counting total groups: %w", err)
+	}
 
-	return &pb.GetGroupsResponse{Groups: groups}, nil
+	totalPageCount := (totalCount + size - 1) / size
+
+	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
 
 func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
