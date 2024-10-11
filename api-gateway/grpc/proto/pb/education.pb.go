@@ -26,8 +26,8 @@ type CreateRoomRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Capacity int32  `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity,omitempty"`
+	Name     string `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	Capacity int32  `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity"`
 }
 
 func (x *CreateRoomRequest) Reset() {
@@ -79,7 +79,7 @@ type GetUpdateRoomAbs struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Rooms []*AbsRoom `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty"`
+	Rooms []*AbsRoom `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms"`
 }
 
 func (x *GetUpdateRoomAbs) Reset() {
@@ -124,9 +124,9 @@ type AbsRoom struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Capacity int32  `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity,omitempty"`
-	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	Capacity int32  `protobuf:"varint,2,opt,name=capacity,proto3" json:"capacity"`
+	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name"`
 }
 
 func (x *AbsRoom) Reset() {
@@ -185,11 +185,11 @@ type CreateCourseRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration,omitempty"`
-	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration,omitempty"`
-	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
-	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration"`
+	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration"`
+	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price"`
+	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description"`
 }
 
 func (x *CreateCourseRequest) Reset() {
@@ -262,7 +262,7 @@ type GetUpdateCourseAbs struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Courses []*AbsCourse `protobuf:"bytes,1,rep,name=courses,proto3" json:"courses,omitempty"`
+	Courses []*AbsCourse `protobuf:"bytes,1,rep,name=courses,proto3" json:"courses"`
 }
 
 func (x *GetUpdateCourseAbs) Reset() {
@@ -307,12 +307,12 @@ type AbsCourse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             string  `protobuf:"bytes,6,opt,name=id,proto3" json:"id,omitempty"`
-	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration,omitempty"`
-	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration,omitempty"`
-	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
-	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Id             string  `protobuf:"bytes,6,opt,name=id,proto3" json:"id"`
+	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration"`
+	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration"`
+	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price"`
+	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description"`
 }
 
 func (x *AbsCourse) Reset() {
@@ -392,13 +392,13 @@ type GetCourseByIdResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id             string  `protobuf:"bytes,7,opt,name=id,proto3" json:"id,omitempty"`
-	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration,omitempty"`
-	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration,omitempty"`
-	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
-	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	StudentCount   int32   `protobuf:"varint,6,opt,name=studentCount,proto3" json:"studentCount,omitempty"`
+	Id             string  `protobuf:"bytes,7,opt,name=id,proto3" json:"id"`
+	Name           string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	LessonDuration int32   `protobuf:"varint,2,opt,name=lessonDuration,proto3" json:"lessonDuration"`
+	CourseDuration int32   `protobuf:"varint,3,opt,name=courseDuration,proto3" json:"courseDuration"`
+	Price          float64 `protobuf:"fixed64,4,opt,name=price,proto3" json:"price"`
+	Description    string  `protobuf:"bytes,5,opt,name=description,proto3" json:"description"`
+	StudentCount   int32   `protobuf:"varint,6,opt,name=studentCount,proto3" json:"studentCount"`
 }
 
 func (x *GetCourseByIdResponse) Reset() {
@@ -485,7 +485,7 @@ type GetCourseByIdRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
 }
 
 func (x *GetCourseByIdRequest) Reset() {
@@ -530,15 +530,15 @@ type CreateGroupRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name            string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	CourseId        int32    `protobuf:"varint,2,opt,name=courseId,proto3" json:"courseId,omitempty"`
-	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
-	Type            string   `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
-	Days            []string `protobuf:"bytes,5,rep,name=days,proto3" json:"days,omitempty"`
-	RoomId          int32    `protobuf:"varint,6,opt,name=roomId,proto3" json:"roomId,omitempty"`
-	LessonStartTime string   `protobuf:"bytes,7,opt,name=lessonStartTime,proto3" json:"lessonStartTime,omitempty"`
-	GroupStartDate  string   `protobuf:"bytes,8,opt,name=groupStartDate,proto3" json:"groupStartDate,omitempty"`
-	GroupEndDate    string   `protobuf:"bytes,9,opt,name=groupEndDate,proto3" json:"groupEndDate,omitempty"`
+	Name            string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	CourseId        int32    `protobuf:"varint,2,opt,name=courseId,proto3" json:"courseId"`
+	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId"`
+	Type            string   `protobuf:"bytes,4,opt,name=type,proto3" json:"type"`
+	Days            []string `protobuf:"bytes,5,rep,name=days,proto3" json:"days"`
+	RoomId          int32    `protobuf:"varint,6,opt,name=roomId,proto3" json:"roomId"`
+	LessonStartTime string   `protobuf:"bytes,7,opt,name=lessonStartTime,proto3" json:"lessonStartTime"`
+	GroupStartDate  string   `protobuf:"bytes,8,opt,name=groupStartDate,proto3" json:"groupStartDate"`
+	GroupEndDate    string   `protobuf:"bytes,9,opt,name=groupEndDate,proto3" json:"groupEndDate"`
 }
 
 func (x *CreateGroupRequest) Reset() {
@@ -639,7 +639,7 @@ type GetGroupByIdRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
 }
 
 func (x *GetGroupByIdRequest) Reset() {
@@ -684,16 +684,16 @@ type GetUpdateGroupAbs struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              string   `protobuf:"bytes,10,opt,name=id,proto3" json:"id,omitempty"`
-	Name            string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	CourseId        int32    `protobuf:"varint,2,opt,name=courseId,proto3" json:"courseId,omitempty"`
-	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
-	Type            string   `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
-	Days            []string `protobuf:"bytes,5,rep,name=days,proto3" json:"days,omitempty"`
-	RoomId          int32    `protobuf:"varint,6,opt,name=roomId,proto3" json:"roomId,omitempty"`
-	LessonStartTime string   `protobuf:"bytes,7,opt,name=lessonStartTime,proto3" json:"lessonStartTime,omitempty"`
-	GroupStartDate  string   `protobuf:"bytes,8,opt,name=groupStartDate,proto3" json:"groupStartDate,omitempty"`
-	GroupEndDate    string   `protobuf:"bytes,9,opt,name=groupEndDate,proto3" json:"groupEndDate,omitempty"`
+	Id              string   `protobuf:"bytes,10,opt,name=id,proto3" json:"id"`
+	Name            string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	CourseId        int32    `protobuf:"varint,2,opt,name=courseId,proto3" json:"courseId"`
+	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId"`
+	Type            string   `protobuf:"bytes,4,opt,name=type,proto3" json:"type"`
+	Days            []string `protobuf:"bytes,5,rep,name=days,proto3" json:"days"`
+	RoomId          int32    `protobuf:"varint,6,opt,name=roomId,proto3" json:"roomId"`
+	LessonStartTime string   `protobuf:"bytes,7,opt,name=lessonStartTime,proto3" json:"lessonStartTime"`
+	GroupStartDate  string   `protobuf:"bytes,8,opt,name=groupStartDate,proto3" json:"groupStartDate"`
+	GroupEndDate    string   `protobuf:"bytes,9,opt,name=groupEndDate,proto3" json:"groupEndDate"`
 }
 
 func (x *GetUpdateGroupAbs) Reset() {
@@ -801,19 +801,19 @@ type GetGroupAbsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Course          *AbsCourse `protobuf:"bytes,2,opt,name=course,proto3" json:"course,omitempty"`
-	TeacherName     string     `protobuf:"bytes,3,opt,name=teacherName,proto3" json:"teacherName,omitempty"`
-	LessonStartTime string     `protobuf:"bytes,4,opt,name=lessonStartTime,proto3" json:"lessonStartTime,omitempty"`
-	Room            *AbsRoom   `protobuf:"bytes,5,opt,name=room,proto3" json:"room,omitempty"`
-	StudentCount    int32      `protobuf:"varint,6,opt,name=studentCount,proto3" json:"studentCount,omitempty"`
-	Name            string     `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty"`
-	IsArchived      bool       `protobuf:"varint,8,opt,name=isArchived,proto3" json:"isArchived,omitempty"`
-	CreatedAt       string     `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
-	StartDate       string     `protobuf:"bytes,10,opt,name=startDate,proto3" json:"startDate,omitempty"`
-	EndDate         string     `protobuf:"bytes,11,opt,name=endDate,proto3" json:"endDate,omitempty"`
-	Days            []string   `protobuf:"bytes,12,rep,name=days,proto3" json:"days,omitempty"`
-	DateType        string     `protobuf:"bytes,13,opt,name=dateType,proto3" json:"dateType,omitempty"`
+	Id              string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	Course          *AbsCourse `protobuf:"bytes,2,opt,name=course,proto3" json:"course"`
+	TeacherName     string     `protobuf:"bytes,3,opt,name=teacherName,proto3" json:"teacherName"`
+	LessonStartTime string     `protobuf:"bytes,4,opt,name=lessonStartTime,proto3" json:"lessonStartTime"`
+	Room            *AbsRoom   `protobuf:"bytes,5,opt,name=room,proto3" json:"room"`
+	StudentCount    int32      `protobuf:"varint,6,opt,name=studentCount,proto3" json:"studentCount"`
+	Name            string     `protobuf:"bytes,7,opt,name=name,proto3" json:"name"`
+	IsArchived      bool       `protobuf:"varint,8,opt,name=isArchived,proto3" json:"isArchived"`
+	CreatedAt       string     `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt"`
+	StartDate       string     `protobuf:"bytes,10,opt,name=startDate,proto3" json:"startDate"`
+	EndDate         string     `protobuf:"bytes,11,opt,name=endDate,proto3" json:"endDate"`
+	Days            []string   `protobuf:"bytes,12,rep,name=days,proto3" json:"days"`
+	DateType        string     `protobuf:"bytes,13,opt,name=dateType,proto3" json:"dateType"`
 }
 
 func (x *GetGroupAbsResponse) Reset() {
@@ -942,8 +942,8 @@ type GetGroupsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Groups         []*GetGroupAbsResponse `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
-	TotalPageCount int32                  `protobuf:"varint,2,opt,name=totalPageCount,proto3" json:"totalPageCount,omitempty"`
+	Groups         []*GetGroupAbsResponse `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups"`
+	TotalPageCount int32                  `protobuf:"varint,2,opt,name=totalPageCount,proto3" json:"totalPageCount"`
 }
 
 func (x *GetGroupsResponse) Reset() {
@@ -995,8 +995,8 @@ type GetGroupsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IsArchived bool         `protobuf:"varint,1,opt,name=isArchived,proto3" json:"isArchived,omitempty"`
-	Page       *PageRequest `protobuf:"bytes,2,opt,name=page,proto3" json:"page,omitempty"`
+	IsArchived bool         `protobuf:"varint,1,opt,name=isArchived,proto3" json:"isArchived"`
+	Page       *PageRequest `protobuf:"bytes,2,opt,name=page,proto3" json:"page"`
 }
 
 func (x *GetGroupsRequest) Reset() {

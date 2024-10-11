@@ -25,8 +25,8 @@ type ValidateTokenRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Token         string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	RequiredRoles []string `protobuf:"bytes,2,rep,name=requiredRoles,proto3" json:"requiredRoles,omitempty"`
+	Token         string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token"`
+	RequiredRoles []string `protobuf:"bytes,2,rep,name=requiredRoles,proto3" json:"requiredRoles"`
 }
 
 func (x *ValidateTokenRequest) Reset() {
