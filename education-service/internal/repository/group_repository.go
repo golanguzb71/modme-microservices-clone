@@ -47,11 +47,10 @@ func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGro
 	offset := (page - 1) * size
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
        'something' as teacher_name, 
-       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity,
-       g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
+       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, 
        g.name, 
        COUNT(gs.id) as student_count, 
-       g.created_at , g.days
+       g.created_at , g.days , g.start_time , g.date_type
 FROM groups g
 LEFT JOIN courses c ON g.course_id = c.id
 LEFT JOIN rooms r ON g.room_id = r.id
@@ -70,16 +69,14 @@ LIMIT $2 OFFSET $3;`
 	var groups []*pb.GetGroupAbsResponse
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
-		var dateType, startTime sql.NullString
 		var studentCount int32
 		var course pb.AbsCourse
 		var room pb.AbsRoom
 
 		err := rows.Scan(
 			&group.Id, &course.Id, &course.Name,
-			&group.TeacherName, &room.Id, &room.Name, &room.Capacity,
-			&dateType, &startTime, &group.StartDate, &group.EndDate,
-			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days),
+			&group.TeacherName, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
+			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType,
 		)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
@@ -88,7 +85,6 @@ LIMIT $2 OFFSET $3;`
 		group.Course = &course
 		group.Room = &room
 		group.StudentCount = studentCount
-		group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
 		groups = append(groups, &group)
 	}
@@ -112,11 +108,9 @@ LIMIT $2 OFFSET $3;`
 func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               'something' as teacher_name, 
-              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity,
-              g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
-              g.name, 
-              CASE WHEN COUNT(gs.id) = 0 THEN 10 ELSE COUNT(gs.id) END as student_count, 
-              g.created_at , g.days
+              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
+              CASE WHEN COUNT(gs.id) = 0 THEN 1 ELSE COUNT(gs.id) END as student_count, 
+              g.created_at , g.days , g.start_time , g.date_type
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -125,16 +119,14 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
               GROUP BY g.id, c.title, r.title, r.capacity`
 
 	var group pb.GetGroupAbsResponse
-	var dateType, startTime sql.NullString
 	var studentCount sql.NullInt32
 	var course pb.AbsCourse
 	var room pb.AbsRoom
 
 	err := r.db.QueryRow(query, id).Scan(
 		&group.Id, &course.Id, &course.Name,
-		&group.TeacherName, &room.Id, &room.Name, &room.Capacity,
-		&dateType, &startTime, &group.StartDate, &group.EndDate,
-		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days),
+		&group.TeacherName, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
+		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType,
 	)
 
 	if err != nil {
@@ -147,7 +139,5 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	group.Course = &course
 	group.Room = &room
 	group.StudentCount = studentCount.Int32
-	group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
-
 	return &group, nil
 }
