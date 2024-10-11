@@ -4,7 +4,22 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/education-service/internal/repository/group_repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/education-service/internal/service/group_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/course_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/course_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/common.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/common.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/education.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

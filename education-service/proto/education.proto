@@ -7,7 +7,6 @@ import "common.proto";
 
 import "google/protobuf/empty.proto";
 
-
 // room service start
 service RoomService{
   rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
@@ -30,8 +29,6 @@ message AbsRoom{
   int32 capacity = 2;
   string name = 3;
 }
-
-
 // room service end
 
 // course service start
@@ -77,5 +74,61 @@ message GetCourseByIdResponse{
 message GetCourseByIdRequest{
   string id = 1;
 }
-
 // course service end
+
+// group service start
+service GroupService{
+  rpc CreateGroup(CreateGroupRequest)returns(common.AbsResponse);
+  rpc GetGroups(google.protobuf.Empty)returns(GetGroupsResponse);
+  rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+  rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
+  rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
+}
+
+message CreateGroupRequest{
+  string name = 1;
+  int32 courseId = 2;
+  string teacherId = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+}
+
+message GetGroupByIdRequest{
+  string id = 1;
+}
+
+message GetUpdateGroupAbs{
+  string id = 10;
+  string name = 1;
+  int32 courseId = 2;
+  string teacherId = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+}
+
+message GetGroupAbsResponse{
+  string id = 1;
+  AbsCourse course = 2;
+  string teacherName = 3;
+  string timeDays = 4;
+  AbsRoom room = 5;
+  int32 studentCount = 6;
+  string name = 7;
+  bool isArchived = 8;
+  string createdAt = 9;
+  string startDate = 10;
+  string endDate = 11;
+}
+
+message GetGroupsResponse{
+  repeated GetGroupAbsResponse groups = 1;
+}
+// group service end

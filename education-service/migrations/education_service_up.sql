@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS courses
 CREATE TABLE IF NOT EXISTS groups
 (
     id          bigserial PRIMARY KEY,
+    name        varchar                                                NOT NULL,
     course_id   int                                                    NOT NULL,
     teacher_id  uuid                                                   NOT NULL,
     room_id     int references rooms (id),
@@ -46,8 +47,8 @@ CREATE TABLE IF NOT EXISTS group_students
 (
     id         uuid PRIMARY KEY,
     group_id   bigint references groups (id) NOT NULL,
-    student_id uuid                         NOT NULL,
+    student_id uuid                          NOT NULL,
     condition  varchar check ( condition in ('FREEZE', 'ACTIVE', 'DELETE')) DEFAULT 'FREEZE',
-    created_at timestamp                                                   DEFAULT NOW(),
-    created_by uuid                         NOT NULL
+    created_at timestamp                                                    DEFAULT NOW(),
+    created_by uuid                          NOT NULL
 );

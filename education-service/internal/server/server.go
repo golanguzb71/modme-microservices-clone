@@ -28,7 +28,8 @@ func RunServer() {
 	roomService := service.NewRoomService(roomRepo)
 	courseRepo := repository.NewCourseRepository(db)
 	courseService := service.NewCourseService(courseRepo)
-
+	groupRepo := repository.NewGroupRepository(db)
+	groupService := service.NewGroupService(groupRepo)
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen on port %v: %v", cfg.Server.Port, err)
@@ -37,6 +38,7 @@ func RunServer() {
 	grpcServer := grpc.NewServer()
 	pb.RegisterRoomServiceServer(grpcServer, roomService)
 	pb.RegisterCourseServiceServer(grpcServer, courseService)
+	pb.RegisterGroupServiceServer(grpcServer, groupService)
 
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := grpcServer.Serve(lis); err != nil {

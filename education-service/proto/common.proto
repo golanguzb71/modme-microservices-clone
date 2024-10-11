@@ -12,3 +12,4 @@ message AbsResponse {
 message DeleteAbsRequest{
   string id = 1;
 }
+

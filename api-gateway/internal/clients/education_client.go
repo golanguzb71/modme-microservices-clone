@@ -10,6 +10,7 @@ import (
 type EducationClient struct {
 	roomClient   pb.RoomServiceClient
 	courseClient pb.CourseServiceClient
+	groupClient  pb.GroupServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -20,7 +21,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 
 	roomClient := pb.NewRoomServiceClient(conn)
 	courseClient := pb.NewCourseServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient}, nil
+	groupClient := pb.NewGroupServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient}, nil
 }
 
 // Education Service method client
@@ -65,4 +67,24 @@ func (lc *EducationClient) GetCourse(ctx context.Context) (*pb.GetUpdateCourseAb
 
 func (lc *EducationClient) GetCourseById(ctx context.Context, id string) (*pb.GetCourseByIdResponse, error) {
 	return lc.courseClient.GetCourseById(ctx, &pb.GetCourseByIdRequest{Id: id})
+}
+
+func (lc *EducationClient) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*pb.AbsResponse, error) {
+	return lc.groupClient.CreateGroup(ctx, req)
+}
+
+func (lc *EducationClient) UpdateGroup(ctx context.Context, req *pb.GetUpdateGroupAbs) (*pb.AbsResponse, error) {
+	return lc.groupClient.UpdateGroup(ctx, req)
+}
+
+func (lc *EducationClient) DeleteGroup(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	return lc.groupClient.DeleteGroup(ctx, &pb.DeleteAbsRequest{Id: id})
+}
+
+func (lc *EducationClient) GetAllGroup(ctx context.Context) (*pb.GetGroupsResponse, error) {
+	return lc.groupClient.GetGroups(ctx, &emptypb.Empty{})
+}
+
+func (lc *EducationClient) GetGroupById(ctx context.Context, id string) (*pb.GetGroupAbsResponse, error) {
+	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: id})
 }

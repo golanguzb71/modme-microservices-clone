@@ -25,7 +25,7 @@ func (r *CourseRepository) CreateCourse(title, description string, durationLesso
 
 func (r *CourseRepository) UpdateCourse(title, description, id string, durationLesson, courseDuration int32, price float64) error {
 	query := "UPDATE courses SET title=$1, duration_lesson=$2, course_duration=$3, price=$4, description=$5  WHERE id = $6"
-	_, err := r.db.Exec(query, title, description, durationLesson, courseDuration, price, description, id)
+	_, err := r.db.Exec(query, title, durationLesson, courseDuration, price, description, id)
 	if err != nil {
 		return fmt.Errorf("failed to update course: %w", err)
 	}
