@@ -5,6 +5,7 @@ import (
 	"education-service/proto/pb"
 	"fmt"
 	"github.com/lib/pq"
+	"log"
 )
 
 type GroupRepository struct {
@@ -15,7 +16,7 @@ func NewGroupRepository(db *sql.DB) *GroupRepository {
 	return &GroupRepository{db: db}
 }
 
-func (r GroupRepository) CreateGroup(name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
+func (r *GroupRepository) CreateGroup(name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
 	query := `INSERT INTO groups(course_id, teacher_id, room_id, date_type, days, start_time, start_date, end_date, is_archived,name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,  $10)`
 	_, err := r.db.Exec(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, false, name)
 	if err != nil {
@@ -24,7 +25,7 @@ func (r GroupRepository) CreateGroup(name string, courseId int32, teacherId stri
 	return nil
 }
 
-func (r GroupRepository) UpdateGroup(id string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
+func (r *GroupRepository) UpdateGroup(id string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
 	query := `UPDATE groups SET course_id=$1, teacher_id=$2, room_id=$3, date_type=$4, days=$5, start_time=$6, start_date=$7, end_date=$8, name=$9 WHERE id=$10`
 	_, err := r.db.Exec(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, name, id)
 	if err != nil {
@@ -33,7 +34,7 @@ func (r GroupRepository) UpdateGroup(id string, name string, courseId int32, tea
 	return nil
 }
 
-func (r GroupRepository) DeleteGroup(id string) error {
+func (r *GroupRepository) DeleteGroup(id string) error {
 	query := `DELETE FROM groups WHERE id=$1`
 	_, err := r.db.Exec(query, id)
 	if err != nil {
@@ -42,6 +43,7 @@ func (r GroupRepository) DeleteGroup(id string) error {
 	return nil
 }
 func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
+	log.Println("Starting GetGroup function")
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               g.teacher_id, 'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
@@ -53,8 +55,10 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
               LEFT JOIN group_students gs ON g.id = gs.group_id
               GROUP BY g.id, c.title, r.title`
 
+	log.Println("Executing query:", query)
 	rows, err := r.db.Query(query)
 	if err != nil {
+		log.Printf("Error querying database: %v", err)
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 	defer rows.Close()
@@ -72,6 +76,7 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
 		)
 		if err != nil {
+			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
 
@@ -84,13 +89,16 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 	}
 
 	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating rows: %v", err)
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
 
+	log.Printf("Successfully retrieved %d groups", len(groups))
 	return &pb.GetGroupsResponse{Groups: groups}, nil
 }
 
 func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
+	log.Printf("Starting GetGroupById function with id: %s", id)
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               g.teacher_id, 'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
@@ -103,6 +111,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
               WHERE g.id = $1
               GROUP BY g.id, c.title, r.title`
 
+	log.Println("Executing query:", query)
 	var group pb.GetGroupAbsResponse
 	var dateType, startTime, courseTitle, roomTitle sql.NullString
 	var studentCount sql.NullInt32
@@ -116,8 +125,10 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 
 	if err != nil {
 		if err == sql.ErrNoRows {
+			log.Printf("Group with id %s not found", id)
 			return nil, fmt.Errorf("group with id %s not found", id)
 		}
+		log.Printf("Error querying database: %v", err)
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 
@@ -126,5 +137,6 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	group.StudentCount = studentCount.Int32
 	group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
+	log.Printf("Successfully retrieved group with id: %s", id)
 	return &group, nil
 }

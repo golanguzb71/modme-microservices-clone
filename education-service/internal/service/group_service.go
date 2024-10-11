@@ -5,6 +5,7 @@ import (
 	"education-service/internal/repository"
 	"education-service/proto/pb"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 )
 
 type GroupService struct {
@@ -41,9 +42,23 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *pb.DeleteAbsRequest
 }
 
 func (s *GroupService) GetGroups(ctx context.Context, req *emptypb.Empty) (*pb.GetGroupsResponse, error) {
-	return s.repo.GetGroup()
+	log.Println("Received GetGroups request")
+	group, err := s.repo.GetGroup()
+	if err != nil {
+		log.Printf("Error in GetGroups: %v", err)
+		return nil, err
+	}
+	log.Println("Returning groups")
+	return group, nil
 }
 
 func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupAbsResponse, error) {
-	return s.repo.GetGroupById(req.Id)
+	log.Printf("Received GetGroupById request for id: %s", req.Id)
+	group, err := s.repo.GetGroupById(req.Id)
+	if err != nil {
+		log.Printf("Error in GetGroupById: %v", err)
+		return nil, err
+	}
+	log.Printf("Returning group with id: %s", group.Id)
+	return group, nil
 }
