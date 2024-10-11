@@ -477,7 +477,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/group/get-all": {
+        "/api/group/get-all/{isArchived}": {
             "get": {
                 "security": [
                     {
@@ -492,6 +492,30 @@ const docTemplate = `{
                     "groups"
                 ],
                 "summary": "Get all groups",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Is Archived",
+                        "name": "isArchived",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of items per page",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "List of groups",
@@ -500,6 +524,12 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/pb.GetGroupsResponse"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
                         }
                     },
                     "500": {

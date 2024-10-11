@@ -614,9 +614,26 @@ paths:
       summary: Delete a group by ID
       tags:
       - groups
-  /api/group/get-all:
+  /api/group/get-all/{isArchived}:
     get:
       description: Retrieve a list of all groups.
+      parameters:
+      - description: Is Archived
+        example: true
+        in: path
+        name: isArchived
+        required: true
+        type: boolean
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: size
+        type: integer
       produces:
       - application/json
       responses:
@@ -626,6 +643,10 @@ paths:
             items:
               $ref: '#/definitions/pb.GetGroupsResponse'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
         "500":
           description: Internal server error
           schema:
