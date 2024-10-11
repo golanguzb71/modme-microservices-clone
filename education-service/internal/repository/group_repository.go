@@ -51,9 +51,9 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               g.teacher_id, 'something' as teacher_name, 
-              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
+              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title,  r.capacity,
               g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
-              g.name, 30 as student_count, g.created_at
+              g.name, COUNT(gs.id) as student_count, g.created_at
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -70,12 +70,14 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 	var groups []*pb.GetGroupAbsResponse
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
-		var dateType, startTime, courseTitle, roomTitle sql.NullString
+		var dateType, startTime sql.NullString
 		var studentCount sql.NullInt32
+		var course pb.AbsCourse
+		var room pb.AbsRoom
 
 		err := rows.Scan(
-			&group.Id, &group.Course.Id, &courseTitle,
-			&group.TeacherName, &group.Room.Id, &roomTitle,
+			&group.Id, &course, &course.Name,
+			&group.TeacherName, &room.Id, &room.Name, &room.Capacity,
 			&dateType, &startTime, &group.StartDate, &group.EndDate,
 			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
 		)
@@ -83,9 +85,8 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
-
-		group.Course.Name = courseTitle.String
-		group.Room.Name = roomTitle.String
+		group.Course = &course
+		group.Room = &room
 		group.StudentCount = studentCount.Int32
 		group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
