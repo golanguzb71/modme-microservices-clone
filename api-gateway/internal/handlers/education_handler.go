@@ -354,7 +354,7 @@ func GetAllGroup(ctx *gin.Context) {
 	if err != nil || size < 1 {
 		size = 10
 	}
-	resp, err := educationClient.GetAllGroup(ctxR, parseBool, page, size)
+	resp, err := educationClient.GetAllGroup(ctxR, parseBool, int32(page), int32(size))
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
