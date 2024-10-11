@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
-	"errors"
 	"fmt"
 	"github.com/lib/pq"
 )
@@ -42,45 +41,61 @@ func (r GroupRepository) DeleteGroup(id string) error {
 	}
 	return nil
 }
-
-func (r GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
-	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, g.teacher_id, 'something' as teacher_name, g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, g.name, COUNT(gs.id) as student_count, g.created_at , g.start_time
+func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
+	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
+              g.teacher_id, 'something' as teacher_name, 
+              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
+              g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
+              g.name, COUNT(gs.id) as student_count, g.created_at
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
               LEFT JOIN group_students gs ON g.id = gs.group_id
               GROUP BY g.id, c.title, r.title`
+
 	rows, err := r.db.Query(query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 	defer rows.Close()
 
 	var groups []*pb.GetGroupAbsResponse
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
-		var dateType string
-		var startTime string
-		var courseTitle, roomTitle string
-		var studentCount int32
+		var dateType, startTime, courseTitle, roomTitle sql.NullString
+		var studentCount sql.NullInt32
 
-		err := rows.Scan(&group.Id, &group.Course.Id, &courseTitle, &group.TeacherName, &group.Room.Id, &roomTitle, dateType, &group.TimeDays, &group.StartDate, &group.EndDate, &group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, &startTime)
+		err := rows.Scan(
+			&group.Id, &group.Course.Id, &courseTitle,
+			&group.TeacherName, &group.Room.Id, &roomTitle,
+			&dateType, &startTime, &group.StartDate, &group.EndDate,
+			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
+		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
-		group.Course.Name = courseTitle
-		group.Room.Name = roomTitle
-		group.StudentCount = studentCount
-		group.TimeDays = dateType + " " + startTime
+
+		group.Course.Name = courseTitle.String
+		group.Room.Name = roomTitle.String
+		group.StudentCount = studentCount.Int32
+		group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
 		groups = append(groups, &group)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
 
 	return &pb.GetGroupsResponse{Groups: groups}, nil
 }
 
-func (r GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
-	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, g.teacher_id, 'something' as teacher_name, g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, g.name, COUNT(gs.id) as student_count, g.created_at
+func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
+	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
+              g.teacher_id, 'something' as teacher_name, 
+              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
+              g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
+              g.name, COUNT(gs.id) as student_count, g.created_at
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -88,23 +103,28 @@ func (r GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error
               WHERE g.id = $1
               GROUP BY g.id, c.title, r.title`
 
-	row := r.db.QueryRow(query, id)
-
 	var group pb.GetGroupAbsResponse
-	var dateType, startTime, courseTitle, roomTitle string
-	var studentCount int32
+	var dateType, startTime, courseTitle, roomTitle sql.NullString
+	var studentCount sql.NullInt32
 
-	err := row.Scan(&group.Id, &group.Course.Id, &courseTitle, &group.TeacherName, &group.Room.Id, &roomTitle, &dateType, &startTime, &group.StartDate, &group.EndDate, &group.IsArchived, &group.Name, &studentCount, &group.CreatedAt)
+	err := r.db.QueryRow(query, id).Scan(
+		&group.Id, &group.Course.Id, &courseTitle,
+		&group.TeacherName, &group.Room.Id, &roomTitle,
+		&dateType, &startTime, &group.StartDate, &group.EndDate,
+		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt,
+	)
+
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("group with id %s not found", id)
 		}
-		return nil, err
+		return nil, fmt.Errorf("error querying database: %w", err)
 	}
-	group.Course.Name = courseTitle
-	group.Room.Name = roomTitle
-	group.StudentCount = studentCount
-	group.TimeDays = dateType + " " + startTime
+
+	group.Course.Name = courseTitle.String
+	group.Room.Name = roomTitle.String
+	group.StudentCount = studentCount.Int32
+	group.TimeDays = fmt.Sprintf("%s %s", dateType.String, startTime.String)
 
 	return &group, nil
 }
