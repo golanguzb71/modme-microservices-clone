@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
+	"errors"
 	"fmt"
 	"github.com/lib/pq"
 	"log"
@@ -124,7 +125,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("group with id %s not found", id)
 		}
 		return nil, fmt.Errorf("error querying database: %w", err)
