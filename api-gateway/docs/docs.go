@@ -1706,6 +1706,12 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "days": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "endDate": {
                     "type": "string"
                 },
