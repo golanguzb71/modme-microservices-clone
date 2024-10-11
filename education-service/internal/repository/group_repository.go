@@ -53,14 +53,13 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
               g.teacher_id, 'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, 
               g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
-              g.name, COUNT(gs.id) as student_count, g.created_at
+              g.name, 30 as student_count, g.created_at
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
               LEFT JOIN group_students gs ON g.id = gs.group_id
               GROUP BY g.id, c.title, r.title`
 
-	log.Println("Executing query:", query)
 	rows, err := r.db.Query(query)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
