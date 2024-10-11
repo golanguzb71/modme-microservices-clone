@@ -238,6 +238,18 @@ func GetCourseById(ctx *gin.Context) {
 	return
 }
 
+// CreateGroup godoc
+// @Summary Create a new group
+// @Description Create a new group with provided details.
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param group body pb.CreateGroupRequest true "Group Data"
+// @Success 200 {object} utils.AbsResponse "Group successfully created"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/create [post]
 func CreateGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -256,6 +268,18 @@ func CreateGroup(ctx *gin.Context) {
 	return
 }
 
+// UpdateGroup godoc
+// @Summary Update a group
+// @Description Update details of an existing group.
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param group body pb.GetUpdateGroupAbs true "Group Data"
+// @Success 200 {object} utils.AbsResponse "Group successfully updated"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/update [put]
 func UpdateGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -274,6 +298,16 @@ func UpdateGroup(ctx *gin.Context) {
 	return
 }
 
+// DeleteGroup godoc
+// @Summary Delete a group by ID
+// @Description Delete a group by its ID.
+// @Tags groups
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Group ID"
+// @Success 200 {object} utils.AbsResponse "Group successfully deleted"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/delete/{id} [delete]
 func DeleteGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -287,6 +321,15 @@ func DeleteGroup(ctx *gin.Context) {
 	return
 }
 
+// GetAllGroup godoc
+// @Summary Get all groups
+// @Description Retrieve a list of all groups.
+// @Tags groups
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {array} pb.GetGroupsResponse "List of groups"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/all [get]
 func GetAllGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -299,6 +342,16 @@ func GetAllGroup(ctx *gin.Context) {
 	return
 }
 
+// GetGroupById godoc
+// @Summary Get a group by ID
+// @Description Retrieve details of a group by its ID.
+// @Tags groups
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Group ID"
+// @Success 200 {object} pb.GetGroupAbsResponse "Group details"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/get-by-id/{id} [get]
 func GetGroupById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()

@@ -75,6 +75,29 @@ definitions:
       price:
         type: number
     type: object
+  pb.CreateGroupRequest:
+    properties:
+      courseId:
+        type: integer
+      days:
+        items:
+          type: string
+        type: array
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      roomId:
+        type: integer
+      teacherId:
+        type: string
+      type:
+        type: string
+    type: object
   pb.CreateLeadDataRequest:
     properties:
       comment:
@@ -117,6 +140,38 @@ definitions:
       name:
         type: string
     type: object
+  pb.GetGroupAbsResponse:
+    properties:
+      course:
+        $ref: '#/definitions/pb.AbsCourse'
+      createdAt:
+        type: string
+      endDate:
+        type: string
+      id:
+        type: string
+      isArchived:
+        type: boolean
+      name:
+        type: string
+      room:
+        $ref: '#/definitions/pb.AbsRoom'
+      startDate:
+        type: string
+      studentCount:
+        type: integer
+      teacherName:
+        type: string
+      timeDays:
+        type: string
+    type: object
+  pb.GetGroupsResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/pb.GetGroupAbsResponse'
+        type: array
+    type: object
   pb.GetLeadCommonRequest:
     properties:
       requests:
@@ -152,6 +207,31 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsCourse'
         type: array
+    type: object
+  pb.GetUpdateGroupAbs:
+    properties:
+      courseId:
+        type: integer
+      days:
+        items:
+          type: string
+        type: array
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      roomId:
+        type: integer
+      teacherId:
+        type: string
+      type:
+        type: string
     type: object
   pb.GetUpdateRoomAbs:
     properties:
@@ -475,6 +555,141 @@ paths:
       summary: ADMIN
       tags:
       - expectations
+  /api/group/all:
+    get:
+      description: Retrieve a list of all groups.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of groups
+          schema:
+            items:
+              $ref: '#/definitions/pb.GetGroupsResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all groups
+      tags:
+      - groups
+  /api/group/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new group with provided details.
+      parameters:
+      - description: Group Data
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Group successfully created
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new group
+      tags:
+      - groups
+  /api/group/delete/{id}:
+    delete:
+      description: Delete a group by its ID.
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Group successfully deleted
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a group by ID
+      tags:
+      - groups
+  /api/group/get-by-id/{id}:
+    get:
+      description: Retrieve details of a group by its ID.
+      parameters:
+      - description: Group ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Group details
+          schema:
+            $ref: '#/definitions/pb.GetGroupAbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a group by ID
+      tags:
+      - groups
+  /api/group/update:
+    put:
+      consumes:
+      - application/json
+      description: Update details of an existing group.
+      parameters:
+      - description: Group Data
+        in: body
+        name: group
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GetUpdateGroupAbs'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Group successfully updated
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a group
+      tags:
+      - groups
   /api/lead/create:
     post:
       consumes:
