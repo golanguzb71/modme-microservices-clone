@@ -25,8 +25,8 @@ type AbsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Status  int32  `protobuf:"varint,1,opt,name=status,proto3" json:"status,omitempty"`
-	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Status  int32  `protobuf:"status" json:"status"`
+	Message string `protobuf:"message" json:"message"`
 }
 
 func (x *AbsResponse) Reset() {
@@ -78,7 +78,7 @@ type DeleteAbsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id string `protobuf:"id" json:"id"`
 }
 
 func (x *DeleteAbsRequest) Reset() {
@@ -123,8 +123,8 @@ type PageRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Page int32 `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
-	Size int32 `protobuf:"varint,2,opt,name=size,proto3" json:"size,omitempty"`
+	Page int32 `protobuf:"page" json:"page"`
+	Size int32 `protobuf:"size" json:"size"`
 }
 
 func (x *PageRequest) Reset() {

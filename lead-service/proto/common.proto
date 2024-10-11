@@ -8,3 +8,8 @@ message AbsResponse {
   int32 status = 1;
   string message = 2;
 }
+
+message PageRequest{
+  int32 page = 1;
+  int32 size = 2;
+}
