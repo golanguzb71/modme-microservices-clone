@@ -512,7 +512,7 @@ const (
 // group service start
 type GroupServiceClient interface {
 	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*AbsResponse, error)
-	GetGroups(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetGroupsResponse, error)
+	GetGroups(ctx context.Context, in *GetGroupsRequest, opts ...grpc.CallOption) (*GetGroupsResponse, error)
 	GetGroupById(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupAbsResponse, error)
 	UpdateGroup(ctx context.Context, in *GetUpdateGroupAbs, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteGroup(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
@@ -536,7 +536,7 @@ func (c *groupServiceClient) CreateGroup(ctx context.Context, in *CreateGroupReq
 	return out, nil
 }
 
-func (c *groupServiceClient) GetGroups(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetGroupsResponse, error) {
+func (c *groupServiceClient) GetGroups(ctx context.Context, in *GetGroupsRequest, opts ...grpc.CallOption) (*GetGroupsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetGroupsResponse)
 	err := c.cc.Invoke(ctx, GroupService_GetGroups_FullMethodName, in, out, cOpts...)
@@ -583,7 +583,7 @@ func (c *groupServiceClient) DeleteGroup(ctx context.Context, in *DeleteAbsReque
 // group service start
 type GroupServiceServer interface {
 	CreateGroup(context.Context, *CreateGroupRequest) (*AbsResponse, error)
-	GetGroups(context.Context, *emptypb.Empty) (*GetGroupsResponse, error)
+	GetGroups(context.Context, *GetGroupsRequest) (*GetGroupsResponse, error)
 	GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error)
 	UpdateGroup(context.Context, *GetUpdateGroupAbs) (*AbsResponse, error)
 	DeleteGroup(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
@@ -600,7 +600,7 @@ type UnimplementedGroupServiceServer struct{}
 func (UnimplementedGroupServiceServer) CreateGroup(context.Context, *CreateGroupRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGroup not implemented")
 }
-func (UnimplementedGroupServiceServer) GetGroups(context.Context, *emptypb.Empty) (*GetGroupsResponse, error) {
+func (UnimplementedGroupServiceServer) GetGroups(context.Context, *GetGroupsRequest) (*GetGroupsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroups not implemented")
 }
 func (UnimplementedGroupServiceServer) GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error) {
@@ -652,7 +652,7 @@ func _GroupService_CreateGroup_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _GroupService_GetGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(GetGroupsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -664,7 +664,7 @@ func _GroupService_GetGroups_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: GroupService_GetGroups_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GroupServiceServer).GetGroups(ctx, req.(*emptypb.Empty))
+		return srv.(GroupServiceServer).GetGroups(ctx, req.(*GetGroupsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

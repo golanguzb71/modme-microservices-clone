@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -327,19 +328,38 @@ func DeleteGroup(ctx *gin.Context) {
 // @Tags groups
 // @Produce json
 // @Security BearerAuth
+// @Param isArchived path bool true "Is Archived" example(true)
+// @Param page query int false "Page number" default(1)
+// @Param size query int false "Number of items per page" default(10)
 // @Success 200 {array} pb.GetGroupsResponse "List of groups"
+// @Failure 400 {object} utils.AbsResponse "Bad Request"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
-// @Router /api/group/get-all [get]
+// @Router /api/group/get-all/{isArchived} [get]
 func GetAllGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	resp, err := educationClient.GetAllGroup(ctxR)
+	isArchived := ctx.Param("isArchived")
+	parseBool, err := strconv.ParseBool(isArchived)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid isArchived parameter"})
+		return
+	}
+	pageStr := ctx.Query("page")
+	sizeStr := ctx.Query("size")
+	page, err := strconv.ParseInt(pageStr, 10, 32)
+	if err != nil || page < 1 {
+		page = 1
+	}
+	size, err := strconv.ParseInt(sizeStr, 10, 32)
+	if err != nil || size < 1 {
+		size = 10
+	}
+	resp, err := educationClient.GetAllGroup(ctxR, parseBool, page, size)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
 	ctx.JSON(http.StatusOK, &resp)
-	return
 }
 
 // GetGroupById godoc

@@ -1713,6 +1713,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.GetGroupAbsResponse"
                     }
+                },
+                "totalPageCount": {
+                    "type": "integer"
                 }
             }
         },

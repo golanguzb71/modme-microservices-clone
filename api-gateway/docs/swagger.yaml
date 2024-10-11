@@ -171,6 +171,8 @@ definitions:
         items:
           $ref: '#/definitions/pb.GetGroupAbsResponse'
         type: array
+      totalPageCount:
+        type: integer
     type: object
   pb.GetLeadCommonRequest:
     properties:

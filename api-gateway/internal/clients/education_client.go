@@ -81,8 +81,14 @@ func (lc *EducationClient) DeleteGroup(ctx context.Context, id string) (*pb.AbsR
 	return lc.groupClient.DeleteGroup(ctx, &pb.DeleteAbsRequest{Id: id})
 }
 
-func (lc *EducationClient) GetAllGroup(ctx context.Context) (*pb.GetGroupsResponse, error) {
-	return lc.groupClient.GetGroups(ctx, &emptypb.Empty{})
+func (lc *EducationClient) GetAllGroup(ctx context.Context, isArchived bool, page, size int32) (*pb.GetGroupsResponse, error) {
+	return lc.groupClient.GetGroups(ctx, &pb.GetGroupsRequest{
+		IsArchived: isArchived,
+		Page: &pb.PageRequest{
+			Page: page,
+			Size: size,
+		},
+	})
 }
 
 func (lc *EducationClient) GetGroupById(ctx context.Context, id string) (*pb.GetGroupAbsResponse, error) {
