@@ -3,6 +3,8 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
+	"errors"
+	"fmt"
 	"github.com/lib/pq"
 )
 
@@ -85,6 +87,7 @@ func (r GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error
               LEFT JOIN group_students gs ON g.id = gs.group_id
               WHERE g.id = $1
               GROUP BY g.id, c.title, r.title`
+
 	row := r.db.QueryRow(query, id)
 
 	var group pb.GetGroupAbsResponse
@@ -93,9 +96,11 @@ func (r GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error
 
 	err := row.Scan(&group.Id, &group.Course.Id, &courseTitle, &group.TeacherName, &group.Room.Id, &roomTitle, &dateType, &startTime, &group.StartDate, &group.EndDate, &group.IsArchived, &group.Name, &studentCount, &group.CreatedAt)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("group with id %s not found", id)
+		}
 		return nil, err
 	}
-
 	group.Course.Name = courseTitle
 	group.Room.Name = roomTitle
 	group.StudentCount = studentCount
