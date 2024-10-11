@@ -555,27 +555,6 @@ paths:
       summary: ADMIN
       tags:
       - expectations
-  /api/group/all:
-    get:
-      description: Retrieve a list of all groups.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: List of groups
-          schema:
-            items:
-              $ref: '#/definitions/pb.GetGroupsResponse'
-            type: array
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/utils.AbsResponse'
-      security:
-      - BearerAuth: []
-      summary: Get all groups
-      tags:
-      - groups
   /api/group/create:
     post:
       consumes:
@@ -631,6 +610,27 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete a group by ID
+      tags:
+      - groups
+  /api/group/get-all:
+    get:
+      description: Retrieve a list of all groups.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of groups
+          schema:
+            items:
+              $ref: '#/definitions/pb.GetGroupsResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all groups
       tags:
       - groups
   /api/group/get-by-id/{id}:

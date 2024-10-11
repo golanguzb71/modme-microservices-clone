@@ -329,7 +329,7 @@ func DeleteGroup(ctx *gin.Context) {
 // @Security BearerAuth
 // @Success 200 {array} pb.GetGroupsResponse "List of groups"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
-// @Router /api/group/all [get]
+// @Router /api/group/get-all [get]
 func GetAllGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()

@@ -386,40 +386,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/group/all": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve a list of all groups.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "groups"
-                ],
-                "summary": "Get all groups",
-                "responses": {
-                    "200": {
-                        "description": "List of groups",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/pb.GetGroupsResponse"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.AbsResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -500,6 +466,40 @@ const docTemplate = `{
                         "description": "Group successfully deleted",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/group/get-all": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a list of all groups.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get all groups",
+                "responses": {
+                    "200": {
+                        "description": "List of groups",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.GetGroupsResponse"
+                            }
                         }
                     },
                     "500": {
