@@ -754,3 +754,147 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "education.proto",
 }
+
+const (
+	AttendanceService_GetAttendance_FullMethodName = "/education.AttendanceService/GetAttendance"
+	AttendanceService_SetAttendance_FullMethodName = "/education.AttendanceService/SetAttendance"
+)
+
+// AttendanceServiceClient is the client API for AttendanceService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// attendance service start
+type AttendanceServiceClient interface {
+	GetAttendance(ctx context.Context, in *GetAttendanceRequest, opts ...grpc.CallOption) (*GetAttendanceResponse, error)
+	SetAttendance(ctx context.Context, in *SetAttendanceRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+}
+
+type attendanceServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAttendanceServiceClient(cc grpc.ClientConnInterface) AttendanceServiceClient {
+	return &attendanceServiceClient{cc}
+}
+
+func (c *attendanceServiceClient) GetAttendance(ctx context.Context, in *GetAttendanceRequest, opts ...grpc.CallOption) (*GetAttendanceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAttendanceResponse)
+	err := c.cc.Invoke(ctx, AttendanceService_GetAttendance_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *attendanceServiceClient) SetAttendance(ctx context.Context, in *SetAttendanceRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, AttendanceService_SetAttendance_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AttendanceServiceServer is the server API for AttendanceService service.
+// All implementations must embed UnimplementedAttendanceServiceServer
+// for forward compatibility.
+//
+// attendance service start
+type AttendanceServiceServer interface {
+	GetAttendance(context.Context, *GetAttendanceRequest) (*GetAttendanceResponse, error)
+	SetAttendance(context.Context, *SetAttendanceRequest) (*AbsResponse, error)
+	mustEmbedUnimplementedAttendanceServiceServer()
+}
+
+// UnimplementedAttendanceServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedAttendanceServiceServer struct{}
+
+func (UnimplementedAttendanceServiceServer) GetAttendance(context.Context, *GetAttendanceRequest) (*GetAttendanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttendance not implemented")
+}
+func (UnimplementedAttendanceServiceServer) SetAttendance(context.Context, *SetAttendanceRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetAttendance not implemented")
+}
+func (UnimplementedAttendanceServiceServer) mustEmbedUnimplementedAttendanceServiceServer() {}
+func (UnimplementedAttendanceServiceServer) testEmbeddedByValue()                           {}
+
+// UnsafeAttendanceServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AttendanceServiceServer will
+// result in compilation errors.
+type UnsafeAttendanceServiceServer interface {
+	mustEmbedUnimplementedAttendanceServiceServer()
+}
+
+func RegisterAttendanceServiceServer(s grpc.ServiceRegistrar, srv AttendanceServiceServer) {
+	// If the following call pancis, it indicates UnimplementedAttendanceServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&AttendanceService_ServiceDesc, srv)
+}
+
+func _AttendanceService_GetAttendance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAttendanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AttendanceServiceServer).GetAttendance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AttendanceService_GetAttendance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AttendanceServiceServer).GetAttendance(ctx, req.(*GetAttendanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AttendanceService_SetAttendance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAttendanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AttendanceServiceServer).SetAttendance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AttendanceService_SetAttendance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AttendanceServiceServer).SetAttendance(ctx, req.(*SetAttendanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AttendanceService_ServiceDesc is the grpc.ServiceDesc for AttendanceService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AttendanceService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "education.AttendanceService",
+	HandlerType: (*AttendanceServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetAttendance",
+			Handler:    _AttendanceService_GetAttendance_Handler,
+		},
+		{
+			MethodName: "SetAttendance",
+			Handler:    _AttendanceService_SetAttendance_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "education.proto",
+}

@@ -23,6 +23,19 @@ definitions:
       name:
         type: string
     type: object
+  pb.Attendance:
+    properties:
+      attend_date:
+        type: string
+      id:
+        type: string
+      isCome:
+        type: boolean
+      studentId:
+        type: string
+      teacherId:
+        type: string
+    type: object
   pb.ChangeLeadDataRequest:
     properties:
       id:
@@ -133,12 +146,46 @@ definitions:
       title:
         type: string
     type: object
+  pb.Day:
+    properties:
+      date:
+        type: string
+      transferDate:
+        type: string
+    type: object
   pb.DynamicSection:
     properties:
       id:
         type: string
       name:
         type: string
+    type: object
+  pb.FreezeDetail:
+    properties:
+      reason:
+        type: string
+      till_date:
+        type: string
+    type: object
+  pb.GetAttendanceRequest:
+    properties:
+      from:
+        type: string
+      groupId:
+        type: string
+      till:
+        type: string
+    type: object
+  pb.GetAttendanceResponse:
+    properties:
+      days:
+        items:
+          $ref: '#/definitions/pb.Day'
+        type: array
+      students:
+        items:
+          $ref: '#/definitions/pb.Student'
+        type: array
     type: object
   pb.GetGroupAbsResponse:
     properties:
@@ -283,6 +330,48 @@ definitions:
       type:
         type: string
     type: object
+  pb.SetAttendanceRequest:
+    properties:
+      attendDate:
+        type: string
+      groupId:
+        type: string
+      status:
+        type: integer
+      studentId:
+        type: string
+      teacherId:
+        type: string
+    type: object
+  pb.Student:
+    properties:
+      activatedAt:
+        type: string
+      addedAt:
+        type: string
+      attendance:
+        items:
+          $ref: '#/definitions/pb.Attendance'
+        type: array
+      balance:
+        type: number
+      condition:
+        type: string
+      createdAt:
+        type: string
+      dateOfBirth:
+        type: string
+      freezeDetail:
+        $ref: '#/definitions/pb.FreezeDetail'
+      gender:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
   pb.UpdateLeadDataRequest:
     properties:
       comment:
@@ -331,6 +420,67 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Modme Swagger
 paths:
+  /api/attendance/get-attendance:
+    post:
+      description: Retrieve attendance records for students in a group over a specified
+        date range.
+      parameters:
+      - description: Group ID and date range
+        in: body
+        name: attendance
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GetAttendanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Attendance records
+          schema:
+            $ref: '#/definitions/pb.GetAttendanceResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN , TEACHER
+      tags:
+      - attendance
+  /api/attendance/set:
+    post:
+      description: Record attendance for a student in a group on a specific date.
+      parameters:
+      - description: Attendance details
+        in: body
+        name: attendance
+        required: true
+        schema:
+          $ref: '#/definitions/pb.SetAttendanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Attendance recorded successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: TEACHER
+      tags:
+      - attendance
   /api/course/create:
     post:
       consumes:
@@ -360,7 +510,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - courses
   /api/course/delete/{id}:
@@ -385,7 +535,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - courses
   /api/course/get-all:
@@ -404,7 +554,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ALL
       tags:
       - courses
   /api/course/get-by-id/{id}:
@@ -429,7 +579,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Retrieve course by ID (ADMIN)
+      summary: ADMIN , CEO
       tags:
       - courses
   /api/course/update:
@@ -462,7 +612,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - courses
   /api/expectation/create:
@@ -592,7 +742,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Create a new group
+      summary: ADMIN , CEO
       tags:
       - groups
   /api/group/delete/{id}:
@@ -617,7 +767,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Delete a group by ID
+      summary: ADMIN , CEO
       tags:
       - groups
   /api/group/get-all/{isArchived}:
@@ -659,7 +809,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Get all groups
+      summary: ADMIN , CEO
       tags:
       - groups
   /api/group/get-by-id/{id}:
@@ -684,7 +834,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Get a group by ID
+      summary: ADMIN
       tags:
       - groups
   /api/group/update:
@@ -716,7 +866,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Update a group
+      summary: ADMIN , CEO
       tags:
       - groups
   /api/lead/create:
@@ -1038,7 +1188,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - rooms
   /api/room/delete/{id}:
@@ -1063,7 +1213,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - rooms
   /api/room/get-all:
@@ -1082,7 +1232,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - rooms
   /api/room/update:
@@ -1118,7 +1268,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: ADMIN
+      summary: ADMIN , CEO
       tags:
       - rooms
   /api/set/change-to-group:

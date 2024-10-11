@@ -8,9 +8,10 @@ import (
 )
 
 type EducationClient struct {
-	roomClient   pb.RoomServiceClient
-	courseClient pb.CourseServiceClient
-	groupClient  pb.GroupServiceClient
+	roomClient       pb.RoomServiceClient
+	courseClient     pb.CourseServiceClient
+	groupClient      pb.GroupServiceClient
+	attendanceClient pb.AttendanceServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -22,7 +23,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	roomClient := pb.NewRoomServiceClient(conn)
 	courseClient := pb.NewCourseServiceClient(conn)
 	groupClient := pb.NewGroupServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient}, nil
+	attendanceClient := pb.NewAttendanceServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient}, nil
 }
 
 // Education Service method client
@@ -93,4 +95,12 @@ func (lc *EducationClient) GetAllGroup(ctx context.Context, isArchived bool, pag
 
 func (lc *EducationClient) GetGroupById(ctx context.Context, id string) (*pb.GetGroupAbsResponse, error) {
 	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: id})
+}
+
+func (lc *EducationClient) GetAttendanceByGroup(ctx context.Context, req *pb.GetAttendanceRequest) (*pb.GetAttendanceResponse, error) {
+	return lc.attendanceClient.GetAttendance(ctx, req)
+}
+
+func (lc *EducationClient) SetAttendanceByGroup(ctx context.Context, req *pb.SetAttendanceRequest) (*pb.AbsResponse, error) {
+	return lc.attendanceClient.SetAttendance(ctx, req)
 }

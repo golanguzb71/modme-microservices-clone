@@ -34,15 +34,15 @@ func (r *GroupRepository) UpdateGroup(id string, name string, courseId int32, te
 	}
 	return nil
 }
-
 func (r *GroupRepository) DeleteGroup(id string) error {
-	query := `DELETE FROM groups WHERE id=$1`
+	query := `UPDATE groups set is_archived=TRUE WHERE id=$1`
 	_, err := r.db.Exec(query, id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
 func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 

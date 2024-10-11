@@ -31,4 +31,9 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		group.GET("/get-all/:isArchived", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllGroup)
 		group.GET("/get-by-id/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.GetGroupById)
 	}
+	attendance := api.Group("/attendance")
+	{
+		attendance.POST("/set", handlers.SetAttendance)
+		attendance.POST("/get-attendance", handlers.GetAttendance)
+	}
 }

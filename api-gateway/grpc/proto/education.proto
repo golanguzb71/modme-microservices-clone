@@ -141,3 +141,64 @@ message GetGroupsRequest{
   common.PageRequest page = 2;
 }
 // group service end
+
+
+
+// attendance service start
+service AttendanceService{
+  rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
+  rpc SetAttendance(SetAttendanceRequest) returns(common.AbsResponse);
+}
+message GetAttendanceRequest{
+  string groupId = 1;
+  string from = 2;
+  string till = 3;
+}
+
+message GetAttendanceResponse{
+  repeated Day days = 1;
+  repeated Student students = 2;
+}
+
+message Day {
+  string date = 1;
+  string transferDate = 2;
+}
+
+message Student{
+  string id = 9;
+  string activatedAt = 1;
+  string addedAt = 2;
+  repeated Attendance attendance = 3;
+  double balance = 4;
+  string createdAt = 5;
+  string dateOfBirth = 6;
+  FreezeDetail freezeDetail = 7;
+  bool gender = 8;
+  string condition = 10;
+  string name = 11;
+  string phone = 12;
+}
+
+message Attendance{
+  string id = 1;
+  string attend_date = 2;
+  bool isCome = 3;
+  string studentId = 4;
+  string teacherId = 5;
+}
+
+message FreezeDetail{
+  string reason = 1;
+  string till_date = 2;
+}
+
+message SetAttendanceRequest{
+  string attendDate = 1;
+  string groupId = 2;
+  int32 status = 3;
+  string studentId = 4;
+  string teacherId = 5;
+}
+
+// attendance service end

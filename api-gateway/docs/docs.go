@@ -19,6 +19,102 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/attendance/get-attendance": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve attendance records for students in a group over a specified date range.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attendance"
+                ],
+                "summary": "ADMIN , TEACHER",
+                "parameters": [
+                    {
+                        "description": "Group ID and date range",
+                        "name": "attendance",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAttendanceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attendance records",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAttendanceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/attendance/set": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Record attendance for a student in a group on a specific date.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "attendance"
+                ],
+                "summary": "TEACHER",
+                "parameters": [
+                    {
+                        "description": "Attendance details",
+                        "name": "attendance",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.SetAttendanceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attendance recorded successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/course/create": {
             "post": {
                 "security": [
@@ -36,7 +132,7 @@ const docTemplate = `{
                 "tags": [
                     "courses"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "description": "Request to create a course",
@@ -84,7 +180,7 @@ const docTemplate = `{
                 "tags": [
                     "courses"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
@@ -124,7 +220,7 @@ const docTemplate = `{
                 "tags": [
                     "courses"
                 ],
-                "summary": "ADMIN",
+                "summary": "ALL",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -155,7 +251,7 @@ const docTemplate = `{
                 "tags": [
                     "courses"
                 ],
-                "summary": "Retrieve course by ID (ADMIN)",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
@@ -198,7 +294,7 @@ const docTemplate = `{
                 "tags": [
                     "courses"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "description": "Request to update course",
@@ -403,7 +499,7 @@ const docTemplate = `{
                 "tags": [
                     "groups"
                 ],
-                "summary": "Create a new group",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "description": "Group Data",
@@ -451,7 +547,7 @@ const docTemplate = `{
                 "tags": [
                     "groups"
                 ],
-                "summary": "Delete a group by ID",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
@@ -491,7 +587,7 @@ const docTemplate = `{
                 "tags": [
                     "groups"
                 ],
-                "summary": "Get all groups",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "boolean",
@@ -555,7 +651,7 @@ const docTemplate = `{
                 "tags": [
                     "groups"
                 ],
-                "summary": "Get a group by ID",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "type": "string",
@@ -598,7 +694,7 @@ const docTemplate = `{
                 "tags": [
                     "groups"
                 ],
-                "summary": "Update a group",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "description": "Group Data",
@@ -1108,7 +1204,7 @@ const docTemplate = `{
                 "tags": [
                     "rooms"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "description": "Request to create a room",
@@ -1156,7 +1252,7 @@ const docTemplate = `{
                 "tags": [
                     "rooms"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
@@ -1196,7 +1292,7 @@ const docTemplate = `{
                 "tags": [
                     "rooms"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1230,7 +1326,7 @@ const docTemplate = `{
                 "tags": [
                     "rooms"
                 ],
-                "summary": "ADMIN",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1517,6 +1613,26 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.Attendance": {
+            "type": "object",
+            "properties": {
+                "attend_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isCome": {
+                    "type": "boolean"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "teacherId": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.ChangeLeadDataRequest": {
             "type": "object",
             "properties": {
@@ -1686,6 +1802,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.Day": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "transferDate": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.DynamicSection": {
             "type": "object",
             "properties": {
@@ -1694,6 +1821,48 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.FreezeDetail": {
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string"
+                },
+                "till_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetAttendanceRequest": {
+            "type": "object",
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "till": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetAttendanceResponse": {
+            "type": "object",
+            "properties": {
+                "days": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.Day"
+                    }
+                },
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.Student"
+                    }
                 }
             }
         },
@@ -1913,6 +2082,70 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.SetAttendanceRequest": {
+            "type": "object",
+            "properties": {
+                "attendDate": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "teacherId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.Student": {
+            "type": "object",
+            "properties": {
+                "activatedAt": {
+                    "type": "string"
+                },
+                "addedAt": {
+                    "type": "string"
+                },
+                "attendance": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.Attendance"
+                    }
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "dateOfBirth": {
+                    "type": "string"
+                },
+                "freezeDetail": {
+                    "$ref": "#/definitions/pb.FreezeDetail"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }

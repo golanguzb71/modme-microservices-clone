@@ -11,7 +11,7 @@ import (
 )
 
 // CreateRoom godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Create a new room based on the provided request data
 // @Tags rooms
 // @Accept json
@@ -41,7 +41,7 @@ func CreateRoom(ctx *gin.Context) {
 }
 
 // UpdateRoom godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Update the details of an existing room based on the provided request data
 // @Tags rooms
 // @Accept json
@@ -71,7 +71,7 @@ func UpdateRoom(ctx *gin.Context) {
 }
 
 // DeleteRoom godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Delete a room by its ID
 // @Tags rooms
 // @Produce json
@@ -94,7 +94,7 @@ func DeleteRoom(ctx *gin.Context) {
 }
 
 // GetAllRoom godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Retrieve all rooms
 // @Tags rooms
 // @Produce json
@@ -115,7 +115,7 @@ func GetAllRoom(ctx *gin.Context) {
 }
 
 // CreateCourse godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Create a new course based on the provided request data
 // @Tags courses
 // @Accept json
@@ -145,7 +145,7 @@ func CreateCourse(ctx *gin.Context) {
 }
 
 // UpdateCourse godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Update the details of an existing course based on the provided request data
 // @Tags courses
 // @Accept json
@@ -173,7 +173,7 @@ func UpdateCourse(ctx *gin.Context) {
 }
 
 // DeleteCourse godoc
-// @Summary ADMIN
+// @Summary ADMIN , CEO
 // @Description Delete a course by its ID
 // @Tags courses
 // @Produce json
@@ -196,7 +196,7 @@ func DeleteCourse(ctx *gin.Context) {
 }
 
 // GetAllCourse godoc
-// @Summary ADMIN
+// @Summary ALL
 // @Description Retrieve all courses
 // @Tags courses
 // @Produce json
@@ -217,7 +217,7 @@ func GetAllCourse(ctx *gin.Context) {
 }
 
 // GetCourseById godoc
-// @Summary Retrieve course by ID (ADMIN)
+// @Summary ADMIN , CEO
 // @Description Retrieves a course by its ID for admin users.
 // @Tags courses
 // @Produce json
@@ -240,7 +240,7 @@ func GetCourseById(ctx *gin.Context) {
 }
 
 // CreateGroup godoc
-// @Summary Create a new group
+// @Summary ADMIN , CEO
 // @Description Create a new group with provided details.
 // @Tags groups
 // @Accept json
@@ -270,7 +270,7 @@ func CreateGroup(ctx *gin.Context) {
 }
 
 // UpdateGroup godoc
-// @Summary Update a group
+// @Summary ADMIN , CEO
 // @Description Update details of an existing group.
 // @Tags groups
 // @Accept json
@@ -300,7 +300,7 @@ func UpdateGroup(ctx *gin.Context) {
 }
 
 // DeleteGroup godoc
-// @Summary Delete a group by ID
+// @Summary ADMIN , CEO
 // @Description Delete a group by its ID.
 // @Tags groups
 // @Produce json
@@ -323,7 +323,7 @@ func DeleteGroup(ctx *gin.Context) {
 }
 
 // GetAllGroup godoc
-// @Summary Get all groups
+// @Summary ADMIN , CEO
 // @Description Retrieve a list of all groups.
 // @Tags groups
 // @Produce json
@@ -363,7 +363,7 @@ func GetAllGroup(ctx *gin.Context) {
 }
 
 // GetGroupById godoc
-// @Summary Get a group by ID
+// @Summary ADMIN
 // @Description Retrieve details of a group by its ID.
 // @Tags groups
 // @Produce json
@@ -377,6 +377,64 @@ func GetGroupById(ctx *gin.Context) {
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := educationClient.GetGroupById(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, &resp)
+	return
+}
+
+// SetAttendance godoc
+// @Summary TEACHER
+// @Description Record attendance for a student in a group on a specific date.
+// @Tags attendance
+// @Produce json
+// @Security BearerAuth
+// @Param attendance body pb.SetAttendanceRequest true "Attendance details"
+// @Success 200 {object} utils.AbsResponse "Attendance recorded successfully"
+// @Failure 400 {object} utils.AbsResponse "Invalid request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/attendance/set [post]
+func SetAttendance(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var req pb.SetAttendanceRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.SetAttendanceByGroup(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// GetAttendance godoc
+// @Summary ADMIN , TEACHER
+// @Description Retrieve attendance records for students in a group over a specified date range.
+// @Tags attendance
+// @Produce json
+// @Security BearerAuth
+// @Param attendance body pb.GetAttendanceRequest true "Group ID and date range"
+// @Success 200 {object} pb.GetAttendanceResponse "Attendance records"
+// @Failure 400 {object} utils.AbsResponse "Invalid request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/attendance/get-attendance [post]
+func GetAttendance(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var req pb.GetAttendanceRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.GetAttendanceByGroup(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

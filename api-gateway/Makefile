@@ -10,6 +10,8 @@ clean:
 	rm -f grpc/proto/pb/*.pb.go
 	rm -f docs/docs.go docs/swagger.json docs/swagger.yaml
 
+clean_omit:
+	find ./grpc/proto/pb -name "*.pb.go" -exec sh -c 'sed -i "s/,omitempty//" {}' \;
 run:
 	go run cmd/main.go
 
@@ -22,4 +24,4 @@ swagger:
 build:
 	go build -o bin/lead-service cmd/main.go
 
-generate: clean proto swagger
+generate: clean proto swagger clean_omit
