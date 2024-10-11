@@ -146,6 +146,8 @@ definitions:
         $ref: '#/definitions/pb.AbsCourse'
       createdAt:
         type: string
+      dateType:
+        type: string
       days:
         items:
           type: string
@@ -156,6 +158,8 @@ definitions:
         type: string
       isArchived:
         type: boolean
+      lessonStartTime:
+        type: string
       name:
         type: string
       room:
@@ -165,8 +169,6 @@ definitions:
       studentCount:
         type: integer
       teacherName:
-        type: string
-      timeDays:
         type: string
     type: object
   pb.GetGroupsResponse:

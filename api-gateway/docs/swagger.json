@@ -1696,6 +1696,9 @@
                 "createdAt": {
                     "type": "string"
                 },
+                "dateType": {
+                    "type": "string"
+                },
                 "days": {
                     "type": "array",
                     "items": {
@@ -1711,6 +1714,9 @@
                 "isArchived": {
                     "type": "boolean"
                 },
+                "lessonStartTime": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1724,9 +1730,6 @@
                     "type": "integer"
                 },
                 "teacherName": {
-                    "type": "string"
-                },
-                "timeDays": {
                     "type": "string"
                 }
             }

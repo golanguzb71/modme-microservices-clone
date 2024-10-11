@@ -120,7 +120,7 @@ message GetGroupAbsResponse{
   string id = 1;
   AbsCourse course = 2;
   string teacherName = 3;
-  string timeDays = 4;
+  string lessonStartTime = 4;
   AbsRoom room = 5;
   int32 studentCount = 6;
   string name = 7;
@@ -129,8 +129,8 @@ message GetGroupAbsResponse{
   string startDate = 10;
   string endDate = 11;
   repeated string days = 12;
+  string dateType = 13;
 }
-
 message GetGroupsResponse{
   repeated GetGroupAbsResponse groups = 1;
   int32 totalPageCount = 2;

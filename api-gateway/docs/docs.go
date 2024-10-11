@@ -1706,6 +1706,9 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "dateType": {
+                    "type": "string"
+                },
                 "days": {
                     "type": "array",
                     "items": {
@@ -1721,6 +1724,9 @@ const docTemplate = `{
                 "isArchived": {
                     "type": "boolean"
                 },
+                "lessonStartTime": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1734,9 +1740,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "teacherName": {
-                    "type": "string"
-                },
-                "timeDays": {
                     "type": "string"
                 }
             }
