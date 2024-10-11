@@ -26,7 +26,7 @@ type CreateLeadRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title string `protobuf:"title" json:"title"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 }
 
 func (x *CreateLeadRequest) Reset() {
@@ -71,9 +71,9 @@ type GetLeadCommonResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Leads        []*Section `protobuf:"leads" json:"leads"`
-	Expectations []*Section `protobuf:"expectations" json:"expectations"`
-	Sets         []*Section `protobuf:"sets" json:"sets"`
+	Leads        []*Section `protobuf:"bytes,1,rep,name=leads,proto3" json:"leads,omitempty"`
+	Expectations []*Section `protobuf:"bytes,2,rep,name=expectations,proto3" json:"expectations,omitempty"`
+	Sets         []*Section `protobuf:"bytes,3,rep,name=sets,proto3" json:"sets,omitempty"`
 }
 
 func (x *GetLeadCommonResponse) Reset() {
@@ -132,7 +132,7 @@ type GetLeadCommonRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Requests []*LeadCommonRequest `protobuf:"requests" json:"requests"`
+	Requests []*LeadCommonRequest `protobuf:"bytes,1,rep,name=requests,proto3" json:"requests,omitempty"`
 }
 
 func (x *GetLeadCommonRequest) Reset() {
@@ -177,8 +177,8 @@ type LeadCommonRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type string `protobuf:"type" json:"type"`
-	Id   string `protobuf:"id" json:"id"`
+	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Id   string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *LeadCommonRequest) Reset() {
@@ -230,11 +230,11 @@ type Section struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string  `protobuf:"id" json:"id"`
-	Name       string  `protobuf:"name" json:"name"`
-	LeadsCount int32   `protobuf:"leadsCount" json:"leadsCount"`
-	Leads      []*Lead `protobuf:"leads" json:"leads"`
-	Type       string  `protobuf:"type" json:"type"`
+	Id         string  `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
+	Name       string  `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	LeadsCount int32   `protobuf:"varint,2,opt,name=leadsCount,proto3" json:"leadsCount,omitempty"`
+	Leads      []*Lead `protobuf:"bytes,3,rep,name=leads,proto3" json:"leads,omitempty"`
+	Type       string  `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
 }
 
 func (x *Section) Reset() {
@@ -307,11 +307,11 @@ type Lead struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"id" json:"id"`
-	Name        string `protobuf:"name" json:"name"`
-	Comment     string `protobuf:"comment" json:"comment"`
-	CreatedAt   string `protobuf:"createdAt" json:"createdAt"`
-	PhoneNumber string `protobuf:"phoneNumber" json:"phoneNumber"`
+	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name        string `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Comment     string `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
+	CreatedAt   string `protobuf:"bytes,3,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	PhoneNumber string `protobuf:"bytes,4,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
 }
 
 func (x *Lead) Reset() {
@@ -384,8 +384,8 @@ type UpdateLeadRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id    string `protobuf:"id" json:"id"`
-	Title string `protobuf:"title" json:"title"`
+	Id    string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 }
 
 func (x *UpdateLeadRequest) Reset() {
@@ -437,7 +437,7 @@ type DeleteAbsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"id" json:"id"`
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *DeleteAbsRequest) Reset() {
@@ -482,7 +482,7 @@ type GetLeadListResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Sections []*DynamicSection `protobuf:"sections" json:"sections"`
+	Sections []*DynamicSection `protobuf:"bytes,1,rep,name=sections,proto3" json:"sections,omitempty"`
 }
 
 func (x *GetLeadListResponse) Reset() {
@@ -527,8 +527,8 @@ type DynamicSection struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   string `protobuf:"id" json:"id"`
-	Name string `protobuf:"name" json:"name"`
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 }
 
 func (x *DynamicSection) Reset() {
@@ -580,7 +580,7 @@ type CreateExpectRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title string `protobuf:"title" json:"title"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 }
 
 func (x *CreateExpectRequest) Reset() {
@@ -625,8 +625,8 @@ type UpdateExpectRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id    string `protobuf:"id" json:"id"`
-	Title string `protobuf:"title" json:"title"`
+	Id    string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 }
 
 func (x *UpdateExpectRequest) Reset() {
@@ -678,12 +678,12 @@ type CreateSetRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title           string   `protobuf:"title" json:"title"`
-	CourseId        string   `protobuf:"courseId" json:"courseId"`
-	TeacherId       string   `protobuf:"teacherId" json:"teacherId"`
-	DateType        string   `protobuf:"dateType" json:"dateType"`
-	Date            []string `protobuf:"date" json:"date"`
-	LessonStartTime string   `protobuf:"lessonStartTime" json:"lessonStartTime"`
+	Title           string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	CourseId        string   `protobuf:"bytes,2,opt,name=courseId,proto3" json:"courseId,omitempty"`
+	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
+	DateType        string   `protobuf:"bytes,4,opt,name=dateType,proto3" json:"dateType,omitempty"`
+	Date            []string `protobuf:"bytes,5,rep,name=date,proto3" json:"date,omitempty"`
+	LessonStartTime string   `protobuf:"bytes,6,opt,name=lessonStartTime,proto3" json:"lessonStartTime,omitempty"`
 }
 
 func (x *CreateSetRequest) Reset() {
@@ -763,13 +763,13 @@ type UpdateSetRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              string   `protobuf:"id" json:"id"`
-	Title           string   `protobuf:"title" json:"title"`
-	CourseId        string   `protobuf:"courseId" json:"courseId"`
-	TeacherId       string   `protobuf:"teacherId" json:"teacherId"`
-	DateType        string   `protobuf:"dateType" json:"dateType"`
-	Date            []string `protobuf:"date" json:"date"`
-	LessonStartTime string   `protobuf:"lessonStartTime" json:"lessonStartTime"`
+	Id              string   `protobuf:"bytes,7,opt,name=id,proto3" json:"id,omitempty"`
+	Title           string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	CourseId        string   `protobuf:"bytes,2,opt,name=courseId,proto3" json:"courseId,omitempty"`
+	TeacherId       string   `protobuf:"bytes,3,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
+	DateType        string   `protobuf:"bytes,4,opt,name=dateType,proto3" json:"dateType,omitempty"`
+	Date            []string `protobuf:"bytes,5,rep,name=date,proto3" json:"date,omitempty"`
+	LessonStartTime string   `protobuf:"bytes,6,opt,name=lessonStartTime,proto3" json:"lessonStartTime,omitempty"`
 }
 
 func (x *UpdateSetRequest) Reset() {
@@ -856,16 +856,16 @@ type ChangeToSetRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name      string   `protobuf:"name" json:"name"`
-	RoomId    string   `protobuf:"roomId" json:"roomId"`
-	CourseId  string   `protobuf:"courseId" json:"courseId"`
-	TeacherId string   `protobuf:"teacherId" json:"teacherId"`
-	DateType  string   `protobuf:"dateType" json:"dateType"`
-	Days      []string `protobuf:"days" json:"days"`
-	StartTime string   `protobuf:"startTime" json:"startTime"`
-	StartDate string   `protobuf:"startDate" json:"startDate"`
-	EndDate   string   `protobuf:"end_date" json:"end_date"`
-	SetId     string   `protobuf:"setId" json:"setId"`
+	Name      string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	RoomId    string   `protobuf:"bytes,2,opt,name=roomId,proto3" json:"roomId,omitempty"`
+	CourseId  string   `protobuf:"bytes,3,opt,name=courseId,proto3" json:"courseId,omitempty"`
+	TeacherId string   `protobuf:"bytes,4,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
+	DateType  string   `protobuf:"bytes,5,opt,name=dateType,proto3" json:"dateType,omitempty"`
+	Days      []string `protobuf:"bytes,6,rep,name=days,proto3" json:"days,omitempty"`
+	StartTime string   `protobuf:"bytes,7,opt,name=startTime,proto3" json:"startTime,omitempty"`
+	StartDate string   `protobuf:"bytes,8,opt,name=startDate,proto3" json:"startDate,omitempty"`
+	EndDate   string   `protobuf:"bytes,9,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	SetId     string   `protobuf:"bytes,10,opt,name=setId,proto3" json:"setId,omitempty"`
 }
 
 func (x *ChangeToSetRequest) Reset() {
@@ -973,10 +973,10 @@ type CreateLeadDataRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name        string `protobuf:"name" json:"name"`
-	PhoneNumber string `protobuf:"phoneNumber" json:"phoneNumber"`
-	LeadId      string `protobuf:"leadId" json:"leadId"`
-	Comment     string `protobuf:"comment" json:"comment"`
+	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	LeadId      string `protobuf:"bytes,3,opt,name=leadId,proto3" json:"leadId,omitempty"`
+	Comment     string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
 func (x *CreateLeadDataRequest) Reset() {
@@ -1042,12 +1042,12 @@ type UpdateLeadDataRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"id" json:"id"`
-	Type        string `protobuf:"type" json:"type"`
-	SectionId   string `protobuf:"sectionId" json:"sectionId"`
-	Name        string `protobuf:"name" json:"name"`
-	PhoneNumber string `protobuf:"phoneNumber" json:"phoneNumber"`
-	Comment     string `protobuf:"comment" json:"comment"`
+	Id          string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
+	Type        string `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
+	SectionId   string `protobuf:"bytes,6,opt,name=sectionId,proto3" json:"sectionId,omitempty"`
+	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Comment     string `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
 }
 
 func (x *UpdateLeadDataRequest) Reset() {
@@ -1127,8 +1127,8 @@ type ChangeLeadPlaceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LeadDataId string                 `protobuf:"leadDataId" json:"leadDataId"`
-	ChangedSet *ChangeLeadDataRequest `protobuf:"changedSet" json:"changedSet"`
+	LeadDataId string                 `protobuf:"bytes,1,opt,name=leadDataId,proto3" json:"leadDataId,omitempty"`
+	ChangedSet *ChangeLeadDataRequest `protobuf:"bytes,2,opt,name=changedSet,proto3" json:"changedSet,omitempty"`
 }
 
 func (x *ChangeLeadPlaceRequest) Reset() {
@@ -1180,8 +1180,8 @@ type ChangeLeadDataRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"id" json:"id"`
-	SectionType string `protobuf:"sectionType" json:"sectionType"`
+	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	SectionType string `protobuf:"bytes,2,opt,name=sectionType,proto3" json:"sectionType,omitempty"`
 }
 
 func (x *ChangeLeadDataRequest) Reset() {
