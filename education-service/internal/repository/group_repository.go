@@ -58,7 +58,7 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
               LEFT JOIN group_students gs ON g.id = gs.group_id
-              GROUP BY g.id, c.title, r.title`
+              GROUP BY g.id, c.title, r.title , r.capacity`
 
 	rows, err := r.db.Query(query)
 	if err != nil {
