@@ -11,7 +11,7 @@ service LeadService {
   rpc CreateLead(CreateLeadRequest) returns (common.AbsResponse);
   rpc GetLeadCommon(GetLeadCommonRequest) returns(GetLeadCommonResponse);
   rpc UpdateLead(UpdateLeadRequest) returns (common.AbsResponse);
-  rpc DeleteLead(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteLead(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc GetListSection(google.protobuf.Empty)returns(GetLeadListResponse);
 }
 message CreateLeadRequest{
@@ -47,9 +47,6 @@ message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
-message DeleteAbsRequest{
-  string id = 1;
-}
 
 message GetLeadListResponse{
   repeated DynamicSection sections = 1;
@@ -67,7 +64,7 @@ message DynamicSection{
 service ExpectService{
   rpc CreateExpect(CreateExpectRequest) returns (common.AbsResponse);
   rpc UpdateExpect(UpdateExpectRequest) returns (common.AbsResponse);
-  rpc DeleteExpect(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteExpect(common.DeleteAbsRequest) returns (common.AbsResponse);
 }
 message CreateExpectRequest{
   string title = 1;
@@ -84,7 +81,7 @@ message UpdateExpectRequest{
 service SetService{
   rpc CreateSet(CreateSetRequest) returns (common.AbsResponse);
   rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
-  rpc DeleteSet(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteSet(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc ChangeToSet(ChangeToSetRequest) returns(common.AbsResponse);
 }
 
@@ -126,7 +123,7 @@ message ChangeToSetRequest{
 service LeadDataService {
   rpc CreateLeadData(CreateLeadDataRequest) returns (common.AbsResponse);
   rpc UpdateLeadData(UpdateLeadDataRequest) returns (common.AbsResponse);
-  rpc DeleteLeadData(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteLeadData(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc ChangeLeadPlace(ChangeLeadPlaceRequest) returns(common.AbsResponse);
 }
 message CreateLeadDataRequest{
