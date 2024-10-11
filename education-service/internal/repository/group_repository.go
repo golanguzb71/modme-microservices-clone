@@ -50,15 +50,17 @@ func (r *GroupRepository) GetGroup() (*pb.GetGroupsResponse, error) {
 	}
 
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
-             'something' as teacher_name, 
-              g.room_id, COALESCE(r.title, 'Unknown Room') as room_title,  r.capacity,
-              g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
-              g.name, COUNT(gs.id) as student_count, g.created_at
-              FROM groups g
-              LEFT JOIN courses c ON g.course_id = c.id
-              LEFT JOIN rooms r ON g.room_id = r.id
-              LEFT JOIN group_students gs ON g.id = gs.group_id
-              GROUP BY g.id, c.title, r.title , r.capacity`
+       'something' as teacher_name, 
+       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title,  r.capacity,
+       g.date_type, g.start_time, g.start_date, g.end_date, g.is_archived, 
+       g.name, 
+       CASE WHEN COUNT(gs.id) = 0 THEN 10 ELSE COUNT(gs.id) END as student_count, 
+       g.created_at
+FROM groups g
+LEFT JOIN courses c ON g.course_id = c.id
+LEFT JOIN rooms r ON g.room_id = r.id
+LEFT JOIN group_students gs ON g.id = gs.group_id
+GROUP BY g.id, c.title, r.title, r.capacity;`
 	rows, err := r.db.Query(query)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
