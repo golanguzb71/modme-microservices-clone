@@ -116,7 +116,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
               LEFT JOIN rooms r ON g.room_id = r.id
               LEFT JOIN group_students gs ON g.id = gs.group_id
               WHERE g.id = $1
-              GROUP BY g.id, c.title, r.title, r.capacity`
+              GROUP BY g.id, c.title, r.title, r.capacity , c.course_duration , c.duration_lesson , c.description , c.price`
 
 	var group pb.GetGroupAbsResponse
 	var studentCount sql.NullInt32
