@@ -65,13 +65,23 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	if attendDate.Equal(today.AddDate(0, 0, -1)) && now.After(cutoffTime) {
 		return nil, errors.New("attendance cannot be set for yesterday after 12 PM")
 	}
-
-	err = s.attendanceRepo.CreateAttendance(ctx, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
-	if err != nil {
-		return nil, err
+	if req.Status == -1 {
+		err = s.attendanceRepo.DeleteAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate)
+		if err != nil {
+			return nil, err
+		}
+		return &pb.AbsResponse{
+			Status:  200,
+			Message: "Attendance successfully deleted",
+		}, nil
+	} else {
+		err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
+		if err != nil {
+			return nil, err
+		}
+		return &pb.AbsResponse{
+			Status:  200,
+			Message: "Attendance successfully created",
+		}, nil
 	}
-	return &pb.AbsResponse{
-		Status:  200,
-		Message: "Attendance successfully created",
-	}, nil
 }

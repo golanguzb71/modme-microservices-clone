@@ -109,8 +109,8 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
               'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
-              COUNT(gs.id)  as student_count, 
-              g.created_at , g.days , g.start_time , g.date_type
+              COUNT(gs.id) as student_count, 
+              g.created_at, g.days, g.start_time, g.date_type
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -120,11 +120,12 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 
 	var group pb.GetGroupAbsResponse
 	var studentCount sql.NullInt32
-	var course pb.AbsCourse
+	var courseId sql.NullString
+	var courseName sql.NullString
 	var room pb.AbsRoom
 
 	err := r.db.QueryRow(query, id).Scan(
-		&group.Id, &course.Id, &course.Name,
+		&group.Id, &courseId, &courseName,
 		&group.TeacherName, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
 		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType,
 	)
@@ -136,7 +137,20 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 
+	// Handle course fields
+	var course pb.AbsCourse
+	if courseId.Valid {
+		course.Id = courseId.String
+	} else {
+		course.Id = "Unknown"
+	}
+	if courseName.Valid {
+		course.Name = courseName.String
+	} else {
+		course.Name = "Unknown Course"
+	}
 	group.Course = &course
+
 	group.Room = &room
 	group.StudentCount = studentCount.Int32
 	return &group, nil
