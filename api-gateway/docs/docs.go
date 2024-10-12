@@ -637,6 +637,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/group/get-by-course/{courseId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve groups associated with a specific course ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "group"
+                ],
+                "summary": "ADMIN, TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Course ID",
+                        "name": "courseId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group details",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetGroupsByCourseResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/get-by-id/{id}": {
             "get": {
                 "security": [
@@ -1907,6 +1947,29 @@ const docTemplate = `{
                 },
                 "studentCount": {
                     "type": "integer"
+                },
+                "teacherName": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetGroupsByCourseResponse": {
+            "type": "object",
+            "properties": {
+                "dateType": {
+                    "type": "string"
+                },
+                "groupEndDate": {
+                    "type": "string"
+                },
+                "groupStartDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
                 },
                 "teacherName": {
                     "type": "string"

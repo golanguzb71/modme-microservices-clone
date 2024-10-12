@@ -141,3 +141,47 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	group.StudentCount = studentCount.Int32
 	return &group, nil
 }
+
+func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCourseResponse, error) {
+	query := `
+        SELECT 
+            g.id,
+            'sample' AS teacher_name,
+            g.start_date,
+            g.end_date,
+            g.date_type,
+            g.start_time
+        FROM groups g
+        WHERE g.course_id = $1
+    `
+
+	row, err := r.db.Query(query, courseId)
+	if err != nil {
+		return nil, err
+	}
+
+	var response pb.GetGroupsByCourseResponse
+	var startDate, endDate, lessonStartTime, dateType sql.NullString
+
+	err = row.Scan(
+		&response.Id,
+		&response.TeacherName,
+		&startDate,
+		&endDate,
+		&dateType,
+		&lessonStartTime,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("no groups found for course id: %s", courseId)
+		}
+		return nil, err
+	}
+
+	response.GroupStartDate = startDate.String
+	response.GroupEndDate = endDate.String
+	response.DateType = dateType.String
+	response.LessonStartTime = lessonStartTime.String
+
+	return &response, nil
+}

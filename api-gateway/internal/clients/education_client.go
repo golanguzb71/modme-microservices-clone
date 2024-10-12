@@ -104,3 +104,7 @@ func (lc *EducationClient) GetAttendanceByGroup(ctx context.Context, req *pb.Get
 func (lc *EducationClient) SetAttendanceByGroup(ctx context.Context, req *pb.SetAttendanceRequest) (*pb.AbsResponse, error) {
 	return lc.attendanceClient.SetAttendance(ctx, req)
 }
+
+func (lc *EducationClient) GetGroupByCourseId(ctx context.Context, courseId string) (*pb.GetGroupsByCourseResponse, error) {
+	return lc.groupClient.GetGroupsByCourseId(ctx, &pb.GetGroupByIdRequest{Id: courseId})
+}

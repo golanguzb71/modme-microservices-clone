@@ -22,6 +22,7 @@ message CreateRoomRequest{
   int32 capacity = 2;
 }
 
+
 message GetUpdateRoomAbs{
   repeated AbsRoom rooms = 1;
 }
@@ -83,10 +84,10 @@ service GroupService{
   rpc CreateGroup(CreateGroupRequest)returns(common.AbsResponse);
   rpc GetGroups(GetGroupsRequest)returns(GetGroupsResponse);
   rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+  rpc GetGroupsByCourseId(GetGroupByIdRequest) returns(GetGroupsByCourseResponse);
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
 }
-
 message CreateGroupRequest{
   string name = 1;
   int32 courseId = 2;
@@ -98,11 +99,9 @@ message CreateGroupRequest{
   string groupStartDate = 8;
   string groupEndDate = 9;
 }
-
 message GetGroupByIdRequest{
   string id = 1;
 }
-
 message GetUpdateGroupAbs{
   string id = 10;
   string name = 1;
@@ -115,7 +114,14 @@ message GetUpdateGroupAbs{
   string groupStartDate = 8;
   string groupEndDate = 9;
 }
-
+message GetGroupsByCourseResponse{
+  string id = 1;
+  string teacherName = 2;
+  string groupStartDate = 3;
+  string groupEndDate = 4;
+  string dateType = 5;
+  string lessonStartTime = 6;
+}
 message GetGroupAbsResponse{
   string id = 1;
   AbsCourse course = 2;
@@ -135,7 +141,6 @@ message GetGroupsResponse{
   repeated GetGroupAbsResponse groups = 1;
   int32 totalPageCount = 2;
 }
-
 message GetGroupsRequest{
   bool isArchived = 1;
   common.PageRequest page = 2;

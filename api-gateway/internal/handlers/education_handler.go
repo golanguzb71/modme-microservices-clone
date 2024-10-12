@@ -442,3 +442,26 @@ func GetAttendance(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &resp)
 	return
 }
+
+// GetGroupByCourseId godoc
+// @Summary ADMIN, TEACHER
+// @Description Retrieve groups associated with a specific course ID.
+// @Tags group
+// @Produce json
+// @Security BearerAuth
+// @Param courseId path string true "Course ID"
+// @Success 200 {object} pb.GetGroupsByCourseResponse "Group details"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/get-by-course/{courseId} [get]
+func GetGroupByCourseId(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	courseId := ctx.Param("courseId")
+	resp, err := educationClient.GetGroupByCourseId(ctxR, courseId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, &resp)
+	return
+}
