@@ -465,3 +465,23 @@ func GetGroupByCourseId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &resp)
 	return
 }
+
+func GetAllStudent(ctx *gin.Context) {
+
+}
+
+func CreateStudent(ctx *gin.Context) {
+
+}
+
+func AddStudentToGroup(ctx *gin.Context) {
+
+}
+
+func UpdateStudent(ctx *gin.Context) {
+
+}
+
+func DeleteStudent(ctx *gin.Context) {
+
+}

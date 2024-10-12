@@ -69,6 +69,6 @@ func (r *CourseRepository) GetCourseById(id string) (*pb.GetCourseByIdResponse, 
 	if err != nil {
 		return nil, err
 	}
-	response.StudentCount = 5 // it should be updated
+	response.StudentCount = 5
 	return &response, nil
 }
