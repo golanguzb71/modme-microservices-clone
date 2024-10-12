@@ -649,7 +649,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "group"
+                    "groups"
                 ],
                 "summary": "ADMIN, TEACHER",
                 "parameters": [
