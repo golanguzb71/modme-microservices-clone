@@ -155,30 +155,44 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
         WHERE g.course_id = $1
     `
 
-	row := r.db.QueryRow(query, courseId)
+	rows, err := r.db.Query(query, courseId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	var response pb.GetGroupsByCourseResponse
-	var startDate, endDate, lessonStartTime, dateType sql.NullString
+	for rows.Next() {
+		var groupResponse pb.GetGroupByCourseAbsResponse
+		var startDate, endDate, lessonStartTime, dateType sql.NullString
 
-	err := row.Scan(
-		&response.Id,
-		&response.TeacherName,
-		&startDate,
-		&endDate,
-		&dateType,
-		&lessonStartTime,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("no groups found for course id: %s", courseId)
+		err := rows.Scan(
+			&groupResponse.Id,
+			&groupResponse.TeacherName,
+			&startDate,
+			&endDate,
+			&dateType,
+			&lessonStartTime,
+		)
+		if err != nil {
+			return nil, err
 		}
+
+		groupResponse.GroupStartDate = startDate.String
+		groupResponse.GroupEndDate = endDate.String
+		groupResponse.DateType = dateType.String
+		groupResponse.LessonStartTime = lessonStartTime.String
+
+		response.Groups = append(response.Groups, &groupResponse)
+	}
+
+	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	response.GroupStartDate = startDate.String
-	response.GroupEndDate = endDate.String
-	response.DateType = dateType.String
-	response.LessonStartTime = lessonStartTime.String
+	if len(response.Groups) == 0 {
+		return nil, fmt.Errorf("no groups found for course id: %s", courseId)
+	}
 
 	return &response, nil
 }

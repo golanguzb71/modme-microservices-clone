@@ -218,7 +218,7 @@ definitions:
       teacherName:
         type: string
     type: object
-  pb.GetGroupsByCourseResponse:
+  pb.GetGroupByCourseAbsResponse:
     properties:
       dateType:
         type: string
@@ -232,6 +232,13 @@ definitions:
         type: string
       teacherName:
         type: string
+    type: object
+  pb.GetGroupsByCourseResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/pb.GetGroupByCourseAbsResponse'
+        type: array
     type: object
   pb.GetGroupsResponse:
     properties:

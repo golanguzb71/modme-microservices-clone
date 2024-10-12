@@ -1953,7 +1953,7 @@ const docTemplate = `{
                 }
             }
         },
-        "pb.GetGroupsByCourseResponse": {
+        "pb.GetGroupByCourseAbsResponse": {
             "type": "object",
             "properties": {
                 "dateType": {
@@ -1973,6 +1973,17 @@ const docTemplate = `{
                 },
                 "teacherName": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.GetGroupsByCourseResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetGroupByCourseAbsResponse"
+                    }
                 }
             }
         },

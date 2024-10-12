@@ -112,6 +112,9 @@ message GetUpdateGroupAbs{
   string groupEndDate = 9;
 }
 message GetGroupsByCourseResponse{
+  repeated GetGroupByCourseAbsResponse groups = 1;
+}
+message GetGroupByCourseAbsResponse{
   string id = 1;
   string teacherName = 2;
   string groupStartDate = 3;
