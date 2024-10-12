@@ -1943,7 +1943,7 @@
                 }
             }
         },
-        "pb.GetGroupsByCourseResponse": {
+        "pb.GetGroupByCourseAbsResponse": {
             "type": "object",
             "properties": {
                 "dateType": {
@@ -1963,6 +1963,17 @@
                 },
                 "teacherName": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.GetGroupsByCourseResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetGroupByCourseAbsResponse"
+                    }
                 }
             }
         },
