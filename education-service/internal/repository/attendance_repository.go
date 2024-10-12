@@ -43,25 +43,25 @@ func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Cont
         ),
         group_dates AS (
             SELECT DISTINCT d.date::text, tl.transfer_date::text
-            FROM dates d
-            JOIN groups g ON g.id = $3::bigint
-            LEFT JOIN transfer_lesson tl ON tl.group_id = g.id AND tl.real_date = d.date
-            WHERE (
-                (d.date >= g.start_date AND d.date <= LEAST(g.end_date, $2::date))
-                AND EXTRACT(DOW FROM d.date) = ANY(
-                    SELECT CASE day
-                        WHEN 'DUSHANBA' THEN 1
-                        WHEN 'SESHANBA' THEN 2
-                        WHEN 'CHORSHANBA' THEN 3
-                        WHEN 'PAYSHANBA' THEN 4
-                        WHEN 'JUMA' THEN 5
-                        WHEN 'SHANBA' THEN 6
-                        WHEN 'YAKSHANBA' THEN 0
-                    END
-                    FROM unnest(g.days) AS day
-                )
-            )
-            ORDER BY d.date
+FROM dates d
+JOIN groups g ON g.id = $3::bigint
+LEFT JOIN transfer_lesson tl ON tl.group_id = g.id AND tl.real_date = d.date
+WHERE (
+    (d.date >= g.start_date AND d.date <= LEAST(g.end_date, $2::date))
+    AND EXTRACT(DOW FROM d.date) = ANY(
+        SELECT CASE day
+            WHEN 'DUSHANBA' THEN 1
+            WHEN 'SESHANBA' THEN 2
+            WHEN 'CHORSHANBA' THEN 3
+            WHEN 'PAYSHANBA' THEN 4
+            WHEN 'JUMA' THEN 5
+            WHEN 'SHANBA' THEN 6
+            WHEN 'YAKSHANBA' THEN 0
+        END
+        FROM unnest(g.days) AS day
+    )
+)
+ORDER BY d.date::text, tl.transfer_date::text
         )
         SELECT date, transfer_date FROM group_dates
     `
