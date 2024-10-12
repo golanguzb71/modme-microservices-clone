@@ -61,3 +61,12 @@ func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdReq
 	log.Printf("Returning group with id: %s", group.Id)
 	return group, nil
 }
+
+func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupsByCourseResponse, error) {
+	groups, err := s.repo.GetGroupByCourseId(req.Id)
+	if err != nil {
+		log.Printf("Error in GetGroupById: %v", err)
+		return nil, err
+	}
+	return groups, nil
+}

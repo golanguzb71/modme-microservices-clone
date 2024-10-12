@@ -498,11 +498,12 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	GroupService_CreateGroup_FullMethodName  = "/education.GroupService/CreateGroup"
-	GroupService_GetGroups_FullMethodName    = "/education.GroupService/GetGroups"
-	GroupService_GetGroupById_FullMethodName = "/education.GroupService/GetGroupById"
-	GroupService_UpdateGroup_FullMethodName  = "/education.GroupService/UpdateGroup"
-	GroupService_DeleteGroup_FullMethodName  = "/education.GroupService/DeleteGroup"
+	GroupService_CreateGroup_FullMethodName         = "/education.GroupService/CreateGroup"
+	GroupService_GetGroups_FullMethodName           = "/education.GroupService/GetGroups"
+	GroupService_GetGroupById_FullMethodName        = "/education.GroupService/GetGroupById"
+	GroupService_GetGroupsByCourseId_FullMethodName = "/education.GroupService/GetGroupsByCourseId"
+	GroupService_UpdateGroup_FullMethodName         = "/education.GroupService/UpdateGroup"
+	GroupService_DeleteGroup_FullMethodName         = "/education.GroupService/DeleteGroup"
 )
 
 // GroupServiceClient is the client API for GroupService service.
@@ -514,6 +515,7 @@ type GroupServiceClient interface {
 	CreateGroup(ctx context.Context, in *CreateGroupRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetGroups(ctx context.Context, in *GetGroupsRequest, opts ...grpc.CallOption) (*GetGroupsResponse, error)
 	GetGroupById(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupAbsResponse, error)
+	GetGroupsByCourseId(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupsByCourseResponse, error)
 	UpdateGroup(ctx context.Context, in *GetUpdateGroupAbs, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteGroup(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
@@ -556,6 +558,16 @@ func (c *groupServiceClient) GetGroupById(ctx context.Context, in *GetGroupByIdR
 	return out, nil
 }
 
+func (c *groupServiceClient) GetGroupsByCourseId(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupsByCourseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGroupsByCourseResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetGroupsByCourseId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *groupServiceClient) UpdateGroup(ctx context.Context, in *GetUpdateGroupAbs, opts ...grpc.CallOption) (*AbsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AbsResponse)
@@ -585,6 +597,7 @@ type GroupServiceServer interface {
 	CreateGroup(context.Context, *CreateGroupRequest) (*AbsResponse, error)
 	GetGroups(context.Context, *GetGroupsRequest) (*GetGroupsResponse, error)
 	GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error)
+	GetGroupsByCourseId(context.Context, *GetGroupByIdRequest) (*GetGroupsByCourseResponse, error)
 	UpdateGroup(context.Context, *GetUpdateGroupAbs) (*AbsResponse, error)
 	DeleteGroup(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedGroupServiceServer()
@@ -605,6 +618,9 @@ func (UnimplementedGroupServiceServer) GetGroups(context.Context, *GetGroupsRequ
 }
 func (UnimplementedGroupServiceServer) GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroupById not implemented")
+}
+func (UnimplementedGroupServiceServer) GetGroupsByCourseId(context.Context, *GetGroupByIdRequest) (*GetGroupsByCourseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupsByCourseId not implemented")
 }
 func (UnimplementedGroupServiceServer) UpdateGroup(context.Context, *GetUpdateGroupAbs) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateGroup not implemented")
@@ -687,6 +703,24 @@ func _GroupService_GetGroupById_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_GetGroupsByCourseId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetGroupsByCourseId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetGroupsByCourseId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetGroupsByCourseId(ctx, req.(*GetGroupByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _GroupService_UpdateGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUpdateGroupAbs)
 	if err := dec(in); err != nil {
@@ -741,6 +775,10 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGroupById",
 			Handler:    _GroupService_GetGroupById_Handler,
+		},
+		{
+			MethodName: "GetGroupsByCourseId",
+			Handler:    _GroupService_GetGroupsByCourseId_Handler,
 		},
 		{
 			MethodName: "UpdateGroup",

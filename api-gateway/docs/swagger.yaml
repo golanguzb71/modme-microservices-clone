@@ -218,6 +218,21 @@ definitions:
       teacherName:
         type: string
     type: object
+  pb.GetGroupsByCourseResponse:
+    properties:
+      dateType:
+        type: string
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      teacherName:
+        type: string
+    type: object
   pb.GetGroupsResponse:
     properties:
       groups:
@@ -812,6 +827,31 @@ paths:
       summary: ADMIN , CEO
       tags:
       - groups
+  /api/group/get-by-course/{courseId}:
+    get:
+      description: Retrieve groups associated with a specific course ID.
+      parameters:
+      - description: Course ID
+        in: path
+        name: courseId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Group details
+          schema:
+            $ref: '#/definitions/pb.GetGroupsByCourseResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN, TEACHER
+      tags:
+      - group
   /api/group/get-by-id/{id}:
     get:
       description: Retrieve details of a group by its ID.
