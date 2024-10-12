@@ -446,7 +446,7 @@ func GetAttendance(ctx *gin.Context) {
 // GetGroupByCourseId godoc
 // @Summary ADMIN, TEACHER
 // @Description Retrieve groups associated with a specific course ID.
-// @Tags group
+// @Tags groups
 // @Produce json
 // @Security BearerAuth
 // @Param courseId path string true "Course ID"

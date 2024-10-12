@@ -155,15 +155,12 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
         WHERE g.course_id = $1
     `
 
-	row, err := r.db.Query(query, courseId)
-	if err != nil {
-		return nil, err
-	}
+	row := r.db.QueryRow(query, courseId)
 
 	var response pb.GetGroupsByCourseResponse
 	var startDate, endDate, lessonStartTime, dateType sql.NullString
 
-	err = row.Scan(
+	err := row.Scan(
 		&response.Id,
 		&response.TeacherName,
 		&startDate,

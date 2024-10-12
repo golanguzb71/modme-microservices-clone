@@ -851,7 +851,7 @@ paths:
       - BearerAuth: []
       summary: ADMIN, TEACHER
       tags:
-      - group
+      - groups
   /api/group/get-by-id/{id}:
     get:
       description: Retrieve details of a group by its ID.
