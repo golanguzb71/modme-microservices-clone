@@ -5,7 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lead-service/proto/education.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/internal/clients/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/clients/group_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/internal/service/set_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/service/set_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/common.proto" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/common.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/proto/pb/common.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/proto/pb/common.pb.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
