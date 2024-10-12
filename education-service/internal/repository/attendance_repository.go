@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"education-service/proto/pb"
+	"fmt"
 	"time"
 )
 
@@ -15,16 +16,38 @@ func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
 
-func (r *AttendanceRepository) CreateAttendance(ctx context.Context, groupId string, studentId string, teacherId string, attendDate string, status int32) error {
+func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT (group_id, student_id, attend_date) 
         DO UPDATE SET status = EXCLUDED.status, teacher_id = EXCLUDED.teacher_id
     `
-
-	_, err := r.db.ExecContext(ctx, query, groupId, studentId, teacherId, attendDate, status)
+	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status)
 	return err
+}
+
+func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string, teacherId string, attendDate string) error {
+	query := `
+        DELETE FROM attendance
+        WHERE group_id = $1
+          AND student_id = $2
+          AND teacher_id = $3
+          AND attend_date = $4
+    `
+	result, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate)
+	if err != nil {
+		return fmt.Errorf("failed to delete attendance: %v", err)
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get affected rows: %v", err)
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("attendance record not found for group_id: %s, student_id: %s, teacher_id: %s, attend_date: %s", groupId, studentId, teacherId, attendDate)
+	}
+	// writing teacher finance remove
+	return nil
 }
 
 func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time) (*pb.GetAttendanceResponse, error) {
