@@ -4,6 +4,7 @@ import (
 	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 	"lid-service/config"
+	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/internal/service"
 	"lid-service/migrations"
@@ -25,6 +26,10 @@ func RunServer() {
 	defer db.Close()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 
+	// lead_service_clients_start
+	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
+
+	// lead_service_services_start
 	expectRepo := repository.NewExpectRepository(db)
 	setRepo := repository.NewSetRepository(db)
 	leadRepo := repository.NewLeadRepository(db)
@@ -32,8 +37,9 @@ func RunServer() {
 
 	leadService := service.NewLeadService(leadRepo)
 	expectService := service.NewExpectService(expectRepo)
-	setService := service.NewSetService(setRepo)
+	setService := service.NewSetService(setRepo, groupClient)
 	leadDataService := service.NewLeadDataService(leadDataRepo)
+	// lead_service_services_end
 
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {

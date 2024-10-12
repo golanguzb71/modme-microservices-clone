@@ -11,6 +11,10 @@ database:
   action: "no"
 
 
+grpc:
+  education_service:
+    address: "sphere-education-service:8080"
+
 #
 #server:
 #  port: 50053
