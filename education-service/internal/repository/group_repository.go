@@ -150,7 +150,8 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
             g.start_date,
             g.end_date,
             g.date_type,
-            g.start_time
+            g.start_time,
+            g.name
         FROM groups g
         WHERE g.course_id = $1
     `
@@ -164,7 +165,7 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
 	var response pb.GetGroupsByCourseResponse
 	for rows.Next() {
 		var groupResponse pb.GetGroupByCourseAbsResponse
-		var startDate, endDate, lessonStartTime, dateType sql.NullString
+		var startDate, endDate, lessonStartTime, dateType, name sql.NullString
 
 		err := rows.Scan(
 			&groupResponse.Id,
@@ -173,11 +174,12 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
 			&endDate,
 			&dateType,
 			&lessonStartTime,
+			&name,
 		)
 		if err != nil {
 			return nil, err
 		}
-
+		groupResponse.GroupName = name.String
 		groupResponse.GroupStartDate = startDate.String
 		groupResponse.GroupEndDate = endDate.String
 		groupResponse.DateType = dateType.String

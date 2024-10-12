@@ -224,6 +224,8 @@ definitions:
         type: string
       groupEndDate:
         type: string
+      groupName:
+        type: string
       groupStartDate:
         type: string
       id:

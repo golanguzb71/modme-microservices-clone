@@ -1962,6 +1962,9 @@ const docTemplate = `{
                 "groupEndDate": {
                     "type": "string"
                 },
+                "groupName": {
+                    "type": "string"
+                },
                 "groupStartDate": {
                     "type": "string"
                 },

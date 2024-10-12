@@ -121,6 +121,7 @@ message GetGroupByCourseAbsResponse{
   string groupEndDate = 4;
   string dateType = 5;
   string lessonStartTime = 6;
+  string groupName = 7;
 }
 message GetGroupAbsResponse{
   string id = 1;
