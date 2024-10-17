@@ -15,7 +15,7 @@ grpc:
   education_service:
     address: "sphere-education-service:8080"
 
-#
+
 #server:
 #  port: 50053
 #
@@ -27,3 +27,6 @@ grpc:
 #  dbname: "modme_lead_db"
 #  sslmode: "disable"
 #  action: "up"
+#grpc:
+#  education_service:
+#    address: "localhost:50052"

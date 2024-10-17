@@ -465,3 +465,137 @@ func GetGroupByCourseId(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &resp)
 	return
 }
+
+// GetAllStudent godoc
+// @Summary Retrieve all students based on their condition
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param condition path string true "Condition" Enums(ARCHIVED, ACTIVE)
+// @Param page query string false "Page number"
+// @Param size query string false "Page size"
+// @Success 200 {object} pb.GetAllStudentResponse "List of students"
+// @Failure 400 {object} utils.AbsResponse "Invalid condition"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/get-all/{condition} [get]
+func GetAllStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	condition := ctx.Param("condition")
+	if condition != "ARCHIVED" && condition != "ACTIVE" {
+		utils.RespondError(ctx, http.StatusBadRequest, "Invalid condition")
+		return
+	}
+	page := ctx.Query("page")
+	size := ctx.Query("size")
+	response, err := educationClient.GetAllStudent(ctxR, condition, page, size)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
+}
+
+// CreateStudent godoc
+// @Summary Create a new student
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.CreateStudentRequest true "Student details"
+// @Success 200 {object} utils.AbsResponse "Created student details"
+// @Failure 400 {object} utils.AbsResponse "Invalid request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/create [post]
+func CreateStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateStudentRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	response, err := educationClient.CreateStudent(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
+}
+
+// AddStudentToGroup godoc
+// @Summary Add a student to a group
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.AddToGroupRequest true "Add student to group details"
+// @Success 200 {object} utils.AbsResponse "Success message"
+// @Failure 400 {object} utils.AbsResponse "Invalid request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/add-to-group [post]
+func AddStudentToGroup(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.AddToGroupRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	response, err := educationClient.AddStudentToGroup(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, response.Status, response.Message)
+	return
+}
+
+// UpdateStudent godoc
+// @Summary Update an existing student
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param request body pb.UpdateStudentRequest true "Updated student details"
+// @Success 200 {object} utils.AbsResponse "Update success message"
+// @Failure 400 {object} utils.AbsResponse "Invalid request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/update [put]
+func UpdateStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.UpdateStudentRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	response, err := educationClient.UpdateStudent(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, response.Status, response.Message)
+	return
+}
+
+// DeleteStudent godoc
+// @Summary Delete a student by ID
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Student ID"
+// @Success 200 {object} utils.AbsResponse "Delete success message"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/delete/{id} [delete]
+func DeleteStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	response, err := educationClient.DeleteStudent(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, response.Status, response.Message)
+	return
+}

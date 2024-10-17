@@ -12,6 +12,7 @@ type EducationClient struct {
 	courseClient     pb.CourseServiceClient
 	groupClient      pb.GroupServiceClient
 	attendanceClient pb.AttendanceServiceClient
+	studentClient    pb.StudentServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -24,7 +25,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	courseClient := pb.NewCourseServiceClient(conn)
 	groupClient := pb.NewGroupServiceClient(conn)
 	attendanceClient := pb.NewAttendanceServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient}, nil
+	studentClient := pb.NewStudentServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient}, nil
 }
 
 // Education Service method client
@@ -107,4 +109,36 @@ func (lc *EducationClient) SetAttendanceByGroup(ctx context.Context, req *pb.Set
 
 func (lc *EducationClient) GetGroupByCourseId(ctx context.Context, courseId string) (*pb.GetGroupsByCourseResponse, error) {
 	return lc.groupClient.GetGroupsByCourseId(ctx, &pb.GetGroupByIdRequest{Id: courseId})
+}
+
+func (lc *EducationClient) GetAllStudent(ctx context.Context, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
+	response, err := lc.studentClient.GetAllStudent(ctx, &pb.GetAllStudentRequest{
+		Condition: condition,
+		Page:      page,
+		Size:      size,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (lc *EducationClient) CreateStudent(ctx context.Context, p *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
+	response, err := lc.studentClient.CreateStudent(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (lc *EducationClient) AddStudentToGroup(ctx context.Context, p *pb.AddToGroupRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.AddToGroup(ctx, p)
+}
+
+func (lc *EducationClient) UpdateStudent(ctx context.Context, p *pb.UpdateStudentRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.UpdateStudent(ctx, p)
+}
+
+func (lc *EducationClient) DeleteStudent(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	return lc.studentClient.DeleteStudent(ctx, &pb.DeleteAbsRequest{Id: id})
 }

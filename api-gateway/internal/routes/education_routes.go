@@ -34,7 +34,15 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	}
 	attendance := api.Group("/attendance")
 	{
-		attendance.POST("/set", handlers.SetAttendance)
-		attendance.POST("/get-attendance", handlers.GetAttendance)
+		attendance.POST("/set", middleware.AuthMiddleware([]string{}, userClient), handlers.SetAttendance)
+		attendance.POST("/get-attendance", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAttendance)
+	}
+	student := api.Group("/student")
+	{
+		student.GET("/get-all/:condition", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllStudent)
+		student.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateStudent)
+		student.PUT("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateStudent)
+		student.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudent)
+		student.POST("/add-to-group", middleware.AuthMiddleware([]string{}, userClient), handlers.AddStudentToGroup)
 	}
 }
