@@ -211,3 +211,48 @@ message SetAttendanceRequest{
 }
 
 // attendance service end
+
+// student service start
+service StudentService{
+  rpc GetAllStudent(GetAllStudentRequest) returns(GetAllStudentResponse);
+  rpc CreateStudent(CreateStudentRequest) returns(common.AbsResponse);
+  rpc UpdateStudent(UpdateStudentRequest) returns(common.AbsResponse);
+  rpc DeleteStudent(common.DeleteAbsRequest) returns(common.AbsResponse);
+  rpc AddToGroup(AddToGroupRequest) returns(common.AbsResponse);
+}
+message GetAllStudentRequest{
+  string condition = 1;
+  string page = 2;
+  string size = 3;
+}
+message GetAllStudentResponse{
+
+}
+message CreateStudentRequest{
+  string phoneNumber = 1;
+  string name = 2;
+  string dateOfBirth = 3;
+  bool gender = 4;
+  string additionalContact = 5;
+  string address = 6;
+  string passportId = 7;
+  string groupId = 8;
+  string dateFrom = 9;
+}
+
+message UpdateStudentRequest{
+  string studentId = 8;
+  string phoneNumber = 1;
+  string name = 2;
+  string dateOfBirth = 3;
+  bool gender = 4;
+  string additionalContact = 5;
+  string address = 6;
+  string passportId = 7;
+}
+message AddToGroupRequest{
+  string createdDate = 1;
+  string groupId = 2;
+  repeated string student_ids = 3;
+}
+// student service end

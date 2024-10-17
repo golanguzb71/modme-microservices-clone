@@ -48,14 +48,18 @@ CREATE TABLE IF NOT EXISTS attendance
 
 CREATE TABLE IF NOT EXISTS students
 (
-    id            uuid primary key,
-    name          varchar not null,
-    phone         varchar not null,
-    date_of_birth date,
-    balance       double precision                                     DEFAULT 0,
-    condition     varchar check ( condition in ('ACTIVE', 'ARCHIVED')) DEFAULT 'ACTIVE',
-    gender        boolean,
-    created_at    timestamp                                            DEFAULT now()
+    id                 uuid PRIMARY KEY,
+    name               varchar NOT NULL,
+    phone              varchar NOT NULL,
+    date_of_birth      date,
+    balance            double precision                                      DEFAULT 0,
+    condition          varchar CHECK ( condition IN ('ACTIVE', 'ARCHIVED') ) DEFAULT 'ACTIVE',
+    additional_contact varchar,
+    address            varchar,
+    telegram_username  varchar,
+    passport_id        varchar CHECK (passport_id IS NULL OR char_length(passport_id) = 9),
+    gender             boolean,
+    created_at         timestamp                                             DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS student_note
@@ -107,7 +111,7 @@ CREATE TABLE IF NOT EXISTS group_student_condition_history
     id               uuid primary key,
     group_student_id uuid references group_students (id)                          NOT NULL,
     student_id       uuid references students (id)                                NOT NULL,
-    group_id         bigint references groups (id)                                  NOT NULL,
+    group_id         bigint references groups (id)                                NOT NULL,
     condition        varchar check ( condition in ('FREEZE', 'ACTIVE', 'DELETE')) NOT NULL,
     created_at       timestamp DEFAULT NOW()
 );

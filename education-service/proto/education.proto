@@ -209,7 +209,6 @@ service StudentService{
   rpc DeleteStudent(common.DeleteAbsRequest) returns(common.AbsResponse);
   rpc AddToGroup(AddToGroupRequest) returns(common.AbsResponse);
 }
-
 message GetAllStudentRequest{
 
 }
