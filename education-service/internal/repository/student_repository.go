@@ -170,7 +170,7 @@ func (r *StudentRepository) DeleteStudent(studentId string) error {
 	}
 
 	if cond == "ACTIVE" {
-		_, err := r.db.Exec(`UPDATE students SET condition='DELETED' where id=$1`, studentId)
+		_, err := r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1`, studentId)
 		if err != nil {
 			return err
 		}
