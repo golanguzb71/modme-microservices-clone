@@ -1897,6 +1897,9 @@ const docTemplate = `{
         "pb.AddToGroupRequest": {
             "type": "object",
             "properties": {
+                "createdBy": {
+                    "type": "string"
+                },
                 "createdDate": {
                     "type": "string"
                 },

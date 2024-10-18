@@ -285,5 +285,6 @@ message AddToGroupRequest{
   string createdDate = 1;
   string groupId = 2;
   repeated string student_ids = 3;
+  string createdBy = 4;
 }
 // student service end

@@ -25,6 +25,8 @@ definitions:
     type: object
   pb.AddToGroupRequest:
     properties:
+      createdBy:
+        type: string
       createdDate:
         type: string
       groupId:
