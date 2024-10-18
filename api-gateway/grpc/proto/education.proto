@@ -226,7 +226,33 @@ message GetAllStudentRequest{
   string size = 3;
 }
 message GetAllStudentResponse{
-
+  string id = 1;
+  string name = 2;
+  bool gender = 3;
+  string dateOfBirth = 4;
+  string phone = 5;
+  string address = 6;
+  string passportId = 7;
+  string additionalContact = 8;
+  double balance = 10;
+  string condition = 11;
+  string telegramUsername = 12;
+  string createdAt = 13;
+  repeated GroupGetAllStudentAbs groups = 9;
+}
+message GroupGetAllStudentAbs{
+  string id = 10;
+  string name = 1;
+  AbsCourse course = 2;
+  string teacherName = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+  string studentCondition = 11;
+  string studentActivatedAt = 12;
 }
 message CreateStudentRequest{
   string phoneNumber = 1;
@@ -236,10 +262,10 @@ message CreateStudentRequest{
   string additionalContact = 5;
   string address = 6;
   string passportId = 7;
+  string telegramUsername = 10;
   string groupId = 8;
   string dateFrom = 9;
 }
-
 message UpdateStudentRequest{
   string studentId = 8;
   string phoneNumber = 1;

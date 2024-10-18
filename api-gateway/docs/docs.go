@@ -1627,7 +1627,7 @@ const docTemplate = `{
                 "tags": [
                     "students"
                 ],
-                "summary": "Add a student to a group",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "description": "Add student to group details",
@@ -1674,7 +1674,7 @@ const docTemplate = `{
                 "tags": [
                     "students"
                 ],
-                "summary": "Create a new student",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "description": "Student details",
@@ -1721,7 +1721,7 @@ const docTemplate = `{
                 "tags": [
                     "students"
                 ],
-                "summary": "Delete a student by ID",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "type": "string",
@@ -1760,7 +1760,7 @@ const docTemplate = `{
                 "tags": [
                     "students"
                 ],
-                "summary": "Retrieve all students based on their condition",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "enum": [
@@ -1821,7 +1821,7 @@ const docTemplate = `{
                 "tags": [
                     "students"
                 ],
-                "summary": "Update an existing student",
+                "summary": "ADMIN",
                 "parameters": [
                     {
                         "description": "Updated student details",
@@ -2129,6 +2129,9 @@ const docTemplate = `{
                 },
                 "phoneNumber": {
                     "type": "string"
+                },
+                "telegramUsername": {
+                    "type": "string"
                 }
             }
         },
@@ -2166,7 +2169,51 @@ const docTemplate = `{
             }
         },
         "pb.GetAllStudentResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "additionalContact": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "dateOfBirth": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GroupGetAllStudentAbs"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "passportId": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "telegramUsername": {
+                    "type": "string"
+                }
+            }
         },
         "pb.GetAttendanceRequest": {
             "type": "object",
@@ -2399,6 +2446,50 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsRoom"
                     }
+                }
+            }
+        },
+        "pb.GroupGetAllStudentAbs": {
+            "type": "object",
+            "properties": {
+                "course": {
+                    "$ref": "#/definitions/pb.AbsCourse"
+                },
+                "days": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "groupEndDate": {
+                    "type": "string"
+                },
+                "groupStartDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "integer"
+                },
+                "studentActivatedAt": {
+                    "type": "string"
+                },
+                "studentCondition": {
+                    "type": "string"
+                },
+                "teacherName": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
