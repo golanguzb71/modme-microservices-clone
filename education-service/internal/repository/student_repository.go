@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"strconv"
+	"time"
 )
 
 type StudentRepository struct {
@@ -41,7 +42,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
         g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.days, g.start_time,
         c.id AS course_id, c.title AS course_title, c.duration_lesson, c.course_duration, c.price,
         'exampleteachername' AS teacher_name,
-        gs.condition AS student_group_condition, g.room_id,  gs.last_specific_date AS student_activated_at
+        gs.condition AS student_group_condition, g.room_id, gs.last_specific_date AS student_activated_at
     FROM students s
     LEFT JOIN group_students gs ON s.id = gs.student_id
     LEFT JOIN groups g ON gs.group_id = g.id
@@ -64,19 +65,57 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		var group pb.GroupGetAllStudentAbs
 		var course pb.AbsCourse
 
+		// Use nullable types for columns that might be NULL
+		var nullableGroupID, nullableGroupName, nullableGroupStartDate, nullableGroupEndDate sql.NullString
+		var nullableDays pq.StringArray
+		var nullableLessonStartTime sql.NullString
+		var nullableCourseID, nullableCourseName sql.NullString
+		var nullableLessonDuration, nullableCourseDuration sql.NullInt32
+		var nullablePrice sql.NullFloat64
+		var nullableStudentCondition sql.NullString
+		var nullableRoomID sql.NullInt32
+		var nullableStudentActivatedAt sql.NullTime
+
 		err := rows.Scan(
 			&student.Id, &student.Name, &student.Gender, &student.DateOfBirth, &student.Phone,
 			&student.Address, &student.PassportId, &student.AdditionalContact, &student.Balance,
 			&student.Condition, &student.TelegramUsername, &student.CreatedAt,
-			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, pq.Array(&group.Days), &group.LessonStartTime,
-			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price,
-			&group.TeacherName, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
+			&nullableGroupID, &nullableGroupName, &nullableGroupStartDate, &nullableGroupEndDate, &nullableDays, &nullableLessonStartTime,
+			&nullableCourseID, &nullableCourseName, &nullableLessonDuration, &nullableCourseDuration, &nullablePrice,
+			&group.TeacherName, &nullableStudentCondition, &nullableRoomID, &nullableStudentActivatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
-		group.Course = &course
-		student.Groups = append(student.Groups, &group)
+
+		// Assign values only if they are not NULL
+		if nullableGroupID.Valid {
+			group.Id = nullableGroupID.String
+			group.Name = nullableGroupName.String
+			group.GroupStartDate = nullableGroupStartDate.String
+			group.GroupEndDate = nullableGroupEndDate.String
+			group.Days = nullableDays
+			group.LessonStartTime = nullableLessonStartTime.String
+			group.StudentCondition = nullableStudentCondition.String
+			if nullableRoomID.Valid {
+				group.RoomId = int32(nullableRoomID.Int32)
+			}
+			if nullableStudentActivatedAt.Valid {
+				group.StudentActivatedAt = nullableStudentActivatedAt.Time.Format(time.RFC3339)
+			}
+
+			if nullableCourseID.Valid {
+				course.Id = nullableCourseID.String
+				course.Name = nullableCourseName.String
+				course.LessonDuration = nullableLessonDuration.Int32
+				course.CourseDuration = nullableCourseDuration.Int32
+				course.Price = nullablePrice.Float64
+				group.Course = &course
+			}
+
+			student.Groups = append(student.Groups, &group)
+		}
+
 		response.Response = append(response.Response, &student)
 	}
 
