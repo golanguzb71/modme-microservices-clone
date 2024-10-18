@@ -254,6 +254,7 @@ message CreateStudentRequest{
   string telegramUsername = 10;
   string groupId = 8;
   string dateFrom = 9;
+  string createdBy = 11;
 }
 message UpdateStudentRequest{
   string studentId = 8;

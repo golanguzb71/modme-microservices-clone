@@ -20,7 +20,7 @@ func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStuden
 }
 
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
-	if err := s.repo.CreateStudent(ctx, req.PhoneNumber, req.Name, req.GroupId, req.Address, req.AdditionalContact, req.DateFrom, req.DateOfBirth, req.Gender, req.PassportId, req.TelegramUsername); err != nil {
+	if err := s.repo.CreateStudent(req.CreatedBy, req.PhoneNumber, req.Name, req.GroupId, req.Address, req.AdditionalContact, req.DateFrom, req.DateOfBirth, req.Gender, req.PassportId, req.TelegramUsername); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{

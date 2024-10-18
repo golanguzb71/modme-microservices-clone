@@ -510,12 +510,12 @@ func GetAllStudent(ctx *gin.Context) {
 func CreateStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	ctxR = context.WithValue(ctxR, "createdBy", "9ccf040d-2a99-41b8-b8df-1457e3188159")
 	req := pb.CreateStudentRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	req.CreatedBy = "c1d6503f-31dc-4f99-b61f-2e4ebc7a7639"
 	response, err := educationClient.CreateStudent(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())

@@ -163,6 +163,8 @@ definitions:
         type: string
       address:
         type: string
+      createdBy:
+        type: string
       dateFrom:
         type: string
       dateOfBirth:
