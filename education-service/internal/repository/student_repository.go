@@ -35,6 +35,13 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 
 	offset := (pageInt - 1) * sizeInt
 
+	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1`
+	var totalCount int32
+	err = r.db.QueryRow(countQuery, condition).Scan(&totalCount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get total count: %v", err)
+	}
+
 	query := `
     SELECT 
         s.id, s.name, s.gender, s.date_of_birth, s.phone, s.address, s.passport_id, s.additional_contact, 
@@ -65,7 +72,6 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		var group pb.GroupGetAllStudentAbs
 		var course pb.AbsCourse
 
-		// Use nullable types for columns that might be NULL
 		var nullableGroupID, nullableGroupName, nullableGroupStartDate, nullableGroupEndDate sql.NullString
 		var nullableDays pq.StringArray
 		var nullableLessonStartTime sql.NullString
@@ -88,7 +94,6 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
 
-		// Assign values only if they are not NULL
 		if nullableGroupID.Valid {
 			group.Id = nullableGroupID.String
 			group.Name = nullableGroupName.String
@@ -123,9 +128,17 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		return nil, fmt.Errorf("error iterating rows: %v", err)
 	}
 
+	response.TotalCount = totalCount
+
+	totalPages := (totalCount + int32(sizeInt) - 1) / int32(sizeInt)
+	remainingPages := totalPages - int32(pageInt)
+	if remainingPages < 0 {
+		remainingPages = 0
+	}
+	response.TotalCount = remainingPages
+
 	return &response, nil
 }
-
 func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
 	studentId := uuid.New()
 	_, err := r.db.Exec(`INSERT INTO students(id, name, phone, date_of_birth, gender, telegram_username, passport_id, additional_contact, address) values ($1, $2,$3,$4,$5,$6,$7,$8,$9)`, studentId, name, phoneNumber, birthDate, gender, telegramUsername, passportId, additionalContact, address)
