@@ -5,6 +5,7 @@ import (
 	"education-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"strconv"
 )
 
@@ -67,7 +68,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 			&student.Id, &student.Name, &student.Gender, &student.DateOfBirth, &student.Phone,
 			&student.Address, &student.PassportId, &student.AdditionalContact, &student.Balance,
 			&student.Condition, &student.TelegramUsername, &student.CreatedAt,
-			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, &group.Days, &group.LessonStartTime,
+			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, pq.Array(&group.Days), &group.LessonStartTime,
 			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price,
 			&group.TeacherName, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
 		)
