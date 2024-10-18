@@ -205,34 +205,10 @@ definitions:
     type: object
   pb.GetAllStudentResponse:
     properties:
-      additionalContact:
-        type: string
-      address:
-        type: string
-      balance:
-        type: number
-      condition:
-        type: string
-      createdAt:
-        type: string
-      dateOfBirth:
-        type: string
-      gender:
-        type: boolean
-      groups:
+      response:
         items:
-          $ref: '#/definitions/pb.GroupGetAllStudentAbs'
+          $ref: '#/definitions/pb.GetGroupsAbsForStudent'
         type: array
-      id:
-        type: string
-      name:
-        type: string
-      passportId:
-        type: string
-      phone:
-        type: string
-      telegramUsername:
-        type: string
     type: object
   pb.GetAttendanceRequest:
     properties:
@@ -300,6 +276,37 @@ definitions:
       lessonStartTime:
         type: string
       teacherName:
+        type: string
+    type: object
+  pb.GetGroupsAbsForStudent:
+    properties:
+      additionalContact:
+        type: string
+      address:
+        type: string
+      balance:
+        type: number
+      condition:
+        type: string
+      createdAt:
+        type: string
+      dateOfBirth:
+        type: string
+      gender:
+        type: boolean
+      groups:
+        items:
+          $ref: '#/definitions/pb.GroupGetAllStudentAbs'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      passportId:
+        type: string
+      phone:
+        type: string
+      telegramUsername:
         type: string
     type: object
   pb.GetGroupsByCourseResponse:

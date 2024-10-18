@@ -2174,47 +2174,11 @@ const docTemplate = `{
         "pb.GetAllStudentResponse": {
             "type": "object",
             "properties": {
-                "additionalContact": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "balance": {
-                    "type": "number"
-                },
-                "condition": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "dateOfBirth": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "boolean"
-                },
-                "groups": {
+                "response": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pb.GroupGetAllStudentAbs"
+                        "$ref": "#/definitions/pb.GetGroupsAbsForStudent"
                     }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "passportId": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "telegramUsername": {
-                    "type": "string"
                 }
             }
         },
@@ -2318,6 +2282,53 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "teacherName": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetGroupsAbsForStudent": {
+            "type": "object",
+            "properties": {
+                "additionalContact": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "dateOfBirth": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GroupGetAllStudentAbs"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "passportId": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "telegramUsername": {
                     "type": "string"
                 }
             }

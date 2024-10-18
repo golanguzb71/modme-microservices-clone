@@ -226,6 +226,9 @@ message GetAllStudentRequest{
   string size = 3;
 }
 message GetAllStudentResponse{
+  repeated GetGroupsAbsForStudent response = 1;
+}
+message GetGroupsAbsForStudent{
   string id = 1;
   string name = 2;
   bool gender = 3;

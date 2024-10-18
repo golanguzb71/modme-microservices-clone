@@ -3,7 +3,9 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
+	"fmt"
 	"github.com/google/uuid"
+	"strconv"
 )
 
 type StudentRepository struct {
@@ -15,7 +17,70 @@ func NewStudentRepository(db *sql.DB) *StudentRepository {
 }
 
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
-	return nil, nil
+	// Convert page and size from string to integer
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, fmt.Errorf("invalid page value: %v", err)
+	}
+
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, fmt.Errorf("invalid size value: %v", err)
+	}
+
+	offset := (pageInt - 1) * sizeInt
+
+	query := `
+    SELECT 
+        s.id, s.name, s.gender, s.date_of_birth, s.phone, s.address, s.passport_id, s.additional_contact, 
+        s.balance, s.condition, s.telegram_username, s.created_at,
+        g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.days, g.start_time,
+        c.id AS course_id, c.title AS course_title, c.duration_lesson, c.course_duration, c.price,
+        'exampleteachername' AS teacher_name, r.title AS room_name, r.capacity,
+        gs.condition AS student_group_condition, gs.last_specific_date AS student_activated_at
+    FROM students s
+    LEFT JOIN group_students gs ON s.id = gs.student_id
+    LEFT JOIN groups g ON gs.group_id = g.id
+    LEFT JOIN courses c ON g.course_id = c.id
+--     LEFT JOIN teachers t ON g.teacher_id = t.id
+    LEFT JOIN rooms r ON g.room_id = r.id
+    WHERE s.condition = $1
+    LIMIT $2 OFFSET $3;
+    `
+
+	rows, err := r.db.Query(query, condition, sizeInt, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %v", err)
+	}
+	defer rows.Close()
+
+	var response pb.GetAllStudentResponse
+
+	for rows.Next() {
+		var student pb.GetGroupsAbsForStudent
+		var group pb.GroupGetAllStudentAbs
+
+		err := rows.Scan(
+			&student.Id, &student.Name, &student.Gender, &student.DateOfBirth, &student.Phone,
+			&student.Address, &student.PassportId, &student.AdditionalContact, &student.Balance,
+			&student.Condition, &student.TelegramUsername, &student.CreatedAt,
+			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, &group.Days, &group.LessonStartTime,
+			&group.Course.Id, &group.Course.Name, &group.Course.LessonDuration, &group.Course.CourseDuration, &group.Course.Price,
+			&group.TeacherName, &group.RoomId, &group.StudentCondition, &group.StudentActivatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan row: %v", err)
+		}
+
+		student.Groups = append(student.Groups, &group)
+		response.Response = append(response.Response, &student)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %v", err)
+	}
+
+	return &response, nil
 }
 
 func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
