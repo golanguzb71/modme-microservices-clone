@@ -467,7 +467,7 @@ func GetGroupByCourseId(ctx *gin.Context) {
 }
 
 // GetAllStudent godoc
-// @Summary Retrieve all students based on their condition
+// @Summary ADMIN
 // @Tags students
 // @Produce json
 // @Security BearerAuth
@@ -498,7 +498,7 @@ func GetAllStudent(ctx *gin.Context) {
 }
 
 // CreateStudent godoc
-// @Summary Create a new student
+// @Summary ADMIN
 // @Tags students
 // @Produce json
 // @Security BearerAuth
@@ -510,6 +510,7 @@ func GetAllStudent(ctx *gin.Context) {
 func CreateStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
+	ctxR = context.WithValue(ctxR, "createdBy", "9ccf040d-2a99-41b8-b8df-1457e3188159")
 	req := pb.CreateStudentRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
@@ -525,7 +526,7 @@ func CreateStudent(ctx *gin.Context) {
 }
 
 // AddStudentToGroup godoc
-// @Summary Add a student to a group
+// @Summary ADMIN
 // @Tags students
 // @Produce json
 // @Security BearerAuth
@@ -552,7 +553,7 @@ func AddStudentToGroup(ctx *gin.Context) {
 }
 
 // UpdateStudent godoc
-// @Summary Update an existing student
+// @Summary ADMIN
 // @Tags students
 // @Produce json
 // @Security BearerAuth
@@ -579,7 +580,7 @@ func UpdateStudent(ctx *gin.Context) {
 }
 
 // DeleteStudent godoc
-// @Summary Delete a student by ID
+// @Summary ADMIN
 // @Tags students
 // @Produce json
 // @Security BearerAuth

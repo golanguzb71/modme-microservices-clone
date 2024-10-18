@@ -177,6 +177,8 @@ definitions:
         type: string
       phoneNumber:
         type: string
+      telegramUsername:
+        type: string
     type: object
   pb.Day:
     properties:
@@ -200,6 +202,35 @@ definitions:
         type: string
     type: object
   pb.GetAllStudentResponse:
+    properties:
+      additionalContact:
+        type: string
+      address:
+        type: string
+      balance:
+        type: number
+      condition:
+        type: string
+      createdAt:
+        type: string
+      dateOfBirth:
+        type: string
+      gender:
+        type: boolean
+      groups:
+        items:
+          $ref: '#/definitions/pb.GroupGetAllStudentAbs'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      passportId:
+        type: string
+      phone:
+        type: string
+      telegramUsername:
+        type: string
     type: object
   pb.GetAttendanceRequest:
     properties:
@@ -352,6 +383,35 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsRoom'
         type: array
+    type: object
+  pb.GroupGetAllStudentAbs:
+    properties:
+      course:
+        $ref: '#/definitions/pb.AbsCourse'
+      days:
+        items:
+          type: string
+        type: array
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      roomId:
+        type: integer
+      studentActivatedAt:
+        type: string
+      studentCondition:
+        type: string
+      teacherName:
+        type: string
+      type:
+        type: string
     type: object
   pb.Lead:
     properties:
@@ -1530,7 +1590,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Add a student to a group
+      summary: ADMIN
       tags:
       - students
   /api/student/create:
@@ -1559,7 +1619,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Create a new student
+      summary: ADMIN
       tags:
       - students
   /api/student/delete/{id}:
@@ -1583,7 +1643,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Delete a student by ID
+      summary: ADMIN
       tags:
       - students
   /api/student/get-all/{condition}:
@@ -1622,7 +1682,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Retrieve all students based on their condition
+      summary: ADMIN
       tags:
       - students
   /api/student/update:
@@ -1651,7 +1711,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - BearerAuth: []
-      summary: Update an existing student
+      summary: ADMIN
       tags:
       - students
 securityDefinitions:

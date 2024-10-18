@@ -18,10 +18,6 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	//auditClient, err := client.NewAuditClient(cfg.Grpc.AuditingService.Address)
-	//if err != nil {
-	//	log.Fatalf("%v", err)
-	//}
 	//userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
 	//if err != nil {
 	//	return nil

@@ -98,12 +98,13 @@ CREATE TABLE IF NOT EXISTS transfer_lesson
 
 CREATE TABLE IF NOT EXISTS group_students
 (
-    id         uuid PRIMARY KEY,
-    group_id   bigint references groups (id) NOT NULL,
-    student_id uuid                          NOT NULL,
-    condition  varchar check ( condition in ('FREEZE', 'ACTIVE', 'DELETE')) DEFAULT 'FREEZE',
-    created_at timestamp                                                    DEFAULT NOW(),
-    created_by uuid                          NOT NULL
+    id                 uuid PRIMARY KEY,
+    group_id           bigint references groups (id) NOT NULL,
+    student_id         uuid                          NOT NULL,
+    condition          varchar check ( condition in ('FREEZE', 'ACTIVE', 'DELETE')) DEFAULT 'FREEZE',
+    last_specific_date date                          NOT NULL                       DEFAULT NOW(),
+    created_at         timestamp                                                    DEFAULT NOW(),
+    created_by         uuid                          NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS group_student_condition_history
@@ -113,7 +114,8 @@ CREATE TABLE IF NOT EXISTS group_student_condition_history
     student_id       uuid references students (id)                                NOT NULL,
     group_id         bigint references groups (id)                                NOT NULL,
     condition        varchar check ( condition in ('FREEZE', 'ACTIVE', 'DELETE')) NOT NULL,
-    created_at       timestamp DEFAULT NOW()
+    specific_date    date                                                         NOT NULL DEFAULT NOW(),
+    created_at       timestamp                                                             DEFAULT NOW()
 );
 
 CREATE OR REPLACE FUNCTION log_group_update()
