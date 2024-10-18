@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS students
     additional_contact varchar,
     address            varchar,
     telegram_username  varchar,
-    passport_id        varchar CHECK (passport_id IS NULL OR char_length(passport_id) = 9),
+    passport_id        varchar,
     gender             boolean,
     created_at         timestamp                                             DEFAULT now()
 );

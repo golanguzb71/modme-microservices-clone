@@ -24,9 +24,11 @@ func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, 
 	if err != nil {
 		return err
 	}
-	_, err = r.db.Exec(`INSERT INTO group_students(id, group_id, student_id, created_by) values ($1 ,$2 ,$3 ,$4)`, uuid.New(), groupId, studentId, createdBy)
-	if err != nil {
-		return err
+	if groupId != "" && dateFrom != "" && createdBy != "" {
+		_, err = r.db.Exec(`INSERT INTO group_students(id, group_id, student_id, created_by) values ($1 ,$2 ,$3 ,$4)`, uuid.New(), groupId, studentId, createdBy)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
