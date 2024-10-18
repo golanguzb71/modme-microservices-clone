@@ -17,7 +17,6 @@ func NewStudentRepository(db *sql.DB) *StudentRepository {
 }
 
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
-	// Convert page and size from string to integer
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, fmt.Errorf("invalid page value: %v", err)
