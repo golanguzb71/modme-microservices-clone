@@ -17,6 +17,10 @@ func NewStudentRepository(db *sql.DB) *StudentRepository {
 }
 
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
+	if r.db == nil {
+		return nil, fmt.Errorf("database connection is not initialized")
+	}
+
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, fmt.Errorf("invalid page value: %v", err)
@@ -35,13 +39,12 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
         s.balance, s.condition, s.telegram_username, s.created_at,
         g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.days, g.start_time,
         c.id AS course_id, c.title AS course_title, c.duration_lesson, c.course_duration, c.price,
-        'exampleteachername' AS teacher_name, r.title AS room_name, r.capacity,
-        gs.condition AS student_group_condition, gs.last_specific_date AS student_activated_at
+        'exampleteachername' AS teacher_name,
+        gs.condition AS student_group_condition, g.room_id,  gs.last_specific_date AS student_activated_at
     FROM students s
     LEFT JOIN group_students gs ON s.id = gs.student_id
     LEFT JOIN groups g ON gs.group_id = g.id
     LEFT JOIN courses c ON g.course_id = c.id
---     LEFT JOIN teachers t ON g.teacher_id = t.id
     LEFT JOIN rooms r ON g.room_id = r.id
     WHERE s.condition = $1
     LIMIT $2 OFFSET $3;
