@@ -1,10 +1,8 @@
 package repository
 
 import (
-	"context"
 	"database/sql"
 	"education-service/proto/pb"
-	"fmt"
 	"github.com/google/uuid"
 )
 
@@ -20,11 +18,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 	return nil, nil
 }
 
-func (r *StudentRepository) CreateStudent(ctx context.Context, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
-	createdBy, ok := ctx.Value("createdBy").(string)
-	if !ok {
-		return fmt.Errorf("could not retrieve createdBy from context or invalid type")
-	}
+func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
 	studentId := uuid.New()
 	_, err := r.db.Exec(`INSERT INTO students(id, name, phone, date_of_birth, gender, telegram_username, passport_id, additional_contact, address) values ($1, $2,$3,$4,$5,$6,$7,$8,$9)`, studentId, name, phoneNumber, birthDate, gender, telegramUsername, passportId, additionalContact, address)
 	if err != nil {

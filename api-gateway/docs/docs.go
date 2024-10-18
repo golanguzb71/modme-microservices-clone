@@ -2109,6 +2109,9 @@ const docTemplate = `{
                 "address": {
                     "type": "string"
                 },
+                "createdBy": {
+                    "type": "string"
+                },
                 "dateFrom": {
                     "type": "string"
                 },
