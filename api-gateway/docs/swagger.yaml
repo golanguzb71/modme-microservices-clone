@@ -209,6 +209,8 @@ definitions:
         items:
           $ref: '#/definitions/pb.GetGroupsAbsForStudent'
         type: array
+      totalCount:
+        type: integer
     type: object
   pb.GetAttendanceRequest:
     properties:

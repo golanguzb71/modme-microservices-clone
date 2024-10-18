@@ -2179,6 +2179,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.GetGroupsAbsForStudent"
                     }
+                },
+                "totalCount": {
+                    "type": "integer"
                 }
             }
         },

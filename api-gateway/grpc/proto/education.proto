@@ -227,6 +227,7 @@ message GetAllStudentRequest{
 }
 message GetAllStudentResponse{
   repeated GetGroupsAbsForStudent response = 1;
+  int32 totalCount = 2;
 }
 message GetGroupsAbsForStudent{
   string id = 1;
