@@ -61,19 +61,20 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 	for rows.Next() {
 		var student pb.GetGroupsAbsForStudent
 		var group pb.GroupGetAllStudentAbs
+		var course pb.AbsCourse
 
 		err := rows.Scan(
 			&student.Id, &student.Name, &student.Gender, &student.DateOfBirth, &student.Phone,
 			&student.Address, &student.PassportId, &student.AdditionalContact, &student.Balance,
 			&student.Condition, &student.TelegramUsername, &student.CreatedAt,
 			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, &group.Days, &group.LessonStartTime,
-			&group.Course.Id, &group.Course.Name, &group.Course.LessonDuration, &group.Course.CourseDuration, &group.Course.Price,
-			&group.TeacherName, &group.RoomId, &group.StudentCondition, &group.StudentActivatedAt,
+			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price,
+			&group.TeacherName, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
-
+		group.Course = &course
 		student.Groups = append(student.Groups, &group)
 		response.Response = append(response.Response, &student)
 	}
