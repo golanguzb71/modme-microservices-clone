@@ -139,6 +139,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 
 	return &response, nil
 }
+
 func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
 	studentId := uuid.New()
 	_, err := r.db.Exec(`INSERT INTO students(id, name, phone, date_of_birth, gender, telegram_username, passport_id, additional_contact, address) values ($1, $2,$3,$4,$5,$6,$7,$8,$9)`, studentId, name, phoneNumber, birthDate, gender, telegramUsername, passportId, additionalContact, address)
@@ -155,10 +156,30 @@ func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, 
 }
 
 func (r *StudentRepository) UpdateStudent(studentId string, number string, name string, address string, additionalContact string, birth string, gender bool, passportId string) error {
+	_, err := r.db.Exec(`UPDATE students SET phone =$1, name=$2, address =$3, additional_contact =$4, date_of_birth =$5, gender =$6, passport_id=$7 where id=$8`, number, name, address, additionalContact, birth, gender, passportId, studentId)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (r *StudentRepository) DeleteStudent(studentId string) error {
+	var cond string
+	if err := r.db.QueryRow(`select condition from students where id = $1`, studentId).Scan(&cond); err != nil {
+		return err
+	}
+
+	if cond == "ACTIVE" {
+		_, err := r.db.Exec(`UPDATE students SET condition='DELETED' where id=$1`, studentId)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err := r.db.Exec(`UPDATE students SET condition='ACTIVE' where id=$1`, studentId)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
