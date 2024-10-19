@@ -262,6 +262,8 @@ definitions:
         type: string
       studentCount:
         type: integer
+      teacherId:
+        type: string
       teacherName:
         type: string
     type: object
@@ -1677,6 +1679,34 @@ paths:
       - description: Page size
         in: query
         name: size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of students
+          schema:
+            $ref: '#/definitions/pb.GetAllStudentResponse'
+        "400":
+          description: Invalid condition
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
+  /api/student/get-student-by-id/{studentId}:
+    get:
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
         type: string
       produces:
       - application/json

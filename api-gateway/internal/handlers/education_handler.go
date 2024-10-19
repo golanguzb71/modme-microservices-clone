@@ -601,3 +601,29 @@ func DeleteStudent(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, response.Status, response.Message)
 	return
 }
+
+// GetStudentById godoc
+// @Summary ADMIN
+// @Tags students
+// @Produce json
+// @Security BearerAuth
+// @Param studentId path string true "Student ID"
+// @Success 200 {object} pb.GetAllStudentResponse "List of students"
+// @Failure 400 {object} utils.AbsResponse "Invalid condition"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/get-student-by-id/{studentId} [get]
+func GetStudentById(ctx *gin.Context) {
+
+}
+
+func GetNotesByStudent(ctx *gin.Context) {
+
+}
+
+func CreateNoteForStudent(ctx *gin.Context) {
+
+}
+
+func DeleteStudentNote(ctx *gin.Context) {
+
+}

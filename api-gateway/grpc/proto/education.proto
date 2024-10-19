@@ -130,6 +130,7 @@ message GetGroupAbsResponse{
   string id = 1;
   AbsCourse course = 2;
   string teacherName = 3;
+  string teacherId = 14;
   string lessonStartTime = 4;
   AbsRoom room = 5;
   int32 studentCount = 6;
@@ -219,6 +220,10 @@ service StudentService{
   rpc UpdateStudent(UpdateStudentRequest) returns(common.AbsResponse);
   rpc DeleteStudent(common.DeleteAbsRequest) returns(common.AbsResponse);
   rpc AddToGroup(AddToGroupRequest) returns(common.AbsResponse);
+  rpc GetStudentById(NoteStudentByAbsRequest) returns(GetStudentByIdResponse);
+  rpc GetNoteByStudent(NoteStudentByAbsRequest) returns(GetNotesByStudent);
+  rpc CreateNoteForStudent(CreateNoteRequest) returns(common.AbsResponse);
+  rpc DeleteStudentNote(NoteStudentByAbsRequest) returns (common.AbsResponse);
 }
 message GetAllStudentRequest{
   string condition = 1;
@@ -286,5 +291,38 @@ message AddToGroupRequest{
   string groupId = 2;
   repeated string student_ids = 3;
   string createdBy = 4;
+}
+message GetStudentByIdResponse{
+  string id = 1;
+  string name = 2;
+  bool gender = 3;
+  string dateOfBirth = 4;
+  string phone = 5;
+  double balance = 6;
+  string createdAt = 7;
+  repeated GetGroupStudent groups = 8;
+}
+message NoteStudentByAbsRequest{
+  string id = 1;
+}
+message GetGroupStudent{
+  string id = 1;
+  string name = 2;
+  string dateType = 3;
+  repeated string days = 4;
+  AbsRoom room = 5;
+  AbsCourse course = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+  string studentCondition = 11;
+  string studentActivatedAt = 12;
+  double priceForStudent = 13;
+}
+message GetNotesByStudent{
+  repeated string notes = 1;
+}
+message CreateNoteRequest{
+  string note = 1;
 }
 // student service end

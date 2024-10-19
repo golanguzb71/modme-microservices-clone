@@ -110,7 +110,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
               'something' as teacher_name, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
               COUNT(gs.id)  as student_count, 
-              g.created_at , g.days , g.start_time , g.date_type , c.course_duration ,c.duration_lesson , c.description , c.price
+              g.created_at , g.days , g.start_time , g.date_type , c.course_duration ,c.duration_lesson , c.description , c.price , '5e35d1b8-753b-4da9-83be-2edc5a54741f' as teacher_id
               FROM groups g
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
@@ -126,7 +126,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	err := r.db.QueryRow(query, id).Scan(
 		&group.Id, &course.Id, &course.Name,
 		&group.TeacherName, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
-		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType, &course.CourseDuration, &course.LessonDuration, &course.Description, &course.Price,
+		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType, &course.CourseDuration, &course.LessonDuration, &course.Description, &course.Price, group.TeacherId,
 	)
 
 	if err != nil {

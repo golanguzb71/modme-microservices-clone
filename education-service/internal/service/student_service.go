@@ -50,7 +50,7 @@ func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteAbsReq
 }
 
 func (s *StudentService) AddToGroup(ctx context.Context, req *pb.AddToGroupRequest) (*pb.AbsResponse, error) {
-	if err := s.repo.AddToGroup(req.GroupId, req.StudentIds, req.CreatedDate); err != nil {
+	if err := s.repo.AddToGroup(req.GroupId, req.StudentIds, req.CreatedDate, req.CreatedBy); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{

@@ -1808,6 +1808,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/get-student-by-id/{studentId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of students",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid condition",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/student/update": {
             "put": {
                 "security": [
@@ -2260,6 +2305,9 @@ const docTemplate = `{
                 },
                 "studentCount": {
                     "type": "integer"
+                },
+                "teacherId": {
+                    "type": "string"
                 },
                 "teacherName": {
                     "type": "string"

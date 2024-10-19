@@ -183,6 +183,14 @@ func (r *StudentRepository) DeleteStudent(studentId string) error {
 	return nil
 }
 
-func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, createdDate string) error {
+func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, createdDate, createdBy string) error {
+	query := `INSERT INTO group_students(id, group_id, student_id, last_specific_date, created_by) values ($1 ,$2 ,$3 ,$4)`
+
+	for _, data := range studentIds {
+		_, err := r.db.Exec(query, uuid.New(), groupId, data, createdDate, createdBy)
+		if err != nil {
+			continue
+		}
+	}
 	return nil
 }
