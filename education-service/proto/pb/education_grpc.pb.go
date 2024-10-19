@@ -938,15 +938,19 @@ var AttendanceService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	StudentService_GetAllStudent_FullMethodName        = "/education.StudentService/GetAllStudent"
-	StudentService_CreateStudent_FullMethodName        = "/education.StudentService/CreateStudent"
-	StudentService_UpdateStudent_FullMethodName        = "/education.StudentService/UpdateStudent"
-	StudentService_DeleteStudent_FullMethodName        = "/education.StudentService/DeleteStudent"
-	StudentService_AddToGroup_FullMethodName           = "/education.StudentService/AddToGroup"
-	StudentService_GetStudentById_FullMethodName       = "/education.StudentService/GetStudentById"
-	StudentService_GetNoteByStudent_FullMethodName     = "/education.StudentService/GetNoteByStudent"
-	StudentService_CreateNoteForStudent_FullMethodName = "/education.StudentService/CreateNoteForStudent"
-	StudentService_DeleteStudentNote_FullMethodName    = "/education.StudentService/DeleteStudentNote"
+	StudentService_GetAllStudent_FullMethodName         = "/education.StudentService/GetAllStudent"
+	StudentService_CreateStudent_FullMethodName         = "/education.StudentService/CreateStudent"
+	StudentService_UpdateStudent_FullMethodName         = "/education.StudentService/UpdateStudent"
+	StudentService_DeleteStudent_FullMethodName         = "/education.StudentService/DeleteStudent"
+	StudentService_AddToGroup_FullMethodName            = "/education.StudentService/AddToGroup"
+	StudentService_GetStudentById_FullMethodName        = "/education.StudentService/GetStudentById"
+	StudentService_GetNoteByStudent_FullMethodName      = "/education.StudentService/GetNoteByStudent"
+	StudentService_CreateNoteForStudent_FullMethodName  = "/education.StudentService/CreateNoteForStudent"
+	StudentService_DeleteStudentNote_FullMethodName     = "/education.StudentService/DeleteStudentNote"
+	StudentService_SearchStudent_FullMethodName         = "/education.StudentService/SearchStudent"
+	StudentService_GetHistoryGroupById_FullMethodName   = "/education.StudentService/GetHistoryGroupById"
+	StudentService_GetHistoryStudentById_FullMethodName = "/education.StudentService/GetHistoryStudentById"
+	StudentService_TransferLessonDate_FullMethodName    = "/education.StudentService/TransferLessonDate"
 )
 
 // StudentServiceClient is the client API for StudentService service.
@@ -964,6 +968,10 @@ type StudentServiceClient interface {
 	GetNoteByStudent(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetNotesByStudent, error)
 	CreateNoteForStudent(ctx context.Context, in *CreateNoteRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteStudentNote(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	SearchStudent(ctx context.Context, in *SearchStudentRequest, opts ...grpc.CallOption) (*SearchStudentResponse, error)
+	GetHistoryGroupById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetHistoryGroupResponse, error)
+	GetHistoryStudentById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetHistoryStudentResponse, error)
+	TransferLessonDate(ctx context.Context, in *TransferLessonRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
 
 type studentServiceClient struct {
@@ -1064,6 +1072,46 @@ func (c *studentServiceClient) DeleteStudentNote(ctx context.Context, in *NoteSt
 	return out, nil
 }
 
+func (c *studentServiceClient) SearchStudent(ctx context.Context, in *SearchStudentRequest, opts ...grpc.CallOption) (*SearchStudentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchStudentResponse)
+	err := c.cc.Invoke(ctx, StudentService_SearchStudent_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *studentServiceClient) GetHistoryGroupById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetHistoryGroupResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHistoryGroupResponse)
+	err := c.cc.Invoke(ctx, StudentService_GetHistoryGroupById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *studentServiceClient) GetHistoryStudentById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetHistoryStudentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHistoryStudentResponse)
+	err := c.cc.Invoke(ctx, StudentService_GetHistoryStudentById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *studentServiceClient) TransferLessonDate(ctx context.Context, in *TransferLessonRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, StudentService_TransferLessonDate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility.
@@ -1079,6 +1127,10 @@ type StudentServiceServer interface {
 	GetNoteByStudent(context.Context, *NoteStudentByAbsRequest) (*GetNotesByStudent, error)
 	CreateNoteForStudent(context.Context, *CreateNoteRequest) (*AbsResponse, error)
 	DeleteStudentNote(context.Context, *NoteStudentByAbsRequest) (*AbsResponse, error)
+	SearchStudent(context.Context, *SearchStudentRequest) (*SearchStudentResponse, error)
+	GetHistoryGroupById(context.Context, *NoteStudentByAbsRequest) (*GetHistoryGroupResponse, error)
+	GetHistoryStudentById(context.Context, *NoteStudentByAbsRequest) (*GetHistoryStudentResponse, error)
+	TransferLessonDate(context.Context, *TransferLessonRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -1115,6 +1167,18 @@ func (UnimplementedStudentServiceServer) CreateNoteForStudent(context.Context, *
 }
 func (UnimplementedStudentServiceServer) DeleteStudentNote(context.Context, *NoteStudentByAbsRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStudentNote not implemented")
+}
+func (UnimplementedStudentServiceServer) SearchStudent(context.Context, *SearchStudentRequest) (*SearchStudentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchStudent not implemented")
+}
+func (UnimplementedStudentServiceServer) GetHistoryGroupById(context.Context, *NoteStudentByAbsRequest) (*GetHistoryGroupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryGroupById not implemented")
+}
+func (UnimplementedStudentServiceServer) GetHistoryStudentById(context.Context, *NoteStudentByAbsRequest) (*GetHistoryStudentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryStudentById not implemented")
+}
+func (UnimplementedStudentServiceServer) TransferLessonDate(context.Context, *TransferLessonRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferLessonDate not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 func (UnimplementedStudentServiceServer) testEmbeddedByValue()                        {}
@@ -1299,6 +1363,78 @@ func _StudentService_DeleteStudentNote_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_SearchStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchStudentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).SearchStudent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_SearchStudent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).SearchStudent(ctx, req.(*SearchStudentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StudentService_GetHistoryGroupById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoteStudentByAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).GetHistoryGroupById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_GetHistoryGroupById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).GetHistoryGroupById(ctx, req.(*NoteStudentByAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StudentService_GetHistoryStudentById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoteStudentByAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).GetHistoryStudentById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_GetHistoryStudentById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).GetHistoryStudentById(ctx, req.(*NoteStudentByAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StudentService_TransferLessonDate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferLessonRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).TransferLessonDate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_TransferLessonDate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).TransferLessonDate(ctx, req.(*TransferLessonRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1341,6 +1477,22 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteStudentNote",
 			Handler:    _StudentService_DeleteStudentNote_Handler,
+		},
+		{
+			MethodName: "SearchStudent",
+			Handler:    _StudentService_SearchStudent_Handler,
+		},
+		{
+			MethodName: "GetHistoryGroupById",
+			Handler:    _StudentService_GetHistoryGroupById_Handler,
+		},
+		{
+			MethodName: "GetHistoryStudentById",
+			Handler:    _StudentService_GetHistoryStudentById_Handler,
+		},
+		{
+			MethodName: "TransferLessonDate",
+			Handler:    _StudentService_TransferLessonDate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

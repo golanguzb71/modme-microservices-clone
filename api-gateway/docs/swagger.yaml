@@ -135,6 +135,13 @@ definitions:
       phoneNumber:
         type: string
     type: object
+  pb.CreateNoteRequest:
+    properties:
+      note:
+        type: string
+      studentId:
+        type: string
+    type: object
   pb.CreateRoomRequest:
     properties:
       capacity:
@@ -331,6 +338,10 @@ definitions:
       totalPageCount:
         type: integer
     type: object
+  pb.GetHistoryGroupResponse:
+    type: object
+  pb.GetHistoryStudentResponse:
+    type: object
   pb.GetLeadCommonRequest:
     properties:
       requests:
@@ -358,6 +369,13 @@ definitions:
       sections:
         items:
           $ref: '#/definitions/pb.DynamicSection'
+        type: array
+    type: object
+  pb.GetNotesByStudent:
+    properties:
+      notes:
+        items:
+          type: string
         type: array
     type: object
   pb.GetUpdateCourseAbs:
@@ -448,6 +466,15 @@ definitions:
       type:
         type: string
     type: object
+  pb.SearchStudentResponse:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
   pb.Section:
     properties:
       id:
@@ -503,6 +530,15 @@ definitions:
       name:
         type: string
       phone:
+        type: string
+    type: object
+  pb.TransferLessonRequest:
+    properties:
+      from:
+        type: string
+      groupId:
+        type: string
+      to:
         type: string
     type: object
   pb.UpdateLeadDataRequest:
@@ -1014,6 +1050,36 @@ paths:
       summary: ADMIN
       tags:
       - groups
+  /api/group/transfer-date:
+    post:
+      consumes:
+      - application/json
+      description: Transfers the lesson date for a course
+      parameters:
+      - description: Transfer Lesson Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.TransferLessonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN
+      tags:
+      - Lessons
   /api/group/update:
     put:
       consumes:
@@ -1046,6 +1112,60 @@ paths:
       summary: ADMIN , CEO
       tags:
       - groups
+  /api/history/group/{groupId}:
+    get:
+      consumes:
+      - application/json
+      description: Get the history of a specific group by its ID
+      parameters:
+      - description: Group ID
+        in: path
+        name: groupId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetHistoryGroupResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - groups
+  /api/history/student/{studentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get the history of a specific student by their ID
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetHistoryStudentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
   /api/lead/create:
     post:
       consumes:
@@ -1721,6 +1841,119 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
         "500":
           description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
+  /api/student/note/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new note associated with a specific student
+      parameters:
+      - description: Note details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/note/delete/{noteId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific note associated with a student
+      parameters:
+      - description: Note ID
+        in: path
+        name: noteId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/note/get-notes/{studentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all notes associated with a specific student
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetNotesByStudent'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/search-student/{value}:
+    get:
+      consumes:
+      - application/json
+      description: Search for students by phone number or name
+      parameters:
+      - description: Search value (phone number or name)
+        in: path
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.SearchStudentResponse'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:

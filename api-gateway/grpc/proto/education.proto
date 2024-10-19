@@ -224,6 +224,27 @@ service StudentService{
   rpc GetNoteByStudent(NoteStudentByAbsRequest) returns(GetNotesByStudent);
   rpc CreateNoteForStudent(CreateNoteRequest) returns(common.AbsResponse);
   rpc DeleteStudentNote(NoteStudentByAbsRequest) returns (common.AbsResponse);
+  rpc SearchStudent(SearchStudentRequest) returns(SearchStudentResponse);
+  rpc GetHistoryGroupById(NoteStudentByAbsRequest) returns(GetHistoryGroupResponse);
+  rpc GetHistoryStudentById(NoteStudentByAbsRequest) returns(GetHistoryStudentResponse);
+  rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
+}
+message TransferLessonRequest{
+  string from = 1;
+  string to = 2;
+  string groupId = 3;
+}
+message GetHistoryGroupResponse{
+
+}
+message GetHistoryStudentResponse{}
+message SearchStudentRequest{
+  string value = 1;
+}
+message SearchStudentResponse{
+  string id = 1;
+  string name = 2;
+  string phoneNumber = 3;
 }
 message GetAllStudentRequest{
   string condition = 1;
@@ -324,5 +345,6 @@ message GetNotesByStudent{
 }
 message CreateNoteRequest{
   string note = 1;
+  string studentId = 2;
 }
 // student service end

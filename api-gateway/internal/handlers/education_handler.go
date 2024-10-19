@@ -4,6 +4,7 @@ import (
 	"api-gateway/grpc/proto/pb"
 	"api-gateway/internal/utils"
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -544,6 +545,7 @@ func AddStudentToGroup(ctx *gin.Context) {
 		return
 	}
 	req.CreatedBy = "c1d6503f-31dc-4f99-b61f-2e4ebc7a7639"
+	fmt.Println(req.StudentIds)
 	response, err := educationClient.AddStudentToGroup(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
@@ -613,17 +615,192 @@ func DeleteStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/get-student-by-id/{studentId} [get]
 func GetStudentById(ctx *gin.Context) {
-
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	studentId := ctx.Param("studentId")
+	response, err := educationClient.GetStudentById(ctxR, studentId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
 }
 
+// GetNotesByStudent godoc
+// @Summary ADMIN
+// @Description Get all notes associated with a specific student
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param studentId path string true "Student ID"
+// @Success 200 {object} pb.GetNotesByStudent
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/student/note/get-notes/{studentId} [get]
 func GetNotesByStudent(ctx *gin.Context) {
-
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	studentId := ctx.Param("studentId")
+	response, err := educationClient.GetNotesByStudentId(ctxR, studentId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
 }
 
+// CreateNoteForStudent godoc
+// @Summary ADMIN
+// @Description Create a new note associated with a specific student
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param request body pb.CreateNoteRequest true "Note details"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/student/note/create [post]
 func CreateNoteForStudent(ctx *gin.Context) {
-
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateNoteRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.CreateNoteForStudent(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }
 
+// DeleteStudentNote godoc
+// @Summary ADMIN
+// @Description Delete a specific note associated with a student
+// @Tags notes
+// @Accept json
+// @Produce json
+// @Param noteId path string true "Note ID"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/student/note/delete/{noteId} [delete]
 func DeleteStudentNote(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	note := ctx.Param("noteId")
+	resp, err := educationClient.DeleteNote(ctxR, note)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
 
+// SearchStudent godoc
+// @Summary ADMIN
+// @Description Search for students by phone number or name
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param value path string true "Search value (phone number or name)"
+// @Success 200 {object} pb.SearchStudentResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/student/search-student/{value} [get]
+func SearchStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	value := ctx.Param("value")
+	resp, err := educationClient.SearchStudentByPhoneName(ctxR, value)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetHistoryGroup godoc
+// @Summary ADMIN
+// @Description Get the history of a specific group by its ID
+// @Tags groups
+// @Accept json
+// @Produce json
+// @Param groupId path string true "Group ID"
+// @Success 200 {object} pb.GetHistoryGroupResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/history/group/{groupId} [get]
+func GetHistoryGroup(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	value := ctx.Param("groupId")
+	resp, err := educationClient.GetHistoryGroupById(ctxR, value)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetHistoryStudent godoc
+// @Summary ADMIN
+// @Description Get the history of a specific student by their ID
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param studentId path string true "Student ID"
+// @Success 200 {object} pb.GetHistoryStudentResponse
+// @Failure 500 {object} utils.AbsResponse
+// @Security BearerAuth
+// @Router /api/history/student/{studentId} [get]
+func GetHistoryStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	value := ctx.Param("studentId")
+	resp, err := educationClient.GetHistoryStudentById(ctxR, value)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// TransferLessonDate transfers the lesson date for a specific course.
+// @Summary ADMIN
+// @Description Transfers the lesson date for a course
+// @Tags Lessons
+// @Accept json
+// @Produce json
+// @Param request body pb.TransferLessonRequest true "Transfer Lesson Request"
+// @Success 200 {object} utils.AbsResponse "Status and message"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/group/transfer-date [post]
+func TransferLessonDate(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.TransferLessonRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.TransferLessonDate(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }

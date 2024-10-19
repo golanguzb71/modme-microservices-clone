@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/proto/pb"
@@ -62,10 +63,11 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 		GroupStartDate:  req.StartDate,
 		GroupEndDate:    req.EndDate,
 	}
-	err = s.groupClient.CreateGroup(ctx, &createGroupReq)
+	err, groupId := s.groupClient.CreateGroup(ctx, &createGroupReq)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(groupId)
 	err = s.repo.DeleteSet(req.SetId)
 	if err != nil {
 		return nil, err

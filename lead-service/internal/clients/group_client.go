@@ -19,10 +19,10 @@ func NewGroupClient(addr string) *GroupClient {
 	return &GroupClient{client: client}
 }
 
-func (gc *GroupClient) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) error {
-	_, err := gc.client.CreateGroup(ctx, req)
+func (gc *GroupClient) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (error, string) {
+	resp, err := gc.client.CreateGroup(ctx, req)
 	if err != nil {
-		return err
+		return err, ""
 	}
-	return nil
+	return nil, resp.Message
 }

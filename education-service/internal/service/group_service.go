@@ -17,11 +17,11 @@ func NewGroupService(repo *repository.GroupRepository) *GroupService {
 }
 
 func (s *GroupService) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*pb.AbsResponse, error) {
-	err := s.repo.CreateGroup(req.Name, req.CourseId, req.TeacherId, req.Type, req.Days, req.RoomId, req.LessonStartTime, req.GroupStartDate, req.GroupEndDate)
+	id, err := s.repo.CreateGroup(req.Name, req.CourseId, req.TeacherId, req.Type, req.Days, req.RoomId, req.LessonStartTime, req.GroupStartDate, req.GroupEndDate)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AbsResponse{Status: 200, Message: "Group created successfully"}, nil
+	return &pb.AbsResponse{Status: 200, Message: id}, nil
 }
 
 func (s *GroupService) UpdateGroup(ctx context.Context, req *pb.GetUpdateGroupAbs) (*pb.AbsResponse, error) {
