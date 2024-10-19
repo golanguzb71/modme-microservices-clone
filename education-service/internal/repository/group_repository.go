@@ -126,7 +126,7 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	err := r.db.QueryRow(query, id).Scan(
 		&group.Id, &course.Id, &course.Name,
 		&group.TeacherName, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
-		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType, &course.CourseDuration, &course.LessonDuration, &course.Description, &course.Price, group.TeacherId,
+		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType, &course.CourseDuration, &course.LessonDuration, &course.Description, &course.Price, &group.TeacherId,
 	)
 
 	if err != nil {
