@@ -727,7 +727,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Lessons"
+                    "lesson"
                 ],
                 "summary": "ADMIN",
                 "parameters": [
@@ -2237,6 +2237,63 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsGroup": {
+            "type": "object",
+            "properties": {
+                "currentGroupStatus": {
+                    "type": "string"
+                },
+                "dateType": {
+                    "type": "string"
+                },
+                "groupEndDate": {
+                    "type": "string"
+                },
+                "groupStartDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "teacherName": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsHistory": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsNote": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsRoom": {
             "type": "object",
             "properties": {
@@ -2248,6 +2305,40 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.AbsStudent": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsStudentHistory": {
+            "type": "object",
+            "properties": {
+                "condition": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "group": {
+                    "$ref": "#/definitions/pb.AbsGroup"
+                },
+                "specificDate": {
+                    "type": "string"
+                },
+                "student": {
+                    "$ref": "#/definitions/pb.AbsStudent"
                 }
             }
         },
@@ -2736,10 +2827,38 @@ const docTemplate = `{
             }
         },
         "pb.GetHistoryGroupResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsHistory"
+                    }
+                },
+                "studentHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentHistory"
+                    }
+                }
+            }
         },
         "pb.GetHistoryStudentResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "history": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsHistory"
+                    }
+                },
+                "studentHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentHistory"
+                    }
+                }
+            }
         },
         "pb.GetLeadCommonRequest": {
             "type": "object",
@@ -2792,7 +2911,7 @@ const docTemplate = `{
                 "notes": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/pb.AbsNote"
                     }
                 }
             }
@@ -2935,14 +3054,11 @@ const docTemplate = `{
         "pb.SearchStudentResponse": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "phoneNumber": {
-                    "type": "string"
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudent"
+                    }
                 }
             }
         },

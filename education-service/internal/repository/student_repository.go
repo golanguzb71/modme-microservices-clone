@@ -2,11 +2,13 @@ package repository
 
 import (
 	"database/sql"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"strconv"
+	"time"
 )
 
 type StudentRepository struct {
@@ -62,7 +64,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 	groupQuery := `
     SELECT 
         s.id AS student_id,
-        g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.days, g.start_time,
+        g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.date_type, g.days, g.start_time,
         c.id AS course_id, c.title AS course_title, c.duration_lesson, c.course_duration, c.price,
         'exampleteachername' AS teacher_name,
         gs.condition AS student_group_condition, g.room_id, gs.last_specific_date AS student_activated_at
@@ -93,7 +95,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 
 		err := groupRows.Scan(
 			&studentID,
-			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, pq.Array(&group.Days), &group.LessonStartTime,
+			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, &group.Type, pq.Array(&group.Days), &group.LessonStartTime,
 			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price,
 			&group.TeacherName, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
 		)
@@ -169,64 +171,337 @@ func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, crea
 }
 func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdResponse, error) {
 	var result pb.GetStudentByIdResponse
-	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at FROM students where id=$1`, id).Scan(&result.Id, &result.Name, &result.Gender, &result.DateOfBirth, &result.Phone, &result.Balance, &result.CreatedAt)
+
+	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at , condition
+                          FROM students WHERE id = $1`, id).
+		Scan(&result.Id, &result.Name, &result.Gender, &result.DateOfBirth, &result.Phone, &result.Balance, &result.CreatedAt, &result.Condition)
 	if err != nil {
 		return nil, err
 	}
-	rows, err := r.db.Query(`SELECT group_id, condition, last_specific_date FROM group_students where student_id=$1`, id)
+	rows, err := r.db.Query(`
+        SELECT gs.created_at, gs.group_id, gs.condition, gs.last_specific_date, 
+               g.name, g.date_type, g.days, g.start_time, g.start_date, g.end_date,
+               r.id, r.capacity, r.title, 
+               c.id, c.title, c.duration_lesson, c.course_duration, c.price, c.description , 'Shokruh' as teacher_name
+        FROM group_students gs
+        JOIN groups g ON g.id = gs.group_id
+        JOIN rooms r ON g.room_id = r.id
+        JOIN courses c ON c.id = g.course_id
+        WHERE gs.student_id = $1`, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var groupStudent pb.GetGroupStudent
+
 	for rows.Next() {
-		//		`SELECT group_id,
-		//       condition,
-		//       last_specific_date,
-		//       g.name,
-		//       g.date_type,
-		//       g.days,
-		//       r.id,
-		//       r.capacity,
-		//       r.title,
-		//       c.id,
-		//       c.title,
-		//       c.duration_lesson,
-		//       c.course_duration,
-		//       c.price,
-		//       c.description,
-		//       g.start_time,
-		//       g.start_date,
-		//       g.end_date,
-		//       condition,
-		//       last_specific_date,
-		//       c.price
-		//FROM group_students gs
-		//         join groups g on g.id = gs.group_id
-		//         join rooms r on g.room_id = r.id
-		//         join courses c on c.id = g.course_id
-		//where student_id = '20b1926b-a3d9-417f-8662-97ee6aa43618'`
-		rows.Scan(&groupStudent.Id, &groupStudent.StudentCondition, &groupStudent.StudentActivatedAt)
+		var groupStudent pb.GetGroupStudent
+		var room pb.AbsRoom
+		var course pb.AbsCourse
+
+		err := rows.Scan(&groupStudent.StudentAddedAt, &groupStudent.Id, &groupStudent.StudentCondition, &groupStudent.StudentActivatedAt,
+			&groupStudent.Name, &groupStudent.DateType, pq.Array(&groupStudent.Days), &groupStudent.LessonStartTime,
+			&groupStudent.GroupStartDate, &groupStudent.GroupEndDate,
+			&room.Id, &room.Capacity, &room.Name,
+			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price, &course.Description, &groupStudent.TeacherName)
+		if err != nil {
+			return nil, err
+		}
+		groupStudent.PriceForStudent = course.Price
+		groupStudent.Room = &room
+		groupStudent.Course = &course
+		result.Groups = append(result.Groups, &groupStudent)
 	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
 func (r *StudentRepository) GetNoteByStudent(id string) (*pb.GetNotesByStudent, error) {
-
+	rows, err := r.db.Query(`SELECT id, comment, created_at FROM student_note where student_id=$1`, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var notes []*pb.AbsNote
+	for rows.Next() {
+		var note pb.AbsNote
+		err = rows.Scan(&note.Id, &note.Comment, &note.CreatedAt)
+		if err != nil {
+			continue
+		}
+		notes = append(notes, &note)
+	}
+	return &pb.GetNotesByStudent{Notes: notes}, nil
 }
 func (r *StudentRepository) CreateNoteForStudent(note string, studentId string) (*pb.AbsResponse, error) {
-
+	_, err := r.db.Exec(`INSERT INTO student_note(id , student_id, comment) values ($1,$2,$3)`, uuid.New(), studentId, note)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AbsResponse{
+		Status:  200,
+		Message: "created",
+	}, nil
 }
 func (r *StudentRepository) DeleteStudentNote(id string) (*pb.AbsResponse, error) {
-
+	_, err := r.db.Exec(`DELETE FROM student_note WHERE id = $1`, id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AbsResponse{
+		Status:  200,
+		Message: "deleted",
+	}, nil
 }
 func (r *StudentRepository) SearchStudent(value string) (*pb.SearchStudentResponse, error) {
+	query := `
+        SELECT id, name, phone 
+        FROM students 
+        WHERE name ILIKE $1 OR phone ILIKE $2;
+    `
 
+	rows, err := r.db.Query(query, "%"+value+"%", "%"+value+"%")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var students []*pb.AbsStudent
+	for rows.Next() {
+		var student pb.AbsStudent
+		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber); err != nil {
+			return nil, err
+		}
+		students = append(students, &student)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &pb.SearchStudentResponse{Students: students}, nil
 }
 func (r *StudentRepository) GetHistoryGroupById(id string) (*pb.GetHistoryGroupResponse, error) {
+	var response pb.GetHistoryGroupResponse
+	groupHistoryQuery := `
+        SELECT 
+            id,
+            description,
+            created_at
+        FROM group_history
+        WHERE group_id = $1
+        ORDER BY created_at DESC`
+	rows, err := r.db.Query(groupHistoryQuery, id)
+	if err != nil {
+		return nil, fmt.Errorf("error querying group history: %v", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var history pb.AbsHistory
+		var createdAt time.Time
+		err := rows.Scan(
+			&history.Id,
+			&history.Description,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning group history row: %v", err)
+		}
+		history.CreatedAt = createdAt.Format(time.RFC3339)
+		response.History = append(response.History, &history)
+	}
+	studentHistoryQuery := `
+        SELECT 
+            s.id as student_id,
+            s.name as student_name,
+            g.id as group_id,
+            g.name as group_name,
+            g.teacher_id,
+            g.start_date,
+            g.end_date,
+            g.start_time,
+            g.date_type,
+            gsch.condition,
+            gsch.specific_date,
+            gsch.created_at
+        FROM group_student_condition_history gsch
+        JOIN students s ON s.id = gsch.student_id
+        JOIN groups g ON g.id = gsch.group_id
+        WHERE gsch.group_id = $1
+        ORDER BY gsch.created_at DESC`
+	rows, err = r.db.Query(studentHistoryQuery, id)
+	if err != nil {
+		return nil, fmt.Errorf("error querying student history: %v", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var history pb.AbsStudentHistory
+		var student pb.AbsStudent
+		var group pb.AbsGroup
+		var teacherId string
+		var createdAt, specificDate time.Time
 
+		err := rows.Scan(
+			&student.Id,
+			&student.Name,
+			&group.Id,
+			&group.Name,
+			&teacherId,
+			&group.GroupStartDate,
+			&group.GroupEndDate,
+			&group.LessonStartTime,
+			&group.DateType,
+			&history.Condition,
+			&specificDate,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning student history row: %v", err)
+		}
+
+		history.SpecificDate = specificDate.Format(time.RFC3339)
+		history.CreatedAt = createdAt.Format(time.RFC3339)
+
+		history.Student = &student
+		history.Group = &group
+		response.StudentHistory = append(response.StudentHistory, &history)
+	}
+
+	return &response, nil
 }
 func (r *StudentRepository) GetHistoryStudentById(id string) (*pb.GetHistoryStudentResponse, error) {
+	var response pb.GetHistoryStudentResponse
 
+	// Get student history
+	studentHistoryQuery := `
+        SELECT 
+            id,
+            description,
+            created_at
+        FROM student_history
+        WHERE student_id = $1
+        ORDER BY created_at DESC`
+
+	rows, err := r.db.Query(studentHistoryQuery, id)
+	if err != nil {
+		return nil, fmt.Errorf("error querying student history: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var history pb.AbsHistory
+		var createdAt time.Time
+
+		err := rows.Scan(
+			&history.Id,
+			&history.Description,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning student history row: %v", err)
+		}
+		history.CreatedAt = createdAt.Format(time.RFC3339)
+		response.History = append(response.History, &history)
+	}
+
+	// Get group condition history for the student
+	groupHistoryQuery := `
+        SELECT 
+            s.id as student_id,
+            s.name as student_name,
+            g.id as group_id,
+            g.name as group_name,
+            g.teacher_id,
+            g.start_date,
+            g.end_date,
+            g.start_time,
+            g.date_type,
+            gsch.condition,
+            gsch.specific_date,
+            gsch.created_at
+        FROM group_student_condition_history gsch
+        JOIN students s ON s.id = gsch.student_id
+        JOIN groups g ON g.id = gsch.group_id
+        WHERE gsch.student_id = $1
+        ORDER BY gsch.created_at DESC`
+
+	rows, err = r.db.Query(groupHistoryQuery, id)
+	if err != nil {
+		return nil, fmt.Errorf("error querying group history: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var history pb.AbsStudentHistory
+		var student pb.AbsStudent
+		var group pb.AbsGroup
+		var teacherId string
+		var createdAt, specificDate time.Time
+
+		err := rows.Scan(
+			&student.Id,
+			&student.Name,
+			&group.Id,
+			&group.Name,
+			&teacherId,
+			&group.GroupStartDate,
+			&group.GroupEndDate,
+			&group.LessonStartTime,
+			&group.DateType,
+			&history.Condition,
+			&specificDate,
+			&createdAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning group history row: %v", err)
+		}
+
+		// Format dates
+		group.GroupStartDate = group.GroupStartDate
+		group.GroupEndDate = group.GroupEndDate
+		history.SpecificDate = specificDate.Format(time.RFC3339)
+		history.CreatedAt = createdAt.Format(time.RFC3339)
+
+		history.Student = &student
+		history.Group = &group
+		response.StudentHistory = append(response.StudentHistory, &history)
+	}
+
+	return &response, nil
 }
-func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
 
+func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
+	validDay, err := utils.IsValidLessonDay(r.db, groupId, from)
+	if err != nil {
+		return nil, err
+	}
+
+	if !validDay {
+		return &pb.AbsResponse{
+			Status:  403,
+			Message: "The selected 'from' date does not match the group's lesson days",
+		}, nil
+	}
+	var checker bool
+	err = r.db.QueryRow(`SELECT exists(SELECT 1 FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3)`, groupId, from, to).Scan(&checker)
+	if err != nil {
+		return nil, err
+	}
+	if checker {
+		_, err = r.db.Exec(`DELETE FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3`, groupId, from, to)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		_, err = r.db.Exec(`INSERT INTO transfer_lesson(id, group_id, real_date, transfer_date) values ($1, $2, $3, $4)`, uuid.New(), groupId, from, to)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &pb.AbsResponse{
+		Status:  200,
+		Message: "accomplished",
+	}, nil
 }

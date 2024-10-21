@@ -779,7 +779,7 @@ func GetHistoryStudent(ctx *gin.Context) {
 // TransferLessonDate transfers the lesson date for a specific course.
 // @Summary ADMIN
 // @Description Transfers the lesson date for a course
-// @Tags Lessons
+// @Tags lesson
 // @Accept json
 // @Produce json
 // @Param request body pb.TransferLessonRequest true "Transfer Lesson Request"

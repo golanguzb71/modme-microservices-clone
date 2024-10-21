@@ -14,6 +14,43 @@ definitions:
       price:
         type: number
     type: object
+  pb.AbsGroup:
+    properties:
+      currentGroupStatus:
+        type: string
+      dateType:
+        type: string
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      teacherName:
+        type: string
+    type: object
+  pb.AbsHistory:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  pb.AbsNote:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+    type: object
   pb.AbsRoom:
     properties:
       capacity:
@@ -22,6 +59,28 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  pb.AbsStudent:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.AbsStudentHistory:
+    properties:
+      condition:
+        type: string
+      createdAt:
+        type: string
+      group:
+        $ref: '#/definitions/pb.AbsGroup'
+      specificDate:
+        type: string
+      student:
+        $ref: '#/definitions/pb.AbsStudent'
     type: object
   pb.AddToGroupRequest:
     properties:
@@ -339,8 +398,26 @@ definitions:
         type: integer
     type: object
   pb.GetHistoryGroupResponse:
+    properties:
+      history:
+        items:
+          $ref: '#/definitions/pb.AbsHistory'
+        type: array
+      studentHistory:
+        items:
+          $ref: '#/definitions/pb.AbsStudentHistory'
+        type: array
     type: object
   pb.GetHistoryStudentResponse:
+    properties:
+      history:
+        items:
+          $ref: '#/definitions/pb.AbsHistory'
+        type: array
+      studentHistory:
+        items:
+          $ref: '#/definitions/pb.AbsStudentHistory'
+        type: array
     type: object
   pb.GetLeadCommonRequest:
     properties:
@@ -375,7 +452,7 @@ definitions:
     properties:
       notes:
         items:
-          type: string
+          $ref: '#/definitions/pb.AbsNote'
         type: array
     type: object
   pb.GetUpdateCourseAbs:
@@ -468,12 +545,10 @@ definitions:
     type: object
   pb.SearchStudentResponse:
     properties:
-      id:
-        type: string
-      name:
-        type: string
-      phoneNumber:
-        type: string
+      students:
+        items:
+          $ref: '#/definitions/pb.AbsStudent'
+        type: array
     type: object
   pb.Section:
     properties:
@@ -1079,7 +1154,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       summary: ADMIN
       tags:
-      - Lessons
+      - lesson
   /api/group/update:
     put:
       consumes:

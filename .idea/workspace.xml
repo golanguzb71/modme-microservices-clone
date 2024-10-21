@@ -6,27 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/education_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/education_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/group_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/group_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/service/group_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/group_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/service/student_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/student_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/education-service/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/education.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/clients/group_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/clients/group_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/internal/service/set_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/service/set_service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,30 +54,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build api-gateway/cmd.executor": "Run",
-    "Go Build.go build education-service/cmd.executor": "Debug",
-    "Go Build.go build lid-service/cmd.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/abdulaziz/GolandProjects/modme-microservices-clone/education-service",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/elon/GolandProjects/modme/main.go"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.go build api-gateway/cmd.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build lid-service/cmd.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/abdulaziz/GolandProjects/modme-microservices-clone/education-service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/elon/GolandProjects/modme/main.go&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/education-service" />
@@ -101,7 +91,7 @@
       <recent name="$PROJECT_DIR$/api-gateway/internal" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build api-gateway/cmd">
+  <component name="RunManager" selected="Go Build.go build education-service/cmd">
     <configuration name="go build api-gateway/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="modme" />
       <working_directory value="$PROJECT_DIR$/api-gateway" />
@@ -131,8 +121,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build api-gateway/cmd" />
         <item itemvalue="Go Build.go build education-service/cmd" />
+        <item itemvalue="Go Build.go build api-gateway/cmd" />
         <item itemvalue="Go Build.go build lid-service/cmd" />
       </list>
     </recent_temporary>

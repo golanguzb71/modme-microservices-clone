@@ -233,15 +233,42 @@ message TransferLessonRequest{
   string groupId = 3;
 }
 message GetHistoryGroupResponse{
-
+  repeated AbsHistory history = 1;
+  repeated AbsStudentHistory studentHistory = 2;
 }
 message GetHistoryStudentResponse{
-
+  repeated AbsHistory history = 1;
+  repeated AbsStudentHistory studentHistory = 2;
+}
+message AbsStudentHistory{
+  AbsStudent student = 1;
+  AbsGroup group = 2;
+  string condition = 3;
+  string specificDate = 4;
+  string createdAt = 5;
+}
+message AbsGroup{
+  string id = 1;
+  string name = 2;
+  string teacherName = 3;
+  string currentGroupStatus = 4;
+  string groupStartDate = 5;
+  string groupEndDate = 6;
+  string lessonStartTime = 7;
+  string dateType = 8;
+}
+message AbsHistory{
+  string id = 1;
+  string description = 2;
+  string createdAt = 3;
 }
 message SearchStudentRequest{
   string value = 1;
 }
 message SearchStudentResponse{
+  repeated AbsStudent students = 1;
+}
+message AbsStudent{
   string id = 1;
   string name = 2;
   string phoneNumber = 3;
@@ -322,11 +349,13 @@ message GetStudentByIdResponse{
   double balance = 6;
   string createdAt = 7;
   repeated GetGroupStudent groups = 8;
+  string condition = 9;
 }
 message NoteStudentByAbsRequest{
   string id = 1;
 }
-message GetGroupStudent{
+message GetGroupStudent
+{
   string id = 1;
   string name = 2;
   string dateType = 3;
@@ -338,10 +367,17 @@ message GetGroupStudent{
   string groupEndDate = 9;
   string studentCondition = 11;
   string studentActivatedAt = 12;
+  string studentAddedAt = 14;
+  string teacherName = 15;
   double priceForStudent = 13;
 }
 message GetNotesByStudent{
-  repeated string notes = 1;
+  repeated AbsNote notes = 1;
+}
+message AbsNote{
+  string id = 1;
+  string comment = 2;
+  string createdAt = 3;
 }
 message CreateNoteRequest{
   string note = 1;

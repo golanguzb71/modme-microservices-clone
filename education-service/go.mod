@@ -3,14 +3,14 @@ module education-service
 go 1.23.2
 
 require (
+	github.com/google/uuid v1.6.0
+	github.com/lib/pq v1.10.9
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.35.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
-	github.com/google/uuid v1.6.0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
