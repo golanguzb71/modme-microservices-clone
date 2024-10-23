@@ -18,6 +18,11 @@ type Config struct {
 		Sslmode  string `yaml:"sslmode"`
 		Action   string `yaml:"action"`
 	} `yaml:"database"`
+	Grpc struct {
+		EducationService struct {
+			Address string `yaml:"address"`
+		} `yaml:"educationService"`
+	} `yaml:"grpc"`
 }
 
 func LoadConfig() (*Config, error) {

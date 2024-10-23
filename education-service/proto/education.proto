@@ -85,6 +85,25 @@ service GroupService{
   rpc GetGroupsByCourseId(GetGroupByIdRequest) returns(GetGroupsByCourseResponse);
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
+  rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+}
+message GetGroupsByTeacherIdRequest{
+  string teacherId = 1;
+  bool isArchived = 2;
+}
+message GetGroupsByTeacherResponse{
+  repeated GetGroupByTeacherAbs groups = 1;
+}
+message GetGroupByTeacherAbs{
+  string name = 1;
+  string courseName = 2;
+  string roomName = 3;
+  string lessonStartTime = 4;
+  string dayType = 5;
+  string groupStartAt = 6;
+  string groupEndAt = 7;
+  int32 activeStudentCount = 8;
+  repeated AbsStudent students = 9;
 }
 message CreateGroupRequest{
   string name = 1;
@@ -162,17 +181,14 @@ message GetAttendanceRequest{
   string from = 2;
   string till = 3;
 }
-
 message GetAttendanceResponse{
   repeated Day days = 1;
   repeated Student students = 2;
 }
-
 message Day {
   string date = 1;
   string transferDate = 2;
 }
-
 message Student{
   string id = 9;
   string activatedAt = 1;
@@ -187,7 +203,6 @@ message Student{
   string name = 11;
   string phone = 12;
 }
-
 message Attendance{
   string id = 1;
   string attend_date = 2;
@@ -195,12 +210,10 @@ message Attendance{
   string studentId = 4;
   string teacherId = 5;
 }
-
 message FreezeDetail{
   string reason = 1;
   string till_date = 2;
 }
-
 message SetAttendanceRequest{
   string attendDate = 1;
   string groupId = 2;
@@ -208,7 +221,6 @@ message SetAttendanceRequest{
   string studentId = 4;
   string teacherId = 5;
 }
-
 // attendance service end
 
 // student service start

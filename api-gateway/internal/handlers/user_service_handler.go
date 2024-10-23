@@ -49,7 +49,7 @@ func CreateUser(ctx *gin.Context) {
 // @Success 200 {object} pb.GetTeachersResponse "List of teachers"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
-// @Router /api/user/teachers/{isDeleted} [get]
+// @Router /api/user/get-teachers/{isDeleted} [get]
 func GetTeachers(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()

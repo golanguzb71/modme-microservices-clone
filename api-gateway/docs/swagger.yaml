@@ -82,6 +82,17 @@ definitions:
       student:
         $ref: '#/definitions/pb.AbsStudent'
     type: object
+  pb.AbsTeacher:
+    properties:
+      activeGroups:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
   pb.AddToGroupRequest:
     properties:
       createdBy:
@@ -487,14 +498,10 @@ definitions:
     type: object
   pb.GetTeachersResponse:
     properties:
-      activeGroups:
-        type: string
-      fullName:
-        type: string
-      id:
-        type: string
-      phoneNumber:
-        type: string
+      teachers:
+        items:
+          $ref: '#/definitions/pb.AbsTeacher'
+        type: array
     type: object
   pb.GetUpdateCourseAbs:
     properties:
@@ -2166,7 +2173,7 @@ paths:
       summary: Create a new user
       tags:
       - user
-  /api/user/teachers/{isDeleted}:
+  /api/user/get-teachers/{isDeleted}:
     get:
       consumes:
       - application/json

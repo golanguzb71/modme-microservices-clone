@@ -2304,7 +2304,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/user/teachers/{isDeleted}": {
+        "/api/user/get-teachers/{isDeleted}": {
             "get": {
                 "description": "Fetches a list of teachers based on the deletion status",
                 "consumes": [
@@ -2475,6 +2475,23 @@ const docTemplate = `{
                 },
                 "student": {
                     "$ref": "#/definitions/pb.AbsStudent"
+                }
+            }
+        },
+        "pb.AbsTeacher": {
+            "type": "object",
+            "properties": {
+                "activeGroups": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
                 }
             }
         },
@@ -3101,17 +3118,11 @@ const docTemplate = `{
         "pb.GetTeachersResponse": {
             "type": "object",
             "properties": {
-                "activeGroups": {
-                    "type": "string"
-                },
-                "fullName": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "phoneNumber": {
-                    "type": "string"
+                "teachers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTeacher"
+                    }
                 }
             }
         },

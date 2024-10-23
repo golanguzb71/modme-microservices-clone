@@ -7,6 +7,7 @@ import (
 	"net"
 	"strconv"
 	"user-service/config"
+	"user-service/internal/clients"
 	"user-service/internal/repository"
 	"user-service/internal/service"
 	"user-service/migrations"
@@ -23,8 +24,9 @@ func RunServer() {
 		log.Fatalf("failed to loading database %s", err)
 	}
 	defer db.Close()
+	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
 	migrations.SetUpMigrating(cfg.Database.Action, db)
-	userRepo := repository.NewUserRepository(db)
+	userRepo := repository.NewUserRepository(db, groupClient)
 	userService := service.NewUserService(userRepo)
 
 	listen, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
