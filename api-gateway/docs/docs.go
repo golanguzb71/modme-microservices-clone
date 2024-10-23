@@ -1793,6 +1793,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/change-condition": {
+            "put": {
+                "description": "Changes the condition of a student based on provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "Changes the condition of a student",
+                "parameters": [
+                    {
+                        "description": "Change Condition Student Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ChangeConditionStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/student/create": {
             "post": {
                 "security": [
@@ -2382,6 +2428,26 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.ChangeConditionStudentRequest": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                },
+                "returnTheMoney": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "tillDate": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.ChangeLeadDataRequest": {
             "type": "object",
             "properties": {
@@ -2650,6 +2716,9 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "condition": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },

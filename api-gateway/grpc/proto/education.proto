@@ -163,6 +163,7 @@ message GetAttendanceRequest{
   string groupId = 1;
   string from = 2;
   string till = 3;
+  string condition = 4;
 }
 
 message GetAttendanceResponse{
@@ -228,6 +229,14 @@ service StudentService{
   rpc GetHistoryGroupById(NoteStudentByAbsRequest) returns(GetHistoryGroupResponse);
   rpc GetHistoryStudentById(NoteStudentByAbsRequest) returns(GetHistoryStudentResponse);
   rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
+  rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
+}
+message ChangeConditionStudentRequest{
+  string studentId = 4;
+  string groupId = 5;
+  string status = 1;
+  bool returnTheMoney = 2;
+  string tillDate = 3;
 }
 message TransferLessonRequest{
   string from = 1;

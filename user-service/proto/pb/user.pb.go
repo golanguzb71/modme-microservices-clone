@@ -9,7 +9,6 @@ package pb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	pb "grpc/proto/pb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -26,12 +25,12 @@ type CreateUserRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName"`
-	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password"`
-	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role"`
-	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
+	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
+	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender,omitempty"`
 }
 
 func (x *CreateUserRequest) Reset() {
@@ -227,7 +226,7 @@ var file_user_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),  // 0: user.CreateUserRequest
 	(*GetAllUserRequest)(nil),  // 1: user.GetAllUserRequest
 	(*GetAllUserResponse)(nil), // 2: user.GetAllUserResponse
-	(*pb.AbsResponse)(nil),     // 3: common.AbsResponse
+	(*AbsResponse)(nil),        // 3: common.AbsResponse
 }
 var file_user_proto_depIdxs = []int32{
 	0, // 0: user.UserService.CreateUser:input_type -> user.CreateUserRequest
@@ -246,6 +245,7 @@ func file_user_proto_init() {
 	if File_user_proto != nil {
 		return
 	}
+	file_common_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

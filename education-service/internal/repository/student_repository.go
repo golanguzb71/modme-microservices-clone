@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"education-service/internal/utils"
 	"education-service/proto/pb"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -18,7 +19,6 @@ type StudentRepository struct {
 func NewStudentRepository(db *sql.DB) *StudentRepository {
 	return &StudentRepository{db: db}
 }
-
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
@@ -160,9 +160,20 @@ func (r *StudentRepository) DeleteStudent(studentId string) error {
 	return nil
 }
 func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, createdDate, createdBy string) error {
+	var checker bool
 	query := `INSERT INTO group_students(id, group_id, student_id, condition, last_specific_date, created_by) values ($1 ,$2 ,$3 ,$4 , $5 , $6)`
+	queryForChecking := `SELECT exists(SELECT 1 FROM students where condition = 'ARCHIVED' and id=$1)`
+	queryGroupChecking := `SELECT exists(SELECT 1 FROM groups where id=$1 and is_archived=true)`
+	err := r.db.QueryRow(queryGroupChecking, groupId).Scan(&checker)
+	if err != nil || checker {
+		return errors.New(fmt.Sprintf("forbidden (archived group action error) id=%s", groupId))
+	}
 	for _, data := range studentIds {
-		_, err := r.db.Exec(query, uuid.New(), groupId, data, "FREEZE", createdDate, createdBy)
+		err := r.db.QueryRow(queryForChecking, data).Scan(&checker)
+		if err != nil || checker {
+			return errors.New(fmt.Sprintf("forbidden (archived student action error) id=%s", data))
+		}
+		_, err = r.db.Exec(query, uuid.New(), groupId, data, "FREEZE", createdDate, createdBy)
 		if err != nil {
 			continue
 		}
@@ -471,7 +482,6 @@ func (r *StudentRepository) GetHistoryStudentById(id string) (*pb.GetHistoryStud
 
 	return &response, nil
 }
-
 func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
 	validDay, err := utils.IsValidLessonDay(r.db, groupId, from)
 	if err != nil {
@@ -503,5 +513,68 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 	return &pb.AbsResponse{
 		Status:  200,
 		Message: "accomplished",
+	}, nil
+}
+func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string) (*pb.AbsResponse, error) {
+	if status != "FREEZE" && status != "ACTIVE" && status != "DELETE" {
+		return nil, fmt.Errorf("invalid status: %s", status)
+	}
+	var tillDateParsed sql.NullTime
+	if tillDate != "" {
+		parsedDate, err := time.Parse("2006-01-02", tillDate)
+		if err != nil {
+			return nil, fmt.Errorf("invalid date format: %v", err)
+		}
+		tillDateParsed = sql.NullTime{Time: parsedDate, Valid: true}
+	} else {
+		tillDateParsed = sql.NullTime{Valid: false}
+	}
+
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %v", err)
+	}
+
+	var oldCondition string
+	var groupStudentId string
+	err = tx.QueryRow(`
+        SELECT condition  , id
+        FROM group_students 
+        WHERE student_id = $1 AND group_id = $2`, studentId, groupId).Scan(&oldCondition, &groupStudentId)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("failed to retrieve old condition: %v", err)
+	}
+	if oldCondition == status {
+		return nil, fmt.Errorf("condition is the same as you give")
+	}
+	updateStmt := `
+        UPDATE group_students
+        SET condition = $1,
+            last_specific_date = COALESCE($2, NOW())
+        WHERE id=$3
+    `
+	_, err = tx.Exec(updateStmt, status, tillDateParsed, groupStudentId)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("failed to update group_students: %v", err)
+	}
+
+	insertHistoryStmt := `
+        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+    `
+	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
+	return &pb.AbsResponse{
+		Message: "Condition changed successfully",
 	}, nil
 }

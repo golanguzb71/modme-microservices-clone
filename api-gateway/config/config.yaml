@@ -1,16 +1,3 @@
-server:
-  port: 8080
-
-grpc:
-  auditing_service:
-    address: "localhost:50051"
-  education_service:
-    address: "sphere-education-service:8080"
-  lid_service:
-    address: "sphere-lead-service:8080"
-  user_service:
-    address: "localhost:50054"
-
 #server:
 #  port: 8080
 #
@@ -18,8 +5,21 @@ grpc:
 #  auditing_service:
 #    address: "localhost:50051"
 #  education_service:
-#    address: "localhost:50052"
+#    address: "sphere-education-service:8080"
 #  lid_service:
-#    address: "localhost:50053"
+#    address: "sphere-lead-service:8080"
 #  user_service:
 #    address: "localhost:50054"
+
+server:
+  port: 8080
+
+grpc:
+  auditing_service:
+    address: "localhost:50051"
+  education_service:
+    address: "localhost:50052"
+  lid_service:
+    address: "localhost:50053"
+  user_service:
+    address: "localhost:50055"

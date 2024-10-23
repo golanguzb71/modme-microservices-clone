@@ -174,3 +174,7 @@ func (lc *EducationClient) GetHistoryStudentById(ctx context.Context, value stri
 func (lc *EducationClient) TransferLessonDate(ctx context.Context, p *pb.TransferLessonRequest) (*pb.AbsResponse, error) {
 	return lc.studentClient.TransferLessonDate(ctx, p)
 }
+
+func (lc *EducationClient) ChangeConditionStudent(ctx context.Context, p *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.ChangeConditionStudent(ctx, p)
+}

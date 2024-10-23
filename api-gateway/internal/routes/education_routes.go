@@ -47,10 +47,13 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		student.PUT("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateStudent)
 		student.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudent)
 		student.POST("/add-to-group", middleware.AuthMiddleware([]string{}, userClient), handlers.AddStudentToGroup)
+		student.PUT("/change-condition", middleware.AuthMiddleware([]string{}, userClient), handlers.ChangeConditionStudent)
 		studentNote := student.Group("/note")
-		studentNote.GET("/get-notes/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetNotesByStudent)
-		studentNote.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateNoteForStudent)
-		studentNote.DELETE("/delete/:noteId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudentNote)
+		{
+			studentNote.GET("/get-notes/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetNotesByStudent)
+			studentNote.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateNoteForStudent)
+			studentNote.DELETE("/delete/:noteId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudentNote)
+		}
 	}
 	history := api.Group("/history")
 	{

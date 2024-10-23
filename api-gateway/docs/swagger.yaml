@@ -108,6 +108,19 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.ChangeConditionStudentRequest:
+    properties:
+      groupId:
+        type: string
+      returnTheMoney:
+        type: boolean
+      status:
+        type: string
+      studentId:
+        type: string
+      tillDate:
+        type: string
+    type: object
   pb.ChangeLeadDataRequest:
     properties:
       id:
@@ -282,6 +295,8 @@ definitions:
     type: object
   pb.GetAttendanceRequest:
     properties:
+      condition:
+        type: string
       from:
         type: string
       groupId:
@@ -1801,6 +1816,36 @@ paths:
       security:
       - BearerAuth: []
       summary: ADMIN
+      tags:
+      - students
+  /api/student/change-condition:
+    put:
+      consumes:
+      - application/json
+      description: Changes the condition of a student based on provided details
+      parameters:
+      - description: Change Condition Student Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ChangeConditionStudentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: Changes the condition of a student
       tags:
       - students
   /api/student/create:

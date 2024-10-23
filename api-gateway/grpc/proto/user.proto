@@ -2,14 +2,28 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "grpc/proto/pb";
+option go_package = "proto/pb";
+import "common.proto";
 
 
 service UserService {
+  rpc CreateUser(CreateUserRequest) returns(common.AbsResponse);
+  rpc GetAllUsers(GetAllUserRequest)returns(GetAllUserResponse);
+}
+
+message CreateUserRequest{
+  string fullName = 1;
+  string phoneNumber = 2;
+  string password = 3;
+  string role = 4;
+  string birthDate = 5;
+  bool gender = 6;
+}
+
+message GetAllUserRequest{
 
 }
 
-message ValidateTokenRequest {
-  string token = 1;
-  repeated string requiredRoles = 2;
+message GetAllUserResponse{
+
 }
