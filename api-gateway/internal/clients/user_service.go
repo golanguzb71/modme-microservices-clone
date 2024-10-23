@@ -2,6 +2,7 @@ package client
 
 import (
 	"api-gateway/grpc/proto/pb"
+	"context"
 	"google.golang.org/grpc"
 )
 
@@ -17,4 +18,12 @@ func NewUserClient(addr string) (*UserClient, error) {
 
 	client := pb.NewUserServiceClient(conn)
 	return &UserClient{client: client}, nil
+}
+
+func (c *UserClient) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.AbsResponse, error) {
+	return c.client.CreateUser(ctx, req)
+}
+
+func (c *UserClient) GetTeachers(ctx context.Context, isDeleted bool) (*pb.GetTeachersResponse, error) {
+	return c.client.GetTeachers(ctx, &pb.GetTeachersRequest{IsDeleted: isDeleted})
 }

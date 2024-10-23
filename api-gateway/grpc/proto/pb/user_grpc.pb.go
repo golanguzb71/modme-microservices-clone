@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	pb "grpc/proto/pb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -21,15 +20,15 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	UserService_CreateUser_FullMethodName  = "/user.UserService/CreateUser"
-	UserService_GetAllUsers_FullMethodName = "/user.UserService/GetAllUsers"
+	UserService_GetTeachers_FullMethodName = "/user.UserService/GetTeachers"
 )
 
 // UserServiceClient is the client API for UserService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*pb.AbsResponse, error)
-	GetAllUsers(ctx context.Context, in *GetAllUserRequest, opts ...grpc.CallOption) (*GetAllUserResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetTeachers(ctx context.Context, in *GetTeachersRequest, opts ...grpc.CallOption) (*GetTeachersResponse, error)
 }
 
 type userServiceClient struct {
@@ -40,9 +39,9 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*pb.AbsResponse, error) {
+func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(pb.AbsResponse)
+	out := new(AbsResponse)
 	err := c.cc.Invoke(ctx, UserService_CreateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -50,10 +49,10 @@ func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 	return out, nil
 }
 
-func (c *userServiceClient) GetAllUsers(ctx context.Context, in *GetAllUserRequest, opts ...grpc.CallOption) (*GetAllUserResponse, error) {
+func (c *userServiceClient) GetTeachers(ctx context.Context, in *GetTeachersRequest, opts ...grpc.CallOption) (*GetTeachersResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAllUserResponse)
-	err := c.cc.Invoke(ctx, UserService_GetAllUsers_FullMethodName, in, out, cOpts...)
+	out := new(GetTeachersResponse)
+	err := c.cc.Invoke(ctx, UserService_GetTeachers_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +63,8 @@ func (c *userServiceClient) GetAllUsers(ctx context.Context, in *GetAllUserReque
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
-	CreateUser(context.Context, *CreateUserRequest) (*pb.AbsResponse, error)
-	GetAllUsers(context.Context, *GetAllUserRequest) (*GetAllUserResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*AbsResponse, error)
+	GetTeachers(context.Context, *GetTeachersRequest) (*GetTeachersResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -76,11 +75,11 @@ type UserServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserServiceServer struct{}
 
-func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*pb.AbsResponse, error) {
+func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedUserServiceServer) GetAllUsers(context.Context, *GetAllUserRequest) (*GetAllUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllUsers not implemented")
+func (UnimplementedUserServiceServer) GetTeachers(context.Context, *GetTeachersRequest) (*GetTeachersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeachers not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -121,20 +120,20 @@ func _UserService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetAllUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllUserRequest)
+func _UserService_GetTeachers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTeachersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetAllUsers(ctx, in)
+		return srv.(UserServiceServer).GetTeachers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_GetAllUsers_FullMethodName,
+		FullMethod: UserService_GetTeachers_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetAllUsers(ctx, req.(*GetAllUserRequest))
+		return srv.(UserServiceServer).GetTeachers(ctx, req.(*GetTeachersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -151,8 +150,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_CreateUser_Handler,
 		},
 		{
-			MethodName: "GetAllUsers",
-			Handler:    _UserService_GetAllUsers_Handler,
+			MethodName: "GetTeachers",
+			Handler:    _UserService_GetTeachers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

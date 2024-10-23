@@ -8,7 +8,7 @@ import "common.proto";
 
 service UserService {
   rpc CreateUser(CreateUserRequest) returns(common.AbsResponse);
-  rpc GetAllUsers(GetAllUserRequest)returns(GetAllUserResponse);
+  rpc GetTeachers(GetTeachersRequest)returns(GetTeachersResponse);
 }
 
 message CreateUserRequest{
@@ -20,10 +20,13 @@ message CreateUserRequest{
   bool gender = 6;
 }
 
-message GetAllUserRequest{
-
+message GetTeachersRequest{
+  bool isDeleted = 1;
 }
 
-message GetAllUserResponse{
-
+message GetTeachersResponse{
+  string id = 4;
+  string fullName = 1;
+  string phoneNumber = 2;
+  string activeGroups = 3;
 }

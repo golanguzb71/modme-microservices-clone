@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users
 (
     id           uuid primary key,
     full_name    varchar                                                          NOT NULL,
-    phone_number varchar                                                          NOT NULL,
+    phone_number varchar UNIQUE                                                   NOT NULL,
     password     varchar                                                          NOT NULL,
     role         varchar check ( role in ('CEO', 'TEACHER', 'ADMIN', 'EMPLOYEE')) NOT NULL,
     birth_date   date                                                             NOT NULL,

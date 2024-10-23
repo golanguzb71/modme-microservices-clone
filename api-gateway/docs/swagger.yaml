@@ -263,6 +263,21 @@ definitions:
       telegramUsername:
         type: string
     type: object
+  pb.CreateUserRequest:
+    properties:
+      birthDate:
+        type: string
+      fullName:
+        type: string
+      gender:
+        type: boolean
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
+    type: object
   pb.Day:
     properties:
       date:
@@ -469,6 +484,17 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsNote'
         type: array
+    type: object
+  pb.GetTeachersResponse:
+    properties:
+      activeGroups:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: string
+      phoneNumber:
+        type: string
     type: object
   pb.GetUpdateCourseAbs:
     properties:
@@ -2110,6 +2136,65 @@ paths:
       summary: ADMIN
       tags:
       - students
+  /api/user/create:
+    post:
+      consumes:
+      - application/json
+      description: CEO
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created user
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: Create a new user
+      tags:
+      - user
+  /api/user/teachers/{isDeleted}:
+    get:
+      consumes:
+      - application/json
+      description: Fetches a list of teachers based on the deletion status
+      parameters:
+      - description: Deletion status (true/false)
+        in: path
+        name: isDeleted
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of teachers
+          schema:
+            $ref: '#/definitions/pb.GetTeachersResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN,CEO
+      tags:
+      - user
 securityDefinitions:
   Bearer:
     in: header

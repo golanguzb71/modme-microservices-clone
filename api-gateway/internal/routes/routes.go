@@ -13,5 +13,6 @@ func SetUpRoutes(r *gin.Engine, userClient *client.UserClient) {
 	{
 		LeadRoutes(api, userClient)
 		EducationRoutes(api, userClient)
+		UserRoutes(api, userClient)
 	}
 }
