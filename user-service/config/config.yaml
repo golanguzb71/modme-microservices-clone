@@ -16,7 +16,7 @@
 
 
 server:
-  port: 50055
+  port: 8080
 
 database:
   host: "postgres-sphere-user"
