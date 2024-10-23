@@ -6,6 +6,23 @@ import (
 )
 
 type Config struct {
+	Server struct {
+		Port int `yaml:"port"`
+	} `yaml:"server"`
+	Database struct {
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+		Name     string `yaml:"name"`
+		Sslmode  string `yaml:"sslmode"`
+		Action   string `yaml:"action"`
+	} `yaml:"database"`
+	Grpc struct {
+		EducationService struct {
+			Address string `yaml:"address"`
+		} `yaml:"educationService"`
+	} `yaml:"grpc"`
 }
 
 func LoadConfig() (*Config, error) {

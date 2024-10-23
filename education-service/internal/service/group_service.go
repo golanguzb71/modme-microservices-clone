@@ -70,3 +70,7 @@ func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroup
 	}
 	return groups, nil
 }
+
+func (s *GroupService) GetGroupsByTeacherId(ctx context.Context, req *pb.GetGroupsByTeacherIdRequest) (*pb.GetGroupsByTeacherResponse, error) {
+	return s.repo.GetGroupByTeacherId(req.TeacherId, req.IsArchived)
+}

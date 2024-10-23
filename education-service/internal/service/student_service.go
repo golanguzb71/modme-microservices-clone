@@ -83,3 +83,7 @@ func (s *StudentService) GetHistoryStudentById(ctx context.Context, req *pb.Note
 func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.TransferLessonRequest) (*pb.AbsResponse, error) {
 	return s.repo.TransferLessonDate(req.GroupId, req.From, req.To)
 }
+
+func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
+	return s.repo.ChangeConditionStudent(req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate)
+}

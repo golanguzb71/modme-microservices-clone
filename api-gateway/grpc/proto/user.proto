@@ -3,13 +3,34 @@ syntax = "proto3";
 package user;
 
 option go_package = "grpc/proto/pb";
+import "common.proto";
 
 
 service UserService {
-
+  rpc CreateUser(CreateUserRequest) returns(common.AbsResponse);
+  rpc GetTeachers(GetTeachersRequest)returns(GetTeachersResponse);
 }
 
-message ValidateTokenRequest {
-  string token = 1;
-  repeated string requiredRoles = 2;
+message CreateUserRequest{
+  string fullName = 1;
+  string phoneNumber = 2;
+  string password = 3;
+  string role = 4;
+  string birthDate = 5;
+  bool gender = 6;
+}
+
+message GetTeachersRequest{
+  bool isDeleted = 1;
+}
+
+message GetTeachersResponse{
+  repeated AbsTeacher teachers = 1;
+}
+
+message AbsTeacher{
+  string id = 4;
+  string fullName = 1;
+  string phoneNumber = 2;
+  string activeGroups = 3;
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"education-service/proto/pb"
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -15,18 +16,15 @@ type AttendanceRepository struct {
 func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
-
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
         VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT (group_id, student_id, attend_date) 
-        DO UPDATE SET status = EXCLUDED.status, teacher_id = EXCLUDED.teacher_id
+        ON CONFLICT DO NOTHING 
     `
 	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status)
 	return err
 }
-
 func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string, teacherId string, attendDate string) error {
 	query := `
         DELETE FROM attendance
@@ -49,7 +47,6 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	// writing teacher finance remove
 	return nil
 }
-
 func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time) (*pb.GetAttendanceResponse, error) {
 	response := &pb.GetAttendanceResponse{
 		Days:     make([]*pb.Day, 0),
@@ -66,27 +63,29 @@ func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Cont
         ),
         group_dates AS (
             SELECT DISTINCT d.date::text, tl.transfer_date::text
-FROM dates d
-JOIN groups g ON g.id = $3::bigint
-LEFT JOIN transfer_lesson tl ON tl.group_id = g.id AND tl.real_date = d.date
-WHERE (
-    (d.date >= g.start_date AND d.date <= LEAST(g.end_date, $2::date))
-    AND EXTRACT(DOW FROM d.date) = ANY(
-        SELECT CASE day
-            WHEN 'DUSHANBA' THEN 1
-            WHEN 'SESHANBA' THEN 2
-            WHEN 'CHORSHANBA' THEN 3
-            WHEN 'PAYSHANBA' THEN 4
-            WHEN 'JUMA' THEN 5
-            WHEN 'SHANBA' THEN 6
-            WHEN 'YAKSHANBA' THEN 0
-        END
-        FROM unnest(g.days) AS day
-    )
-)
-ORDER BY d.date::text, tl.transfer_date::text
+            FROM dates d
+            JOIN groups g ON g.id = $3::bigint
+            LEFT JOIN transfer_lesson tl ON tl.group_id = g.id AND tl.real_date = d.date
+            WHERE (
+                (d.date >= g.start_date AND d.date <= LEAST(g.end_date, $2::date))
+                AND EXTRACT(DOW FROM d.date) = ANY(
+                    SELECT CASE day
+                        WHEN 'DUSHANBA' THEN 1
+                        WHEN 'SESHANBA' THEN 2
+                        WHEN 'CHORSHANBA' THEN 3
+                        WHEN 'PAYSHANBA' THEN 4
+                        WHEN 'JUMA' THEN 5
+                        WHEN 'SHANBA' THEN 6
+                        WHEN 'YAKSHANBA' THEN 0
+                    END
+                    FROM unnest(g.days) AS day
+                )
+            )
+            ORDER BY d.date::text
         )
-        SELECT date, transfer_date FROM group_dates
+        SELECT date, transfer_date 
+        FROM group_dates
+        ORDER BY date, COALESCE(transfer_date, date)
     `
 
 	rows, err := r.db.QueryContext(ctx, daysQuery, fromDate, tillDate, groupId)
@@ -117,6 +116,7 @@ ORDER BY d.date::text, tl.transfer_date::text
             FROM attendance a
             WHERE a.group_id = $1::bigint
             AND a.attend_date BETWEEN $2::date AND $3::date
+            ORDER BY a.attend_date, a.created_at
         ),
         last_activation AS (
             SELECT 
@@ -124,13 +124,13 @@ ORDER BY d.date::text, tl.transfer_date::text
                 created_at as activated_at
             FROM group_student_condition_history
             WHERE group_id = $1::bigint
-            AND condition = 'ACTIVE'
+            AND current_condition = 'ACTIVE'
             AND created_at = (
                 SELECT MAX(created_at)
                 FROM group_student_condition_history gsch2
                 WHERE gsch2.student_id = group_student_condition_history.student_id
                 AND gsch2.group_id = group_student_condition_history.group_id
-                AND gsch2.condition = 'ACTIVE'
+                AND gsch2.current_condition = 'ACTIVE'
             )
         )
         SELECT 
@@ -154,7 +154,7 @@ ORDER BY d.date::text, tl.transfer_date::text
         LEFT JOIN students s ON gs.student_id = s.id
         LEFT JOIN last_activation la ON gs.student_id = la.student_id
         WHERE gs.group_id = $1::bigint
-        ORDER BY gs.student_id, sa.attend_date
+        ORDER BY gs.created_at, sa.attend_date, sa.created_at
     `
 
 	rows, err = r.db.QueryContext(ctx, studentsQuery, groupId, fromDate, tillDate)
@@ -225,13 +225,23 @@ ORDER BY d.date::text, tl.transfer_date::text
 		}
 	}
 
+	students := make([]*pb.Student, 0, len(studentMap))
 	for _, student := range studentMap {
-		response.Students = append(response.Students, student)
+		students = append(students, student)
 	}
 
+	sort.Slice(students, func(i, j int) bool {
+		return students[i].AddedAt < students[j].AddedAt
+	})
+
+	for _, student := range students {
+		sort.Slice(student.Attendance, func(i, j int) bool {
+			return student.Attendance[i].AttendDate < student.Attendance[j].AttendDate
+		})
+	}
+	response.Students = students
 	return response, nil
 }
-
 func (r *AttendanceRepository) IsValidGroupDay(ctx context.Context, groupId string, date time.Time) (bool, error) {
 	query := `
         SELECT EXISTS (

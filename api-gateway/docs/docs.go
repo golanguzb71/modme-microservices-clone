@@ -1793,6 +1793,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/change-condition": {
+            "put": {
+                "description": "Changes the condition of a student based on provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "Changes the condition of a student",
+                "parameters": [
+                    {
+                        "description": "Change Condition Student Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ChangeConditionStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/student/create": {
             "post": {
                 "security": [
@@ -2211,6 +2257,96 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/user/create": {
+            "post": {
+                "description": "CEO",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created user",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-teachers/{isDeleted}": {
+            "get": {
+                "description": "Fetches a list of teachers based on the deletion status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN,CEO",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Deletion status (true/false)",
+                        "name": "isDeleted",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of teachers",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetTeachersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2342,6 +2478,23 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsTeacher": {
+            "type": "object",
+            "properties": {
+                "activeGroups": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AddToGroupRequest": {
             "type": "object",
             "properties": {
@@ -2378,6 +2531,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "teacherId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.ChangeConditionStudentRequest": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                },
+                "returnTheMoney": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "tillDate": {
                     "type": "string"
                 }
             }
@@ -2600,6 +2773,29 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.Day": {
             "type": "object",
             "properties": {
@@ -2650,6 +2846,9 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "condition": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },
@@ -2912,6 +3111,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsNote"
+                    }
+                }
+            }
+        },
+        "pb.GetTeachersResponse": {
+            "type": "object",
+            "properties": {
+                "teachers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTeacher"
                     }
                 }
             }

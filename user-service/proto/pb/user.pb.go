@@ -25,12 +25,12 @@ type CreateUserRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName"`
-	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password"`
-	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role"`
-	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
+	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
+	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender,omitempty"`
 }
 
 func (x *CreateUserRequest) Reset() {
@@ -110,7 +110,7 @@ type GetTeachersRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IsDeleted bool `protobuf:"varint,1,opt,name=isDeleted,proto3" json:"isDeleted"`
+	IsDeleted bool `protobuf:"varint,1,opt,name=isDeleted,proto3" json:"isDeleted,omitempty"`
 }
 
 func (x *GetTeachersRequest) Reset() {
@@ -155,7 +155,7 @@ type GetTeachersResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Teachers []*AbsTeacher `protobuf:"bytes,1,rep,name=teachers,proto3" json:"teachers"`
+	Teachers []*AbsTeacher `protobuf:"bytes,1,rep,name=teachers,proto3" json:"teachers,omitempty"`
 }
 
 func (x *GetTeachersResponse) Reset() {
@@ -200,10 +200,10 @@ type AbsTeacher struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string `protobuf:"bytes,4,opt,name=id,proto3" json:"id"`
-	FullName     string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName"`
-	PhoneNumber  string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	ActiveGroups string `protobuf:"bytes,3,opt,name=activeGroups,proto3" json:"activeGroups"`
+	Id           string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
+	FullName     string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	PhoneNumber  string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	ActiveGroups string `protobuf:"bytes,3,opt,name=activeGroups,proto3" json:"activeGroups,omitempty"`
 }
 
 func (x *AbsTeacher) Reset() {
@@ -305,8 +305,8 @@ var file_user_proto_rawDesc = []byte{
 	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x65, 0x61, 0x63, 0x68, 0x65, 0x72,
 	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e,
 	0x47, 0x65, 0x74, 0x54, 0x65, 0x61, 0x63, 0x68, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x42, 0x0f, 0x5a, 0x0d, 0x67, 0x72, 0x70, 0x63, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x62, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

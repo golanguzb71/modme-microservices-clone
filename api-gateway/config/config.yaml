@@ -9,7 +9,7 @@ grpc:
   lid_service:
     address: "sphere-lead-service:8080"
   user_service:
-    address: "localhost:50054"
+    address: "sphere-user-service:8080"
 
 #server:
 #  port: 8080
@@ -22,4 +22,4 @@ grpc:
 #  lid_service:
 #    address: "localhost:50053"
 #  user_service:
-#    address: "localhost:50054"
+#    address: "localhost:50055"

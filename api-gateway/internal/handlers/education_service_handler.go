@@ -398,15 +398,13 @@ func GetGroupById(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/attendance/set [post]
 func SetAttendance(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
 	var req pb.SetAttendanceRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	resp, err := educationClient.SetAttendanceByGroup(ctxR, &req)
+	resp, err := educationClient.SetAttendanceByGroup(context.TODO(), &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -797,6 +795,35 @@ func TransferLessonDate(ctx *gin.Context) {
 		return
 	}
 	resp, err := educationClient.TransferLessonDate(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// ChangeConditionStudent changes the condition of a student.
+// @Summary Changes the condition of a student
+// @Description Changes the condition of a student based on provided details
+// @Tags students
+// @Accept json
+// @Produce json
+// @Param request body pb.ChangeConditionStudentRequest true "Change Condition Student Request"
+// @Success 200 {object} utils.AbsResponse "Status and message"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/student/change-condition [put]
+func ChangeConditionStudent(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.ChangeConditionStudentRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.ChangeConditionStudent(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

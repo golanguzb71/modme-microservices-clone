@@ -203,3 +203,81 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
 
 	return &response, nil
 }
+
+func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (*pb.GetGroupsByTeacherResponse, error) {
+	query := `
+		SELECT 
+		    g.id,
+			g.name, 
+			c.title AS course_name, 
+			r.title AS room_name, 
+			g.start_time, 
+			g.date_type, 
+			g.start_date, 
+			g.end_date, 
+			(
+				SELECT COUNT(gs.student_id)
+				FROM group_students gs
+				WHERE gs.group_id = g.id
+				AND gs.condition = 'ACTIVE'
+			) AS active_student_count
+		FROM groups g
+		INNER JOIN courses c ON g.course_id = c.id
+		LEFT JOIN rooms r ON g.room_id = r.id
+		WHERE g.teacher_id = $1 AND g.is_archived = $2
+	`
+	rows, err := r.db.Query(query, teacherId, archived)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var response pb.GetGroupsByTeacherResponse
+	for rows.Next() {
+		var groupId string
+		var group pb.GetGroupByTeacherAbs
+		var activeStudentCount int32
+		if err := rows.Scan(&groupId, &group.Name, &group.CourseName, &group.RoomName, &group.LessonStartTime, &group.DayType, &group.GroupStartAt, &group.GroupEndAt, &activeStudentCount); err != nil {
+			return nil, err
+		}
+		group.ActiveStudentCount = activeStudentCount
+		students, err := r.GetStudentsByGroupId(groupId)
+		if err != nil {
+			return nil, err
+		}
+		group.Students = students
+		response.Groups = append(response.Groups, &group)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
+func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent, error) {
+	query := `
+		SELECT s.id, s.name, s.phone 
+		FROM students s
+		INNER JOIN group_students gs ON gs.student_id = s.id
+		WHERE gs.group_id = $1 AND gs.condition = 'ACTIVE'
+	`
+	rows, err := r.db.Query(query, groupId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var students []*pb.AbsStudent
+	for rows.Next() {
+		var student pb.AbsStudent
+		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber); err != nil {
+			return nil, err
+		}
+		students = append(students, &student)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return students, nil
+}
