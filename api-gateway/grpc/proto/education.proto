@@ -87,6 +87,25 @@ service GroupService{
   rpc GetGroupsByCourseId(GetGroupByIdRequest) returns(GetGroupsByCourseResponse);
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
+  rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+}
+message GetGroupsByTeacherIdRequest{
+  string teacherId = 1;
+  bool isArchived = 2;
+}
+message GetGroupsByTeacherResponse{
+  repeated GetGroupByTeacherAbs groups = 1;
+}
+message GetGroupByTeacherAbs{
+  string name = 1;
+  string courseName = 2;
+  string roomName = 3;
+  string lessonStartTime = 4;
+  string dayType = 5;
+  string groupStartAt = 6;
+  string groupEndAt = 7;
+  int32 activeStudentCount = 8;
+  repeated AbsStudent students = 9;
 }
 message CreateGroupRequest{
   string name = 1;

@@ -178,3 +178,10 @@ func (lc *EducationClient) TransferLessonDate(ctx context.Context, p *pb.Transfe
 func (lc *EducationClient) ChangeConditionStudent(ctx context.Context, p *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
 	return lc.studentClient.ChangeConditionStudent(ctx, p)
 }
+
+func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherId string, isArchived bool) (*pb.GetGroupsByTeacherResponse, error) {
+	return lc.groupClient.GetGroupsByTeacherId(ctx, &pb.GetGroupsByTeacherIdRequest{
+		TeacherId:  teacherId,
+		IsArchived: isArchived,
+	})
+}

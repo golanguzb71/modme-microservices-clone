@@ -12,10 +12,10 @@ import (
 type AttendanceRepository struct {
 	db *sql.DB
 }
-
 func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
+
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)

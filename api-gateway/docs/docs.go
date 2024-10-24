@@ -717,6 +717,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/group/get-by-teacher/{teacherId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get information about a specific teacher by their ID, with an option to filter archived data.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "ADMIN , TEACHER , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Teacher ID",
+                        "name": "teacherId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Whether to include archived information",
+                        "name": "isArchived",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetGroupsByTeacherResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/transfer-date": {
             "post": {
                 "description": "Transfers the lesson date for a course",
@@ -2260,7 +2307,12 @@ const docTemplate = `{
         },
         "/api/user/create": {
             "post": {
-                "description": "CEO",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -2270,7 +2322,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Create a new user",
+                "summary": "CEO",
                 "parameters": [
                     {
                         "description": "User data",
@@ -2304,8 +2356,100 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/delete/{userId}": {
+            "delete": {
+                "description": "Delete a user from the system using their ID",
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-all-employee/{isArchived}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves a list of all employees based on archive status. Restricted to ADMIN and CEO roles.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Filter by archive status (true=archived, false=active)",
+                        "name": "isArchived",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllEmployeeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or processing error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "408": {
+                        "description": "Request timeout",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/get-teachers/{isDeleted}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Fetches a list of teachers based on the deletion status",
                 "consumes": [
                     "application/json"
@@ -2341,6 +2485,81 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-user/{userId}": {
+            "get": {
+                "description": "Retrieve user details by their unique user ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "CEO , ADMIN , TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetUserByIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/update": {
+            "patch": {
+                "description": "Update user details using their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO , TEACHER",
+                "parameters": [
+                    {
+                        "description": "User Details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -2829,6 +3048,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetAllEmployeeResponse": {
+            "type": "object",
+            "properties": {
+                "employees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetUserByIdResponse"
+                    }
+                }
+            }
+        },
         "pb.GetAllStudentResponse": {
             "type": "object",
             "properties": {
@@ -2953,6 +3183,41 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetGroupByTeacherAbs": {
+            "type": "object",
+            "properties": {
+                "activeStudentCount": {
+                    "type": "integer"
+                },
+                "courseName": {
+                    "type": "string"
+                },
+                "dayType": {
+                    "type": "string"
+                },
+                "groupEndAt": {
+                    "type": "string"
+                },
+                "groupStartAt": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomName": {
+                    "type": "string"
+                },
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudent"
+                    }
+                }
+            }
+        },
         "pb.GetGroupsAbsForStudent": {
             "type": "object",
             "properties": {
@@ -3007,6 +3272,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.GetGroupByCourseAbsResponse"
+                    }
+                }
+            }
+        },
+        "pb.GetGroupsByTeacherResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetGroupByTeacherAbs"
                     }
                 }
             }
@@ -3183,6 +3459,35 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsRoom"
                     }
+                }
+            }
+        },
+        "pb.GetUserByIdResponse": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -3454,6 +3759,29 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "utils.AbsResponse": {
             "type": "object",
             "properties": {
@@ -3481,7 +3809,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Modme Swagger",
+	Title:            "Sphere Swagger",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
