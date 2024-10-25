@@ -147,3 +147,21 @@ func (r *UserRepository) GetAllEmployee(isArchived bool) (*pb.GetAllEmployeeResp
 
 	return &pb.GetAllEmployeeResponse{Employees: employees}, nil
 }
+
+func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
+	res := pb.GetUserByIdResponse{}
+	var password string
+	err := r.db.QueryRow(`SELECT id,
+       full_name,
+       phone_number,
+       password,
+       role,
+       birth_date,
+       gender,
+       is_deleted,
+       created_at FROM users where phone_number=$1`, phoneNumber).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt)
+	if err != nil {
+		return nil, "", err
+	}
+	return &res, password, nil
+}

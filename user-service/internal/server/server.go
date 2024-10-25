@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"time"
 	"user-service/config"
 	"user-service/internal/clients"
 	"user-service/internal/repository"
@@ -24,7 +25,20 @@ func RunServer() {
 		log.Fatalf("failed to loading database %s", err)
 	}
 	defer db.Close()
-	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
+
+	var groupClient *clients.GroupClient
+	go func() {
+		for {
+			groupClient = clients.NewGroupClient(cfg.Grpc.EducationService.Address)
+			if groupClient != nil {
+				log.Println("Connected to education service.")
+				break
+			}
+			log.Println("Waiting for education service to be available...")
+			time.Sleep(3 * time.Second)
+		}
+	}()
+
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 	userRepo := repository.NewUserRepository(db, groupClient)
 	userService := service.NewUserService(userRepo)
