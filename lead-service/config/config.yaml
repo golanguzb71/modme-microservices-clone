@@ -28,5 +28,5 @@ database:
   sslmode: "disable"
   action: "up"
 grpc:
-  education_service:
+  educationService:
     address: "localhost:50052"

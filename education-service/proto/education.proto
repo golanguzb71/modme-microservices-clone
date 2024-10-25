@@ -375,8 +375,7 @@ message GetStudentByIdResponse{
 message NoteStudentByAbsRequest{
   string id = 1;
 }
-message GetGroupStudent
-{
+message GetGroupStudent{
   string id = 1;
   string name = 2;
   string dateType = 3;

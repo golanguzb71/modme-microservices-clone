@@ -39,10 +39,31 @@ func (r *SetRepository) UpdateSet(id, title, courseId, teacherId, dateType strin
 }
 
 func (r *SetRepository) DeleteSet(id string) error {
-	query := "DELETE FROM set_section WHERE id = $1"
+	query := "DELETE FROM set_section WHERE id = $1 "
 	_, err := r.db.Exec(query, id)
 	if err != nil {
 		return fmt.Errorf("failed to delete set: %w", err)
 	}
 	return nil
+}
+
+func (r *SetRepository) GetLeadDataBySetId(setId string) ([]string, []string, error) {
+	queryLeadData := `SELECT full_name , phone_number FROM lead_user where set_id=$1`
+	rows, err := r.db.Query(queryLeadData, setId)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+	var names, phoneNumbers []string
+	for rows.Next() {
+		var name, phoneNumber string
+		err = rows.Scan(&name, &phoneNumber)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		names = append(names, name)
+		phoneNumbers = append(phoneNumbers, phoneNumber)
+	}
+	return names, phoneNumbers, nil
 }

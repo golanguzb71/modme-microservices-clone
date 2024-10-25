@@ -30,10 +30,10 @@ CREATE TABLE IF NOT EXISTS lead_user
 (
     id           serial PRIMARY KEY,
     phone_number varchar NOT NULL,
-    full_name     varchar NOT NULL,
-    lead_id      int references lead_section (id),
-    expect_id    int references expect_section (id),
-    set_id       int references set_section (id),
+    full_name    varchar NOT NULL,
+    lead_id      int REFERENCES lead_section (id),
+    expect_id    int REFERENCES expect_section (id),
+    set_id       int REFERENCES set_section (id) ON DELETE CASCADE,
     comment      varchar,
     created_at   timestamp DEFAULT now()
 );
