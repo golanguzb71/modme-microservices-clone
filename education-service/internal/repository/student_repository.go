@@ -21,14 +21,15 @@ func NewStudentRepository(db *sql.DB) *StudentRepository {
 }
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
-	if err != nil {
+	if err != nil || pageInt < 1 {
 		return nil, fmt.Errorf("invalid page value: %v", err)
 	}
 	sizeInt, err := strconv.Atoi(size)
-	if err != nil {
+	if err != nil || sizeInt < 1 {
 		return nil, fmt.Errorf("invalid size value: %v", err)
 	}
 	offset := (pageInt - 1) * sizeInt
+
 	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1`
 	var totalCount int32
 	err = r.db.QueryRow(countQuery, condition).Scan(&totalCount)
@@ -61,6 +62,16 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		}
 		students = append(students, &student)
 	}
+
+	if len(students) == 0 {
+		return &pb.GetAllStudentResponse{Response: []*pb.GetGroupsAbsForStudent{}, TotalCount: totalCount}, nil
+	}
+
+	studentIDs := make([]string, len(students))
+	for i, student := range students {
+		studentIDs[i] = student.Id
+	}
+
 	groupQuery := `
     SELECT 
         s.id AS student_id,
@@ -75,19 +86,17 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
     WHERE s.id = ANY($1)
     ORDER BY s.id, g.id`
 
-	studentIDs := make([]string, len(students))
-	for i, student := range students {
-		studentIDs[i] = student.Id
-	}
 	groupRows, err := r.db.Query(groupQuery, pq.Array(studentIDs))
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute group query: %v", err)
 	}
 	defer groupRows.Close()
+
 	studentMap := make(map[string]*pb.GetGroupsAbsForStudent)
 	for _, student := range students {
 		studentMap[student.Id] = student
 	}
+
 	for groupRows.Next() {
 		var studentID string
 		var group pb.GroupGetAllStudentAbs
@@ -107,16 +116,10 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		student := studentMap[studentID]
 		student.Groups = append(student.Groups, &group)
 	}
+
 	var response pb.GetAllStudentResponse
-	for _, student := range students {
-		response.Response = append(response.Response, student)
-	}
-	totalPages := (totalCount + int32(sizeInt) - 1) / int32(sizeInt)
-	remainingPages := totalPages - int32(pageInt)
-	if remainingPages < 0 {
-		remainingPages = 0
-	}
-	response.TotalCount = remainingPages
+	response.Response = students
+	response.TotalCount = int32((int(totalCount) + sizeInt - 1) / sizeInt)
 	return &response, nil
 }
 func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {

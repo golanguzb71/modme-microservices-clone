@@ -30,7 +30,6 @@ func (r *GroupRepository) CreateGroup(name string, courseId int32, teacherId str
 	}
 	return groupId, nil
 }
-
 func (r *GroupRepository) UpdateGroup(id string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
 	query := `UPDATE groups SET course_id=$1, teacher_id=$2, room_id=$3, date_type=$4, days=$5, start_time=$6, start_date=$7, end_date=$8, name=$9 WHERE id=$10`
 	_, err := r.db.Exec(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, name, id)
@@ -47,7 +46,6 @@ func (r *GroupRepository) DeleteGroup(id string) error {
 	}
 	return nil
 }
-
 func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
@@ -109,7 +107,6 @@ LIMIT $2 OFFSET $3;`
 
 	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
-
 func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
 	query := `SELECT g.id, g.course_id, c.title as course_title, 
               'something' as teacher_name, 
@@ -146,7 +143,6 @@ func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, erro
 	group.StudentCount = studentCount.Int32
 	return &group, nil
 }
-
 func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCourseResponse, error) {
 	query := `
         SELECT 
@@ -203,7 +199,6 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
 
 	return &response, nil
 }
-
 func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (*pb.GetGroupsByTeacherResponse, error) {
 	query := `
 		SELECT 
@@ -233,14 +228,13 @@ func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (
 	defer rows.Close()
 	var response pb.GetGroupsByTeacherResponse
 	for rows.Next() {
-		var groupId string
 		var group pb.GetGroupByTeacherAbs
 		var activeStudentCount int32
-		if err := rows.Scan(&groupId, &group.Name, &group.CourseName, &group.RoomName, &group.LessonStartTime, &group.DayType, &group.GroupStartAt, &group.GroupEndAt, &activeStudentCount); err != nil {
+		if err := rows.Scan(&group.Id, &group.Name, &group.CourseName, &group.RoomName, &group.LessonStartTime, &group.DayType, &group.GroupStartAt, &group.GroupEndAt, &activeStudentCount); err != nil {
 			return nil, err
 		}
 		group.ActiveStudentCount = activeStudentCount
-		students, err := r.GetStudentsByGroupId(groupId)
+		students, err := r.GetStudentsByGroupId(group.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -253,7 +247,6 @@ func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (
 
 	return &response, nil
 }
-
 func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent, error) {
 	query := `
 		SELECT s.id, s.name, s.phone 

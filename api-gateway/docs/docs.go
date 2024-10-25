@@ -3201,6 +3201,9 @@ const docTemplate = `{
                 "groupStartAt": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "lessonStartTime": {
                     "type": "string"
                 },
