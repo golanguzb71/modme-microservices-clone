@@ -2,21 +2,22 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/proto/pb"
 	"strconv"
+	"time"
 )
 
 type SetService struct {
 	pb.UnimplementedSetServiceServer
-	repo        *repository.SetRepository
-	groupClient *clients.GroupClient
+	repo          *repository.SetRepository
+	groupClient   *clients.GroupClient
+	studentClient *clients.StudentClient
 }
 
-func NewSetService(repo *repository.SetRepository, client *clients.GroupClient) *SetService {
-	return &SetService{repo: repo, groupClient: client}
+func NewSetService(repo *repository.SetRepository, client *clients.GroupClient, studentClient *clients.StudentClient) *SetService {
+	return &SetService{repo: repo, groupClient: client, studentClient: studentClient}
 }
 
 func (s *SetService) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*pb.AbsResponse, error) {
@@ -67,7 +68,18 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(groupId)
+	currentDate := time.Now().Format("2006-01-02")
+	names, phoneNumbers, err := s.repo.GetLeadDataBySetId(req.SetId)
+	if err != nil {
+		return nil, err
+	}
+	length := min(len(names), len(phoneNumbers))
+	for i := 0; i < length; i++ {
+		_, err = s.studentClient.CreateStudent(ctx, phoneNumbers[i], names[i], "2006-12-14", groupId, currentDate, "1b39d121-7840-4411-bcfe-87c1beb9422b", true)
+		if err != nil {
+			return nil, err
+		}
+	}
 	err = s.repo.DeleteSet(req.SetId)
 	if err != nil {
 		return nil, err

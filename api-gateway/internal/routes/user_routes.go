@@ -12,5 +12,9 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	{
 		user.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateUser)
 		user.GET("/get-teachers/:isDeleted", middleware.AuthMiddleware([]string{}, userClient), handlers.GetTeachers)
+		user.GET("/get-user/:userId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetUserById)
+		user.PATCH("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateUserById)
+		user.DELETE("/delete/:userId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteUserById)
+		user.GET("/get-all-employee/:isArchived", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllEmployee)
 	}
 }

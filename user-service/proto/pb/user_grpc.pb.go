@@ -19,8 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_CreateUser_FullMethodName  = "/user.UserService/CreateUser"
-	UserService_GetTeachers_FullMethodName = "/user.UserService/GetTeachers"
+	UserService_CreateUser_FullMethodName     = "/user.UserService/CreateUser"
+	UserService_GetTeachers_FullMethodName    = "/user.UserService/GetTeachers"
+	UserService_GetUserById_FullMethodName    = "/user.UserService/GetUserById"
+	UserService_UpdateUserById_FullMethodName = "/user.UserService/UpdateUserById"
+	UserService_DeleteUserById_FullMethodName = "/user.UserService/DeleteUserById"
+	UserService_GetAllEmployee_FullMethodName = "/user.UserService/GetAllEmployee"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -29,6 +33,10 @@ const (
 type UserServiceClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetTeachers(ctx context.Context, in *GetTeachersRequest, opts ...grpc.CallOption) (*GetTeachersResponse, error)
+	GetUserById(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
+	UpdateUserById(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	DeleteUserById(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetAllEmployee(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllEmployeeResponse, error)
 }
 
 type userServiceClient struct {
@@ -59,12 +67,56 @@ func (c *userServiceClient) GetTeachers(ctx context.Context, in *GetTeachersRequ
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserById(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserByIdResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUserById(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, UserService_UpdateUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) DeleteUserById(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, UserService_DeleteUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetAllEmployee(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllEmployeeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllEmployeeResponse)
+	err := c.cc.Invoke(ctx, UserService_GetAllEmployee_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*AbsResponse, error)
 	GetTeachers(context.Context, *GetTeachersRequest) (*GetTeachersResponse, error)
+	GetUserById(context.Context, *UserAbsRequest) (*GetUserByIdResponse, error)
+	UpdateUserById(context.Context, *UpdateUserRequest) (*AbsResponse, error)
+	DeleteUserById(context.Context, *UserAbsRequest) (*AbsResponse, error)
+	GetAllEmployee(context.Context, *GetAllEmployeeRequest) (*GetAllEmployeeResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -80,6 +132,18 @@ func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserReq
 }
 func (UnimplementedUserServiceServer) GetTeachers(context.Context, *GetTeachersRequest) (*GetTeachersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTeachers not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserById(context.Context, *UserAbsRequest) (*GetUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUserById(context.Context, *UpdateUserRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserById not implemented")
+}
+func (UnimplementedUserServiceServer) DeleteUserById(context.Context, *UserAbsRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserById not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllEmployee(context.Context, *GetAllEmployeeRequest) (*GetAllEmployeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllEmployee not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +202,78 @@ func _UserService_GetTeachers_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserById(ctx, req.(*UserAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUserById(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_DeleteUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DeleteUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DeleteUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DeleteUserById(ctx, req.(*UserAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetAllEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetAllEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllEmployee(ctx, req.(*GetAllEmployeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +288,22 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTeachers",
 			Handler:    _UserService_GetTeachers_Handler,
+		},
+		{
+			MethodName: "GetUserById",
+			Handler:    _UserService_GetUserById_Handler,
+		},
+		{
+			MethodName: "UpdateUserById",
+			Handler:    _UserService_UpdateUserById_Handler,
+		},
+		{
+			MethodName: "DeleteUserById",
+			Handler:    _UserService_DeleteUserById_Handler,
+		},
+		{
+			MethodName: "GetAllEmployee",
+			Handler:    _UserService_GetAllEmployee_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

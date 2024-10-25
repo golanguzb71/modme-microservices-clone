@@ -32,6 +32,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		group.GET("/get-by-id/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.GetGroupById)
 		group.GET("/get-by-course/:courseId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetGroupByCourseId)
 		group.POST("/transfer-date", middleware.AuthMiddleware([]string{}, userClient), handlers.TransferLessonDate)
+		group.GET("/get-by-teacher/:teacherId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetInformationByTeacher)
 	}
 	attendance := api.Group("/attendance")
 	{
@@ -60,5 +61,4 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		history.GET("/group/:groupId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetHistoryGroup)
 		history.GET("/student/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetHistoryStudent)
 	}
-
 }

@@ -831,3 +831,32 @@ func ChangeConditionStudent(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, resp.Status, resp.Message)
 	return
 }
+
+// GetInformationByTeacher godoc
+// @Summary ADMIN , TEACHER , CEO
+// @Description Get information about a specific teacher by their ID, with an option to filter archived data.
+// @Tags groups
+// @Param teacherId path string true "Teacher ID"
+// @Param isArchived query bool true "Whether to include archived information"
+// @Produce json
+// @Success 200 {object} pb.GetGroupsByTeacherResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/group/get-by-teacher/{teacherId} [get]
+func GetInformationByTeacher(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	teacherId := ctx.Param("teacherId")
+	isArchived, err := strconv.ParseBool(ctx.Query("isArchived"))
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.GetInformationByTeacher(ctxR, teacherId, isArchived)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

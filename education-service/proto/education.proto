@@ -95,6 +95,7 @@ message GetGroupsByTeacherResponse{
   repeated GetGroupByTeacherAbs groups = 1;
 }
 message GetGroupByTeacherAbs{
+  string id = 10;
   string name = 1;
   string courseName = 2;
   string roomName = 3;
@@ -180,6 +181,7 @@ message GetAttendanceRequest{
   string groupId = 1;
   string from = 2;
   string till = 3;
+  bool withOutdated = 4;
 }
 message GetAttendanceResponse{
   repeated Day days = 1;
@@ -374,8 +376,7 @@ message GetStudentByIdResponse{
 message NoteStudentByAbsRequest{
   string id = 1;
 }
-message GetGroupStudent
-{
+message GetGroupStudent{
   string id = 1;
   string name = 2;
   string dateType = 3;

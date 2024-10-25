@@ -15,6 +15,7 @@ message GetGroupsByTeacherResponse{
   repeated GetGroupByTeacherAbs groups = 1;
 }
 message GetGroupByTeacherAbs{
+  string id = 10;
   string name = 1;
   string courseName = 2;
   string roomName = 3;

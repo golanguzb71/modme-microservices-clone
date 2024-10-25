@@ -16,6 +16,7 @@ type AttendanceRepository struct {
 func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
+
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
@@ -47,7 +48,7 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	// writing teacher finance remove
 	return nil
 }
-func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time) (*pb.GetAttendanceResponse, error) {
+func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool) (*pb.GetAttendanceResponse, error) {
 	response := &pb.GetAttendanceResponse{
 		Days:     make([]*pb.Day, 0),
 		Students: make([]*pb.Student, 0),
@@ -154,10 +155,11 @@ func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Cont
         LEFT JOIN students s ON gs.student_id = s.id
         LEFT JOIN last_activation la ON gs.student_id = la.student_id
         WHERE gs.group_id = $1::bigint
+        AND ($4 OR gs.condition = 'ACTIVE')
         ORDER BY gs.created_at, sa.attend_date, sa.created_at
     `
 
-	rows, err = r.db.QueryContext(ctx, studentsQuery, groupId, fromDate, tillDate)
+	rows, err = r.db.QueryContext(ctx, studentsQuery, groupId, fromDate, tillDate, withOutdated)
 	if err != nil {
 		return nil, err
 	}

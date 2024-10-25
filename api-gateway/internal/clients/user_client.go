@@ -27,3 +27,19 @@ func (c *UserClient) CreateUser(ctx context.Context, req *pb.CreateUserRequest) 
 func (c *UserClient) GetTeachers(ctx context.Context, isDeleted bool) (*pb.GetTeachersResponse, error) {
 	return c.client.GetTeachers(ctx, &pb.GetTeachersRequest{IsDeleted: isDeleted})
 }
+
+func (c *UserClient) GetUserById(ctx context.Context, teacherId string) (*pb.GetUserByIdResponse, error) {
+	return c.client.GetUserById(ctx, &pb.UserAbsRequest{UserId: teacherId})
+}
+
+func (c *UserClient) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequest) (*pb.AbsResponse, error) {
+	return c.client.UpdateUserById(ctx, req)
+}
+
+func (c *UserClient) DeleteUserById(ctx context.Context, userId string) (*pb.AbsResponse, error) {
+	return c.client.DeleteUserById(ctx, &pb.UserAbsRequest{UserId: userId})
+}
+
+func (c *UserClient) GetAllEmployee(ctx context.Context, isArchived bool) (*pb.GetAllEmployeeResponse, error) {
+	return c.client.GetAllEmployee(ctx, &pb.GetAllEmployeeRequest{IsArchived: isArchived})
+}

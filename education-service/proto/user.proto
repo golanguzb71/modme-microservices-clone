@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "proto/pb";
+
+service UserService {
+  rpc GetUserById(UserAbsRequest) returns(GetUserByIdResponse);
+}
+message UserAbsRequest{
+  string userId = 1;
+}
+
+message GetUserByIdResponse{
+  string id = 1;
+  string phoneNumber = 2;
+  string role = 3;
+  string name = 4;
+  string birthDate = 5;
+  bool gender = 6;
+  bool is_deleted = 7;
+  string createdAt = 8;
+}
