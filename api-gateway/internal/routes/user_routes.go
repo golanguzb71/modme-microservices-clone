@@ -10,6 +10,7 @@ import (
 func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	user := api.Group("/user")
 	{
+		user.POST("/login", handlers.Login)
 		user.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateUser)
 		user.GET("/get-teachers/:isDeleted", middleware.AuthMiddleware([]string{}, userClient), handlers.GetTeachers)
 		user.GET("/get-user/:userId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetUserById)

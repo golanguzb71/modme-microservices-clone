@@ -28,6 +28,7 @@ func RunServer() {
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 	userRepo := repository.NewUserRepository(db, groupClient)
 	userService := service.NewUserService(userRepo)
+	authService := service.NewAuthService(userRepo)
 
 	listen, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
@@ -35,6 +36,7 @@ func RunServer() {
 	}
 	server := grpc.NewServer()
 	pb.RegisterUserServiceServer(server, userService)
+	pb.RegisterAuthServiceServer(server, authService)
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := server.Serve(listen); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

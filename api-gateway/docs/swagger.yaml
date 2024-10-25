@@ -649,6 +649,22 @@ definitions:
       type:
         type: string
     type: object
+  pb.LoginRequest:
+    properties:
+      password:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.LoginResponse:
+    properties:
+      isOk:
+        type: boolean
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/pb.GetUserByIdResponse'
+    type: object
   pb.SearchStudentResponse:
     properties:
       students:
@@ -2388,6 +2404,32 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       summary: CEO , ADMIN , TEACHER
+      tags:
+      - user
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token upon successful login.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: LoginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/pb.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/pb.LoginResponse'
+        "400":
+          description: Bad request - Invalid JSON or login failure
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ALL
       tags:
       - user
   /api/user/update:

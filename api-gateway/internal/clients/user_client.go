@@ -7,7 +7,8 @@ import (
 )
 
 type UserClient struct {
-	client pb.UserServiceClient
+	client     pb.UserServiceClient
+	authClient pb.AuthServiceClient
 }
 
 func NewUserClient(addr string) (*UserClient, error) {
@@ -17,7 +18,8 @@ func NewUserClient(addr string) (*UserClient, error) {
 	}
 
 	client := pb.NewUserServiceClient(conn)
-	return &UserClient{client: client}, nil
+	authClient := pb.NewAuthServiceClient(conn)
+	return &UserClient{client: client, authClient: authClient}, nil
 }
 
 func (c *UserClient) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.AbsResponse, error) {
@@ -42,4 +44,8 @@ func (c *UserClient) DeleteUserById(ctx context.Context, userId string) (*pb.Abs
 
 func (c *UserClient) GetAllEmployee(ctx context.Context, isArchived bool) (*pb.GetAllEmployeeResponse, error) {
 	return c.client.GetAllEmployee(ctx, &pb.GetAllEmployeeRequest{IsArchived: isArchived})
+}
+
+func (c *UserClient) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
+	return c.authClient.Login(ctx, request)
 }
