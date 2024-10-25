@@ -170,3 +170,31 @@ func GetAllEmployee(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// Login godoc
+// @Summary ALL
+// @Description Authenticate a user and return a token upon successful login.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param LoginRequest body pb.LoginRequest true "Login credentials"
+// @Success 200 {object} pb.LoginResponse "Successful login"
+// @Failure 400 {object} utils.AbsResponse "Bad request - Invalid JSON or login failure"
+// @Router /api/user/login [post]
+func Login(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.LoginRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := userClient.Login(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

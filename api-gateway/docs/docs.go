@@ -2527,6 +2527,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/login": {
+            "post": {
+                "description": "Authenticate a user and return a token upon successful login.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ALL",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "LoginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "schema": {
+                            "$ref": "#/definitions/pb.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid JSON or login failure",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/update": {
             "patch": {
                 "description": "Update user details using their ID",
@@ -3566,6 +3606,31 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "isOk": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/pb.GetUserByIdResponse"
                 }
             }
         },
