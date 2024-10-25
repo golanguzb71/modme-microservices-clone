@@ -20,9 +20,16 @@ type DatabaseConfig struct {
 	Action   string `yaml:"action"`
 }
 
+type GrpcConfig struct {
+	UserService struct {
+		Address string `yaml:"address"`
+	} `yaml:"userService"`
+}
+
 type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Database DatabaseConfig `yaml:"database"`
+	Grpc     GrpcConfig     `yaml:"grpc"`
 }
 
 func LoadConfig() (*Config, error) {

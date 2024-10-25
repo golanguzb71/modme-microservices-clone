@@ -2,6 +2,7 @@ package server
 
 import (
 	"education-service/config"
+	"education-service/internal/clients"
 	"education-service/internal/repository"
 	"education-service/internal/service"
 	"education-service/migrations"
@@ -24,15 +25,21 @@ func RunServer() {
 	}
 	defer db.Close()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
+
+	userClient, err := clients.NewUserClient(cfg.Grpc.UserService.Address)
+	if err != nil {
+		log.Fatalf("error %v", err)
+	}
+
 	roomRepo := repository.NewRoomRepository(db)
 	roomService := service.NewRoomService(roomRepo)
 	courseRepo := repository.NewCourseRepository(db)
 	courseService := service.NewCourseService(courseRepo)
-	groupRepo := repository.NewGroupRepository(db)
+	groupRepo := repository.NewGroupRepository(db, userClient)
 	groupService := service.NewGroupService(groupRepo)
 	attendanceRepo := repository.NewAttendanceRepository(db)
 	attendanceService := service.NewAttendanceService(attendanceRepo)
-	studentRepo := repository.NewStudentRepository(db)
+	studentRepo := repository.NewStudentRepository(db, userClient)
 	studentService := service.NewStudentService(studentRepo)
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {

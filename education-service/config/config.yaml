@@ -10,6 +10,11 @@ database:
   sslmode: "disable"
   action: "up"
 
+
+grpc:
+  userService:
+    address: "localhost:50055"
+
 #server:
 #  port: 8080
 #
@@ -21,3 +26,7 @@ database:
 #  dbname: "sphere_education_db"
 #  sslmode: "disable"
 #  action: "no"
+
+#grpc:
+#  userService:
+#    address: ":50055"

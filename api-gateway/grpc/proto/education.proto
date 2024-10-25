@@ -183,7 +183,7 @@ message GetAttendanceRequest{
   string groupId = 1;
   string from = 2;
   string till = 3;
-  string condition = 4;
+  bool withOutdated = 4;
 }
 
 message GetAttendanceResponse{

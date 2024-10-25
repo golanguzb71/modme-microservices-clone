@@ -181,6 +181,7 @@ message GetAttendanceRequest{
   string groupId = 1;
   string from = 2;
   string till = 3;
+  bool withOutdated = 4;
 }
 message GetAttendanceResponse{
   repeated Day days = 1;

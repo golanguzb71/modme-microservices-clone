@@ -328,14 +328,14 @@ definitions:
     type: object
   pb.GetAttendanceRequest:
     properties:
-      condition:
-        type: string
       from:
         type: string
       groupId:
         type: string
       till:
         type: string
+      withOutdated:
+        type: boolean
     type: object
   pb.GetAttendanceResponse:
     properties:

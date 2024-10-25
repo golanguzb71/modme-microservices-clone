@@ -3076,9 +3076,6 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
-                "condition": {
-                    "type": "string"
-                },
                 "from": {
                     "type": "string"
                 },
@@ -3087,6 +3084,9 @@ const docTemplate = `{
                 },
                 "till": {
                     "type": "string"
+                },
+                "withOutdated": {
+                    "type": "boolean"
                 }
             }
         },

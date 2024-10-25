@@ -34,7 +34,7 @@ func (s *AttendanceService) GetAttendance(ctx context.Context, req *pb.GetAttend
 	if tillDate.Before(fromDate) {
 		return nil, errors.New("'till' date must be after 'from' date")
 	}
-	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(ctx, req.GroupId, fromDate, tillDate)
+	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(ctx, req.GroupId, fromDate, tillDate, req.WithOutdated)
 }
 
 func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttendanceRequest) (*pb.AbsResponse, error) {

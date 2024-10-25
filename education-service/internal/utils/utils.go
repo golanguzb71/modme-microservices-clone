@@ -21,6 +21,22 @@ func IsValidLessonDay(db *sql.DB, groupId, fromDate string) (bool, error) {
 	}
 
 	dayOfWeek := parsedDate.Weekday().String()
+	switch dayOfWeek {
+	case "Monday":
+		dayOfWeek = "DUSHANBA"
+	case "Tuesday":
+		dayOfWeek = "SESHANBA"
+	case "Wednesday":
+		dayOfWeek = "CHORSHANBA"
+	case "Thursday":
+		dayOfWeek = "PAYSHANBA"
+	case "Friday":
+		dayOfWeek = "JUMA"
+	case "Saturday":
+		dayOfWeek = "SHANBA"
+	case "Sunday":
+		dayOfWeek = "YAKSHANBA"
+	}
 	for _, lessonDay := range lessonDays {
 		if strings.ToUpper(lessonDay) == strings.ToUpper(dayOfWeek) {
 			return true, nil

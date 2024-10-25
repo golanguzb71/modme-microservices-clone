@@ -3066,9 +3066,6 @@
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
-                "condition": {
-                    "type": "string"
-                },
                 "from": {
                     "type": "string"
                 },
@@ -3077,6 +3074,9 @@
                 },
                 "till": {
                     "type": "string"
+                },
+                "withOutdated": {
+                    "type": "boolean"
                 }
             }
         },

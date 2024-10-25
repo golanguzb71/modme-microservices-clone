@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"education-service/internal/utils"
+	"education-service/internal/clients"
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
@@ -13,11 +13,12 @@ import (
 )
 
 type StudentRepository struct {
-	db *sql.DB
+	db         *sql.DB
+	userClient *clients.UserClient
 }
 
-func NewStudentRepository(db *sql.DB) *StudentRepository {
-	return &StudentRepository{db: db}
+func NewStudentRepository(db *sql.DB, userClient *clients.UserClient) *StudentRepository {
+	return &StudentRepository{db: db, userClient: userClient}
 }
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
@@ -77,7 +78,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
         s.id AS student_id,
         g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.date_type, g.days, g.start_time,
         c.id AS course_id, c.title AS course_title, c.duration_lesson, c.course_duration, c.price,
-        'exampleteachername' AS teacher_name,
+        g.teacher_id,
         gs.condition AS student_group_condition, g.room_id, gs.last_specific_date AS student_activated_at
     FROM students s
     JOIN group_students gs ON s.id = gs.student_id
@@ -101,17 +102,23 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		var studentID string
 		var group pb.GroupGetAllStudentAbs
 		var course pb.AbsCourse
-
+		var teacherId string
 		err := groupRows.Scan(
 			&studentID,
 			&group.Id, &group.Name, &group.GroupStartDate, &group.GroupEndDate, &group.Type, pq.Array(&group.Days), &group.LessonStartTime,
 			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price,
-			&group.TeacherName, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
+			&teacherId, &group.StudentCondition, &group.RoomId, &group.StudentActivatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan group row: %v", err)
 		}
 
+		name, err := r.userClient.GetTeacherById(teacherId)
+		if err != nil {
+			return nil, err
+		}
+
+		group.TeacherName = name
 		group.Course = &course
 		student := studentMap[studentID]
 		student.Groups = append(student.Groups, &group)
@@ -196,7 +203,7 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
         SELECT gs.created_at, gs.group_id, gs.condition, gs.last_specific_date, 
                g.name, g.date_type, g.days, g.start_time, g.start_date, g.end_date,
                r.id, r.capacity, r.title, 
-               c.id, c.title, c.duration_lesson, c.course_duration, c.price, c.description , 'Shokruh' as teacher_name
+               c.id, c.title, c.duration_lesson, c.course_duration, c.price, c.description , g.teacher_id
         FROM group_students gs
         JOIN groups g ON g.id = gs.group_id
         JOIN rooms r ON g.room_id = r.id
@@ -211,18 +218,25 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 		var groupStudent pb.GetGroupStudent
 		var room pb.AbsRoom
 		var course pb.AbsCourse
+		var teacherId string
 
 		err := rows.Scan(&groupStudent.StudentAddedAt, &groupStudent.Id, &groupStudent.StudentCondition, &groupStudent.StudentActivatedAt,
 			&groupStudent.Name, &groupStudent.DateType, pq.Array(&groupStudent.Days), &groupStudent.LessonStartTime,
 			&groupStudent.GroupStartDate, &groupStudent.GroupEndDate,
 			&room.Id, &room.Capacity, &room.Name,
-			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price, &course.Description, &groupStudent.TeacherName)
+			&course.Id, &course.Name, &course.LessonDuration, &course.CourseDuration, &course.Price, &course.Description, &teacherId)
 		if err != nil {
 			return nil, err
 		}
+
 		groupStudent.PriceForStudent = course.Price
 		groupStudent.Room = &room
 		groupStudent.Course = &course
+		name, err := r.userClient.GetTeacherById(teacherId)
+		if err != nil {
+			return nil, err
+		}
+		groupStudent.TeacherName = name
 		result.Groups = append(result.Groups, &groupStudent)
 	}
 
@@ -486,19 +500,19 @@ func (r *StudentRepository) GetHistoryStudentById(id string) (*pb.GetHistoryStud
 	return &response, nil
 }
 func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
-	validDay, err := utils.IsValidLessonDay(r.db, groupId, from)
-	if err != nil {
-		return nil, err
-	}
-
-	if !validDay {
-		return &pb.AbsResponse{
-			Status:  403,
-			Message: "The selected 'from' date does not match the group's lesson days",
-		}, nil
-	}
+	//validDay, err := utils.IsValidLessonDay(r.db, groupId, from)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//if !validDay {
+	//	return &pb.AbsResponse{
+	//		Status:  403,
+	//		Message: "The selected 'from' date does not match the group's lesson days",
+	//	}, nil
+	//}
 	var checker bool
-	err = r.db.QueryRow(`SELECT exists(SELECT 1 FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3)`, groupId, from, to).Scan(&checker)
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3)`, groupId, from, to).Scan(&checker)
 	if err != nil {
 		return nil, err
 	}
