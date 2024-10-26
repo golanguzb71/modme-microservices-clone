@@ -5,14 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/user-service/internal/security/jwt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/service/group_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/group_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/internal/utils/utils.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/internal/clients/group_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/clients/group_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/internal/repository/user_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/repository/user_repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/internal/service/auth_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/service/auth_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/utils/utils.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,31 +52,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;Go Build.go build api-gateway/cmd.executor&quot;: &quot;Run&quot;,
-    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Debug&quot;,
-    &quot;Go Build.go build lid-service/cmd.executor&quot;: &quot;Debug&quot;,
-    &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;user__service__branch&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/abdulaziz/GolandProjects/modme-microservices-clone/education-service/proto&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/home/elon/GolandProjects/modme/main.go&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Go Build.go build api-gateway/cmd.executor": "Debug",
+    "Go Build.go build education-service/cmd.executor": "Debug",
+    "Go Build.go build lid-service/cmd.executor": "Debug",
+    "Go Build.go build user-service/cmd.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "user__service__branch",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "/home/abdulaziz/GolandProjects/modme-microservices-clone/education-service/proto",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "/home/elon/GolandProjects/modme/main.go"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/education-service/proto" />
@@ -128,8 +130,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build education-service/cmd" />
-        <item itemvalue="Go Build.go build lid-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
+        <item itemvalue="Go Build.go build lid-service/cmd" />
         <item itemvalue="Go Build.go build api-gateway/cmd" />
       </list>
     </recent_temporary>
@@ -154,8 +156,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/education-service/internal/utils/utils.go</url>
-          <line>11</line>
+          <line>15</line>
           <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/education-service/internal/repository/group_repository.go</url>
+          <line>212</line>
+          <option name="timeStamp" value="31" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

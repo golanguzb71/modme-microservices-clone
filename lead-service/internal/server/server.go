@@ -7,6 +7,7 @@ import (
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/internal/service"
+	"lid-service/internal/utils"
 	"lid-service/migrations"
 	"lid-service/proto/pb"
 	"log"
@@ -47,7 +48,9 @@ func RunServer() {
 		log.Fatalf("Failed to listen on port %v: %v", cfg.Server.Port, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(utils.RecoveryInterceptor),
+	)
 	pb.RegisterLeadServiceServer(grpcServer, leadService)
 	pb.RegisterLeadDataServiceServer(grpcServer, leadDataService)
 	pb.RegisterExpectServiceServer(grpcServer, expectService)
