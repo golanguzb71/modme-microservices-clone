@@ -311,193 +311,123 @@ func (r *StudentRepository) SearchStudent(value string) (*pb.SearchStudentRespon
 
 	return &pb.SearchStudentResponse{Students: students}, nil
 }
-func (r *StudentRepository) GetHistoryGroupById(id string) (*pb.GetHistoryGroupResponse, error) {
-	var response pb.GetHistoryGroupResponse
-	groupHistoryQuery := `
-        SELECT 
-            id,
-            description,
-            created_at
-        FROM group_history
-        WHERE group_id = $1
-        ORDER BY created_at DESC`
-	rows, err := r.db.Query(groupHistoryQuery, id)
+func (r *StudentRepository) GetHistoryGroupById(groupId string) (*pb.GetHistoryGroupResponse, error) {
+	response := &pb.GetHistoryGroupResponse{}
+	groupHistoryQuery := `SELECT id, field, old_value, current_value 
+                          FROM group_history 
+                          WHERE group_id = $1 order by created_at desc`
+
+	rows, err := r.db.Query(groupHistoryQuery, groupId)
 	if err != nil {
-		return nil, fmt.Errorf("error querying group history: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		var history pb.AbsHistory
-		var createdAt time.Time
-		err := rows.Scan(
-			&history.Id,
-			&history.Description,
-			&createdAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning group history row: %v", err)
+		if err := rows.Scan(&history.Id, &history.EditedField, &history.OldValue, &history.CurrentValue); err != nil {
+			return nil, err
 		}
-		history.CreatedAt = createdAt.Format(time.RFC3339)
-		response.History = append(response.History, &history)
+		response.GroupHistory = append(response.GroupHistory, &history)
 	}
-	studentHistoryQuery := `
-        SELECT 
-            s.id as student_id,
-            s.name as student_name,
-            g.id as group_id,
-            g.name as group_name,
-            g.teacher_id,
-            g.start_date,
-            g.end_date,
-            g.start_time,
-            g.date_type,
-            gsch.condition,
-            gsch.specific_date,
-            gsch.created_at
-        FROM group_student_condition_history gsch
-        JOIN students s ON s.id = gsch.student_id
-        JOIN groups g ON g.id = gsch.group_id
-        WHERE gsch.group_id = $1
-        ORDER BY gsch.created_at DESC`
-	rows, err = r.db.Query(studentHistoryQuery, id)
+
+	studentHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at , g.name , g.start_time , g.start_date , g.end_date , g.date_type , gs.condition
+                            FROM group_students gs
+                            JOIN students s ON gs.student_id = s.id   
+                            JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
+                            JOIN groups g on g.id=gs.group_id
+                            WHERE gs.group_id = $1
+                            order by created_at desc
+                            `
+
+	rows, err = r.db.Query(studentHistoryQuery, groupId)
 	if err != nil {
-		return nil, fmt.Errorf("error querying student history: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
+
 	for rows.Next() {
-		var history pb.AbsStudentHistory
+		var studentHistory pb.AbsStudentHistory
 		var student pb.AbsStudent
 		var group pb.AbsGroup
-		var teacherId string
-		var createdAt, specificDate time.Time
-
-		err := rows.Scan(
-			&student.Id,
-			&student.Name,
-			&group.Id,
-			&group.Name,
-			&teacherId,
-			&group.GroupStartDate,
-			&group.GroupEndDate,
-			&group.LessonStartTime,
-			&group.DateType,
-			&history.Condition,
-			&specificDate,
-			&createdAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning student history row: %v", err)
+		var createdAt string
+		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber, &studentHistory.OldCondition, &studentHistory.CurrentCondition,
+			&studentHistory.SpecificDate, &createdAt, &group.Name, &group.LessonStartTime, &group.GroupStartDate, &group.GroupEndDate, &group.DateType, &group.CurrentGroupStatus); err != nil {
+			return nil, err
 		}
-
-		history.SpecificDate = specificDate.Format(time.RFC3339)
-		history.CreatedAt = createdAt.Format(time.RFC3339)
-
-		history.Student = &student
-		history.Group = &group
-		response.StudentHistory = append(response.StudentHistory, &history)
+		studentHistory.Group = &group
+		studentHistory.Student = &student
+		studentHistory.CreatedAt = createdAt
+		response.StudentsHistory = append(response.StudentsHistory, &studentHistory)
 	}
 
-	return &response, nil
+	return response, nil
 }
-func (r *StudentRepository) GetHistoryStudentById(id string) (*pb.GetHistoryStudentResponse, error) {
-	var response pb.GetHistoryStudentResponse
+func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHistoryStudentResponse, error) {
+	response := &pb.GetHistoryStudentResponse{}
 
-	// Get student history
-	studentHistoryQuery := `
-        SELECT 
-            id,
-            description,
-            created_at
-        FROM student_history
-        WHERE student_id = $1
-        ORDER BY created_at DESC`
+	// Query for student history
+	studentHistoryQuery := `SELECT id, field, old_value, current_value 
+                            FROM student_history 
+                            WHERE student_id = $1 
+                            ORDER BY created_at DESC`
 
-	rows, err := r.db.Query(studentHistoryQuery, id)
+	rows, err := r.db.Query(studentHistoryQuery, studentId)
 	if err != nil {
-		return nil, fmt.Errorf("error querying student history: %v", err)
+		return nil, err
 	}
 	defer rows.Close()
 
+	// Fetching student history
 	for rows.Next() {
 		var history pb.AbsHistory
-		var createdAt time.Time
-
-		err := rows.Scan(
-			&history.Id,
-			&history.Description,
-			&createdAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning student history row: %v", err)
+		if err := rows.Scan(&history.Id, &history.EditedField, &history.OldValue, &history.CurrentValue); err != nil {
+			return nil, err
 		}
-		history.CreatedAt = createdAt.Format(time.RFC3339)
-		response.History = append(response.History, &history)
-	}
-
-	// Get group condition history for the student
-	groupHistoryQuery := `
-        SELECT 
-            s.id as student_id,
-            s.name as student_name,
-            g.id as group_id,
-            g.name as group_name,
-            g.teacher_id,
-            g.start_date,
-            g.end_date,
-            g.start_time,
-            g.date_type,
-            gsch.condition,
-            gsch.specific_date,
-            gsch.created_at
-        FROM group_student_condition_history gsch
-        JOIN students s ON s.id = gsch.student_id
-        JOIN groups g ON g.id = gsch.group_id
-        WHERE gsch.student_id = $1
-        ORDER BY gsch.created_at DESC`
-
-	rows, err = r.db.Query(groupHistoryQuery, id)
-	if err != nil {
-		return nil, fmt.Errorf("error querying group history: %v", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var history pb.AbsStudentHistory
-		var student pb.AbsStudent
-		var group pb.AbsGroup
-		var teacherId string
-		var createdAt, specificDate time.Time
-
-		err := rows.Scan(
-			&student.Id,
-			&student.Name,
-			&group.Id,
-			&group.Name,
-			&teacherId,
-			&group.GroupStartDate,
-			&group.GroupEndDate,
-			&group.LessonStartTime,
-			&group.DateType,
-			&history.Condition,
-			&specificDate,
-			&createdAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning group history row: %v", err)
-		}
-
-		// Format dates
-		group.GroupStartDate = group.GroupStartDate
-		group.GroupEndDate = group.GroupEndDate
-		history.SpecificDate = specificDate.Format(time.RFC3339)
-		history.CreatedAt = createdAt.Format(time.RFC3339)
-
-		history.Student = &student
-		history.Group = &group
 		response.StudentHistory = append(response.StudentHistory, &history)
 	}
 
-	return &response, nil
+	// Query for conditions history
+	conditionsHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at, 
+                                   g.id, g.name, g.start_time, g.start_date, g.end_date, g.date_type, 
+                                   gs.condition 
+                               FROM group_students gs
+                               JOIN students s ON gs.student_id = s.id
+                               JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
+                               JOIN groups g ON g.id = gs.group_id
+                               WHERE gs.student_id = $1
+                               ORDER BY gh.created_at DESC`
+
+	rows, err = r.db.Query(conditionsHistoryQuery, studentId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Fetching conditions history with student and group details
+	for rows.Next() {
+		var studentHistory pb.AbsStudentHistory
+		var student pb.AbsStudent
+		var group pb.AbsGroup
+		var createdAt string
+
+		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber,
+			&studentHistory.OldCondition, &studentHistory.CurrentCondition,
+			&studentHistory.SpecificDate, &createdAt,
+			&group.Id, &group.Name, &group.LessonStartTime,
+			&group.GroupStartDate, &group.GroupEndDate,
+			&group.DateType, &group.CurrentGroupStatus); err != nil {
+			return nil, err
+		}
+
+		studentHistory.Student = &student
+		studentHistory.Group = &group
+		studentHistory.CreatedAt = createdAt
+
+		response.ConditionsHistory = append(response.ConditionsHistory, &studentHistory)
+	}
+
+	return response, nil
 }
 func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
 	//validDay, err := utils.IsValidLessonDay(r.db, groupId, from)

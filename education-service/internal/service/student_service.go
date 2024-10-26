@@ -78,7 +78,7 @@ func (s *StudentService) GetHistoryGroupById(ctx context.Context, req *pb.NoteSt
 	return s.repo.GetHistoryGroupById(req.Id)
 }
 func (s *StudentService) GetHistoryStudentById(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetHistoryStudentResponse, error) {
-	return s.repo.GetHistoryStudentById(req.Id)
+	return s.repo.GetHistoryByStudentId(req.Id)
 }
 func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.TransferLessonRequest) (*pb.AbsResponse, error) {
 	return s.repo.TransferLessonDate(req.GroupId, req.From, req.To)

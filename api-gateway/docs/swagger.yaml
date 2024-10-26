@@ -35,11 +35,13 @@ definitions:
     type: object
   pb.AbsHistory:
     properties:
-      createdAt:
+      currentValue:
         type: string
-      description:
+      editedField:
         type: string
       id:
+        type: string
+      oldValue:
         type: string
     type: object
   pb.AbsNote:
@@ -71,12 +73,14 @@ definitions:
     type: object
   pb.AbsStudentHistory:
     properties:
-      condition:
-        type: string
       createdAt:
+        type: string
+      currentCondition:
         type: string
       group:
         $ref: '#/definitions/pb.AbsGroup'
+      oldCondition:
+        type: string
       specificDate:
         type: string
       student:
@@ -479,24 +483,24 @@ definitions:
     type: object
   pb.GetHistoryGroupResponse:
     properties:
-      history:
+      groupHistory:
         items:
           $ref: '#/definitions/pb.AbsHistory'
         type: array
-      studentHistory:
+      studentsHistory:
         items:
           $ref: '#/definitions/pb.AbsStudentHistory'
         type: array
     type: object
   pb.GetHistoryStudentResponse:
     properties:
-      history:
+      conditionsHistory:
         items:
-          $ref: '#/definitions/pb.AbsHistory'
+          $ref: '#/definitions/pb.AbsStudentHistory'
         type: array
       studentHistory:
         items:
-          $ref: '#/definitions/pb.AbsStudentHistory'
+          $ref: '#/definitions/pb.AbsHistory'
         type: array
     type: object
   pb.GetLeadCommonRequest:

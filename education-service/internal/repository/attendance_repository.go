@@ -16,7 +16,6 @@ type AttendanceRepository struct {
 func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
-
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
@@ -271,4 +270,17 @@ func (r *AttendanceRepository) IsValidGroupDay(ctx context.Context, groupId stri
 		return false, err
 	}
 	return exists, nil
+}
+func (r *AttendanceRepository) IsHaveTransferredLesson(groupID string) bool {
+	query := `
+		SELECT COUNT(*) 
+		FROM transfer_lesson 
+		WHERE group_id = $1 AND transfer_date = CURRENT_DATE`
+
+	var count int
+	err := r.db.QueryRow(query, groupID).Scan(&count)
+	if err != nil {
+		return false
+	}
+	return count > 0
 }
