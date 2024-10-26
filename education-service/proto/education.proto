@@ -171,7 +171,6 @@ message GetGroupsRequest{
 // group service end
 
 
-
 // attendance service start
 service AttendanceService{
   rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
@@ -183,14 +182,17 @@ message GetAttendanceRequest{
   string till = 3;
   bool withOutdated = 4;
 }
+
 message GetAttendanceResponse{
   repeated Day days = 1;
   repeated Student students = 2;
 }
+
 message Day {
   string date = 1;
   string transferDate = 2;
 }
+
 message Student{
   string id = 9;
   string activatedAt = 1;
@@ -205,6 +207,7 @@ message Student{
   string name = 11;
   string phone = 12;
 }
+
 message Attendance{
   string id = 1;
   string attend_date = 2;
@@ -212,10 +215,12 @@ message Attendance{
   string studentId = 4;
   string teacherId = 5;
 }
+
 message FreezeDetail{
   string reason = 1;
   string till_date = 2;
 }
+
 message SetAttendanceRequest{
   string attendDate = 1;
   string groupId = 2;
@@ -223,6 +228,7 @@ message SetAttendanceRequest{
   string studentId = 4;
   string teacherId = 5;
 }
+
 // attendance service end
 
 // student service start
@@ -255,17 +261,18 @@ message TransferLessonRequest{
   string groupId = 3;
 }
 message GetHistoryGroupResponse{
-  repeated AbsHistory history = 1;
-  repeated AbsStudentHistory studentHistory = 2;
+  repeated AbsHistory groupHistory = 1;
+  repeated AbsStudentHistory studentsHistory = 2;
 }
 message GetHistoryStudentResponse{
-  repeated AbsHistory history = 1;
-  repeated AbsStudentHistory studentHistory = 2;
+  repeated AbsHistory studentHistory = 1;
+  repeated AbsStudentHistory conditionsHistory = 2;
 }
 message AbsStudentHistory{
   AbsStudent student = 1;
   AbsGroup group = 2;
-  string condition = 3;
+  string oldCondition = 3;
+  string currentCondition = 6;
   string specificDate = 4;
   string createdAt = 5;
 }
@@ -281,8 +288,9 @@ message AbsGroup{
 }
 message AbsHistory{
   string id = 1;
-  string description = 2;
-  string createdAt = 3;
+  string editedField = 2;
+  string oldValue = 3;
+  string currentValue = 4;
 }
 message SearchStudentRequest{
   string value = 1;

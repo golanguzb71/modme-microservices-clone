@@ -173,7 +173,6 @@ message GetGroupsRequest{
 // group service end
 
 
-
 // attendance service start
 service AttendanceService{
   rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
@@ -264,17 +263,18 @@ message TransferLessonRequest{
   string groupId = 3;
 }
 message GetHistoryGroupResponse{
-  repeated AbsHistory history = 1;
-  repeated AbsStudentHistory studentHistory = 2;
+  repeated AbsHistory groupHistory = 1;
+  repeated AbsStudentHistory studentsHistory = 2;
 }
 message GetHistoryStudentResponse{
-  repeated AbsHistory history = 1;
-  repeated AbsStudentHistory studentHistory = 2;
+  repeated AbsHistory studentHistory = 1;
+  repeated AbsStudentHistory conditionsHistory = 2;
 }
 message AbsStudentHistory{
   AbsStudent student = 1;
   AbsGroup group = 2;
-  string condition = 3;
+  string oldCondition = 3;
+  string currentCondition = 6;
   string specificDate = 4;
   string createdAt = 5;
 }
@@ -290,8 +290,9 @@ message AbsGroup{
 }
 message AbsHistory{
   string id = 1;
-  string description = 2;
-  string createdAt = 3;
+  string editedField = 2;
+  string oldValue = 3;
+  string currentValue = 4;
 }
 message SearchStudentRequest{
   string value = 1;

@@ -2664,13 +2664,16 @@ const docTemplate = `{
         "pb.AbsHistory": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "currentValue": {
                     "type": "string"
                 },
-                "description": {
+                "editedField": {
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "oldValue": {
                     "type": "string"
                 }
             }
@@ -2720,14 +2723,17 @@ const docTemplate = `{
         "pb.AbsStudentHistory": {
             "type": "object",
             "properties": {
-                "condition": {
+                "createdAt": {
                     "type": "string"
                 },
-                "createdAt": {
+                "currentCondition": {
                     "type": "string"
                 },
                 "group": {
                     "$ref": "#/definitions/pb.AbsGroup"
+                },
+                "oldCondition": {
+                    "type": "string"
                 },
                 "specificDate": {
                     "type": "string"
@@ -3347,13 +3353,13 @@ const docTemplate = `{
         "pb.GetHistoryGroupResponse": {
             "type": "object",
             "properties": {
-                "history": {
+                "groupHistory": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsHistory"
                     }
                 },
-                "studentHistory": {
+                "studentsHistory": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsStudentHistory"
@@ -3364,16 +3370,16 @@ const docTemplate = `{
         "pb.GetHistoryStudentResponse": {
             "type": "object",
             "properties": {
-                "history": {
+                "conditionsHistory": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pb.AbsHistory"
+                        "$ref": "#/definitions/pb.AbsStudentHistory"
                     }
                 },
                 "studentHistory": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pb.AbsStudentHistory"
+                        "$ref": "#/definitions/pb.AbsHistory"
                     }
                 }
             }

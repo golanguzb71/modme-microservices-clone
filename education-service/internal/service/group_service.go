@@ -41,24 +41,20 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *pb.DeleteAbsRequest
 }
 
 func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) (*pb.GetGroupsResponse, error) {
-	log.Println("Received GetGroups request")
 	group, err := s.repo.GetGroup(req.Page.Page, req.Page.Size, req.IsArchived)
 	if err != nil {
 		log.Printf("Error in GetGroups: %v", err)
 		return nil, err
 	}
-	log.Println("Returning groups")
 	return group, nil
 }
 
 func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupAbsResponse, error) {
-	log.Printf("Received GetGroupById request for id: %s", req.Id)
 	group, err := s.repo.GetGroupById(req.Id)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err
 	}
-	log.Printf("Returning group with id: %s", group.Id)
 	return group, nil
 }
 
