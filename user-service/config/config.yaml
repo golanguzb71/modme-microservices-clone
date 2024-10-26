@@ -27,5 +27,5 @@ database:
   sslmode: "disable"
   action: "up"
 grpc:
-  education_service:
-    address: "sphere-education-service:8080"
+  educationService:
+    address: "KJDSFLASKJFD"
