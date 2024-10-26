@@ -14,6 +14,45 @@ definitions:
       price:
         type: number
     type: object
+  pb.AbsGroup:
+    properties:
+      currentGroupStatus:
+        type: string
+      dateType:
+        type: string
+      groupEndDate:
+        type: string
+      groupStartDate:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      teacherName:
+        type: string
+    type: object
+  pb.AbsHistory:
+    properties:
+      currentValue:
+        type: string
+      editedField:
+        type: string
+      id:
+        type: string
+      oldValue:
+        type: string
+    type: object
+  pb.AbsNote:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+    type: object
   pb.AbsRoom:
     properties:
       capacity:
@@ -23,8 +62,45 @@ definitions:
       name:
         type: string
     type: object
+  pb.AbsStudent:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.AbsStudentHistory:
+    properties:
+      createdAt:
+        type: string
+      currentCondition:
+        type: string
+      group:
+        $ref: '#/definitions/pb.AbsGroup'
+      oldCondition:
+        type: string
+      specificDate:
+        type: string
+      student:
+        $ref: '#/definitions/pb.AbsStudent'
+    type: object
+  pb.AbsTeacher:
+    properties:
+      activeGroups:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
   pb.AddToGroupRequest:
     properties:
+      createdBy:
+        type: string
       createdDate:
         type: string
       groupId:
@@ -45,6 +121,19 @@ definitions:
       studentId:
         type: string
       teacherId:
+        type: string
+    type: object
+  pb.ChangeConditionStudentRequest:
+    properties:
+      groupId:
+        type: string
+      returnTheMoney:
+        type: boolean
+      status:
+        type: string
+      studentId:
+        type: string
+      tillDate:
         type: string
     type: object
   pb.ChangeLeadDataRequest:
@@ -133,6 +222,13 @@ definitions:
       phoneNumber:
         type: string
     type: object
+  pb.CreateNoteRequest:
+    properties:
+      note:
+        type: string
+      studentId:
+        type: string
+    type: object
   pb.CreateRoomRequest:
     properties:
       capacity:
@@ -182,6 +278,21 @@ definitions:
       telegramUsername:
         type: string
     type: object
+  pb.CreateUserRequest:
+    properties:
+      birthDate:
+        type: string
+      fullName:
+        type: string
+      gender:
+        type: boolean
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
+    type: object
   pb.Day:
     properties:
       date:
@@ -203,36 +314,21 @@ definitions:
       till_date:
         type: string
     type: object
+  pb.GetAllEmployeeResponse:
+    properties:
+      employees:
+        items:
+          $ref: '#/definitions/pb.GetUserByIdResponse'
+        type: array
+    type: object
   pb.GetAllStudentResponse:
     properties:
-      additionalContact:
-        type: string
-      address:
-        type: string
-      balance:
-        type: number
-      condition:
-        type: string
-      createdAt:
-        type: string
-      dateOfBirth:
-        type: string
-      gender:
-        type: boolean
-      groups:
+      response:
         items:
-          $ref: '#/definitions/pb.GroupGetAllStudentAbs'
+          $ref: '#/definitions/pb.GetGroupsAbsForStudent'
         type: array
-      id:
-        type: string
-      name:
-        type: string
-      passportId:
-        type: string
-      phone:
-        type: string
-      telegramUsername:
-        type: string
+      totalCount:
+        type: integer
     type: object
   pb.GetAttendanceRequest:
     properties:
@@ -242,6 +338,8 @@ definitions:
         type: string
       till:
         type: string
+      withOutdated:
+        type: boolean
     type: object
   pb.GetAttendanceResponse:
     properties:
@@ -282,6 +380,8 @@ definitions:
         type: string
       studentCount:
         type: integer
+      teacherId:
+        type: string
       teacherName:
         type: string
     type: object
@@ -302,11 +402,74 @@ definitions:
       teacherName:
         type: string
     type: object
+  pb.GetGroupByTeacherAbs:
+    properties:
+      activeStudentCount:
+        type: integer
+      courseName:
+        type: string
+      dayType:
+        type: string
+      groupEndAt:
+        type: string
+      groupStartAt:
+        type: string
+      id:
+        type: string
+      lessonStartTime:
+        type: string
+      name:
+        type: string
+      roomName:
+        type: string
+      students:
+        items:
+          $ref: '#/definitions/pb.AbsStudent'
+        type: array
+    type: object
+  pb.GetGroupsAbsForStudent:
+    properties:
+      additionalContact:
+        type: string
+      address:
+        type: string
+      balance:
+        type: number
+      condition:
+        type: string
+      createdAt:
+        type: string
+      dateOfBirth:
+        type: string
+      gender:
+        type: boolean
+      groups:
+        items:
+          $ref: '#/definitions/pb.GroupGetAllStudentAbs'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      passportId:
+        type: string
+      phone:
+        type: string
+      telegramUsername:
+        type: string
+    type: object
   pb.GetGroupsByCourseResponse:
     properties:
       groups:
         items:
           $ref: '#/definitions/pb.GetGroupByCourseAbsResponse'
+        type: array
+    type: object
+  pb.GetGroupsByTeacherResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/pb.GetGroupByTeacherAbs'
         type: array
     type: object
   pb.GetGroupsResponse:
@@ -317,6 +480,28 @@ definitions:
         type: array
       totalPageCount:
         type: integer
+    type: object
+  pb.GetHistoryGroupResponse:
+    properties:
+      groupHistory:
+        items:
+          $ref: '#/definitions/pb.AbsHistory'
+        type: array
+      studentsHistory:
+        items:
+          $ref: '#/definitions/pb.AbsStudentHistory'
+        type: array
+    type: object
+  pb.GetHistoryStudentResponse:
+    properties:
+      conditionsHistory:
+        items:
+          $ref: '#/definitions/pb.AbsStudentHistory'
+        type: array
+      studentHistory:
+        items:
+          $ref: '#/definitions/pb.AbsHistory'
+        type: array
     type: object
   pb.GetLeadCommonRequest:
     properties:
@@ -345,6 +530,20 @@ definitions:
       sections:
         items:
           $ref: '#/definitions/pb.DynamicSection'
+        type: array
+    type: object
+  pb.GetNotesByStudent:
+    properties:
+      notes:
+        items:
+          $ref: '#/definitions/pb.AbsNote'
+        type: array
+    type: object
+  pb.GetTeachersResponse:
+    properties:
+      teachers:
+        items:
+          $ref: '#/definitions/pb.AbsTeacher'
         type: array
     type: object
   pb.GetUpdateCourseAbs:
@@ -385,6 +584,25 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsRoom'
         type: array
+    type: object
+  pb.GetUserByIdResponse:
+    properties:
+      birthDate:
+        type: string
+      createdAt:
+        type: string
+      gender:
+        type: boolean
+      id:
+        type: string
+      is_deleted:
+        type: boolean
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
     type: object
   pb.GroupGetAllStudentAbs:
     properties:
@@ -434,6 +652,29 @@ definitions:
         type: string
       type:
         type: string
+    type: object
+  pb.LoginRequest:
+    properties:
+      password:
+        type: string
+      phoneNumber:
+        type: string
+    type: object
+  pb.LoginResponse:
+    properties:
+      isOk:
+        type: boolean
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/pb.GetUserByIdResponse'
+    type: object
+  pb.SearchStudentResponse:
+    properties:
+      students:
+        items:
+          $ref: '#/definitions/pb.AbsStudent'
+        type: array
     type: object
   pb.Section:
     properties:
@@ -492,6 +733,15 @@ definitions:
       phone:
         type: string
     type: object
+  pb.TransferLessonRequest:
+    properties:
+      from:
+        type: string
+      groupId:
+        type: string
+      to:
+        type: string
+    type: object
   pb.UpdateLeadDataRequest:
     properties:
       comment:
@@ -545,6 +795,21 @@ definitions:
       studentId:
         type: string
     type: object
+  pb.UpdateUserRequest:
+    properties:
+      birthDate:
+        type: string
+      gender:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      phoneNumber:
+        type: string
+      role:
+        type: string
+    type: object
   utils.AbsResponse:
     properties:
       message:
@@ -557,7 +822,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Modme Swagger
+  title: Sphere Swagger
 paths:
   /api/attendance/get-attendance:
     post:
@@ -1001,6 +1266,67 @@ paths:
       summary: ADMIN
       tags:
       - groups
+  /api/group/get-by-teacher/{teacherId}:
+    get:
+      description: Get information about a specific teacher by their ID, with an option
+        to filter archived data.
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: teacherId
+        required: true
+        type: string
+      - description: Whether to include archived information
+        in: query
+        name: isArchived
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetGroupsByTeacherResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , TEACHER , CEO
+      tags:
+      - groups
+  /api/group/transfer-date:
+    post:
+      consumes:
+      - application/json
+      description: Transfers the lesson date for a course
+      parameters:
+      - description: Transfer Lesson Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.TransferLessonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN
+      tags:
+      - lesson
   /api/group/update:
     put:
       consumes:
@@ -1033,6 +1359,60 @@ paths:
       summary: ADMIN , CEO
       tags:
       - groups
+  /api/history/group/{groupId}:
+    get:
+      consumes:
+      - application/json
+      description: Get the history of a specific group by its ID
+      parameters:
+      - description: Group ID
+        in: path
+        name: groupId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetHistoryGroupResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - groups
+  /api/history/student/{studentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get the history of a specific student by their ID
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetHistoryStudentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
   /api/lead/create:
     post:
       consumes:
@@ -1595,6 +1975,36 @@ paths:
       summary: ADMIN
       tags:
       - students
+  /api/student/change-condition:
+    put:
+      consumes:
+      - application/json
+      description: Changes the condition of a student based on provided details
+      parameters:
+      - description: Change Condition Student Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ChangeConditionStudentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: Changes the condition of a student
+      tags:
+      - students
   /api/student/create:
     post:
       parameters:
@@ -1687,6 +2097,147 @@ paths:
       summary: ADMIN
       tags:
       - students
+  /api/student/get-student-by-id/{studentId}:
+    get:
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of students
+          schema:
+            $ref: '#/definitions/pb.GetAllStudentResponse'
+        "400":
+          description: Invalid condition
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
+  /api/student/note/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new note associated with a specific student
+      parameters:
+      - description: Note details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateNoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/note/delete/{noteId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific note associated with a student
+      parameters:
+      - description: Note ID
+        in: path
+        name: noteId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/note/get-notes/{studentId}:
+    get:
+      consumes:
+      - application/json
+      description: Get all notes associated with a specific student
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetNotesByStudent'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - notes
+  /api/student/search-student/{value}:
+    get:
+      consumes:
+      - application/json
+      description: Search for students by phone number or name
+      parameters:
+      - description: Search value (phone number or name)
+        in: path
+        name: value
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.SearchStudentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN
+      tags:
+      - students
   /api/student/update:
     put:
       parameters:
@@ -1716,6 +2267,201 @@ paths:
       summary: ADMIN
       tags:
       - students
+  /api/user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created user
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - user
+  /api/user/delete/{userId}:
+    delete:
+      description: Delete a user from the system using their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - user
+  /api/user/get-all-employee/{isArchived}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all employees based on archive status. Restricted
+        to ADMIN and CEO roles.
+      parameters:
+      - description: Filter by archive status (true=archived, false=active)
+        in: path
+        name: isArchived
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllEmployeeResponse'
+        "400":
+          description: Invalid input or processing error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "401":
+          description: Unauthorized access
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "408":
+          description: Request timeout
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - BearerAuth: []
+      summary: ADMIN , CEO
+      tags:
+      - user
+  /api/user/get-teachers/{isDeleted}:
+    get:
+      consumes:
+      - application/json
+      description: Fetches a list of teachers based on the deletion status
+      parameters:
+      - description: Deletion status (true/false)
+        in: path
+        name: isDeleted
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of teachers
+          schema:
+            $ref: '#/definitions/pb.GetTeachersResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN,CEO
+      tags:
+      - user
+  /api/user/get-user/{userId}:
+    get:
+      description: Retrieve user details by their unique user ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetUserByIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: CEO , ADMIN , TEACHER
+      tags:
+      - user
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a token upon successful login.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: LoginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/pb.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful login
+          schema:
+            $ref: '#/definitions/pb.LoginResponse'
+        "400":
+          description: Bad request - Invalid JSON or login failure
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ALL
+      tags:
+      - user
+  /api/user/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update user details using their ID
+      parameters:
+      - description: User Details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO , TEACHER
+      tags:
+      - user
 securityDefinitions:
   Bearer:
     in: header

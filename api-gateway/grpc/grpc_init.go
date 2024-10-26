@@ -18,10 +18,10 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	//userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
-	//if err != nil {
-	//	return nil
-	//}
+	userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
+	if err != nil {
+		return nil
+	}
 	lidClient, err := client.NewLidClient(cfg.Grpc.LidService.Address)
 	if err != nil {
 		log.Fatalf("%v", err)
@@ -29,7 +29,7 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 
 	return &Clients{
 		AuditClient:     &client.AuditClient{},
-		UserClient:      &client.UserClient{},
+		UserClient:      userClient,
 		LidClient:       lidClient,
 		EducationClient: educationClient,
 	}

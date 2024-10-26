@@ -17,11 +17,11 @@ func NewGroupService(repo *repository.GroupRepository) *GroupService {
 }
 
 func (s *GroupService) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (*pb.AbsResponse, error) {
-	err := s.repo.CreateGroup(req.Name, req.CourseId, req.TeacherId, req.Type, req.Days, req.RoomId, req.LessonStartTime, req.GroupStartDate, req.GroupEndDate)
+	id, err := s.repo.CreateGroup(req.Name, req.CourseId, req.TeacherId, req.Type, req.Days, req.RoomId, req.LessonStartTime, req.GroupStartDate, req.GroupEndDate)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AbsResponse{Status: 200, Message: "Group created successfully"}, nil
+	return &pb.AbsResponse{Status: 200, Message: id}, nil
 }
 
 func (s *GroupService) UpdateGroup(ctx context.Context, req *pb.GetUpdateGroupAbs) (*pb.AbsResponse, error) {
@@ -41,24 +41,20 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *pb.DeleteAbsRequest
 }
 
 func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) (*pb.GetGroupsResponse, error) {
-	log.Println("Received GetGroups request")
 	group, err := s.repo.GetGroup(req.Page.Page, req.Page.Size, req.IsArchived)
 	if err != nil {
 		log.Printf("Error in GetGroups: %v", err)
 		return nil, err
 	}
-	log.Println("Returning groups")
 	return group, nil
 }
 
 func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupAbsResponse, error) {
-	log.Printf("Received GetGroupById request for id: %s", req.Id)
 	group, err := s.repo.GetGroupById(req.Id)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err
 	}
-	log.Printf("Returning group with id: %s", group.Id)
 	return group, nil
 }
 
@@ -69,4 +65,8 @@ func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroup
 		return nil, err
 	}
 	return groups, nil
+}
+
+func (s *GroupService) GetGroupsByTeacherId(ctx context.Context, req *pb.GetGroupsByTeacherIdRequest) (*pb.GetGroupsByTeacherResponse, error) {
+	return s.repo.GetGroupByTeacherId(req.TeacherId, req.IsArchived)
 }

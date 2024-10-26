@@ -27,6 +27,20 @@ services:
     networks:
       - app-network
 
+  postgres-sphere-user:
+    image: postgres:15-alpine
+    container_name: postgres-user-db
+    environment:
+      POSTGRES_DB: sphere_user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "9019:5432"
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
   sphere-lead-service:
     build:
       context: ./lead-service
@@ -41,7 +55,25 @@ services:
     depends_on:
       - postgres-sphere-lead
     ports:
-      - "9014:8080"
+      - "9017:8080"
+    networks:
+      - app-network
+
+  sphere-user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    environment:
+      DB_HOST: postgres-sphere-user
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: sphere_user_db
+    depends_on:
+      - postgres-sphere-user
+    ports:
+      - "9018:8080"
     networks:
       - app-network
 
@@ -80,3 +112,4 @@ networks:
 volumes:
   postgres_lead_data:
   postgres_education_data:
+  postgres_user_data:

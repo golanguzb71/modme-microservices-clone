@@ -7,6 +7,7 @@ import (
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/internal/service"
+	"lid-service/internal/utils"
 	"lid-service/migrations"
 	"lid-service/proto/pb"
 	"log"
@@ -28,6 +29,7 @@ func RunServer() {
 
 	// lead_service_clients_start
 	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
+	studentClient := clients.NewStudentClient(cfg.Grpc.EducationService.Address)
 
 	// lead_service_services_start
 	expectRepo := repository.NewExpectRepository(db)
@@ -37,7 +39,7 @@ func RunServer() {
 
 	leadService := service.NewLeadService(leadRepo)
 	expectService := service.NewExpectService(expectRepo)
-	setService := service.NewSetService(setRepo, groupClient)
+	setService := service.NewSetService(setRepo, groupClient, studentClient)
 	leadDataService := service.NewLeadDataService(leadDataRepo)
 	// lead_service_services_end
 
@@ -46,7 +48,9 @@ func RunServer() {
 		log.Fatalf("Failed to listen on port %v: %v", cfg.Server.Port, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(utils.RecoveryInterceptor),
+	)
 	pb.RegisterLeadServiceServer(grpcServer, leadService)
 	pb.RegisterLeadDataServiceServer(grpcServer, leadDataService)
 	pb.RegisterExpectServiceServer(grpcServer, expectService)

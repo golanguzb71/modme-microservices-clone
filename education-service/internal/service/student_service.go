@@ -50,11 +50,40 @@ func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteAbsReq
 }
 
 func (s *StudentService) AddToGroup(ctx context.Context, req *pb.AddToGroupRequest) (*pb.AbsResponse, error) {
-	if err := s.repo.AddToGroup(req.GroupId, req.StudentIds, req.CreatedDate); err != nil {
+	if err := s.repo.AddToGroup(req.GroupId, req.StudentIds, req.CreatedDate, req.CreatedBy); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
 		Status:  200,
 		Message: "students added to group",
 	}, nil
+}
+
+func (s *StudentService) GetStudentById(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetStudentByIdResponse, error) {
+	return s.repo.GetStudentById(req.Id)
+}
+func (s *StudentService) GetNoteByStudent(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetNotesByStudent, error) {
+	return s.repo.GetNoteByStudent(req.Id)
+}
+func (s *StudentService) CreateNoteForStudent(ctx context.Context, req *pb.CreateNoteRequest) (*pb.AbsResponse, error) {
+	return s.repo.CreateNoteForStudent(req.Note, req.StudentId)
+}
+func (s *StudentService) DeleteStudentNote(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.AbsResponse, error) {
+	return s.repo.DeleteStudentNote(req.Id)
+}
+func (s *StudentService) SearchStudent(ctx context.Context, req *pb.SearchStudentRequest) (*pb.SearchStudentResponse, error) {
+	return s.repo.SearchStudent(req.Value)
+}
+func (s *StudentService) GetHistoryGroupById(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetHistoryGroupResponse, error) {
+	return s.repo.GetHistoryGroupById(req.Id)
+}
+func (s *StudentService) GetHistoryStudentById(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetHistoryStudentResponse, error) {
+	return s.repo.GetHistoryByStudentId(req.Id)
+}
+func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.TransferLessonRequest) (*pb.AbsResponse, error) {
+	return s.repo.TransferLessonDate(req.GroupId, req.From, req.To)
+}
+
+func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
+	return s.repo.ChangeConditionStudent(req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate)
 }

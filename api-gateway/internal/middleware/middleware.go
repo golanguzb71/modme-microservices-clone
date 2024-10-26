@@ -24,12 +24,12 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 		//
 		//user, err := userClient.ValidateToken(token, requiredRoles)
 		//if err != nil {
-		//	ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or insufficient permissions"})
+		//	ctx.JSON(http.StatusUnauthorized, gin.H{"error": fmt.Sprintf("Invalid or insufficient permissions required role => %v", requiredRoles)})
 		//	ctx.Abort()
 		//	return
 		//}
 		//
 		//ctx.Set("user", user)
-		ctx.Next()
+		//ctx.Next()
 	}
 }

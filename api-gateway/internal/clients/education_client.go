@@ -142,3 +142,46 @@ func (lc *EducationClient) UpdateStudent(ctx context.Context, p *pb.UpdateStuden
 func (lc *EducationClient) DeleteStudent(ctx context.Context, id string) (*pb.AbsResponse, error) {
 	return lc.studentClient.DeleteStudent(ctx, &pb.DeleteAbsRequest{Id: id})
 }
+
+func (lc *EducationClient) GetStudentById(ctx context.Context, id string) (*pb.GetStudentByIdResponse, error) {
+	return lc.studentClient.GetStudentById(ctx, &pb.NoteStudentByAbsRequest{Id: id})
+}
+
+func (lc *EducationClient) GetNotesByStudentId(ctx context.Context, id string) (*pb.GetNotesByStudent, error) {
+	return lc.studentClient.GetNoteByStudent(ctx, &pb.NoteStudentByAbsRequest{Id: id})
+}
+
+func (lc *EducationClient) CreateNoteForStudent(ctx context.Context, p *pb.CreateNoteRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.CreateNoteForStudent(ctx, p)
+}
+
+func (lc *EducationClient) DeleteNote(ctx context.Context, note string) (*pb.AbsResponse, error) {
+	return lc.studentClient.DeleteStudentNote(ctx, &pb.NoteStudentByAbsRequest{Id: note})
+}
+
+func (lc *EducationClient) SearchStudentByPhoneName(ctx context.Context, value string) (*pb.SearchStudentResponse, error) {
+	return lc.studentClient.SearchStudent(ctx, &pb.SearchStudentRequest{Value: value})
+}
+
+func (lc *EducationClient) GetHistoryGroupById(ctx context.Context, value string) (*pb.GetHistoryGroupResponse, error) {
+	return lc.studentClient.GetHistoryGroupById(ctx, &pb.NoteStudentByAbsRequest{Id: value})
+}
+
+func (lc *EducationClient) GetHistoryStudentById(ctx context.Context, value string) (*pb.GetHistoryStudentResponse, error) {
+	return lc.studentClient.GetHistoryStudentById(ctx, &pb.NoteStudentByAbsRequest{Id: value})
+}
+
+func (lc *EducationClient) TransferLessonDate(ctx context.Context, p *pb.TransferLessonRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.TransferLessonDate(ctx, p)
+}
+
+func (lc *EducationClient) ChangeConditionStudent(ctx context.Context, p *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
+	return lc.studentClient.ChangeConditionStudent(ctx, p)
+}
+
+func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherId string, isArchived bool) (*pb.GetGroupsByTeacherResponse, error) {
+	return lc.groupClient.GetGroupsByTeacherId(ctx, &pb.GetGroupsByTeacherIdRequest{
+		TeacherId:  teacherId,
+		IsArchived: isArchived,
+	})
+}

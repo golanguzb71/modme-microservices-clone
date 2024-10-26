@@ -1,18 +1,14 @@
-package client
+package clients
 
 import (
-	"api-gateway/grpc/proto/pb"
+	"context"
+	"education-service/proto/pb"
 	"google.golang.org/grpc"
 )
 
 type UserClient struct {
 	client pb.UserServiceClient
 }
-
-//func (c UserClient) ValidateToken(token string, roles []string) (*pb.User, error) {
-//
-//}
-//
 
 func NewUserClient(addr string) (*UserClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
@@ -22,4 +18,12 @@ func NewUserClient(addr string) (*UserClient, error) {
 
 	client := pb.NewUserServiceClient(conn)
 	return &UserClient{client: client}, nil
+}
+
+func (uc *UserClient) GetTeacherById(teacherId string) (string, error) {
+	user, err := uc.client.GetUserById(context.TODO(), &pb.UserAbsRequest{UserId: teacherId})
+	if err != nil {
+		return "", err
+	}
+	return user.Name, nil
 }

@@ -717,6 +717,99 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/group/get-by-teacher/{teacherId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get information about a specific teacher by their ID, with an option to filter archived data.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "ADMIN , TEACHER , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Teacher ID",
+                        "name": "teacherId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Whether to include archived information",
+                        "name": "isArchived",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetGroupsByTeacherResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/group/transfer-date": {
+            "post": {
+                "description": "Transfers the lesson date for a course",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lesson"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "description": "Transfer Lesson Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.TransferLessonRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/update": {
             "put": {
                 "security": [
@@ -761,6 +854,92 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/history/group/{groupId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get the history of a specific group by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Group ID",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetHistoryGroupResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/history/student/{studentId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get the history of a specific student by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetHistoryStudentResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -1661,6 +1840,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/change-condition": {
+            "put": {
+                "description": "Changes the condition of a student based on provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "Changes the condition of a student",
+                "parameters": [
+                    {
+                        "description": "Change Condition Student Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ChangeConditionStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/student/create": {
             "post": {
                 "security": [
@@ -1808,6 +2033,231 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/student/get-student-by-id/{studentId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of students",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid condition",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/student/note/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new note associated with a specific student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notes"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "description": "Note details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CreateNoteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/student/note/delete/{noteId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a specific note associated with a student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notes"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Note ID",
+                        "name": "noteId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/student/note/get-notes/{studentId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all notes associated with a specific student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notes"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetNotesByStudent"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/student/search-student/{value}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Search for students by phone number or name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "ADMIN",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search value (phone number or name)",
+                        "name": "value",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.SearchStudentResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/student/update": {
             "put": {
                 "security": [
@@ -1854,6 +2304,308 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/user/create": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created user",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/delete/{userId}": {
+            "delete": {
+                "description": "Delete a user from the system using their ID",
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-all-employee/{isArchived}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves a list of all employees based on archive status. Restricted to ADMIN and CEO roles.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Filter by archive status (true=archived, false=active)",
+                        "name": "isArchived",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllEmployeeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or processing error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "408": {
+                        "description": "Request timeout",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-teachers/{isDeleted}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches a list of teachers based on the deletion status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN,CEO",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Deletion status (true/false)",
+                        "name": "isDeleted",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of teachers",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetTeachersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-user/{userId}": {
+            "get": {
+                "description": "Retrieve user details by their unique user ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "CEO , ADMIN , TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetUserByIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "description": "Authenticate a user and return a token upon successful login.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ALL",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "LoginRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "schema": {
+                            "$ref": "#/definitions/pb.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid JSON or login failure",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/update": {
+            "patch": {
+                "description": "Update user details using their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO , TEACHER",
+                "parameters": [
+                    {
+                        "description": "User Details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1880,6 +2632,66 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsGroup": {
+            "type": "object",
+            "properties": {
+                "currentGroupStatus": {
+                    "type": "string"
+                },
+                "dateType": {
+                    "type": "string"
+                },
+                "groupEndDate": {
+                    "type": "string"
+                },
+                "groupStartDate": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "teacherName": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsHistory": {
+            "type": "object",
+            "properties": {
+                "currentValue": {
+                    "type": "string"
+                },
+                "editedField": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "oldValue": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsNote": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsRoom": {
             "type": "object",
             "properties": {
@@ -1894,9 +2706,66 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsStudent": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsStudentHistory": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "currentCondition": {
+                    "type": "string"
+                },
+                "group": {
+                    "$ref": "#/definitions/pb.AbsGroup"
+                },
+                "oldCondition": {
+                    "type": "string"
+                },
+                "specificDate": {
+                    "type": "string"
+                },
+                "student": {
+                    "$ref": "#/definitions/pb.AbsStudent"
+                }
+            }
+        },
+        "pb.AbsTeacher": {
+            "type": "object",
+            "properties": {
+                "activeGroups": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AddToGroupRequest": {
             "type": "object",
             "properties": {
+                "createdBy": {
+                    "type": "string"
+                },
                 "createdDate": {
                     "type": "string"
                 },
@@ -1927,6 +2796,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "teacherId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.ChangeConditionStudentRequest": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                },
+                "returnTheMoney": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "tillDate": {
                     "type": "string"
                 }
             }
@@ -2063,6 +2952,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CreateNoteRequest": {
+            "type": "object",
+            "properties": {
+                "note": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.CreateRoomRequest": {
             "type": "object",
             "properties": {
@@ -2138,6 +3038,29 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.Day": {
             "type": "object",
             "properties": {
@@ -2171,50 +3094,28 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetAllEmployeeResponse": {
+            "type": "object",
+            "properties": {
+                "employees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetUserByIdResponse"
+                    }
+                }
+            }
+        },
         "pb.GetAllStudentResponse": {
             "type": "object",
             "properties": {
-                "additionalContact": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "balance": {
-                    "type": "number"
-                },
-                "condition": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "dateOfBirth": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "boolean"
-                },
-                "groups": {
+                "response": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pb.GroupGetAllStudentAbs"
+                        "$ref": "#/definitions/pb.GetGroupsAbsForStudent"
                     }
                 },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "passportId": {
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "telegramUsername": {
-                    "type": "string"
+                "totalCount": {
+                    "type": "integer"
                 }
             }
         },
@@ -2229,6 +3130,9 @@ const docTemplate = `{
                 },
                 "till": {
                     "type": "string"
+                },
+                "withOutdated": {
+                    "type": "boolean"
                 }
             }
         },
@@ -2291,6 +3195,9 @@ const docTemplate = `{
                 "studentCount": {
                     "type": "integer"
                 },
+                "teacherId": {
+                    "type": "string"
+                },
                 "teacherName": {
                     "type": "string"
                 }
@@ -2322,6 +3229,91 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetGroupByTeacherAbs": {
+            "type": "object",
+            "properties": {
+                "activeStudentCount": {
+                    "type": "integer"
+                },
+                "courseName": {
+                    "type": "string"
+                },
+                "dayType": {
+                    "type": "string"
+                },
+                "groupEndAt": {
+                    "type": "string"
+                },
+                "groupStartAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "roomName": {
+                    "type": "string"
+                },
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudent"
+                    }
+                }
+            }
+        },
+        "pb.GetGroupsAbsForStudent": {
+            "type": "object",
+            "properties": {
+                "additionalContact": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "condition": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "dateOfBirth": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GroupGetAllStudentAbs"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "passportId": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "telegramUsername": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.GetGroupsByCourseResponse": {
             "type": "object",
             "properties": {
@@ -2329,6 +3321,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.GetGroupByCourseAbsResponse"
+                    }
+                }
+            }
+        },
+        "pb.GetGroupsByTeacherResponse": {
+            "type": "object",
+            "properties": {
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetGroupByTeacherAbs"
                     }
                 }
             }
@@ -2344,6 +3347,40 @@ const docTemplate = `{
                 },
                 "totalPageCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.GetHistoryGroupResponse": {
+            "type": "object",
+            "properties": {
+                "groupHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsHistory"
+                    }
+                },
+                "studentsHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentHistory"
+                    }
+                }
+            }
+        },
+        "pb.GetHistoryStudentResponse": {
+            "type": "object",
+            "properties": {
+                "conditionsHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentHistory"
+                    }
+                },
+                "studentHistory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsHistory"
+                    }
                 }
             }
         },
@@ -2388,6 +3425,28 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.DynamicSection"
+                    }
+                }
+            }
+        },
+        "pb.GetNotesByStudent": {
+            "type": "object",
+            "properties": {
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsNote"
+                    }
+                }
+            }
+        },
+        "pb.GetTeachersResponse": {
+            "type": "object",
+            "properties": {
+                "teachers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTeacher"
                     }
                 }
             }
@@ -2449,6 +3508,35 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsRoom"
                     }
+                }
+            }
+        },
+        "pb.GetUserByIdResponse": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
                 }
             }
         },
@@ -2524,6 +3612,42 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "isOk": {
+                    "type": "boolean"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/pb.GetUserByIdResponse"
+                }
+            }
+        },
+        "pb.SearchStudentResponse": {
+            "type": "object",
+            "properties": {
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudent"
+                    }
                 }
             }
         },
@@ -2614,6 +3738,20 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.TransferLessonRequest": {
+            "type": "object",
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.UpdateLeadDataRequest": {
             "type": "object",
             "properties": {
@@ -2695,6 +3833,29 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "birthDate": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "utils.AbsResponse": {
             "type": "object",
             "properties": {
@@ -2722,7 +3883,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Modme Swagger",
+	Title:            "Sphere Swagger",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

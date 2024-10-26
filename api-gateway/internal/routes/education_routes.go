@@ -31,6 +31,8 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		group.GET("/get-all/:isArchived", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllGroup)
 		group.GET("/get-by-id/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.GetGroupById)
 		group.GET("/get-by-course/:courseId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetGroupByCourseId)
+		group.POST("/transfer-date", middleware.AuthMiddleware([]string{}, userClient), handlers.TransferLessonDate)
+		group.GET("/get-by-teacher/:teacherId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetInformationByTeacher)
 	}
 	attendance := api.Group("/attendance")
 	{
@@ -40,9 +42,23 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	student := api.Group("/student")
 	{
 		student.GET("/get-all/:condition", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllStudent)
+		student.GET("/get-student-by-id/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetStudentById)
+		student.GET("/search-student/:value", middleware.AuthMiddleware([]string{}, userClient), handlers.SearchStudent)
 		student.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateStudent)
 		student.PUT("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateStudent)
 		student.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudent)
 		student.POST("/add-to-group", middleware.AuthMiddleware([]string{}, userClient), handlers.AddStudentToGroup)
+		student.PUT("/change-condition", middleware.AuthMiddleware([]string{}, userClient), handlers.ChangeConditionStudent)
+		studentNote := student.Group("/note")
+		{
+			studentNote.GET("/get-notes/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetNotesByStudent)
+			studentNote.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateNoteForStudent)
+			studentNote.DELETE("/delete/:noteId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteStudentNote)
+		}
+	}
+	history := api.Group("/history")
+	{
+		history.GET("/group/:groupId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetHistoryGroup)
+		history.GET("/student/:studentId", middleware.AuthMiddleware([]string{}, userClient), handlers.GetHistoryStudent)
 	}
 }
