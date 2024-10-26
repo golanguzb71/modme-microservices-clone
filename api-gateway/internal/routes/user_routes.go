@@ -17,5 +17,6 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		user.PATCH("/update", middleware.AuthMiddleware([]string{}, userClient), handlers.UpdateUserById)
 		user.DELETE("/delete/:userId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteUserById)
 		user.GET("/get-all-employee/:isArchived", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllEmployee)
+		user.GET("/get-my-profile", middleware.AuthMiddleware([]string{}, userClient), handlers.GetMyInformation)
 	}
 }

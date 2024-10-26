@@ -63,6 +63,11 @@ message AbsTeacher{
 
 service AuthService{
   rpc Login(LoginRequest) returns (LoginResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns(GetUserByIdResponse);
+}
+message ValidateTokenRequest{
+  string token = 1;
+  repeated string requiredRoles=2;
 }
 message LoginRequest{
   string phoneNumber = 1;
