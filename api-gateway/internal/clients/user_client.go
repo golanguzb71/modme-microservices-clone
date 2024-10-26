@@ -4,6 +4,7 @@ import (
 	"api-gateway/grpc/proto/pb"
 	"context"
 	"google.golang.org/grpc"
+	"time"
 )
 
 type UserClient struct {
@@ -48,4 +49,19 @@ func (c *UserClient) GetAllEmployee(ctx context.Context, isArchived bool) (*pb.G
 
 func (c *UserClient) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	return c.authClient.Login(ctx, request)
+}
+
+func (c *UserClient) ValidateToken(token string, requiredRoles []string) (*pb.GetUserByIdResponse, error) {
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancelFunc()
+
+	req := &pb.ValidateTokenRequest{
+		Token:         token,
+		RequiredRoles: requiredRoles,
+	}
+	resp, err := c.authClient.ValidateToken(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
 }

@@ -198,3 +198,7 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+func GetMyInformation(ctx *gin.Context) {
+
+}
