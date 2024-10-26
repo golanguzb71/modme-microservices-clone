@@ -28,4 +28,4 @@ database:
   action: "up"
 grpc:
   educationService:
-    address: "sphere-education-service:8080"
+    address: "KJDSFLASKJFD"
