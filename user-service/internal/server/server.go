@@ -28,6 +28,7 @@ func RunServer() {
 	defer db.Close()
 
 	var groupClient *clients.GroupClient
+	//go func() {
 	for {
 		groupClient, err = clients.NewGroupClient(cfg.Grpc.EducationService.Address)
 		if err != nil {
@@ -39,6 +40,7 @@ func RunServer() {
 		break
 	}
 
+	//}()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 
 	userRepo := repository.NewUserRepository(db, groupClient)

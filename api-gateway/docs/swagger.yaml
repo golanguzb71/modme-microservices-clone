@@ -16,6 +16,8 @@ definitions:
     type: object
   pb.AbsGroup:
     properties:
+      course:
+        $ref: '#/definitions/pb.AbsCourse'
       currentGroupStatus:
         type: string
       dateType:
@@ -26,6 +28,8 @@ definitions:
         type: string
       id:
         type: string
+      isArchived:
+        type: boolean
       lessonStartTime:
         type: string
       name:

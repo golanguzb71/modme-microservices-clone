@@ -2625,6 +2625,9 @@
         "pb.AbsGroup": {
             "type": "object",
             "properties": {
+                "course": {
+                    "$ref": "#/definitions/pb.AbsCourse"
+                },
                 "currentGroupStatus": {
                     "type": "string"
                 },
@@ -2639,6 +2642,9 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "isArchived": {
+                    "type": "boolean"
                 },
                 "lessonStartTime": {
                     "type": "string"

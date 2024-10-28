@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "finance-service/internal/server"
 
+func main() {
+	server.RunServer()
 }

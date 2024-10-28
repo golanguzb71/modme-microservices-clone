@@ -365,8 +365,6 @@ func (r *StudentRepository) GetHistoryGroupById(groupId string) (*pb.GetHistoryG
 }
 func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHistoryStudentResponse, error) {
 	response := &pb.GetHistoryStudentResponse{}
-
-	// Query for student history
 	studentHistoryQuery := `SELECT id, field, old_value, current_value 
                             FROM student_history 
                             WHERE student_id = $1 
@@ -378,7 +376,6 @@ func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHist
 	}
 	defer rows.Close()
 
-	// Fetching student history
 	for rows.Next() {
 		var history pb.AbsHistory
 		if err := rows.Scan(&history.Id, &history.EditedField, &history.OldValue, &history.CurrentValue); err != nil {
@@ -386,15 +383,14 @@ func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHist
 		}
 		response.StudentHistory = append(response.StudentHistory, &history)
 	}
-
-	// Query for conditions history
 	conditionsHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at, 
                                    g.id, g.name, g.start_time, g.start_date, g.end_date, g.date_type, 
-                                   gs.condition 
+                                   gs.condition, c.id , c.price , c.description , c.title , c.course_duration , g.is_archived
                                FROM group_students gs
                                JOIN students s ON gs.student_id = s.id
                                JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
                                JOIN groups g ON g.id = gs.group_id
+                               JOIN courses c on c.id=g.course_id
                                WHERE gs.student_id = $1
                                ORDER BY gh.created_at DESC`
 
@@ -404,22 +400,23 @@ func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHist
 	}
 	defer rows.Close()
 
-	// Fetching conditions history with student and group details
 	for rows.Next() {
 		var studentHistory pb.AbsStudentHistory
 		var student pb.AbsStudent
 		var group pb.AbsGroup
 		var createdAt string
+		var course pb.AbsCourse
 
 		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber,
 			&studentHistory.OldCondition, &studentHistory.CurrentCondition,
 			&studentHistory.SpecificDate, &createdAt,
 			&group.Id, &group.Name, &group.LessonStartTime,
 			&group.GroupStartDate, &group.GroupEndDate,
-			&group.DateType, &group.CurrentGroupStatus); err != nil {
+			&group.DateType, &group.CurrentGroupStatus, &course.Id, &course.Price, &course.Description, &course.Name, &course.CourseDuration, &group.IsArchived); err != nil {
 			return nil, err
 		}
 
+		group.Course = &course
 		studentHistory.Student = &student
 		studentHistory.Group = &group
 		studentHistory.CreatedAt = createdAt

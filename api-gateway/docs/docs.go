@@ -2635,6 +2635,9 @@ const docTemplate = `{
         "pb.AbsGroup": {
             "type": "object",
             "properties": {
+                "course": {
+                    "$ref": "#/definitions/pb.AbsCourse"
+                },
                 "currentGroupStatus": {
                     "type": "string"
                 },
@@ -2649,6 +2652,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "isArchived": {
+                    "type": "boolean"
                 },
                 "lessonStartTime": {
                     "type": "string"

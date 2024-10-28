@@ -287,6 +287,8 @@ message AbsGroup{
   string groupEndDate = 6;
   string lessonStartTime = 7;
   string dateType = 8;
+  AbsCourse course = 9;
+  bool isArchived = 10;
 }
 message AbsHistory{
   string id = 1;
