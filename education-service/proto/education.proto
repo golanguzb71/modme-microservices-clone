@@ -247,6 +247,14 @@ service StudentService{
   rpc GetHistoryStudentById(NoteStudentByAbsRequest) returns(GetHistoryStudentResponse);
   rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
   rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
+  rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+}
+message GetStudentsByGroupIdResponse{
+  repeated AbsStudent students = 1;
+}
+message GetStudentsByGroupIdRequest{
+  string groupId = 1;
+  bool withOutdated = 2;
 }
 message ChangeConditionStudentRequest{
   string studentId = 4;

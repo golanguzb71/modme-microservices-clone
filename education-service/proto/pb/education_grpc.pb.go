@@ -990,6 +990,7 @@ const (
 	StudentService_GetHistoryStudentById_FullMethodName  = "/education.StudentService/GetHistoryStudentById"
 	StudentService_TransferLessonDate_FullMethodName     = "/education.StudentService/TransferLessonDate"
 	StudentService_ChangeConditionStudent_FullMethodName = "/education.StudentService/ChangeConditionStudent"
+	StudentService_GetStudentsByGroupId_FullMethodName   = "/education.StudentService/GetStudentsByGroupId"
 )
 
 // StudentServiceClient is the client API for StudentService service.
@@ -1012,6 +1013,7 @@ type StudentServiceClient interface {
 	GetHistoryStudentById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetHistoryStudentResponse, error)
 	TransferLessonDate(ctx context.Context, in *TransferLessonRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	ChangeConditionStudent(ctx context.Context, in *ChangeConditionStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetStudentsByGroupId(ctx context.Context, in *GetStudentsByGroupIdRequest, opts ...grpc.CallOption) (*GetStudentsByGroupIdResponse, error)
 }
 
 type studentServiceClient struct {
@@ -1162,6 +1164,16 @@ func (c *studentServiceClient) ChangeConditionStudent(ctx context.Context, in *C
 	return out, nil
 }
 
+func (c *studentServiceClient) GetStudentsByGroupId(ctx context.Context, in *GetStudentsByGroupIdRequest, opts ...grpc.CallOption) (*GetStudentsByGroupIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetStudentsByGroupIdResponse)
+	err := c.cc.Invoke(ctx, StudentService_GetStudentsByGroupId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility.
@@ -1182,6 +1194,7 @@ type StudentServiceServer interface {
 	GetHistoryStudentById(context.Context, *NoteStudentByAbsRequest) (*GetHistoryStudentResponse, error)
 	TransferLessonDate(context.Context, *TransferLessonRequest) (*AbsResponse, error)
 	ChangeConditionStudent(context.Context, *ChangeConditionStudentRequest) (*AbsResponse, error)
+	GetStudentsByGroupId(context.Context, *GetStudentsByGroupIdRequest) (*GetStudentsByGroupIdResponse, error)
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -1233,6 +1246,9 @@ func (UnimplementedStudentServiceServer) TransferLessonDate(context.Context, *Tr
 }
 func (UnimplementedStudentServiceServer) ChangeConditionStudent(context.Context, *ChangeConditionStudentRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeConditionStudent not implemented")
+}
+func (UnimplementedStudentServiceServer) GetStudentsByGroupId(context.Context, *GetStudentsByGroupIdRequest) (*GetStudentsByGroupIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStudentsByGroupId not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 func (UnimplementedStudentServiceServer) testEmbeddedByValue()                        {}
@@ -1507,6 +1523,24 @@ func _StudentService_ChangeConditionStudent_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_GetStudentsByGroupId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStudentsByGroupIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).GetStudentsByGroupId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_GetStudentsByGroupId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).GetStudentsByGroupId(ctx, req.(*GetStudentsByGroupIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1569,6 +1603,10 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeConditionStudent",
 			Handler:    _StudentService_ChangeConditionStudent_Handler,
+		},
+		{
+			MethodName: "GetStudentsByGroupId",
+			Handler:    _StudentService_GetStudentsByGroupId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

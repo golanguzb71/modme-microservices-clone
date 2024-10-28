@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "proto/pb";
+
+message AbsResponse {
+  int32 status = 1;
+  string message = 2;
+}
+
+message DeleteAbsRequest{
+  string id = 1;
+}
+
+
+message PageRequest{
+  int32 page = 1;
+  int32 size = 2;
+}

@@ -14,6 +14,17 @@ definitions:
       price:
         type: number
     type: object
+  pb.AbsDiscountRequest:
+    properties:
+      comment:
+        type: string
+      discountPrice:
+        type: string
+      groupId:
+        type: string
+      studentId:
+        type: string
+    type: object
   pb.AbsGroup:
     properties:
       course:
@@ -73,6 +84,19 @@ definitions:
       name:
         type: string
       phoneNumber:
+        type: string
+    type: object
+  pb.AbsStudentDiscount:
+    properties:
+      cause:
+        type: string
+      discount:
+        type: string
+      studentId:
+        type: string
+      studentName:
+        type: string
+      studentPhoneNumber:
         type: string
     type: object
   pb.AbsStudentHistory:
@@ -505,6 +529,13 @@ definitions:
       studentHistory:
         items:
           $ref: '#/definitions/pb.AbsHistory'
+        type: array
+    type: object
+  pb.GetInformationDiscountResponse:
+    properties:
+      discounts:
+        items:
+          $ref: '#/definitions/pb.AbsStudentDiscount'
         type: array
     type: object
   pb.GetLeadCommonRequest:
@@ -1121,6 +1152,91 @@ paths:
       summary: ADMIN
       tags:
       - expectations
+  /api/finance/discount/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new discount for a specified group and student
+      parameters:
+      - description: Discount Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.AbsDiscountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response with status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: CEO , ADMIN
+      tags:
+      - Discounts
+  /api/finance/discount/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a discount for a specific group and student
+      parameters:
+      - description: Group ID
+        in: query
+        name: groupId
+        required: true
+        type: string
+      - description: Student ID
+        in: query
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response with status and message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - Discounts
+  /api/finance/discount/get-all-by-group/{groupId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all discount information for a specific group ID
+      parameters:
+      - description: Group ID
+        in: path
+        name: groupId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response
+          schema:
+            $ref: '#/definitions/pb.GetInformationDiscountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - Discounts
   /api/group/create:
     post:
       consumes:

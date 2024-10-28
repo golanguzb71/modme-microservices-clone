@@ -7,10 +7,10 @@ import (
 )
 
 type Clients struct {
-	AuditClient     *client.AuditClient
 	UserClient      *client.UserClient
 	LidClient       *client.LidClient
 	EducationClient *client.EducationClient
+	FinanceClient   *client.FinanceClient
 }
 
 func InitializeGrpcClients(cfg *config.Config) *Clients {
@@ -20,17 +20,21 @@ func InitializeGrpcClients(cfg *config.Config) *Clients {
 	}
 	userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
 	if err != nil {
-		return nil
+		log.Fatalf("%v", err)
 	}
 	lidClient, err := client.NewLidClient(cfg.Grpc.LidService.Address)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
+	financeClient, err := client.NewFinanceClient(cfg.Grpc.FinanceService.Address)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
 
 	return &Clients{
-		AuditClient:     &client.AuditClient{},
 		UserClient:      userClient,
 		LidClient:       lidClient,
 		EducationClient: educationClient,
+		FinanceClient:   financeClient,
 	}
 }

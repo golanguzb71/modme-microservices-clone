@@ -23,3 +23,5 @@ grpc:
     address: "localhost:50053"
   user_service:
     address: "localhost:50055"
+  finance_service:
+    address: "localhost:50056"

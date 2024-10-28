@@ -472,6 +472,135 @@
                 }
             }
         },
+        "/api/finance/discount/create": {
+            "post": {
+                "description": "Creates a new discount for a specified group and student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "CEO , ADMIN",
+                "parameters": [
+                    {
+                        "description": "Discount Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.AbsDiscountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response with status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/discount/delete": {
+            "delete": {
+                "description": "Deletes a discount for a specific group and student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Group ID",
+                        "name": "groupId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response with status and message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/discount/get-all-by-group/{groupId}": {
+            "get": {
+                "description": "Retrieves all discount information for a specific group ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Group ID",
+                        "name": "groupId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetInformationDiscountResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -2622,6 +2751,23 @@
                 }
             }
         },
+        "pb.AbsDiscountRequest": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "discountPrice": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsGroup": {
             "type": "object",
             "properties": {
@@ -2712,6 +2858,26 @@
                     "type": "string"
                 },
                 "phoneNumber": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsStudentDiscount": {
+            "type": "object",
+            "properties": {
+                "cause": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                },
+                "studentPhoneNumber": {
                     "type": "string"
                 }
             }
@@ -3376,6 +3542,17 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsHistory"
+                    }
+                }
+            }
+        },
+        "pb.GetInformationDiscountResponse": {
+            "type": "object",
+            "properties": {
+                "discounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentDiscount"
                     }
                 }
             }

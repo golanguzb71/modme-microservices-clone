@@ -26,6 +26,9 @@ type Config struct {
 		LidService struct {
 			Address string `yaml:"address"`
 		} `yaml:"lid_service"`
+		FinanceService struct {
+			Address string `yaml:"address"`
+		} `yaml:"finance_service"`
 	} `yaml:"grpc"`
 }
 
