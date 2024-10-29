@@ -75,7 +75,8 @@ message GetAllExpenseDiagramRequest{
 message GetAllExpenseRequest{
   string from = 1;
   string to = 2;
-  string byCategory = 3;
+  string type = 3;
+  string id = 5;
   common.PageRequest pageReq = 4;
 }
 message GetAllExpenseResponse{

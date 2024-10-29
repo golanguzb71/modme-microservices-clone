@@ -17,7 +17,7 @@ import (
 // @Tags rooms
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.CreateRoomRequest true "Request to create a room"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
@@ -47,7 +47,7 @@ func CreateRoom(ctx *gin.Context) {
 // @Tags rooms
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request query pb.AbsRoom true "Request to update room"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 422 {object} utils.AbsResponse
@@ -76,7 +76,7 @@ func UpdateRoom(ctx *gin.Context) {
 // @Description Delete a room by its ID
 // @Tags rooms
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Room ID"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 500 {object} utils.AbsResponse
@@ -99,7 +99,7 @@ func DeleteRoom(ctx *gin.Context) {
 // @Description Retrieve all rooms
 // @Tags rooms
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Success 200 {object} pb.GetUpdateRoomAbs
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/room/get-all [get]
@@ -121,7 +121,7 @@ func GetAllRoom(ctx *gin.Context) {
 // @Tags courses
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.CreateCourseRequest true "Request to create a course"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
@@ -151,7 +151,7 @@ func CreateCourse(ctx *gin.Context) {
 // @Tags courses
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.AbsCourse true "Request to update course"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
@@ -178,7 +178,7 @@ func UpdateCourse(ctx *gin.Context) {
 // @Description Delete a course by its ID
 // @Tags courses
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Course ID"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 500 {object} utils.AbsResponse
@@ -201,7 +201,7 @@ func DeleteCourse(ctx *gin.Context) {
 // @Description Retrieve all courses
 // @Tags courses
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Success 200 {object} pb.GetUpdateCourseAbs
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/course/get-all [get]
@@ -222,7 +222,7 @@ func GetAllCourse(ctx *gin.Context) {
 // @Description Retrieves a course by its ID for admin users.
 // @Tags courses
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Course ID"
 // @Success 200 {object} pb.AbsCourse "Successful response with course details"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -246,7 +246,7 @@ func GetCourseById(ctx *gin.Context) {
 // @Tags groups
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param group body pb.CreateGroupRequest true "Group Data"
 // @Success 200 {object} utils.AbsResponse "Group successfully created"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
@@ -276,7 +276,7 @@ func CreateGroup(ctx *gin.Context) {
 // @Tags groups
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param group body pb.GetUpdateGroupAbs true "Group Data"
 // @Success 200 {object} utils.AbsResponse "Group successfully updated"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
@@ -305,7 +305,7 @@ func UpdateGroup(ctx *gin.Context) {
 // @Description Delete a group by its ID.
 // @Tags groups
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Group ID"
 // @Success 200 {object} utils.AbsResponse "Group successfully deleted"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -328,7 +328,7 @@ func DeleteGroup(ctx *gin.Context) {
 // @Description Retrieve a list of all groups.
 // @Tags groups
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param isArchived path bool true "Is Archived" example(true)
 // @Param page query int false "Page number" default(1)
 // @Param size query int false "Number of items per page" default(10)
@@ -368,7 +368,7 @@ func GetAllGroup(ctx *gin.Context) {
 // @Description Retrieve details of a group by its ID.
 // @Tags groups
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Group ID"
 // @Success 200 {object} pb.GetGroupAbsResponse "Group details"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -391,7 +391,7 @@ func GetGroupById(ctx *gin.Context) {
 // @Description Record attendance for a student in a group on a specific date.
 // @Tags attendance
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param attendance body pb.SetAttendanceRequest true "Attendance details"
 // @Success 200 {object} utils.AbsResponse "Attendance recorded successfully"
 // @Failure 400 {object} utils.AbsResponse "Invalid request"
@@ -418,7 +418,7 @@ func SetAttendance(ctx *gin.Context) {
 // @Description Retrieve attendance records for students in a group over a specified date range.
 // @Tags attendance
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param attendance body pb.GetAttendanceRequest true "Group ID and date range"
 // @Success 200 {object} pb.GetAttendanceResponse "Attendance records"
 // @Failure 400 {object} utils.AbsResponse "Invalid request"
@@ -447,7 +447,7 @@ func GetAttendance(ctx *gin.Context) {
 // @Description Retrieve groups associated with a specific course ID.
 // @Tags groups
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param courseId path string true "Course ID"
 // @Success 200 {object} pb.GetGroupsByCourseResponse "Group details"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -469,7 +469,7 @@ func GetGroupByCourseId(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param condition path string true "Condition" Enums(ARCHIVED, ACTIVE)
 // @Param page query string false "Page number"
 // @Param size query string false "Page size"
@@ -500,7 +500,7 @@ func GetAllStudent(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.CreateStudentRequest true "Student details"
 // @Success 200 {object} utils.AbsResponse "Created student details"
 // @Failure 400 {object} utils.AbsResponse "Invalid request"
@@ -528,7 +528,7 @@ func CreateStudent(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.AddToGroupRequest true "Add student to group details"
 // @Success 200 {object} utils.AbsResponse "Success message"
 // @Failure 400 {object} utils.AbsResponse "Invalid request"
@@ -557,7 +557,7 @@ func AddStudentToGroup(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.UpdateStudentRequest true "Updated student details"
 // @Success 200 {object} utils.AbsResponse "Update success message"
 // @Failure 400 {object} utils.AbsResponse "Invalid request"
@@ -584,7 +584,7 @@ func UpdateStudent(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param id path string true "Student ID"
 // @Success 200 {object} utils.AbsResponse "Delete success message"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -606,7 +606,7 @@ func DeleteStudent(ctx *gin.Context) {
 // @Summary ADMIN
 // @Tags students
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param studentId path string true "Student ID"
 // @Success 200 {object} pb.GetAllStudentResponse "List of students"
 // @Failure 400 {object} utils.AbsResponse "Invalid condition"
@@ -634,7 +634,7 @@ func GetStudentById(ctx *gin.Context) {
 // @Param studentId path string true "Student ID"
 // @Success 200 {object} pb.GetNotesByStudent
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/student/note/get-notes/{studentId} [get]
 func GetNotesByStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -659,7 +659,7 @@ func GetNotesByStudent(ctx *gin.Context) {
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/student/note/create [post]
 func CreateNoteForStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -687,7 +687,7 @@ func CreateNoteForStudent(ctx *gin.Context) {
 // @Param noteId path string true "Note ID"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/student/note/delete/{noteId} [delete]
 func DeleteStudentNote(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -711,7 +711,7 @@ func DeleteStudentNote(ctx *gin.Context) {
 // @Param value path string true "Search value (phone number or name)"
 // @Success 200 {object} pb.SearchStudentResponse
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/student/search-student/{value} [get]
 func SearchStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -735,7 +735,7 @@ func SearchStudent(ctx *gin.Context) {
 // @Param groupId path string true "Group ID"
 // @Success 200 {object} pb.GetHistoryGroupResponse
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/history/group/{groupId} [get]
 func GetHistoryGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -759,7 +759,7 @@ func GetHistoryGroup(ctx *gin.Context) {
 // @Param studentId path string true "Student ID"
 // @Success 200 {object} pb.GetHistoryStudentResponse
 // @Failure 500 {object} utils.AbsResponse
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/history/student/{studentId} [get]
 func GetHistoryStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)

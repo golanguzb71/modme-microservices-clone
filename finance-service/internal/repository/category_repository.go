@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"finance-service/proto/pb"
 	"fmt"
 	"google.golang.org/grpc/codes"
@@ -21,7 +22,12 @@ func (r *CategoryRepository) CreateCategory(name string, desc string) error {
 }
 
 func (r *CategoryRepository) DeleteCategory(id string) error {
-	_, err := r.db.Exec(`DELETE FROM category where id=$1`, id)
+	var check bool
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM expense where category_id=$1)`, id).Scan(&check)
+	if err != nil || check {
+		return errors.New("action refused. expense have got in this category")
+	}
+	_, err = r.db.Exec(`DELETE FROM category where id=$1`, id)
 	if err != nil {
 		return status.Errorf(codes.Aborted, "error while deleting category %v", err)
 	}

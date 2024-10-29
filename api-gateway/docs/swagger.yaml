@@ -99,6 +99,8 @@ definitions:
     properties:
       cause:
         type: string
+      createdAt:
+        type: string
       discount:
         type: string
       studentId:
@@ -231,6 +233,25 @@ definitions:
         type: string
       price:
         type: number
+    type: object
+  pb.CreateExpenseRequest:
+    properties:
+      categoryId:
+        type: string
+      createdById:
+        type: string
+      expenseType:
+        type: string
+      givenDate:
+        type: string
+      paymentMethod:
+        type: string
+      sum:
+        type: string
+      title:
+        type: string
+      userId:
+        type: string
     type: object
   pb.CreateGroupRequest:
     properties:
@@ -371,6 +392,32 @@ definitions:
         items:
           $ref: '#/definitions/pb.GetUserByIdResponse'
         type: array
+    type: object
+  pb.GetAllExpenseAbs:
+    properties:
+      categoryName:
+        type: string
+      createdById:
+        type: string
+      expenseType:
+        type: string
+      givenDate:
+        type: string
+      id:
+        type: string
+      sum:
+        type: string
+      userId:
+        type: string
+    type: object
+  pb.GetAllExpenseResponse:
+    properties:
+      expenses:
+        items:
+          $ref: '#/definitions/pb.GetAllExpenseAbs'
+        type: array
+      totalPageCount:
+        type: integer
     type: object
   pb.GetAllStudentResponse:
     properties:
@@ -909,7 +956,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , TEACHER
       tags:
       - attendance
@@ -939,7 +986,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: TEACHER
       tags:
       - attendance
@@ -971,7 +1018,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - courses
@@ -996,7 +1043,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - courses
@@ -1015,7 +1062,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ALL
       tags:
       - courses
@@ -1040,7 +1087,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - courses
@@ -1073,7 +1120,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - courses
@@ -1202,6 +1249,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - category
@@ -1229,6 +1278,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - category
@@ -1246,6 +1297,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - category
@@ -1276,6 +1329,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: CEO , ADMIN
       tags:
       - discount
@@ -1306,6 +1361,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - discount
@@ -1331,9 +1388,118 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - discount
+  /api/finance/expense/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new expense entry with details provided in the request
+        body.
+      parameters:
+      - description: Expense details
+        in: body
+        name: expense
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateExpenseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - expense
+  /api/finance/expense/delete/{id}:
+    delete:
+      description: Deletes an expense entry by ID.
+      parameters:
+      - description: Expense ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - expense
+  /api/finance/expense/get-all-information/{from}/{to}:
+    get:
+      description: Retrieves expenses with optional filters, pagination, and date
+        range.
+      parameters:
+      - description: Start date
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: End date
+        in: path
+        name: to
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: ID to filter by user or creator
+        in: query
+        name: id
+        type: string
+      - description: Filter type (USER or CATEGORY)
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllExpenseResponse'
+        "400":
+          description: Invalid request parameter
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Retrieve expenses
+      tags:
+      - expense
   /api/group/create:
     post:
       consumes:
@@ -1362,7 +1528,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - groups
@@ -1387,7 +1553,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - groups
@@ -1429,7 +1595,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - groups
@@ -1454,7 +1620,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN, TEACHER
       tags:
       - groups
@@ -1479,7 +1645,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - groups
@@ -1572,7 +1738,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - groups
@@ -1599,7 +1765,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - groups
@@ -1626,7 +1792,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -1717,7 +1883,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ALL
       tags:
       - leads
@@ -1821,7 +1987,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: Change lead data
       tags:
       - leadData
@@ -1948,7 +2114,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - rooms
@@ -1973,7 +2139,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - rooms
@@ -1992,7 +2158,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - rooms
@@ -2028,7 +2194,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - rooms
@@ -2060,7 +2226,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - sets
@@ -2188,7 +2354,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2247,7 +2413,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2271,7 +2437,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2310,7 +2476,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2338,7 +2504,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2370,7 +2536,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - notes
@@ -2397,7 +2563,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - notes
@@ -2424,7 +2590,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - notes
@@ -2451,7 +2617,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2480,7 +2646,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN
       tags:
       - students
@@ -2534,6 +2700,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - user
@@ -2569,7 +2737,7 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:
-      - BearerAuth: []
+      - Bearer: []
       summary: ADMIN , CEO
       tags:
       - user

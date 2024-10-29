@@ -372,7 +372,7 @@ func UpdateLeadData(ctx *gin.Context) {
 // @Tags leadData
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.ChangeLeadPlaceRequest true "Lead change request"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
@@ -403,7 +403,7 @@ func ChangeLeadData(ctx *gin.Context) {
 // @Tags leads
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Success 200 {object} pb.GetLeadListResponse
 // @Failure 400 {object} utils.AbsResponse
 // @Failure 401 {object} utils.AbsResponse
@@ -428,7 +428,7 @@ func GetAllLead(ctx *gin.Context) {
 // @Tags sets
 // @Accept json
 // @Produce json
-// @Security BearerAuth
+// @Security Bearer
 // @Param request body pb.ChangeToSetRequest true "Request to change set to group"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse

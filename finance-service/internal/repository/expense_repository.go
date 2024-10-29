@@ -1,13 +1,13 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"finance-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"time"
 )
 
 type ExpenseRepository struct {
@@ -17,12 +17,18 @@ type ExpenseRepository struct {
 func (r *ExpenseRepository) CreateExpense(title, givenDate, expenseType, categoryId, userId, sum, createdBy, paymentMethod string) error {
 	query := `
 		INSERT INTO expense (
-			id, title, user_id, category_id, expense_type, sum, given_date, created_at, created_by, payment_method
+			id, title, user_id, category_id, expense_type, sum, created_at , given_date, created_by, payment_method
 		) VALUES (
 		 $1, $2, $3, $4, $5, $6, NOW(), $7, $8 , $9
 		)
 	`
-	_, err := r.db.Exec(query, uuid.New(), title, userId, categoryId, expenseType, sum, givenDate, createdBy, paymentMethod)
+	var err error
+	if expenseType == "USER" {
+		_, err = r.db.Exec(query, uuid.New(), title, userId, nil, expenseType, sum, givenDate, createdBy, paymentMethod)
+	} else {
+		_, err = r.db.Exec(query, uuid.New(), title, nil, categoryId, expenseType, sum, givenDate, createdBy, paymentMethod)
+	}
+
 	if err != nil {
 		return status.Errorf(codes.Aborted, "error while inserting expense %v", err)
 	}
@@ -35,95 +41,64 @@ func (r *ExpenseRepository) DeleteExpense(id string) error {
 	}
 	return nil
 }
-func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, category string) (*pb.GetAllExpenseResponse, error) {
-	offset := (page - 1) * size
-	query := `
-        SELECT 
-            e.id,
-            e.given_date,
-            c.name as category_name,
-            e.user_id,
-            e.expense_type,
-            e.sum,
-            e.created_by,
-            COUNT(*) OVER() as total_count
-        FROM expense e
-        LEFT JOIN category c ON e.category_id = c.id
-        WHERE 1=1
-    `
-	args := make([]interface{}, 0)
-	argPosition := 1
-
-	if from != "" {
-		query += fmt.Sprintf(" AND e.given_date >= $%d", argPosition)
-		args = append(args, from)
-		argPosition++
-	}
-	if to != "" {
-		query += fmt.Sprintf(" AND e.given_date <= $%d", argPosition)
-		args = append(args, to)
-		argPosition++
-	}
-
-	if category != "" {
-		query += fmt.Sprintf(" AND c.name = $%d", argPosition)
-		args = append(args, category)
-		argPosition++
-	}
-
-	query += fmt.Sprintf(" ORDER BY e.given_date DESC LIMIT $%d OFFSET $%d",
-		argPosition, argPosition+1)
-	args = append(args, size, offset)
-
-	rows, err := r.db.Query(query, args...)
-	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %v", err)
-	}
-	defer rows.Close()
-
-	expenses := make([]*pb.GetAllExpenseAbs, 0)
-	var totalCount int
-
-	for rows.Next() {
-		var expense pb.GetAllExpenseAbs
-		var givenDate time.Time
-		var sum float64
-
-		err := rows.Scan(
-			&expense.Id,
-			&givenDate,
-			&expense.CategoryName,
-			&expense.UserId,
-			&expense.ExpenseType,
-			&sum,
-			&expense.CreatedById,
-			&totalCount,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan row: %v", err)
-		}
-
-		expense.GivenDate = givenDate.Format("2006-01-02")
-		expense.Sum = fmt.Sprintf("%.2f", sum)
-
-		expenses = append(expenses, &expense)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating rows: %v", err)
-	}
-
-	totalPages := (int32(totalCount) + size - 1) / size
-
-	return &pb.GetAllExpenseResponse{
-		TotalPageCount: totalPages,
-		Expenses:       expenses,
-	}, nil
-}
 func (r *ExpenseRepository) GetExpenseDiagram(from, to string) (*pb.GetAllExpenseDiagramResponse, error) {
 	return nil, nil
 }
+func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, to string, idType string, id string) (*pb.GetAllExpenseResponse, error) {
+	offset := (page - 1) * size
+	baseQuery := `SELECT expense.id, given_date, category.name as category_name, user_id, expense_type, sum, created_by 
+                  FROM expense
+                  LEFT JOIN category ON expense.category_id = category.id
+                  WHERE given_date BETWEEN $1 AND $2`
+	params := []interface{}{from, to}
+	if idType == "USER" {
+		baseQuery += ` AND user_id = $3`
+		params = append(params, id)
+	} else if idType == "CATEGORY" {
+		baseQuery += ` AND category_id = $3`
+		params = append(params, id)
+	}
+	baseQuery += ` ORDER BY given_date DESC LIMIT $4 OFFSET $5`
+	params = append(params, size, offset)
 
+	rows, err := r.db.QueryContext(context.Background(), baseQuery, params...)
+	if err != nil {
+		return nil, fmt.Errorf("error querying expenses: %v", err)
+	}
+	defer rows.Close()
+
+	var expenses []*pb.GetAllExpenseAbs
+	for rows.Next() {
+		var expense pb.GetAllExpenseAbs
+		var givenDate string
+		if err := rows.Scan(&expense.Id, &givenDate, &expense.CategoryName, &expense.UserId, &expense.ExpenseType, &expense.Sum, &expense.CreatedById); err != nil {
+			return nil, fmt.Errorf("error scanning expense row: %v", err)
+		}
+		expense.GivenDate = givenDate
+		expenses = append(expenses, &expense)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating expense rows: %v", err)
+	}
+	var totalCount int32
+	countQuery := `SELECT COUNT(*) FROM expense WHERE given_date BETWEEN $1 AND $2`
+	if idType == "USER" {
+		countQuery += ` AND user_id = $3`
+	} else if idType == "CATEGORY" {
+		countQuery += ` AND category_id = $3`
+	}
+	err = r.db.QueryRowContext(context.Background(), countQuery, params[:3]...).Scan(&totalCount)
+	if err != nil {
+		return nil, fmt.Errorf("error counting expenses: %v", err)
+	}
+	totalPageCount := (totalCount + size - 1) / size
+
+	response := &pb.GetAllExpenseResponse{
+		TotalPageCount: totalPageCount,
+		Expenses:       expenses,
+	}
+	return response, nil
+}
 func NewExpenseRepository(db *sql.DB) *ExpenseRepository {
 	return &ExpenseRepository{db: db}
 }

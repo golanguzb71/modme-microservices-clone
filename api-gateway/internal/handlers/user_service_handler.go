@@ -126,6 +126,7 @@ func UpdateUserById(ctx *gin.Context) {
 // @Param userId path string true "User ID"
 // @Success 200 {object} utils.AbsResponse
 // @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
 // @Router /api/user/delete/{userId} [delete]
 func DeleteUserById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -152,7 +153,7 @@ func DeleteUserById(ctx *gin.Context) {
 // @Failure 400 {object} utils.AbsResponse "Invalid input or processing error"
 // @Failure 401 {object} utils.AbsResponse "Unauthorized access"
 // @Failure 408 {object} utils.AbsResponse "Request timeout"
-// @Security BearerAuth
+// @Security Bearer
 // @Router /api/user/get-all-employee/{isArchived} [get]
 func GetAllEmployee(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)

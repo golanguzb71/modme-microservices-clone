@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS expense
     id             uuid primary key,
     title          varchar                                                       NOT NULL,
     user_id        uuid,
-    category_id    int references category (id),
+    category_id    int,
     expense_type   varchar check ( expense_type in ('USER', 'CATEGORY')),
     sum            double precision                                              NOT NULL,
     given_date     date                                                          NOT NULL,

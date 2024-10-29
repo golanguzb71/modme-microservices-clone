@@ -31,8 +31,12 @@ func (e *ExpenseService) DeleteExpense(ctx context.Context, req *pb.DeleteAbsReq
 	}, nil
 }
 func (e *ExpenseService) GetAllExpense(ctx context.Context, req *pb.GetAllExpenseRequest) (*pb.GetAllExpenseResponse, error) {
-	return e.repo.GetAllExpense(req.PageReq.Page, req.PageReq.Size, req.From, req.To, req.ByCategory)
+	return e.repo.GetAllExpense(req.PageReq.Page, req.PageReq.Size, req.From, req.To, req.Type, req.Id)
 }
 func (e *ExpenseService) GetAllExpenseDiagram(ctx context.Context, req *pb.GetAllExpenseDiagramRequest) (*pb.GetAllExpenseDiagramResponse, error) {
 	return e.repo.GetExpenseDiagram(req.To, req.From)
+}
+
+func NewExpenseService(repo *repository.ExpenseRepository) *ExpenseService {
+	return &ExpenseService{repo: repo}
 }

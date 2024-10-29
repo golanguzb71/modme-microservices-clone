@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -18,6 +19,7 @@ import (
 // @Param groupId path string true "Group ID"
 // @Success 200 {object} pb.GetInformationDiscountResponse "Success response"
 // @Failure 500 {object} utils.AbsResponse "Internal Server Error"
+// @Security Bearer
 // @Router /api/finance/discount/get-all-by-group/{groupId} [get]
 func GetAllDiscountInformationByGroup(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -42,6 +44,7 @@ func GetAllDiscountInformationByGroup(ctx *gin.Context) {
 // @Success 200 {object} utils.AbsResponse "Success response with status and message"
 // @Failure 400 {object} utils.AbsResponse "Bad Request"
 // @Failure 500 {object} utils.AbsResponse "Internal Server Error"
+// @Security Bearer
 // @Router /api/finance/discount/create [post]
 func CreateDiscount(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -69,6 +72,7 @@ func CreateDiscount(ctx *gin.Context) {
 // @Produce json
 // @Param groupId query string true "Group ID"
 // @Param studentId query string true "Student ID"
+// @Security Bearer
 // @Success 200 {object} utils.AbsResponse "Success response with status and message"
 // @Failure 500 {object} utils.AbsResponse "Internal Server Error"
 // @Router /api/finance/discount/delete [delete]
@@ -96,6 +100,7 @@ func DeleteDiscount(ctx *gin.Context) {
 // @Success      200       {object}  utils.AbsResponse
 // @Failure      400       {object}  utils.AbsResponse
 // @Failure      500       {object}  utils.AbsResponse
+// @Security Bearer
 // @Router       /api/finance/category/create [post]
 func CreateCategory(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -124,6 +129,7 @@ func CreateCategory(ctx *gin.Context) {
 // @Success      200         {object}  utils.AbsResponse
 // @Failure      400         {object}  utils.AbsResponse
 // @Failure      500         {object}  utils.AbsResponse
+// @Security Bearer
 // @Router       /api/finance/category/delete/{categoryId} [delete]
 func DeleteCategory(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -145,6 +151,7 @@ func DeleteCategory(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  pb.GetAllCategoryRequest
 // @Failure      500  {object}  utils.AbsResponse
+// @Security Bearer
 // @Router       /api/finance/category/get-all [get]
 func GetAllCategories(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
@@ -158,6 +165,17 @@ func GetAllCategories(ctx *gin.Context) {
 	return
 }
 
+// CreateExpense godoc
+// @Summary      ADMIN , CEO
+// @Description  Creates a new expense entry with details provided in the request body.
+// @Tags         expense
+// @Accept       json
+// @Produce      json
+// @Param        expense  body      pb.CreateExpenseRequest true  "Expense details"
+// @Success      200      {object}  utils.AbsResponse
+// @Failure      500      {object}  utils.AbsResponse
+// @Security Bearer
+// @Router       /api/finance/expense/create [post]
 func CreateExpense(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -182,6 +200,16 @@ func CreateExpense(ctx *gin.Context) {
 	return
 }
 
+// DeleteExpense godoc
+// @Summary      CEO
+// @Description  Deletes an expense entry by ID.
+// @Tags         expense
+// @Param        id       path      string true  "Expense ID"
+// @Produce      json
+// @Success      200      {object}  utils.AbsResponse
+// @Failure      500      {object}  utils.AbsResponse
+// @Security Bearer
+// @Router       /api/finance/expense/delete/{id} [delete]
 func DeleteExpense(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
@@ -195,8 +223,51 @@ func DeleteExpense(ctx *gin.Context) {
 	return
 }
 
+// GetAllInformation godoc
+// @Summary      Retrieve expenses
+// @Description  Retrieves expenses with optional filters, pagination, and date range.
+// @Tags         expense
+// @Produce      json
+// @Param        from     path      string true  "Start date"
+// @Param        to       path      string true  "End date"
+// @Param        page     query     int    true  "Page number"
+// @Param        size     query     int    true  "Page size"
+// @Param        id       query     string false "ID to filter by user or creator"
+// @Param        type     query     string false "Filter type (USER or CATEGORY)"
+// @Success      200      {object}  pb.GetAllExpenseResponse
+// @Failure      400      {object}  utils.AbsResponse  "Invalid request parameter"
+// @Failure      500      {object}  utils.AbsResponse
+// @Security Bearer
+// @Router       /api/finance/expense/get-all-information/{from}/{to} [get]
 func GetAllInformation(ctx *gin.Context) {
-
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	page, err := strconv.ParseInt(ctx.Query("page"), 10, 32)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	size, err := strconv.ParseInt(ctx.Query("size"), 10, 32)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	id := ctx.Query("id")
+	idType := ctx.Query("type")
+	if idType == "USER" || idType == "CATEGORY" || idType == "" {
+		resp, err := financeClient.GetAllInformation(ctxR, id, idType, page, size, from, to)
+		if err != nil {
+			utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+			return
+		}
+		ctx.JSON(http.StatusOK, resp)
+		return
+	} else {
+		utils.RespondError(ctx, http.StatusInternalServerError, "invalid idType")
+		return
+	}
 }
 
 func GetChartDiagram(ctx *gin.Context) {

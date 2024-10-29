@@ -31,6 +31,8 @@ func RunServer() {
 	discountService := service.NewDiscountService(discountRepo)
 	categoryRepo := repository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepo)
+	expenseRepo := repository.NewExpenseRepository(db)
+	expenseService := service.NewExpenseService(expenseRepo)
 	list, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -42,6 +44,7 @@ func RunServer() {
 
 	pb.RegisterDiscountServiceServer(grpcServer, discountService)
 	pb.RegisterCategoryServiceServer(grpcServer, categoryService)
+	pb.RegisterExpenseServiceServer(grpcServer, expenseService)
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := grpcServer.Serve(list); err != nil {
 		log.Fatalf("Failed to serve  %v", err)

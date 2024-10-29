@@ -45,6 +45,19 @@ func (fc *FinanceClient) DeleteExpense(ctx context.Context, id string) (*pb.AbsR
 	return fc.expenseClient.DeleteExpense(ctx, &pb.DeleteAbsRequest{Id: id})
 }
 
+func (fc *FinanceClient) GetAllInformation(ctx context.Context, id string, idType string, page int64, size int64, from string, to string) (*pb.GetAllExpenseResponse, error) {
+	return fc.expenseClient.GetAllExpense(ctx, &pb.GetAllExpenseRequest{
+		From: from,
+		To:   to,
+		Type: idType,
+		Id:   id,
+		PageReq: &pb.PageRequest{
+			Page: int32(page),
+			Size: int32(size),
+		},
+	})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
