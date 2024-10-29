@@ -40,7 +40,6 @@ service CategoryService{
   rpc DeleteCategory(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc GetAllCategory(google.protobuf.Empty) returns(GetAllCategoryRequest);
 }
-
 message CreateCategoryRequest{
   string name = 1;
   string desc = 2;
@@ -54,3 +53,52 @@ message AbsCategory{
   string desc = 3;
 }
 // category service end
+
+// expense service start
+service ExpenseService{
+  rpc CreateExpense(CreateExpenseRequest) returns(common.AbsResponse);
+  rpc DeleteExpense(common.DeleteAbsRequest) returns(common.AbsResponse);
+  rpc GetAllExpense(GetAllExpenseRequest) returns(GetAllExpenseResponse);
+  rpc GetAllExpenseDiagram(GetAllExpenseDiagramRequest) returns(GetAllExpenseDiagramResponse);
+}
+message GetAllExpenseDiagramResponse{
+  repeated string userOrCategories = 1;
+  repeated string userOrCategoriesAmount = 2;
+  repeated string monthAmount = 3;
+  repeated string months = 4;
+  string amountCommonExpense = 5;
+}
+message GetAllExpenseDiagramRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetAllExpenseRequest{
+  string from = 1;
+  string to = 2;
+  string byCategory = 3;
+  common.PageRequest pageReq = 4;
+}
+message GetAllExpenseResponse{
+  int32 totalPageCount = 1;
+  repeated GetAllExpenseAbs expenses = 2;
+}
+message GetAllExpenseAbs{
+  string id = 1;
+  string givenDate = 2;
+  string categoryName = 3;
+  string userId = 4;
+  string expenseType = 5;
+  string sum = 6;
+  string createdById = 7;
+}
+message CreateExpenseRequest{
+  string title = 1;
+  string givenDate = 2;
+  string expenseType = 3;
+  string categoryId = 4;
+  string userId = 5;
+  string sum = 6;
+  string createdById = 7;
+  string paymentMethod = 8;
+}
+// expense service end

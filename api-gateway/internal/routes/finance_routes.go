@@ -20,6 +20,13 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			category.DELETE("/delete/:categoryId", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteCategory)
 			category.GET("/get-all", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllCategories)
 		}
-	}
+		expense := finance.Group("/expense")
+		{
+			expense.POST("/create", middleware.AuthMiddleware([]string{}, userClient), handlers.CreateExpense)
+			expense.DELETE("/delete/:id", middleware.AuthMiddleware([]string{}, userClient), handlers.DeleteExpense)
+			expense.GET("/get-all-information", middleware.AuthMiddleware([]string{}, userClient), handlers.GetAllInformation)
+			expense.GET("/get-chart-diagram", middleware.AuthMiddleware([]string{}, userClient), handlers.GetChartDiagram)
+		}
 
+	}
 }

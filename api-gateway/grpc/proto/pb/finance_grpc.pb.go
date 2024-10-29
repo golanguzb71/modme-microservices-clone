@@ -382,3 +382,223 @@ var CategoryService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "finance.proto",
 }
+
+const (
+	ExpenseService_CreateExpense_FullMethodName        = "/finance.ExpenseService/CreateExpense"
+	ExpenseService_DeleteExpense_FullMethodName        = "/finance.ExpenseService/DeleteExpense"
+	ExpenseService_GetAllExpense_FullMethodName        = "/finance.ExpenseService/GetAllExpense"
+	ExpenseService_GetAllExpenseDiagram_FullMethodName = "/finance.ExpenseService/GetAllExpenseDiagram"
+)
+
+// ExpenseServiceClient is the client API for ExpenseService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// expense service start
+type ExpenseServiceClient interface {
+	CreateExpense(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	DeleteExpense(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetAllExpense(ctx context.Context, in *GetAllExpenseRequest, opts ...grpc.CallOption) (*GetAllExpenseResponse, error)
+	GetAllExpenseDiagram(ctx context.Context, in *GetAllExpenseDiagramRequest, opts ...grpc.CallOption) (*GetAllExpenseDiagramResponse, error)
+}
+
+type expenseServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewExpenseServiceClient(cc grpc.ClientConnInterface) ExpenseServiceClient {
+	return &expenseServiceClient{cc}
+}
+
+func (c *expenseServiceClient) CreateExpense(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, ExpenseService_CreateExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *expenseServiceClient) DeleteExpense(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, ExpenseService_DeleteExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *expenseServiceClient) GetAllExpense(ctx context.Context, in *GetAllExpenseRequest, opts ...grpc.CallOption) (*GetAllExpenseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllExpenseResponse)
+	err := c.cc.Invoke(ctx, ExpenseService_GetAllExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *expenseServiceClient) GetAllExpenseDiagram(ctx context.Context, in *GetAllExpenseDiagramRequest, opts ...grpc.CallOption) (*GetAllExpenseDiagramResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllExpenseDiagramResponse)
+	err := c.cc.Invoke(ctx, ExpenseService_GetAllExpenseDiagram_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ExpenseServiceServer is the server API for ExpenseService service.
+// All implementations must embed UnimplementedExpenseServiceServer
+// for forward compatibility.
+//
+// expense service start
+type ExpenseServiceServer interface {
+	CreateExpense(context.Context, *CreateExpenseRequest) (*AbsResponse, error)
+	DeleteExpense(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
+	GetAllExpense(context.Context, *GetAllExpenseRequest) (*GetAllExpenseResponse, error)
+	GetAllExpenseDiagram(context.Context, *GetAllExpenseDiagramRequest) (*GetAllExpenseDiagramResponse, error)
+	mustEmbedUnimplementedExpenseServiceServer()
+}
+
+// UnimplementedExpenseServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedExpenseServiceServer struct{}
+
+func (UnimplementedExpenseServiceServer) CreateExpense(context.Context, *CreateExpenseRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateExpense not implemented")
+}
+func (UnimplementedExpenseServiceServer) DeleteExpense(context.Context, *DeleteAbsRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteExpense not implemented")
+}
+func (UnimplementedExpenseServiceServer) GetAllExpense(context.Context, *GetAllExpenseRequest) (*GetAllExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllExpense not implemented")
+}
+func (UnimplementedExpenseServiceServer) GetAllExpenseDiagram(context.Context, *GetAllExpenseDiagramRequest) (*GetAllExpenseDiagramResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllExpenseDiagram not implemented")
+}
+func (UnimplementedExpenseServiceServer) mustEmbedUnimplementedExpenseServiceServer() {}
+func (UnimplementedExpenseServiceServer) testEmbeddedByValue()                        {}
+
+// UnsafeExpenseServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ExpenseServiceServer will
+// result in compilation errors.
+type UnsafeExpenseServiceServer interface {
+	mustEmbedUnimplementedExpenseServiceServer()
+}
+
+func RegisterExpenseServiceServer(s grpc.ServiceRegistrar, srv ExpenseServiceServer) {
+	// If the following call pancis, it indicates UnimplementedExpenseServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&ExpenseService_ServiceDesc, srv)
+}
+
+func _ExpenseService_CreateExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateExpenseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExpenseServiceServer).CreateExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExpenseService_CreateExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExpenseServiceServer).CreateExpense(ctx, req.(*CreateExpenseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExpenseService_DeleteExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExpenseServiceServer).DeleteExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExpenseService_DeleteExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExpenseServiceServer).DeleteExpense(ctx, req.(*DeleteAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExpenseService_GetAllExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllExpenseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExpenseServiceServer).GetAllExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExpenseService_GetAllExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExpenseServiceServer).GetAllExpense(ctx, req.(*GetAllExpenseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ExpenseService_GetAllExpenseDiagram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllExpenseDiagramRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ExpenseServiceServer).GetAllExpenseDiagram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ExpenseService_GetAllExpenseDiagram_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ExpenseServiceServer).GetAllExpenseDiagram(ctx, req.(*GetAllExpenseDiagramRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ExpenseService_ServiceDesc is the grpc.ServiceDesc for ExpenseService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ExpenseService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "finance.ExpenseService",
+	HandlerType: (*ExpenseServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateExpense",
+			Handler:    _ExpenseService_CreateExpense_Handler,
+		},
+		{
+			MethodName: "DeleteExpense",
+			Handler:    _ExpenseService_DeleteExpense_Handler,
+		},
+		{
+			MethodName: "GetAllExpense",
+			Handler:    _ExpenseService_GetAllExpense_Handler,
+		},
+		{
+			MethodName: "GetAllExpenseDiagram",
+			Handler:    _ExpenseService_GetAllExpenseDiagram_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "finance.proto",
+}

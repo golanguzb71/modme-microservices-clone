@@ -157,3 +157,48 @@ func GetAllCategories(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+func CreateExpense(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateExpenseRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	req.CreatedById = user.Id
+	resp, err := financeClient.CreateExpense(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+func DeleteExpense(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	id := ctx.Param("id")
+	resp, err := financeClient.DeleteExpense(ctxR, id)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+func GetAllInformation(ctx *gin.Context) {
+
+}
+
+func GetChartDiagram(ctx *gin.Context) {
+
+}

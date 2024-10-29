@@ -39,3 +39,25 @@ func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb
 		IsOk:  true,
 	}, nil
 }
+
+func (as *AuthService) ValidateToken(ctx context.Context, req *pb.ValidateTokenRequest) (*pb.GetUserByIdResponse, error) {
+	claims, err := security.ValidateToken(req.Token)
+	if err != nil {
+		return nil, err
+	}
+	user, _, err := as.userRepo.GetUserByPhoneNumber(claims.Username)
+	if err != nil {
+		return nil, err
+	}
+	var checker = false
+	for _, role := range req.RequiredRoles {
+		if user.Role == role {
+			checker = true
+			break
+		}
+	}
+	if !checker {
+		return nil, errors.New("this user not valid for this endpoint")
+	}
+	return user, nil
+}

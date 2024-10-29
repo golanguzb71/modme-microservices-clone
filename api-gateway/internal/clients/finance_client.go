@@ -10,6 +10,7 @@ import (
 type FinanceClient struct {
 	discountClient pb.DiscountServiceClient
 	categoryClient pb.CategoryServiceClient
+	expenseClient  pb.ExpenseServiceClient
 }
 
 func (fc *FinanceClient) GetDiscountsInformationByGroupId(ctx context.Context, groupId string) (*pb.GetInformationDiscountResponse, error) {
@@ -36,6 +37,14 @@ func (fc *FinanceClient) GetAllCategories(ctx context.Context) (*pb.GetAllCatego
 	return fc.categoryClient.GetAllCategory(ctx, &emptypb.Empty{})
 }
 
+func (fc *FinanceClient) CreateExpense(ctx context.Context, req *pb.CreateExpenseRequest) (*pb.AbsResponse, error) {
+	return fc.expenseClient.CreateExpense(ctx, req)
+}
+
+func (fc *FinanceClient) DeleteExpense(ctx context.Context, id string) (*pb.AbsResponse, error) {
+	return fc.expenseClient.DeleteExpense(ctx, &pb.DeleteAbsRequest{Id: id})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -43,5 +52,6 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	}
 	discountClient := pb.NewDiscountServiceClient(conn)
 	categoryClient := pb.NewCategoryServiceClient(conn)
-	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient}, nil
+	expenseClient := pb.NewExpenseServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient}, nil
 }
