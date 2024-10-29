@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"context"
 	"database/sql"
 	"finance-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strconv"
 )
 
 type ExpenseRepository struct {
@@ -44,55 +44,100 @@ func (r *ExpenseRepository) DeleteExpense(id string) error {
 func (r *ExpenseRepository) GetExpenseDiagram(from, to string) (*pb.GetAllExpenseDiagramResponse, error) {
 	return nil, nil
 }
-func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, to string, idType string, id string) (*pb.GetAllExpenseResponse, error) {
+func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, to string, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
 	offset := (page - 1) * size
-	baseQuery := `SELECT expense.id, given_date, category.name as category_name, user_id, expense_type, sum, created_by 
-                  FROM expense
-                  LEFT JOIN category ON expense.category_id = category.id
-                  WHERE given_date BETWEEN $1 AND $2`
-	params := []interface{}{from, to}
-	if idType == "USER" {
-		baseQuery += ` AND user_id = $3`
-		params = append(params, id)
-	} else if idType == "CATEGORY" {
-		baseQuery += ` AND category_id = $3`
-		params = append(params, id)
-	}
-	baseQuery += ` ORDER BY given_date DESC LIMIT $4 OFFSET $5`
-	params = append(params, size, offset)
 
-	rows, err := r.db.QueryContext(context.Background(), baseQuery, params...)
+	// Start building the base query
+	baseQuery := "SELECT expense.id, given_date, COALESCE(category.name, '') as category_name, COALESCE(CAST(user_id AS TEXT), '') as user_id, expense_type, sum, created_by " +
+		"FROM expense " +
+		"LEFT JOIN category ON expense.category_id = category.id " +
+		"WHERE given_date BETWEEN '" + from + "' AND '" + to + "'"
+
+	// Add conditional filtering based on idType
+	if idType == "USER" {
+		baseQuery += " AND user_id = "
+		switch id := id.(type) {
+		case int:
+			baseQuery += strconv.Itoa(id)
+		case string:
+			baseQuery += "'" + id + "'"
+		default:
+			return nil, fmt.Errorf("unsupported id type: %T", id)
+		}
+	} else if idType == "CATEGORY" {
+		baseQuery += " AND category_id = "
+		switch id := id.(type) {
+		case int:
+			baseQuery += strconv.Itoa(id)
+		case string:
+			baseQuery += "'" + id + "'"
+		default:
+			return nil, fmt.Errorf("unsupported id type: %T", id)
+		}
+	}
+
+	// Append pagination
+	baseQuery += " ORDER BY given_date DESC LIMIT " + strconv.Itoa(int(size)) + " OFFSET " + strconv.Itoa(int(offset))
+
+	// Execute the query
+	rows, err := r.db.Query(baseQuery)
 	if err != nil {
 		return nil, fmt.Errorf("error querying expenses: %v", err)
 	}
 	defer rows.Close()
 
+	// Collect the expenses
 	var expenses []*pb.GetAllExpenseAbs
 	for rows.Next() {
 		var expense pb.GetAllExpenseAbs
 		var givenDate string
-		if err := rows.Scan(&expense.Id, &givenDate, &expense.CategoryName, &expense.UserId, &expense.ExpenseType, &expense.Sum, &expense.CreatedById); err != nil {
+		var userID sql.NullString
+		if err := rows.Scan(&expense.Id, &givenDate, &expense.CategoryName, &userID, &expense.ExpenseType, &expense.Sum, &expense.CreatedById); err != nil {
 			return nil, fmt.Errorf("error scanning expense row: %v", err)
 		}
 		expense.GivenDate = givenDate
+		if userID.Valid {
+			expense.UserId = userID.String
+		}
 		expenses = append(expenses, &expense)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating expense rows: %v", err)
 	}
+
+	// Count total entries for pagination
 	var totalCount int32
-	countQuery := `SELECT COUNT(*) FROM expense WHERE given_date BETWEEN $1 AND $2`
+	countQuery := "SELECT COUNT(*) FROM expense WHERE given_date BETWEEN '" + from + "' AND '" + to + "'"
 	if idType == "USER" {
-		countQuery += ` AND user_id = $3`
+		countQuery += " AND user_id = "
+		switch id := id.(type) {
+		case int:
+			countQuery += strconv.Itoa(id)
+		case string:
+			countQuery += "'" + id + "'"
+		default:
+			return nil, fmt.Errorf("unsupported id type: %T", id)
+		}
 	} else if idType == "CATEGORY" {
-		countQuery += ` AND category_id = $3`
+		countQuery += " AND category_id = "
+		switch id := id.(type) {
+		case int:
+			countQuery += strconv.Itoa(id)
+		case string:
+			countQuery += "'" + id + "'"
+		default:
+			return nil, fmt.Errorf("unsupported id type: %T", id)
+		}
 	}
-	err = r.db.QueryRowContext(context.Background(), countQuery, params[:3]...).Scan(&totalCount)
+	err = r.db.QueryRow(countQuery).Scan(&totalCount)
 	if err != nil {
 		return nil, fmt.Errorf("error counting expenses: %v", err)
 	}
+
+	// Calculate total pages based on size and totalCount
 	totalPageCount := (totalCount + size - 1) / size
 
+	// Construct response
 	response := &pb.GetAllExpenseResponse{
 		TotalPageCount: totalPageCount,
 		Expenses:       expenses,
