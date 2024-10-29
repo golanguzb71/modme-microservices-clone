@@ -87,3 +87,7 @@ func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.Transfe
 func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
 	return s.repo.ChangeConditionStudent(req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate)
 }
+
+func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetStudentsByGroupIdRequest) (*pb.GetStudentsByGroupIdResponse, error) {
+	return s.repo.GetStudentsByGroupId(req.GroupId, req.WithOutdated)
+}

@@ -12,7 +12,7 @@ import (
 // GetAllDiscountInformationByGroup godoc
 // @Summary ADMIN , CEO
 // @Description Retrieves all discount information for a specific group ID
-// @Tags Discounts
+// @Tags discount
 // @Accept json
 // @Produce json
 // @Param groupId path string true "Group ID"
@@ -35,7 +35,7 @@ func GetAllDiscountInformationByGroup(ctx *gin.Context) {
 // CreateDiscount godoc
 // @Summary CEO , ADMIN
 // @Description Creates a new discount for a specified group and student
-// @Tags Discounts
+// @Tags discount
 // @Accept json
 // @Produce json
 // @Param request body pb.AbsDiscountRequest true "Discount Request"
@@ -64,7 +64,7 @@ func CreateDiscount(ctx *gin.Context) {
 // DeleteDiscount godoc
 // @Summary ADMIN , CEO
 // @Description Deletes a discount for a specific group and student
-// @Tags Discounts
+// @Tags discount
 // @Accept json
 // @Produce json
 // @Param groupId query string true "Group ID"
@@ -83,5 +83,77 @@ func DeleteDiscount(ctx *gin.Context) {
 		return
 	}
 	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// CreateCategory godoc
+// @Summary      ADMIN , CEO
+// @Description  Creates a new category with the provided name and description
+// @Tags         category
+// @Accept       json
+// @Produce      json
+// @Param        category  body      pb.CreateCategoryRequest  true  "Category Data"
+// @Success      200       {object}  utils.AbsResponse
+// @Failure      400       {object}  utils.AbsResponse
+// @Failure      500       {object}  utils.AbsResponse
+// @Router       /api/finance/category/create [post]
+func CreateCategory(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	req := pb.CreateCategoryRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := financeClient.CreateCategory(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// DeleteCategory godoc
+// @Summary      ADMIN , CEO
+// @Description  Deletes a category by its ID
+// @Tags         category
+// @Produce      json
+// @Param        categoryId  path      string  true  "Category ID"
+// @Success      200         {object}  utils.AbsResponse
+// @Failure      400         {object}  utils.AbsResponse
+// @Failure      500         {object}  utils.AbsResponse
+// @Router       /api/finance/category/delete/{categoryId} [delete]
+func DeleteCategory(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	categoryId := ctx.Param("categoryId")
+	resp, err := financeClient.DeleteCategory(ctxR, categoryId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// GetAllCategories godoc
+// @Summary      ADMIN , CEO
+// @Description  Retrieves all categories
+// @Tags         category
+// @Produce      json
+// @Success      200  {object}  pb.GetAllCategoryRequest
+// @Failure      500  {object}  utils.AbsResponse
+// @Router       /api/finance/category/get-all [get]
+func GetAllCategories(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := financeClient.GetAllCategories(ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
 	return
 }

@@ -482,6 +482,119 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/category/create": {
+            "post": {
+                "description": "Creates a new category with the provided name and description",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "description": "Category Data",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CreateCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/category/delete/{categoryId}": {
+            "delete": {
+                "description": "Deletes a category by its ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/category/get-all": {
+            "get": {
+                "description": "Retrieves all categories",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "ADMIN , CEO",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllCategoryRequest"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/discount/create": {
             "post": {
                 "description": "Creates a new discount for a specified group and student",
@@ -492,7 +605,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Discounts"
+                    "discount"
                 ],
                 "summary": "CEO , ADMIN",
                 "parameters": [
@@ -538,7 +651,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Discounts"
+                    "discount"
                 ],
                 "summary": "ADMIN , CEO",
                 "parameters": [
@@ -583,7 +696,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Discounts"
+                    "discount"
                 ],
                 "summary": "ADMIN , CEO",
                 "parameters": [
@@ -2738,6 +2851,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "pb.AbsCategory": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsCourse": {
             "type": "object",
             "properties": {
@@ -3052,6 +3179,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CreateCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.CreateCourseRequest": {
             "type": "object",
             "properties": {
@@ -3263,6 +3401,17 @@ const docTemplate = `{
                 },
                 "till_date": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.GetAllCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsCategory"
+                    }
                 }
             }
         },

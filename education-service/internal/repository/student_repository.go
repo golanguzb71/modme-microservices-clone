@@ -522,3 +522,37 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		Message: "Condition changed successfully",
 	}, nil
 }
+
+func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bool) (*pb.GetStudentsByGroupIdResponse, error) {
+	var students []*pb.AbsStudent
+	query := `
+        SELECT s.id, s.name, s.phone
+        FROM students s
+        JOIN group_students gs ON s.id = gs.student_id
+        WHERE gs.group_id = $1
+    `
+
+	if !withOutdated {
+		query += " AND gs.condition = 'ACTIVE'"
+	}
+
+	rows, err := r.db.Query(query, groupId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %v", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var student pb.AbsStudent
+		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber); err != nil {
+			return nil, fmt.Errorf("failed to scan row: %v", err)
+		}
+		students = append(students, &student)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating over rows: %v", err)
+	}
+
+	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
+}

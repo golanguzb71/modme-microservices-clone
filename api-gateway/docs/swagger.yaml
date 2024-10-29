@@ -1,4 +1,13 @@
 definitions:
+  pb.AbsCategory:
+    properties:
+      desc:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
   pb.AbsCourse:
     properties:
       courseDuration:
@@ -203,6 +212,13 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.CreateCategoryRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+    type: object
   pb.CreateCourseRequest:
     properties:
       courseDuration:
@@ -341,6 +357,13 @@ definitions:
         type: string
       till_date:
         type: string
+    type: object
+  pb.GetAllCategoryRequest:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/pb.AbsCategory'
+        type: array
     type: object
   pb.GetAllEmployeeResponse:
     properties:
@@ -1152,6 +1175,80 @@ paths:
       summary: ADMIN
       tags:
       - expectations
+  /api/finance/category/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new category with the provided name and description
+      parameters:
+      - description: Category Data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - category
+  /api/finance/category/delete/{categoryId}:
+    delete:
+      description: Deletes a category by its ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: categoryId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - category
+  /api/finance/category/get-all:
+    get:
+      description: Retrieves all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllCategoryRequest'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: ADMIN , CEO
+      tags:
+      - category
   /api/finance/discount/create:
     post:
       consumes:
@@ -1181,7 +1278,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       summary: CEO , ADMIN
       tags:
-      - Discounts
+      - discount
   /api/finance/discount/delete:
     delete:
       consumes:
@@ -1211,7 +1308,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       summary: ADMIN , CEO
       tags:
-      - Discounts
+      - discount
   /api/finance/discount/get-all-by-group/{groupId}:
     get:
       consumes:
@@ -1236,7 +1333,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       summary: ADMIN , CEO
       tags:
-      - Discounts
+      - discount
   /api/group/create:
     post:
       consumes:

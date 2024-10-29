@@ -4,6 +4,7 @@ package finance;
 
 option go_package = "grpc/proto/pb";
 import "common.proto";
+import "google/protobuf/empty.proto";
 
 // discount service start
 service DiscountService{
@@ -30,3 +31,25 @@ message AbsStudentDiscount{
   string discount = 4;
   string cause = 5;
 }
+// discount service start
+
+// category service start
+service CategoryService{
+  rpc CreateCategory(CreateCategoryRequest) returns (common.AbsResponse);
+  rpc DeleteCategory(common.DeleteAbsRequest) returns (common.AbsResponse);
+  rpc GetAllCategory(google.protobuf.Empty) returns(GetAllCategoryRequest);
+}
+
+message CreateCategoryRequest{
+  string name = 1;
+  string desc = 2;
+}
+message GetAllCategoryRequest{
+  repeated AbsCategory categories = 1;
+}
+message AbsCategory{
+  string id = 1;
+  string name = 2;
+  string desc = 3;
+}
+// category service end
