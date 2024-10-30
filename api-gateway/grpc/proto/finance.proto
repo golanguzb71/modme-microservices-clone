@@ -5,6 +5,7 @@ package finance;
 option go_package = "grpc/proto/pb";
 import "common.proto";
 import "google/protobuf/empty.proto";
+import "user.proto";
 
 // discount service start
 service DiscountService{
@@ -86,11 +87,13 @@ message GetAllExpenseResponse{
 message GetAllExpenseAbs{
   string id = 1;
   string givenDate = 2;
-  string categoryName = 3;
-  string userId = 4;
+  AbsCategory category = 3;
+  user.GetUserByIdResponse user = 4;
   string expenseType = 5;
   string sum = 6;
-  string createdById = 7;
+  user.GetUserByIdResponse creator = 7;
+  string paymentType = 8;
+  string createdAt = 9;
 }
 message CreateExpenseRequest{
   string title = 1;

@@ -395,20 +395,24 @@ definitions:
     type: object
   pb.GetAllExpenseAbs:
     properties:
-      categoryName:
+      category:
+        $ref: '#/definitions/pb.AbsCategory'
+      createdAt:
         type: string
-      createdById:
-        type: string
+      creator:
+        $ref: '#/definitions/pb.GetUserByIdResponse'
       expenseType:
         type: string
       givenDate:
         type: string
       id:
         type: string
+      paymentType:
+        type: string
       sum:
         type: string
-      userId:
-        type: string
+      user:
+        $ref: '#/definitions/pb.GetUserByIdResponse'
     type: object
   pb.GetAllExpenseResponse:
     properties:
@@ -1504,7 +1508,7 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
       security:
       - Bearer: []
-      summary: Retrieve expenses
+      summary: ADMIN , CEO
       tags:
       - expense
   /api/group/create:

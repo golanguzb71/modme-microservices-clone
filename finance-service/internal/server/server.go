@@ -27,11 +27,15 @@ func RunServer() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+	userClient, err := clients.NewUserClient(cfg.Grpc.UserService.Address)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 	discountRepo := repository.NewDiscountRepository(db, educationClient)
 	discountService := service.NewDiscountService(discountRepo)
 	categoryRepo := repository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepo)
-	expenseRepo := repository.NewExpenseRepository(db)
+	expenseRepo := repository.NewExpenseRepository(db, userClient)
 	expenseService := service.NewExpenseService(expenseRepo)
 	list, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {

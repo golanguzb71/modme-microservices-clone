@@ -224,7 +224,7 @@ func DeleteExpense(ctx *gin.Context) {
 }
 
 // GetAllInformation godoc
-// @Summary      Retrieve expenses
+// @Summary      ADMIN , CEO
 // @Description  Retrieves expenses with optional filters, pagination, and date range.
 // @Tags         expense
 // @Produce      json

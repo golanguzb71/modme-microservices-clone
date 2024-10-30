@@ -853,7 +853,7 @@ const docTemplate = `{
                 "tags": [
                     "expense"
                 ],
-                "summary": "Retrieve expenses",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
@@ -3758,11 +3758,14 @@ const docTemplate = `{
         "pb.GetAllExpenseAbs": {
             "type": "object",
             "properties": {
-                "categoryName": {
+                "category": {
+                    "$ref": "#/definitions/pb.AbsCategory"
+                },
+                "createdAt": {
                     "type": "string"
                 },
-                "createdById": {
-                    "type": "string"
+                "creator": {
+                    "$ref": "#/definitions/pb.GetUserByIdResponse"
                 },
                 "expenseType": {
                     "type": "string"
@@ -3773,11 +3776,14 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "paymentType": {
+                    "type": "string"
+                },
                 "sum": {
                     "type": "string"
                 },
-                "userId": {
-                    "type": "string"
+                "user": {
+                    "$ref": "#/definitions/pb.GetUserByIdResponse"
                 }
             }
         },
