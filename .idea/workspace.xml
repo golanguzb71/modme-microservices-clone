@@ -6,24 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/user_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/user.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/user_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/user_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/education_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/education_service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/user_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/user_service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/education_routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/routes/user_routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/routes/user_routes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/expense_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/expense_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/internal/repository/user_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/repository/user_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/internal/service/user_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/internal/service/user_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/proto/pb/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/proto/pb/user.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/proto/pb/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/proto/pb/user_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/proto/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/proto/user.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/middleware/middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/middleware/middleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/service/attendance_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/attendance_service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +90,7 @@
       <command value="go run cmd/main.go" />
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build finance-service/cmd">
+  <component name="RunManager" selected="Go Build.go build education-service/cmd">
     <configuration name="go build api-gateway/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="modme" />
       <working_directory value="$PROJECT_DIR$/api-gateway" />
@@ -154,9 +138,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build education-service/cmd" />
         <item itemvalue="Go Build.go build finance-service/cmd" />
         <item itemvalue="Go Build.go build api-gateway/cmd" />
-        <item itemvalue="Go Build.go build education-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
         <item itemvalue="Go Build.go build lid-service/cmd" />
       </list>

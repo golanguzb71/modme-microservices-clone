@@ -39,15 +39,12 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	if req.GroupId == "" || req.StudentId == "" || req.TeacherId == "" {
 		return nil, errors.New("group ID, student ID, and teacher ID are required")
 	}
-
 	attendDate, err := time.Parse("2006-01-02", req.AttendDate)
 	if err != nil {
 		return nil, errors.New("invalid attendance date format")
 	}
-
 	now := time.Now()
 	today := now.Truncate(24 * time.Hour)
-
 	if attendDate.After(today) {
 		hasTransferredLesson := s.attendanceRepo.IsHaveTransferredLesson(req.GroupId)
 		if hasTransferredLesson {
@@ -78,7 +75,6 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 		}
 		return nil, errors.New("attendance date cannot be in the future")
 	}
-
 	validDay, err := s.attendanceRepo.IsValidGroupDay(ctx, req.GroupId, today)
 	if err != nil {
 		return nil, err
@@ -86,13 +82,20 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	if !validDay {
 		return nil, errors.New("attendance cannot be created today; group is not active")
 	}
-
-	err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
-	if err != nil {
-		return nil, err
+	if req.Status == -1 {
+		err = s.attendanceRepo.DeleteAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate)
+		if err != nil {
+			return nil, err
+		}
+		return &pb.AbsResponse{
+			Status:  200,
+			Message: "Attendance successfully deleted",
+		}, nil
+	} else {
+		err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
+		return &pb.AbsResponse{
+			Status:  200,
+			Message: "Attendance successfully created",
+		}, nil
 	}
-	return &pb.AbsResponse{
-		Status:  200,
-		Message: "Attendance successfully created",
-	}, nil
 }
