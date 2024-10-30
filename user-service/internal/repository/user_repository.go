@@ -165,3 +165,26 @@ func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserBy
 	}
 	return &res, password, nil
 }
+
+func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, error) {
+	query := `SELECT id, phone_number, role, full_name, birth_date, gender, is_deleted, created_at
+              FROM users WHERE is_deleted = $1`
+	rows, err := r.db.Query(query, isArchived)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var response pb.GetAllStuffResponse
+	for rows.Next() {
+		var user pb.GetUserByIdResponse
+		err = rows.Scan(&user.Id, &user.PhoneNumber, &user.Role, &user.Name, &user.BirthDate, &user.Gender, &user.IsDeleted, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		response.Stuff = append(response.Stuff, &user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return &response, nil
+}

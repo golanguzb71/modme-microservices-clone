@@ -39,7 +39,6 @@ func RunServer() {
 		log.Println("Connected to education service.")
 		break
 	}
-
 	//}()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
 

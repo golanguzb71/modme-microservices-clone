@@ -46,14 +46,11 @@ func (r *ExpenseRepository) GetExpenseDiagram(from, to string) (*pb.GetAllExpens
 }
 func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, to string, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
 	offset := (page - 1) * size
-
-	// Start building the base query
 	baseQuery := "SELECT expense.id, given_date, COALESCE(category.name, '') as category_name, COALESCE(CAST(user_id AS TEXT), '') as user_id, expense_type, sum, created_by " +
 		"FROM expense " +
 		"LEFT JOIN category ON expense.category_id = category.id " +
 		"WHERE given_date BETWEEN '" + from + "' AND '" + to + "'"
 
-	// Add conditional filtering based on idType
 	if idType == "USER" {
 		baseQuery += " AND user_id = "
 		switch id := id.(type) {
@@ -75,18 +72,12 @@ func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, t
 			return nil, fmt.Errorf("unsupported id type: %T", id)
 		}
 	}
-
-	// Append pagination
 	baseQuery += " ORDER BY given_date DESC LIMIT " + strconv.Itoa(int(size)) + " OFFSET " + strconv.Itoa(int(offset))
-
-	// Execute the query
 	rows, err := r.db.Query(baseQuery)
 	if err != nil {
 		return nil, fmt.Errorf("error querying expenses: %v", err)
 	}
 	defer rows.Close()
-
-	// Collect the expenses
 	var expenses []*pb.GetAllExpenseAbs
 	for rows.Next() {
 		var expense pb.GetAllExpenseAbs
@@ -105,7 +96,6 @@ func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, t
 		return nil, fmt.Errorf("error iterating expense rows: %v", err)
 	}
 
-	// Count total entries for pagination
 	var totalCount int32
 	countQuery := "SELECT COUNT(*) FROM expense WHERE given_date BETWEEN '" + from + "' AND '" + to + "'"
 	if idType == "USER" {
@@ -134,10 +124,8 @@ func (r *ExpenseRepository) GetAllExpense(page int32, size int32, from string, t
 		return nil, fmt.Errorf("error counting expenses: %v", err)
 	}
 
-	// Calculate total pages based on size and totalCount
 	totalPageCount := (totalCount + size - 1) / size
 
-	// Construct response
 	response := &pb.GetAllExpenseResponse{
 		TotalPageCount: totalPageCount,
 		Expenses:       expenses,

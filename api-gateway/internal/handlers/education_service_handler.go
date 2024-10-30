@@ -804,7 +804,7 @@ func TransferLessonDate(ctx *gin.Context) {
 }
 
 // ChangeConditionStudent changes the condition of a student.
-// @Summary Changes the condition of a student
+// @Summary ADMIN, CEO
 // @Description Changes the condition of a student based on provided details
 // @Tags students
 // @Accept json
@@ -813,6 +813,7 @@ func TransferLessonDate(ctx *gin.Context) {
 // @Success 200 {object} utils.AbsResponse "Status and message"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
 // @Router /api/student/change-condition [put]
 func ChangeConditionStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)

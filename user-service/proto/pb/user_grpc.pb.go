@@ -25,6 +25,7 @@ const (
 	UserService_UpdateUserById_FullMethodName = "/user.UserService/UpdateUserById"
 	UserService_DeleteUserById_FullMethodName = "/user.UserService/DeleteUserById"
 	UserService_GetAllEmployee_FullMethodName = "/user.UserService/GetAllEmployee"
+	UserService_GetAllStuff_FullMethodName    = "/user.UserService/GetAllStuff"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -37,6 +38,7 @@ type UserServiceClient interface {
 	UpdateUserById(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteUserById(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetAllEmployee(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllEmployeeResponse, error)
+	GetAllStuff(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllStuffResponse, error)
 }
 
 type userServiceClient struct {
@@ -107,6 +109,16 @@ func (c *userServiceClient) GetAllEmployee(ctx context.Context, in *GetAllEmploy
 	return out, nil
 }
 
+func (c *userServiceClient) GetAllStuff(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllStuffResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllStuffResponse)
+	err := c.cc.Invoke(ctx, UserService_GetAllStuff_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -117,6 +129,7 @@ type UserServiceServer interface {
 	UpdateUserById(context.Context, *UpdateUserRequest) (*AbsResponse, error)
 	DeleteUserById(context.Context, *UserAbsRequest) (*AbsResponse, error)
 	GetAllEmployee(context.Context, *GetAllEmployeeRequest) (*GetAllEmployeeResponse, error)
+	GetAllStuff(context.Context, *GetAllEmployeeRequest) (*GetAllStuffResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -144,6 +157,9 @@ func (UnimplementedUserServiceServer) DeleteUserById(context.Context, *UserAbsRe
 }
 func (UnimplementedUserServiceServer) GetAllEmployee(context.Context, *GetAllEmployeeRequest) (*GetAllEmployeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllEmployee not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllStuff(context.Context, *GetAllEmployeeRequest) (*GetAllStuffResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllStuff not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -274,6 +290,24 @@ func _UserService_GetAllEmployee_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetAllStuff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllEmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllStuff(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetAllStuff_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllStuff(ctx, req.(*GetAllEmployeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +338,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllEmployee",
 			Handler:    _UserService_GetAllEmployee_Handler,
+		},
+		{
+			MethodName: "GetAllStuff",
+			Handler:    _UserService_GetAllStuff_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

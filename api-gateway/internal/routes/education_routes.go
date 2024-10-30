@@ -32,7 +32,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		group.GET("/get-by-id/:id", middleware.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetGroupById)
 		group.GET("/get-by-course/:courseId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetGroupByCourseId)
 		group.POST("/transfer-date", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.TransferLessonDate)
-		group.GET("/get-by-teacher/:teacherId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetInformationByTeacher)
+		group.GET("/get-by-teacher/:teacherId", middleware.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetInformationByTeacher)
 	}
 	attendance := api.Group("/attendance")
 	{

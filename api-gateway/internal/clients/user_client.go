@@ -65,3 +65,7 @@ func (c *UserClient) ValidateToken(token string, requiredRoles []string) (*pb.Ge
 	}
 	return resp, err
 }
+
+func (c *UserClient) GetAllStuff(ctx context.Context, isArchived bool) (*pb.GetAllStuffResponse, error) {
+	return c.client.GetAllStuff(ctx, &pb.GetAllEmployeeRequest{IsArchived: isArchived})
+}

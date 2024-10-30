@@ -18,5 +18,6 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		user.DELETE("/delete/:userId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteUserById)
 		user.GET("/get-all-employee/:isArchived", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllEmployee)
 		user.GET("/get-my-profile", middleware.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetMyInformation)
+		user.GET("/get-all-staff/:isArchived", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStaff)
 	}
 }

@@ -2268,6 +2268,11 @@
         },
         "/api/student/change-condition": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Changes the condition of a student based on provided details",
                 "consumes": [
                     "application/json"
@@ -2278,7 +2283,7 @@
                 "tags": [
                     "students"
                 ],
-                "summary": "Changes the condition of a student",
+                "summary": "ADMIN, CEO",
                 "parameters": [
                     {
                         "description": "Change Condition Student Request",
@@ -2867,6 +2872,99 @@
                     },
                     "408": {
                         "description": "Request timeout",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-all-staff/{isArchived}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve a list of all staff members, filtered by their archived status.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Boolean to filter archived or active staff; true for archived, false for active",
+                        "name": "isArchived",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of staff members based on archived status",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/pb.GetAllStuffResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Invalid 'isArchived' parameter",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error during data retrieval",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/get-my-profile": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve the information of the authenticated user. Admin and CEO roles receive basic user info, while Teachers get additional group information.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN , CEO , TEACHER",
+                "responses": {
+                    "200": {
+                        "description": "User information with optional groups for Teachers",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing authentication",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error while retrieving teacher's group information",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -3698,6 +3796,17 @@
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.GetAllStuffResponse": {
+            "type": "object",
+            "properties": {
+                "stuff": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.GetUserByIdResponse"
+                    }
                 }
             }
         },

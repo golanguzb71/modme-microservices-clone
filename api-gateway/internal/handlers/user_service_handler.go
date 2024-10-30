@@ -200,6 +200,70 @@ func Login(ctx *gin.Context) {
 	return
 }
 
+// GetMyInformation godoc
+// @Summary ADMIN , CEO , TEACHER
+// @Description Retrieve the information of the authenticated user. Admin and CEO roles receive basic user info, while Teachers get additional group information.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{} "User information with optional groups for Teachers"
+// @Failure 401 {object} utils.AbsResponse "Unauthorized - Invalid or missing authentication"
+// @Failure 500 {object} utils.AbsResponse "Internal server error while retrieving teacher's group information"
+// @Security Bearer
+// @Router /api/user/get-my-profile [get]
 func GetMyInformation(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	if user.Role == "ADMIN" || user.Role == "CEO" {
+		ctx.JSON(http.StatusOK, user)
+		return
+	}
+	if user.Role == "TEACHER" {
+		groups, err := educationClient.GetInformationByTeacher(ctxR, user.Id, false)
+		if err != nil {
+			utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+			return
+		}
+		response := map[string]interface{}{
+			"user_info": user,
+			"groups":    groups,
+		}
+		ctx.JSON(http.StatusOK, response)
+		return
+	}
 
+	utils.RespondError(ctx, http.StatusUnauthorized, "aborted: required role ADMIN, CEO, or TEACHER")
+}
+
+// GetAllStaff godoc
+// @Summary ADMIN , CEO
+// @Description Retrieve a list of all staff members, filtered by their archived status.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param isArchived path boolean true "Boolean to filter archived or active staff; true for archived, false for active"
+// @Success 200 {array} pb.GetAllStuffResponse "List of staff members based on archived status"
+// @Failure 400 {object} utils.AbsResponse "Bad request - Invalid 'isArchived' parameter"
+// @Failure 500 {object} utils.AbsResponse "Internal server error during data retrieval"
+// @Security Bearer
+// @Router /api/user/get-all-staff/{isArchived} [get]
+func GetAllStaff(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	isArchived, err := strconv.ParseBool(ctx.Param("isArchived"))
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := userClient.GetAllStuff(ctxR, isArchived)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
 }

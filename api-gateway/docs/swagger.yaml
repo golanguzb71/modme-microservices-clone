@@ -428,6 +428,13 @@ definitions:
       totalCount:
         type: integer
     type: object
+  pb.GetAllStuffResponse:
+    properties:
+      stuff:
+        items:
+          $ref: '#/definitions/pb.GetUserByIdResponse'
+        type: array
+    type: object
   pb.GetAttendanceRequest:
     properties:
       from:
@@ -2385,7 +2392,9 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
-      summary: Changes the condition of a student
+      security:
+      - Bearer: []
+      summary: ADMIN, CEO
       tags:
       - students
   /api/student/create:
@@ -2739,6 +2748,68 @@ paths:
       security:
       - Bearer: []
       summary: ADMIN , CEO
+      tags:
+      - user
+  /api/user/get-all-staff/{isArchived}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all staff members, filtered by their archived
+        status.
+      parameters:
+      - description: Boolean to filter archived or active staff; true for archived,
+          false for active
+        in: path
+        name: isArchived
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of staff members based on archived status
+          schema:
+            items:
+              $ref: '#/definitions/pb.GetAllStuffResponse'
+            type: array
+        "400":
+          description: Bad request - Invalid 'isArchived' parameter
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error during data retrieval
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - user
+  /api/user/get-my-profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the information of the authenticated user. Admin and CEO
+        roles receive basic user info, while Teachers get additional group information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User information with optional groups for Teachers
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized - Invalid or missing authentication
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error while retrieving teacher's group information
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO , TEACHER
       tags:
       - user
   /api/user/get-teachers/{isDeleted}:

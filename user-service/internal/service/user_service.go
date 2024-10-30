@@ -40,3 +40,7 @@ func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest
 func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllEmployeeResponse, error) {
 	return u.userRepo.GetAllEmployee(req.IsArchived)
 }
+
+func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllStuffResponse, error) {
+	return u.userRepo.GetAllStuff(req.IsArchived)
+}
