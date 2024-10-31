@@ -2395,6 +2395,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Flag to determine if money should be returned",
+                        "name": "returnMoney",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3194,11 +3201,20 @@ const docTemplate = `{
                 "discountPrice": {
                     "type": "string"
                 },
+                "endDate": {
+                    "type": "string"
+                },
                 "groupId": {
+                    "type": "string"
+                },
+                "startDate": {
                     "type": "string"
                 },
                 "studentId": {
                     "type": "string"
+                },
+                "withTeacher": {
+                    "type": "boolean"
                 }
             }
         },
@@ -3308,6 +3324,12 @@ const docTemplate = `{
                 "discount": {
                     "type": "string"
                 },
+                "endAt": {
+                    "type": "string"
+                },
+                "startAt": {
+                    "type": "string"
+                },
                 "studentId": {
                     "type": "string"
                 },
@@ -3316,6 +3338,9 @@ const docTemplate = `{
                 },
                 "studentPhoneNumber": {
                     "type": "string"
+                },
+                "withTeacher": {
+                    "type": "boolean"
                 }
             }
         },

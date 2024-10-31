@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"time"
 	"user-service/internal/clients"
 	"user-service/internal/utils"
@@ -31,7 +33,6 @@ func (r *UserRepository) ensureGroupClient() error {
 	}
 	return nil
 }
-
 func (r *UserRepository) CreateUser(gender bool, number string, birthDate string, name string, password string, role string) (*pb.AbsResponse, error) {
 	encodedPassword, err := utils.EncodePassword(password)
 	if err != nil {
@@ -116,6 +117,21 @@ func (r *UserRepository) UpdateUser(userId string, name string, gender bool, rol
 	return &pb.AbsResponse{Status: 200, Message: "User updated successfully"}, nil
 }
 func (r *UserRepository) DeleteUser(id string) (*pb.AbsResponse, error) {
+	var role string
+	err := r.db.QueryRow(`SELECT role FROM users where id=$1`, id).Scan(&role)
+	if err != nil {
+		return nil, status.Errorf(codes.Aborted, err.Error())
+	}
+	if role == "TEACHER" {
+		groupCount, err := r.groupClient.GetGroupsByTeacherId(id, false)
+		if err != nil {
+			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
+		} else if groupCount > 0 {
+			return nil, status.Errorf(codes.DataLoss, "Ushbu teacherga bog'langan active guruhlar mavjud iltimos avval guruhni arxivlang !!")
+		}
+	} else if role == "CEO" {
+		return nil, status.Errorf(codes.Canceled, "Tizimda CEO bo'lishi shart !!")
+	}
 	query := `
         UPDATE users 
         SET is_deleted = NOT is_deleted 
@@ -131,7 +147,7 @@ func (r *UserRepository) DeleteUser(id string) (*pb.AbsResponse, error) {
 	}
 
 	if rowsAffected == 0 {
-		return &pb.AbsResponse{Status: 404, Message: "User not found"}, nil
+		return nil, status.Errorf(codes.NotFound, "User not found")
 	}
 	return &pb.AbsResponse{Status: 200, Message: "User status toggled successfully"}, nil
 }

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: proxy.proto
+// source: user.proto
 
 package pb
 
@@ -345,7 +345,7 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proxy.proto",
+	Metadata: "user.proto",
 }
 
 const (
@@ -485,5 +485,5 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proxy.proto",
+	Metadata: "user.proto",
 }

@@ -39,8 +39,8 @@ func (s *StudentService) UpdateStudent(ctx context.Context, req *pb.UpdateStuden
 	}, nil
 }
 
-func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
-	if err := s.repo.DeleteStudent(req.Id); err != nil {
+func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteStudentRequest) (*pb.AbsResponse, error) {
+	if err := s.repo.DeleteStudent(req.StudentId, req.ReturnMoney); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{

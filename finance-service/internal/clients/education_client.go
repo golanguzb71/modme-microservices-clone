@@ -29,5 +29,5 @@ func (ec *EducationClient) GetStudentById(studentId string) (string, string, err
 }
 
 func (ec *EducationClient) GetStudentsByGroupId(groupId string) (*pb.GetStudentsByGroupIdResponse, error) {
-	return ec.studentClient.GetStudentsByGroupId(context.TODO(), &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: false})
+	return ec.studentClient.GetStudentsByGroupId(context.TODO(), &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: true})
 }

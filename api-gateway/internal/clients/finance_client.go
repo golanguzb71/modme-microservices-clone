@@ -58,6 +58,10 @@ func (fc *FinanceClient) GetAllInformation(ctx context.Context, id string, idTyp
 	})
 }
 
+func (fc *FinanceClient) GetHistoryDiscount(id string, ctx context.Context) {
+
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

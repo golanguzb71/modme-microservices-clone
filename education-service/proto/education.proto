@@ -236,7 +236,7 @@ service StudentService{
   rpc GetAllStudent(GetAllStudentRequest) returns(GetAllStudentResponse);
   rpc CreateStudent(CreateStudentRequest) returns(common.AbsResponse);
   rpc UpdateStudent(UpdateStudentRequest) returns(common.AbsResponse);
-  rpc DeleteStudent(common.DeleteAbsRequest) returns(common.AbsResponse);
+  rpc DeleteStudent(DeleteStudentRequest) returns(common.AbsResponse);
   rpc AddToGroup(AddToGroupRequest) returns(common.AbsResponse);
   rpc GetStudentById(NoteStudentByAbsRequest) returns(GetStudentByIdResponse);
   rpc GetNoteByStudent(NoteStudentByAbsRequest) returns(GetNotesByStudent);
@@ -248,6 +248,10 @@ service StudentService{
   rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
   rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
   rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+}
+message DeleteStudentRequest{
+  string studentId = 1;
+  bool returnMoney = 2;
 }
 message GetStudentsByGroupIdResponse{
   repeated AbsStudent students = 1;

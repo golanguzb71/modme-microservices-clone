@@ -180,11 +180,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Uncomment the following to enable the trigger
--- CREATE TRIGGER trg_group_update
---     AFTER UPDATE ON groups
---     FOR EACH ROW
--- EXECUTE FUNCTION log_group_update();
+CREATE TRIGGER trg_group_update
+    AFTER UPDATE ON groups
+    FOR EACH ROW
+EXECUTE FUNCTION log_group_update();
 
 
 CREATE OR REPLACE FUNCTION log_student_update()
@@ -239,8 +238,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Uncomment the following to enable the trigger
--- CREATE TRIGGER trg_student_update
---     AFTER UPDATE ON students
---     FOR EACH ROW
--- EXECUTE FUNCTION log_student_update();
+CREATE TRIGGER trg_student_update
+    AFTER UPDATE ON students
+    FOR EACH ROW
+EXECUTE FUNCTION log_student_update();

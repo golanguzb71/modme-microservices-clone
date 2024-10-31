@@ -29,10 +29,16 @@ definitions:
         type: string
       discountPrice:
         type: string
+      endDate:
+        type: string
       groupId:
+        type: string
+      startDate:
         type: string
       studentId:
         type: string
+      withTeacher:
+        type: boolean
     type: object
   pb.AbsGroup:
     properties:
@@ -103,12 +109,18 @@ definitions:
         type: string
       discount:
         type: string
+      endAt:
+        type: string
+      startAt:
+        type: string
       studentId:
         type: string
       studentName:
         type: string
       studentPhoneNumber:
         type: string
+      withTeacher:
+        type: boolean
     type: object
   pb.AbsStudentHistory:
     properties:
@@ -2440,6 +2452,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Flag to determine if money should be returned
+        in: query
+        name: returnMoney
+        required: true
+        type: boolean
       produces:
       - application/json
       responses:

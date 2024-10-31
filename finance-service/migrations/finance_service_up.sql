@@ -1,12 +1,29 @@
 CREATE TABLE IF NOT EXISTS student_discount
 (
-    student_id uuid             NOT NULL,
-    discount   double precision NOT NULL,
-    group_id   bigint           NOT NULL,
-    comment    varchar          NOT NULL,
-    created_at timestamp DEFAULT NOW(),
+    student_id  uuid             NOT NULL,
+    discount    double precision NOT NULL,
+    group_id    bigint           NOT NULL,
+    comment     varchar          NOT NULL,
+    start_at    date             NOT NULL,
+    end_at      date             NOT NULL,
+    withTeacher boolean          NOT NULL,
+    created_at  timestamp DEFAULT NOW(),
     PRIMARY KEY (student_id, group_id)
 );
+
+CREATE TABLE student_discount_history
+(
+    id          uuid PRIMARY KEY,
+    student_id  uuid    NOT NULL,
+    group_id    bigint  NOT NULL,
+    start_at    date    NOT NULL,
+    end_at      date    NOT NULL,
+    withTeacher boolean NOT NULL,
+    comment     varchar NOT NULL,
+    action      varchar NOT NULL,
+    created_at  timestamp default now()
+);
+
 CREATE TABLE IF NOT EXISTS category
 (
     id          serial primary key,
@@ -27,6 +44,22 @@ CREATE TABLE IF NOT EXISTS expense
     created_by     uuid                                                          NOT NULL,
     payment_method varchar check ( payment_method in ('CASH', 'CLICK', 'PAYME')) NOT NULL
 );
+
+
+
+CREATE TABLE IF NOT EXISTS teacher_salary
+(
+    teacher_id        uuid PRIMARY KEY,
+    salary_type       varchar CHECK (salary_type IN ('PERCENT', 'FIXED')) NOT NULL,
+    salary_type_count double precision CHECK (
+        CASE
+            WHEN salary_type = 'PERCENT' THEN salary_type_count BETWEEN 1 AND 100
+            ELSE TRUE
+            END
+        )
+);
+
+
 
 CREATE TABLE IF NOT EXISTS student_finance
 (

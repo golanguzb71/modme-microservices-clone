@@ -17,7 +17,7 @@ func NewDiscountService(repo *repository.DiscountRepository) *DiscountService {
 }
 
 func (ds *DiscountService) CreateDiscount(ctx context.Context, req *pb.AbsDiscountRequest) (*pb.AbsResponse, error) {
-	if err := ds.repo.CreateDiscount(req.GroupId, req.StudentId, req.DiscountPrice, req.Comment); err != nil {
+	if err := ds.repo.CreateDiscount(req.GroupId, req.StudentId, req.DiscountPrice, req.Comment, req.StartDate, req.EndDate, req.WithTeacher); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{

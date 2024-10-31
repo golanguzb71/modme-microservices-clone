@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: group.proto
+// source: education.proto
 
 package pb
 
@@ -236,7 +236,7 @@ var RoomService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
 }
 
 const (
@@ -494,7 +494,7 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
 }
 
 const (
@@ -828,7 +828,7 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
 }
 
 const (
@@ -972,7 +972,7 @@ var AttendanceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
 }
 
 const (
@@ -1002,7 +1002,7 @@ type StudentServiceClient interface {
 	GetAllStudent(ctx context.Context, in *GetAllStudentRequest, opts ...grpc.CallOption) (*GetAllStudentResponse, error)
 	CreateStudent(ctx context.Context, in *CreateStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	UpdateStudent(ctx context.Context, in *UpdateStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
-	DeleteStudent(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	DeleteStudent(ctx context.Context, in *DeleteStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	AddToGroup(ctx context.Context, in *AddToGroupRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetStudentById(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetStudentByIdResponse, error)
 	GetNoteByStudent(ctx context.Context, in *NoteStudentByAbsRequest, opts ...grpc.CallOption) (*GetNotesByStudent, error)
@@ -1054,7 +1054,7 @@ func (c *studentServiceClient) UpdateStudent(ctx context.Context, in *UpdateStud
 	return out, nil
 }
 
-func (c *studentServiceClient) DeleteStudent(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+func (c *studentServiceClient) DeleteStudent(ctx context.Context, in *DeleteStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AbsResponse)
 	err := c.cc.Invoke(ctx, StudentService_DeleteStudent_FullMethodName, in, out, cOpts...)
@@ -1183,7 +1183,7 @@ type StudentServiceServer interface {
 	GetAllStudent(context.Context, *GetAllStudentRequest) (*GetAllStudentResponse, error)
 	CreateStudent(context.Context, *CreateStudentRequest) (*AbsResponse, error)
 	UpdateStudent(context.Context, *UpdateStudentRequest) (*AbsResponse, error)
-	DeleteStudent(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
+	DeleteStudent(context.Context, *DeleteStudentRequest) (*AbsResponse, error)
 	AddToGroup(context.Context, *AddToGroupRequest) (*AbsResponse, error)
 	GetStudentById(context.Context, *NoteStudentByAbsRequest) (*GetStudentByIdResponse, error)
 	GetNoteByStudent(context.Context, *NoteStudentByAbsRequest) (*GetNotesByStudent, error)
@@ -1214,7 +1214,7 @@ func (UnimplementedStudentServiceServer) CreateStudent(context.Context, *CreateS
 func (UnimplementedStudentServiceServer) UpdateStudent(context.Context, *UpdateStudentRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStudent not implemented")
 }
-func (UnimplementedStudentServiceServer) DeleteStudent(context.Context, *DeleteAbsRequest) (*AbsResponse, error) {
+func (UnimplementedStudentServiceServer) DeleteStudent(context.Context, *DeleteStudentRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStudent not implemented")
 }
 func (UnimplementedStudentServiceServer) AddToGroup(context.Context, *AddToGroupRequest) (*AbsResponse, error) {
@@ -1326,7 +1326,7 @@ func _StudentService_UpdateStudent_Handler(srv interface{}, ctx context.Context,
 }
 
 func _StudentService_DeleteStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteAbsRequest)
+	in := new(DeleteStudentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1338,7 +1338,7 @@ func _StudentService_DeleteStudent_Handler(srv interface{}, ctx context.Context,
 		FullMethod: StudentService_DeleteStudent_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StudentServiceServer).DeleteStudent(ctx, req.(*DeleteAbsRequest))
+		return srv.(StudentServiceServer).DeleteStudent(ctx, req.(*DeleteStudentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1610,5 +1610,5 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
 }

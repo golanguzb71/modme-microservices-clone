@@ -1,14 +1,15 @@
 CREATE TABLE IF NOT EXISTS users
 (
-    id           uuid primary key,
-    full_name    varchar                                                          NOT NULL,
-    phone_number varchar UNIQUE                                                   NOT NULL,
-    password     varchar                                                          NOT NULL,
-    role         varchar check ( role in ('CEO', 'TEACHER', 'ADMIN', 'EMPLOYEE')) NOT NULL,
-    birth_date   date                                                             NOT NULL,
-    gender       boolean                                                          NOT NULL DEFAULT TRUE,
-    is_deleted   boolean                                                          NOT NULL DEFAULT FALSE,
-    created_at   timestamp                                                                 DEFAULT NOW()
+    id            uuid primary key,
+    full_name     varchar                                                          NOT NULL,
+    phone_number  varchar UNIQUE                                                   NOT NULL,
+    password      varchar                                                          NOT NULL,
+    role          varchar check ( role in ('CEO', 'TEACHER', 'ADMIN', 'EMPLOYEE')) NOT NULL,
+    birth_date    date                                                             NOT NULL,
+    gender        boolean                                                          NOT NULL DEFAULT TRUE,
+    is_deleted    boolean                                                          NOT NULL DEFAULT FALSE,
+    self_discount boolean                                                                   DEFAULT FALSE,
+    created_at    timestamp                                                                 DEFAULT NOW()
 );
 
 
@@ -21,3 +22,48 @@ CREATE TABLE IF NOT EXISTS users_history
     current_value varchar   NOT NULL,
     created_at    timestamp NOT NULL DEFAULT NOW()
 );
+
+CREATE OR REPLACE FUNCTION log_user_updates()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    -- Check for changes in each field and insert a record in users_history if there are changes
+    IF NEW.full_name IS DISTINCT FROM OLD.full_name THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'full_name', OLD.full_name, NEW.full_name, NOW());
+    END IF;
+
+    IF NEW.phone_number IS DISTINCT FROM OLD.phone_number THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'phone_number', OLD.phone_number, NEW.phone_number, NOW());
+    END IF;
+
+    IF NEW.password IS DISTINCT FROM OLD.password THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'password', OLD.password, NEW.password, NOW());
+    END IF;
+
+    IF NEW.role IS DISTINCT FROM OLD.role THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'role', OLD.role, NEW.role, NOW());
+    END IF;
+
+    IF NEW.birth_date IS DISTINCT FROM OLD.birth_date THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'birth_date', OLD.birth_date::text, NEW.birth_date::text, NOW());
+    END IF;
+
+    IF NEW.gender IS DISTINCT FROM OLD.gender THEN
+        INSERT INTO users_history (id, user_id, updated_field, old_value, current_value, created_at)
+        VALUES (gen_random_uuid(), OLD.id, 'gender', OLD.gender::text, NEW.gender::text, NOW());
+    END IF;
+
+    RETURN NEW; -- Return the new record
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_update_trigger
+    AFTER UPDATE
+    ON users
+    FOR EACH ROW
+EXECUTE FUNCTION log_user_updates();

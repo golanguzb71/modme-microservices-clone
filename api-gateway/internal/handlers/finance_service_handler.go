@@ -273,3 +273,10 @@ func GetAllInformation(ctx *gin.Context) {
 func GetChartDiagram(ctx *gin.Context) {
 
 }
+
+func GetHistoryDiscount(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	userId := ctx.Param("userId")
+	financeClient.GetHistoryDiscount(userId, ctxR)
+}

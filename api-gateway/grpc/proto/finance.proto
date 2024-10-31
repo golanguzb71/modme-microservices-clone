@@ -18,6 +18,9 @@ message AbsDiscountRequest{
   string studentId = 2;
   string discountPrice = 3;
   string comment = 4;
+  string startDate = 5;
+  string endDate = 6;
+  bool withTeacher = 7;
 }
 message GetInformationDiscountRequest{
   string groupId = 1;
@@ -32,6 +35,9 @@ message AbsStudentDiscount{
   string discount = 4;
   string cause = 5;
   string createdAt = 6;
+  string startAt = 7;
+  string endAt = 8;
+  bool withTeacher = 9;
 }
 // discount service end
 

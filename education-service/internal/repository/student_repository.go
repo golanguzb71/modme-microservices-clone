@@ -150,14 +150,28 @@ func (r *StudentRepository) UpdateStudent(studentId string, number string, name 
 	}
 	return nil
 }
-func (r *StudentRepository) DeleteStudent(studentId string) error {
+func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool) error {
 	var cond string
 	if err := r.db.QueryRow(`select condition from students where id = $1`, studentId).Scan(&cond); err != nil {
 		return err
 	}
 
 	if cond == "ACTIVE" {
-		_, err := r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1`, studentId)
+		groupsQuery := `SELECT  group_id FROM group_students where condition='ACTIVE' and student_id=$1`
+		rows, err := r.db.Query(groupsQuery, studentId)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var groupId string
+			err = rows.Scan(&groupId)
+			if err != nil {
+				return err
+			}
+			_, _ = r.ChangeConditionStudent(studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"))
+		}
+		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1`, studentId)
 		if err != nil {
 			return err
 		}
@@ -520,9 +534,9 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 
 	return &pb.AbsResponse{
 		Message: "Condition changed successfully",
+		Status:  200,
 	}, nil
 }
-
 func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bool) (*pb.GetStudentsByGroupIdResponse, error) {
 	var students []*pb.AbsStudent
 	query := `

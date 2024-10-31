@@ -105,7 +105,15 @@ func UpdateUserById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	req := pb.UpdateUserRequest{}
-	err := ctx.ShouldBindJSON(&req)
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	if user.Role == "TEACHER" || user.Role == "EMPLOYEE" {
+		req.Id = user.Id
+	}
+	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return

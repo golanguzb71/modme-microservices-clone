@@ -586,6 +586,7 @@ func UpdateStudent(ctx *gin.Context) {
 // @Produce json
 // @Security Bearer
 // @Param id path string true "Student ID"
+// @Param returnMoney query bool true "Flag to determine if money should be returned"
 // @Success 200 {object} utils.AbsResponse "Delete success message"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/delete/{id} [delete]
@@ -593,7 +594,11 @@ func DeleteStudent(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	id := ctx.Param("id")
-	response, err := educationClient.DeleteStudent(ctxR, id)
+	returnMoney, err := strconv.ParseBool(ctx.Query("returnMoney"))
+	if err != nil {
+		return
+	}
+	response, err := educationClient.DeleteStudent(ctxR, id, returnMoney)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

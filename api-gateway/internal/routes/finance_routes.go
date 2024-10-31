@@ -14,6 +14,7 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		discount.GET("/get-all-by-group/:groupId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDiscountInformationByGroup)
 		discount.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateDiscount)
 		discount.DELETE("/delete", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteDiscount)
+		discount.GET("/history/:userId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryDiscount)
 		category := finance.Group("/category")
 		{
 			category.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateCategory)
