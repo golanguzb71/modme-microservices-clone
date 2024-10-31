@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/go.mod" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +16,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Go File" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>

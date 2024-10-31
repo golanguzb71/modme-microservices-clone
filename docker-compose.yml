@@ -1,61 +1,76 @@
+version: '3.8'
+
 services:
   postgres-sphere-lead:
     image: postgres:15-alpine
-    container_name: postgres-lead-db
     environment:
-      POSTGRES_DB: sphere_lead_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: sphere_lead_db
     ports:
       - "9012:5432"
     volumes:
       - postgres_lead_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres-sphere-education:
     image: postgres:15-alpine
-    container_name: postgres-education-db
     environment:
-      POSTGRES_DB: sphere_education_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: sphere_education_db
     ports:
       - "9015:5432"
     volumes:
       - postgres_education_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres-sphere-user:
     image: postgres:15-alpine
-    container_name: postgres-user-db
     environment:
-      POSTGRES_DB: sphere_user_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: sphere_user_db
     ports:
       - "9019:5432"
     volumes:
       - postgres_user_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres-sphere-finance:
     image: postgres:15-alpine
-    container_name: postgres-finance-db
     environment:
-      POSTGRES_DB: sphere_finance_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: sphere_finance_db
     ports:
       - "9020:5432"
     volumes:
       - postgres_finance_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   sphere-user-service:
     build:
       context: ./user-service
       dockerfile: Dockerfile
-    container_name: user-service
+    ports:
+      - "9018:8080"
     environment:
       DB_HOST: postgres-sphere-user
       DB_PORT: 5432
@@ -63,50 +78,50 @@ services:
       DB_PASSWORD: password
       DB_NAME: sphere_user_db
     depends_on:
-      - postgres-sphere-user
-    ports:
-      - "9018:8080"
-    networks:
-      - app-network
+      postgres-sphere-user:
+        condition: service_healthy
+    restart: unless-stopped
+
   sphere-education-service:
     build:
       context: ./education-service
       dockerfile: Dockerfile
-    container_name: education-service
+    ports:
+      - "9016:8080"
     environment:
       DB_HOST: postgres-sphere-education
       DB_PORT: 5432
-      DB_USER: education_user
-      DB_PASSWORD: education_password
+      DB_USER: postgres
+      DB_PASSWORD: password
       DB_NAME: sphere_education_db
     depends_on:
-      - postgres-sphere-education
-    ports:
-      - "9016:8080"
-    networks:
-      - app-network
+      postgres-sphere-education:
+        condition: service_healthy
+    restart: unless-stopped
+
   sphere-lead-service:
     build:
       context: ./lead-service
       dockerfile: Dockerfile
-    container_name: lead-service
+    ports:
+      - "9017:8080"
     environment:
       DB_HOST: postgres-sphere-lead
       DB_PORT: 5432
-      DB_USER: lead_user
-      DB_PASSWORD: lead_password
+      DB_USER: postgres
+      DB_PASSWORD: password
       DB_NAME: sphere_lead_db
     depends_on:
-      - postgres-sphere-lead
-    ports:
-      - "9017:8080"
-    networks:
-      - app-network
+      postgres-sphere-lead:
+        condition: service_healthy
+    restart: unless-stopped
+
   sphere-finance-service:
     build:
       context: ./finance-service
       dockerfile: Dockerfile
-    container_name: finance-service
+    ports:
+      - "9021:8080"
     environment:
       DB_HOST: postgres-sphere-finance
       DB_PORT: 5432
@@ -114,27 +129,29 @@ services:
       DB_PASSWORD: password
       DB_NAME: sphere_finance_db
     depends_on:
-      - postgres-sphere-finance
-    ports:
-      - "9021:8080"
-    networks:
-      - app-network
+      postgres-sphere-finance:
+        condition: service_healthy
+    restart: unless-stopped
+
   sphere-api-gateway:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile
-    container_name: api-gateway
     ports:
       - "9013:8080"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+    depends_on:
+      - sphere-user-service
+      - sphere-education-service
+      - sphere-lead-service
+      - sphere-finance-service
+    restart: unless-stopped
 
 volumes:
   postgres_lead_data:
   postgres_education_data:
   postgres_user_data:
   postgres_finance_data:
+
+networks:
+  default:
+    driver: bridge
