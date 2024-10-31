@@ -36,6 +36,10 @@ func (ds *DiscountService) DeleteDiscount(ctx context.Context, req *pb.AbsDiscou
 	}, nil
 }
 
+func (ds *DiscountService) GetHistoryDiscount(ctx context.Context, req *pb.GetHistoryDiscountRequest) (*pb.GetHistoryDiscountResponse, error) {
+	return ds.repo.GetHistoryDiscount(req.StudentId)
+}
+
 func (ds *DiscountService) GetAllInformationDiscount(ctx context.Context, req *pb.GetInformationDiscountRequest) (*pb.GetInformationDiscountResponse, error) {
 	return ds.repo.GetAllDiscountByGroup(req.GroupId)
 }

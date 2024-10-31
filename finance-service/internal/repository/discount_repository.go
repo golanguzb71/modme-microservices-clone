@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"time"
 )
 
 type DiscountRepository struct {
@@ -29,8 +30,8 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 	if err != nil {
 		return status.Errorf(codes.Internal, "Status discount insert error: %v", err)
 	}
-	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action)
-		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8)`, uuid.New(), studentId, groupId, startDate, endDate, withTeacher, comment, "CREATE")
+	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
+		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8, $9)`, uuid.New(), studentId, groupId, startDate, endDate, withTeacher, comment, "CREATE", discountPrice)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error inserting into student history: %v", err)
 	}
@@ -57,8 +58,8 @@ func (r *DiscountRepository) DeleteDiscount(groupId string, studentId string) er
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error while deleting disount %f", err)
 	}
-	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action)
-		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8)`, uuid.New(), studentId, groupId, discount.StartDate, discount.EndDate, discount.WithTeacher, discount.Comment, "DELETE")
+	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
+		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8 , $9)`, uuid.New(), studentId, groupId, discount.StartDate, discount.EndDate, discount.WithTeacher, discount.Comment, "DELETE", discount.DiscountPrice)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error inserting into student history: %v", err)
 	}
@@ -82,6 +83,50 @@ func (r *DiscountRepository) GetAllDiscountByGroup(groupId string) (*pb.GetInfor
 	}
 	result.Discounts = res
 	return &result, nil
+}
+func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscountResponse, error) {
+	query := `
+		SELECT group_id, student_id,discount, comment, start_at, end_at, withTeacher, action, created_at
+		FROM student_discount_history
+		WHERE group_id = $1
+	`
+
+	var discounts []*pb.AbsHistoryDiscount
+
+	rows, err := r.db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var discount pb.AbsHistoryDiscount
+		var startAt, endAt, createdAt time.Time
+
+		if err := rows.Scan(
+			&discount.GroupId,
+			&discount.StudentId,
+			&discount.DiscountPrice,
+			&discount.Comment,
+			&startAt,
+			&endAt,
+			&discount.WithTeacher,
+			&discount.Action,
+			&createdAt,
+		); err != nil {
+			return nil, err
+		}
+		name, _, _ := r.studentClient.GetStudentById(discount.StudentId)
+		discount.StudentName = name
+		discount.StartDate = startAt.Format("2006-01-02")
+		discount.EndDate = endAt.Format("2006-01-02")
+		discount.CreatedAt = createdAt.Format("2006-01-02 15:04:05")
+		discounts = append(discounts, &discount)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &pb.GetHistoryDiscountResponse{Discounts: discounts}, nil
 }
 func NewDiscountRepository(db *sql.DB, studentClient *clients.EducationClient) *DiscountRepository {
 	return &DiscountRepository{db: db, studentClient: studentClient}

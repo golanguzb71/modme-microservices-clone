@@ -754,6 +754,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/discount/history/{userId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves the discount history for a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discount"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetHistoryDiscountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/expense/create": {
             "post": {
                 "security": [
@@ -3270,6 +3319,44 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsHistoryDiscount": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "discountPrice": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                },
+                "withTeacher": {
+                    "type": "boolean"
+                }
+            }
+        },
         "pb.AbsNote": {
             "type": "object",
             "properties": {
@@ -4082,6 +4169,17 @@ const docTemplate = `{
                 },
                 "totalPageCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.GetHistoryDiscountResponse": {
+            "type": "object",
+            "properties": {
+                "discounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsHistoryDiscount"
+                    }
                 }
             }
         },

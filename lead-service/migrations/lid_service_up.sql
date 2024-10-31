@@ -37,3 +37,11 @@ CREATE TABLE IF NOT EXISTS lead_user
     comment      varchar,
     created_at   timestamp DEFAULT now()
 );
+
+CREATE TABLE lead_reports
+(
+    id         uuid primary key,
+    lead_count int,
+    source     varchar,
+    created_at timestamp DEFAULT NOW()
+);

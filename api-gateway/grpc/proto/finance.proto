@@ -12,6 +12,27 @@ service DiscountService{
   rpc GetAllInformationDiscount(GetInformationDiscountRequest) returns(GetInformationDiscountResponse);
   rpc CreateDiscount(AbsDiscountRequest) returns(common.AbsResponse);
   rpc DeleteDiscount(AbsDiscountRequest) returns(common.AbsResponse);
+  rpc GetHistoryDiscount(GetHistoryDiscountRequest) returns (GetHistoryDiscountResponse);
+}
+message GetHistoryDiscountRequest{
+  string studentId = 1;
+  string groupId = 2;
+}
+message GetHistoryDiscountResponse{
+  repeated AbsHistoryDiscount discounts = 1;
+}
+message AbsHistoryDiscount{
+  string groupId = 1;
+  string groupName = 10;
+  string studentId = 2;
+  string studentName = 11;
+  string discountPrice = 3;
+  string comment = 4;
+  string startDate = 5;
+  string endDate = 6;
+  bool withTeacher = 7;
+  string action = 8;
+  string createdAt = 9;
 }
 message AbsDiscountRequest{
   string groupId = 1;

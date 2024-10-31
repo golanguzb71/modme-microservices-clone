@@ -274,9 +274,27 @@ func GetChartDiagram(ctx *gin.Context) {
 
 }
 
+// GetHistoryDiscount retrieves the discount history for a specific user.
+// @Summary ADMIN , CEO
+// @Description Retrieves the discount history for a user by their ID
+// @Tags discount
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Success 200 {object} pb.GetHistoryDiscountResponse "Success"
+// @Failure 400 {object} utils.AbsResponse "Bad Request"
+// @Failure 500 {object} utils.AbsResponse "Internal Server Error"
+// @Security Bearer
+// @Router /api/finance/discount/history/{userId} [get]
 func GetHistoryDiscount(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	userId := ctx.Param("userId")
-	financeClient.GetHistoryDiscount(userId, ctxR)
+	resp, err := financeClient.GetHistoryDiscount(userId, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
 }

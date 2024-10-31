@@ -58,8 +58,8 @@ func (fc *FinanceClient) GetAllInformation(ctx context.Context, id string, idTyp
 	})
 }
 
-func (fc *FinanceClient) GetHistoryDiscount(id string, ctx context.Context) {
-
+func (fc *FinanceClient) GetHistoryDiscount(id string, ctx context.Context) (*pb.GetHistoryDiscountResponse, error) {
+	return fc.discountClient.GetHistoryDiscount(ctx, &pb.GetHistoryDiscountRequest{StudentId: id})
 }
 
 func NewFinanceClient(addr string) (*FinanceClient, error) {

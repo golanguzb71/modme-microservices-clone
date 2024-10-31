@@ -100,7 +100,7 @@ func (r *UserRepository) GetUserById(userId string) (*pb.GetUserByIdResponse, er
 	return &response, nil
 }
 func (r *UserRepository) UpdateUser(userId string, name string, gender bool, role string, birthDate string, phoneNumber string) (*pb.AbsResponse, error) {
-	if role != "TEACHER" && role != "ADMIN" && role != "EMPLOYEE" {
+	if role != "TEACHER" && role != "ADMIN" && role != "EMPLOYEE" && role != "CEO" {
 		return &pb.AbsResponse{Status: 400, Message: "Invalid role"}, nil
 	}
 	query := `

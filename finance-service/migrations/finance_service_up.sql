@@ -14,13 +14,14 @@ CREATE TABLE IF NOT EXISTS student_discount
 CREATE TABLE student_discount_history
 (
     id          uuid PRIMARY KEY,
-    student_id  uuid    NOT NULL,
-    group_id    bigint  NOT NULL,
-    start_at    date    NOT NULL,
-    end_at      date    NOT NULL,
-    withTeacher boolean NOT NULL,
-    comment     varchar NOT NULL,
-    action      varchar NOT NULL,
+    student_id  uuid             NOT NULL,
+    group_id    bigint           NOT NULL,
+    discount    double precision NOT NULL,
+    start_at    date             NOT NULL,
+    end_at      date             NOT NULL,
+    withTeacher boolean          NOT NULL,
+    comment     varchar          NOT NULL,
+    action      varchar          NOT NULL,
     created_at  timestamp default now()
 );
 

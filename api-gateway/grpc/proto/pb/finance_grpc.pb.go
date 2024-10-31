@@ -23,6 +23,7 @@ const (
 	DiscountService_GetAllInformationDiscount_FullMethodName = "/finance.DiscountService/GetAllInformationDiscount"
 	DiscountService_CreateDiscount_FullMethodName            = "/finance.DiscountService/CreateDiscount"
 	DiscountService_DeleteDiscount_FullMethodName            = "/finance.DiscountService/DeleteDiscount"
+	DiscountService_GetHistoryDiscount_FullMethodName        = "/finance.DiscountService/GetHistoryDiscount"
 )
 
 // DiscountServiceClient is the client API for DiscountService service.
@@ -34,6 +35,7 @@ type DiscountServiceClient interface {
 	GetAllInformationDiscount(ctx context.Context, in *GetInformationDiscountRequest, opts ...grpc.CallOption) (*GetInformationDiscountResponse, error)
 	CreateDiscount(ctx context.Context, in *AbsDiscountRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteDiscount(ctx context.Context, in *AbsDiscountRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetHistoryDiscount(ctx context.Context, in *GetHistoryDiscountRequest, opts ...grpc.CallOption) (*GetHistoryDiscountResponse, error)
 }
 
 type discountServiceClient struct {
@@ -74,6 +76,16 @@ func (c *discountServiceClient) DeleteDiscount(ctx context.Context, in *AbsDisco
 	return out, nil
 }
 
+func (c *discountServiceClient) GetHistoryDiscount(ctx context.Context, in *GetHistoryDiscountRequest, opts ...grpc.CallOption) (*GetHistoryDiscountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHistoryDiscountResponse)
+	err := c.cc.Invoke(ctx, DiscountService_GetHistoryDiscount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DiscountServiceServer is the server API for DiscountService service.
 // All implementations must embed UnimplementedDiscountServiceServer
 // for forward compatibility.
@@ -83,6 +95,7 @@ type DiscountServiceServer interface {
 	GetAllInformationDiscount(context.Context, *GetInformationDiscountRequest) (*GetInformationDiscountResponse, error)
 	CreateDiscount(context.Context, *AbsDiscountRequest) (*AbsResponse, error)
 	DeleteDiscount(context.Context, *AbsDiscountRequest) (*AbsResponse, error)
+	GetHistoryDiscount(context.Context, *GetHistoryDiscountRequest) (*GetHistoryDiscountResponse, error)
 	mustEmbedUnimplementedDiscountServiceServer()
 }
 
@@ -101,6 +114,9 @@ func (UnimplementedDiscountServiceServer) CreateDiscount(context.Context, *AbsDi
 }
 func (UnimplementedDiscountServiceServer) DeleteDiscount(context.Context, *AbsDiscountRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDiscount not implemented")
+}
+func (UnimplementedDiscountServiceServer) GetHistoryDiscount(context.Context, *GetHistoryDiscountRequest) (*GetHistoryDiscountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryDiscount not implemented")
 }
 func (UnimplementedDiscountServiceServer) mustEmbedUnimplementedDiscountServiceServer() {}
 func (UnimplementedDiscountServiceServer) testEmbeddedByValue()                         {}
@@ -177,6 +193,24 @@ func _DiscountService_DeleteDiscount_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DiscountService_GetHistoryDiscount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHistoryDiscountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DiscountServiceServer).GetHistoryDiscount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DiscountService_GetHistoryDiscount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DiscountServiceServer).GetHistoryDiscount(ctx, req.(*GetHistoryDiscountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DiscountService_ServiceDesc is the grpc.ServiceDesc for DiscountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -195,6 +229,10 @@ var DiscountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDiscount",
 			Handler:    _DiscountService_DeleteDiscount_Handler,
+		},
+		{
+			MethodName: "GetHistoryDiscount",
+			Handler:    _DiscountService_GetHistoryDiscount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

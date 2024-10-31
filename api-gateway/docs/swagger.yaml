@@ -74,6 +74,31 @@ definitions:
       oldValue:
         type: string
     type: object
+  pb.AbsHistoryDiscount:
+    properties:
+      action:
+        type: string
+      comment:
+        type: string
+      createdAt:
+        type: string
+      discountPrice:
+        type: string
+      endDate:
+        type: string
+      groupId:
+        type: string
+      groupName:
+        type: string
+      startDate:
+        type: string
+      studentId:
+        type: string
+      studentName:
+        type: string
+      withTeacher:
+        type: boolean
+    type: object
   pb.AbsNote:
     properties:
       comment:
@@ -603,6 +628,13 @@ definitions:
         type: array
       totalPageCount:
         type: integer
+    type: object
+  pb.GetHistoryDiscountResponse:
+    properties:
+      discounts:
+        items:
+          $ref: '#/definitions/pb.AbsHistoryDiscount'
+        type: array
     type: object
   pb.GetHistoryGroupResponse:
     properties:
@@ -1409,6 +1441,37 @@ paths:
           description: Success response
           schema:
             $ref: '#/definitions/pb.GetInformationDiscountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - discount
+  /api/finance/discount/history/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the discount history for a user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/pb.GetHistoryDiscountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
         "500":
           description: Internal Server Error
           schema:
