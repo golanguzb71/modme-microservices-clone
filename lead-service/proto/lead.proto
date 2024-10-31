@@ -14,6 +14,23 @@ service LeadService {
   rpc UpdateLead(UpdateLeadRequest) returns (common.AbsResponse);
   rpc DeleteLead(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc GetListSection(google.protobuf.Empty)returns(GetLeadListResponse);
+  rpc GetLeadReports(GetLeadReportsRequest) returns(GetLeadReportsResponse);
+}
+message GetLeadReportsResponse{
+  repeated LeadConversion leadConversion = 1;
+  repeated LeadConversionForSource leadConversionForSource = 2;
+}
+message LeadConversion{
+  string conversionDate = 1;
+  int32 lead_count = 2;
+}
+message LeadConversionForSource{
+  string source = 1;
+  int32 leads_count = 2;
+}
+message GetLeadReportsRequest{
+  string startYear = 1;
+  string endYear = 2;
 }
 message CreateLeadRequest{
   string title = 1;
@@ -48,7 +65,6 @@ message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
-
 message GetLeadListResponse{
   repeated DynamicSection sections = 1;
 }
@@ -56,7 +72,6 @@ message DynamicSection{
   string id = 1;
   string name = 2;
 }
-
 // lead_service_end
 
 

@@ -47,3 +47,7 @@ func (s *LeadService) DeleteLead(ctx context.Context, req *pb.DeleteAbsRequest) 
 func (s *LeadService) GetListSection(ctx context.Context, req *emptypb.Empty) (*pb.GetLeadListResponse, error) {
 	return s.repo.GetAllLeads()
 }
+
+func (s *LeadService) GetLeadReports(ctx context.Context, req *pb.GetLeadReportsRequest) (*pb.GetLeadReportsResponse, error) {
+	return s.repo.GetLeadReports(req.EndYear, req.StartYear)
+}

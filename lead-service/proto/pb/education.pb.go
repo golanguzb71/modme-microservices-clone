@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.35.1
 // 	protoc        v3.21.12
-// source: group.proto
+// source: education.proto
 
 package pb
 

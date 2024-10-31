@@ -4,6 +4,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"time"
 )
 
 type LeadDataRepository struct {
@@ -22,6 +26,18 @@ func (r *LeadDataRepository) CreateLeadData(phoneNumber, leadID, expectID, setID
 	_, err := r.db.Exec(query, phoneNumber, leadID, expectID, setID, comment, name)
 	if err != nil {
 		return fmt.Errorf("failed to create lead data: %w", err)
+	}
+	var title string
+	err = r.db.QueryRow(`SELECT title from lead_section where id=$1`, leadID).Scan(&title)
+	if err != nil {
+		return status.Errorf(codes.Aborted, err.Error())
+	}
+	var checker bool
+	_ = r.db.QueryRow(`SELECT exists(SELECT 1 FROM lead_reports where source=$1)`, title).Scan(&checker)
+	if checker {
+		_, _ = r.db.Exec(`UPDATE lead_reports SET lead_count=lead_count+1 where source=$1`, title)
+	} else {
+		_, _ = r.db.Exec(`INSERT INTO lead_reports(id, lead_count, source , created_at) values ($1 , $2 , $3 , $4)`, uuid.New(), 1, title, time.Now())
 	}
 	return nil
 }

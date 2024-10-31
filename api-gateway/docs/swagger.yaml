@@ -2007,6 +2007,38 @@ paths:
       summary: ADMIN
       tags:
       - leads
+  /api/lead/get-lead-reports:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves lead reports for a given date range.
+      parameters:
+      - description: Start date in YYYY-MM-DD format
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: End date in YYYY-MM-DD format
+        in: query
+        name: till
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lead reports response
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict error with details
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO , ADMIN
+      tags:
+      - leads
   /api/lead/update/{id}:
     put:
       consumes:

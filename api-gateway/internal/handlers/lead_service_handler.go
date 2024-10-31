@@ -451,3 +451,29 @@ func ChangeToSet(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetLeadReports handles the retrieval of lead reports based on specified date range.
+// @Summary CEO , ADMIN
+// @Description Retrieves lead reports for a given date range.
+// @Tags leads
+// @Accept json
+// @Produce json
+// @Param from query string true "Start date in YYYY-MM-DD format"
+// @Param till query string true "End date in YYYY-MM-DD format"
+// @Success 200 {object} utils.AbsResponse "Lead reports response"
+// @Failure 409 {object} utils.AbsResponse "Conflict error with details"
+// @Security Bearer
+// @Router /api/lead/get-lead-reports [get]
+func GetLeadReports(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	from := ctx.Query("from")
+	till := ctx.Query("till")
+	resp, err := leadClient.GetLeadReports(from, till, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

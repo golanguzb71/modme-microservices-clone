@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS lead_user
     created_at   timestamp DEFAULT now()
 );
 
-CREATE TABLE lead_reports
+CREATE TABLE IF NOT EXISTS lead_reports
 (
     id         uuid primary key,
     lead_count int,

@@ -21,6 +21,218 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetLeadReportsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	LeadConversion          []*LeadConversion          `protobuf:"bytes,1,rep,name=leadConversion,proto3" json:"leadConversion,omitempty"`
+	LeadConversionForSource []*LeadConversionForSource `protobuf:"bytes,2,rep,name=leadConversionForSource,proto3" json:"leadConversionForSource,omitempty"`
+}
+
+func (x *GetLeadReportsResponse) Reset() {
+	*x = GetLeadReportsResponse{}
+	mi := &file_lead_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLeadReportsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLeadReportsResponse) ProtoMessage() {}
+
+func (x *GetLeadReportsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_lead_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLeadReportsResponse.ProtoReflect.Descriptor instead.
+func (*GetLeadReportsResponse) Descriptor() ([]byte, []int) {
+	return file_lead_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetLeadReportsResponse) GetLeadConversion() []*LeadConversion {
+	if x != nil {
+		return x.LeadConversion
+	}
+	return nil
+}
+
+func (x *GetLeadReportsResponse) GetLeadConversionForSource() []*LeadConversionForSource {
+	if x != nil {
+		return x.LeadConversionForSource
+	}
+	return nil
+}
+
+type LeadConversion struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ConversionDate string `protobuf:"bytes,1,opt,name=conversionDate,proto3" json:"conversionDate,omitempty"`
+	LeadCount      int32  `protobuf:"varint,2,opt,name=lead_count,json=leadCount,proto3" json:"lead_count,omitempty"`
+}
+
+func (x *LeadConversion) Reset() {
+	*x = LeadConversion{}
+	mi := &file_lead_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LeadConversion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeadConversion) ProtoMessage() {}
+
+func (x *LeadConversion) ProtoReflect() protoreflect.Message {
+	mi := &file_lead_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeadConversion.ProtoReflect.Descriptor instead.
+func (*LeadConversion) Descriptor() ([]byte, []int) {
+	return file_lead_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *LeadConversion) GetConversionDate() string {
+	if x != nil {
+		return x.ConversionDate
+	}
+	return ""
+}
+
+func (x *LeadConversion) GetLeadCount() int32 {
+	if x != nil {
+		return x.LeadCount
+	}
+	return 0
+}
+
+type LeadConversionForSource struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Source     string `protobuf:"bytes,1,opt,name=source,proto3" json:"source,omitempty"`
+	LeadsCount int32  `protobuf:"varint,2,opt,name=leads_count,json=leadsCount,proto3" json:"leads_count,omitempty"`
+}
+
+func (x *LeadConversionForSource) Reset() {
+	*x = LeadConversionForSource{}
+	mi := &file_lead_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LeadConversionForSource) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LeadConversionForSource) ProtoMessage() {}
+
+func (x *LeadConversionForSource) ProtoReflect() protoreflect.Message {
+	mi := &file_lead_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LeadConversionForSource.ProtoReflect.Descriptor instead.
+func (*LeadConversionForSource) Descriptor() ([]byte, []int) {
+	return file_lead_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *LeadConversionForSource) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+func (x *LeadConversionForSource) GetLeadsCount() int32 {
+	if x != nil {
+		return x.LeadsCount
+	}
+	return 0
+}
+
+type GetLeadReportsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	StartYear string `protobuf:"bytes,1,opt,name=startYear,proto3" json:"startYear,omitempty"`
+	EndYear   string `protobuf:"bytes,2,opt,name=endYear,proto3" json:"endYear,omitempty"`
+}
+
+func (x *GetLeadReportsRequest) Reset() {
+	*x = GetLeadReportsRequest{}
+	mi := &file_lead_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetLeadReportsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLeadReportsRequest) ProtoMessage() {}
+
+func (x *GetLeadReportsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_lead_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLeadReportsRequest.ProtoReflect.Descriptor instead.
+func (*GetLeadReportsRequest) Descriptor() ([]byte, []int) {
+	return file_lead_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetLeadReportsRequest) GetStartYear() string {
+	if x != nil {
+		return x.StartYear
+	}
+	return ""
+}
+
+func (x *GetLeadReportsRequest) GetEndYear() string {
+	if x != nil {
+		return x.EndYear
+	}
+	return ""
+}
+
 type CreateLeadRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -31,7 +243,7 @@ type CreateLeadRequest struct {
 
 func (x *CreateLeadRequest) Reset() {
 	*x = CreateLeadRequest{}
-	mi := &file_lead_proto_msgTypes[0]
+	mi := &file_lead_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +255,7 @@ func (x *CreateLeadRequest) String() string {
 func (*CreateLeadRequest) ProtoMessage() {}
 
 func (x *CreateLeadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[0]
+	mi := &file_lead_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +268,7 @@ func (x *CreateLeadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateLeadRequest.ProtoReflect.Descriptor instead.
 func (*CreateLeadRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{0}
+	return file_lead_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateLeadRequest) GetTitle() string {
@@ -78,7 +290,7 @@ type GetLeadCommonResponse struct {
 
 func (x *GetLeadCommonResponse) Reset() {
 	*x = GetLeadCommonResponse{}
-	mi := &file_lead_proto_msgTypes[1]
+	mi := &file_lead_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -90,7 +302,7 @@ func (x *GetLeadCommonResponse) String() string {
 func (*GetLeadCommonResponse) ProtoMessage() {}
 
 func (x *GetLeadCommonResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[1]
+	mi := &file_lead_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -103,7 +315,7 @@ func (x *GetLeadCommonResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLeadCommonResponse.ProtoReflect.Descriptor instead.
 func (*GetLeadCommonResponse) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{1}
+	return file_lead_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetLeadCommonResponse) GetLeads() []*Section {
@@ -137,7 +349,7 @@ type GetLeadCommonRequest struct {
 
 func (x *GetLeadCommonRequest) Reset() {
 	*x = GetLeadCommonRequest{}
-	mi := &file_lead_proto_msgTypes[2]
+	mi := &file_lead_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -149,7 +361,7 @@ func (x *GetLeadCommonRequest) String() string {
 func (*GetLeadCommonRequest) ProtoMessage() {}
 
 func (x *GetLeadCommonRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[2]
+	mi := &file_lead_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -162,7 +374,7 @@ func (x *GetLeadCommonRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLeadCommonRequest.ProtoReflect.Descriptor instead.
 func (*GetLeadCommonRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{2}
+	return file_lead_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetLeadCommonRequest) GetRequests() []*LeadCommonRequest {
@@ -183,7 +395,7 @@ type LeadCommonRequest struct {
 
 func (x *LeadCommonRequest) Reset() {
 	*x = LeadCommonRequest{}
-	mi := &file_lead_proto_msgTypes[3]
+	mi := &file_lead_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -195,7 +407,7 @@ func (x *LeadCommonRequest) String() string {
 func (*LeadCommonRequest) ProtoMessage() {}
 
 func (x *LeadCommonRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[3]
+	mi := &file_lead_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -208,7 +420,7 @@ func (x *LeadCommonRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LeadCommonRequest.ProtoReflect.Descriptor instead.
 func (*LeadCommonRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{3}
+	return file_lead_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *LeadCommonRequest) GetType() string {
@@ -239,7 +451,7 @@ type Section struct {
 
 func (x *Section) Reset() {
 	*x = Section{}
-	mi := &file_lead_proto_msgTypes[4]
+	mi := &file_lead_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -251,7 +463,7 @@ func (x *Section) String() string {
 func (*Section) ProtoMessage() {}
 
 func (x *Section) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[4]
+	mi := &file_lead_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -264,7 +476,7 @@ func (x *Section) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Section.ProtoReflect.Descriptor instead.
 func (*Section) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{4}
+	return file_lead_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *Section) GetId() string {
@@ -316,7 +528,7 @@ type Lead struct {
 
 func (x *Lead) Reset() {
 	*x = Lead{}
-	mi := &file_lead_proto_msgTypes[5]
+	mi := &file_lead_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -328,7 +540,7 @@ func (x *Lead) String() string {
 func (*Lead) ProtoMessage() {}
 
 func (x *Lead) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[5]
+	mi := &file_lead_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -341,7 +553,7 @@ func (x *Lead) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Lead.ProtoReflect.Descriptor instead.
 func (*Lead) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{5}
+	return file_lead_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Lead) GetId() string {
@@ -390,7 +602,7 @@ type UpdateLeadRequest struct {
 
 func (x *UpdateLeadRequest) Reset() {
 	*x = UpdateLeadRequest{}
-	mi := &file_lead_proto_msgTypes[6]
+	mi := &file_lead_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -402,7 +614,7 @@ func (x *UpdateLeadRequest) String() string {
 func (*UpdateLeadRequest) ProtoMessage() {}
 
 func (x *UpdateLeadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[6]
+	mi := &file_lead_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -415,7 +627,7 @@ func (x *UpdateLeadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateLeadRequest.ProtoReflect.Descriptor instead.
 func (*UpdateLeadRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{6}
+	return file_lead_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UpdateLeadRequest) GetId() string {
@@ -442,7 +654,7 @@ type GetLeadListResponse struct {
 
 func (x *GetLeadListResponse) Reset() {
 	*x = GetLeadListResponse{}
-	mi := &file_lead_proto_msgTypes[7]
+	mi := &file_lead_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -454,7 +666,7 @@ func (x *GetLeadListResponse) String() string {
 func (*GetLeadListResponse) ProtoMessage() {}
 
 func (x *GetLeadListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[7]
+	mi := &file_lead_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -467,7 +679,7 @@ func (x *GetLeadListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLeadListResponse.ProtoReflect.Descriptor instead.
 func (*GetLeadListResponse) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{7}
+	return file_lead_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetLeadListResponse) GetSections() []*DynamicSection {
@@ -488,7 +700,7 @@ type DynamicSection struct {
 
 func (x *DynamicSection) Reset() {
 	*x = DynamicSection{}
-	mi := &file_lead_proto_msgTypes[8]
+	mi := &file_lead_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -500,7 +712,7 @@ func (x *DynamicSection) String() string {
 func (*DynamicSection) ProtoMessage() {}
 
 func (x *DynamicSection) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[8]
+	mi := &file_lead_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -513,7 +725,7 @@ func (x *DynamicSection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DynamicSection.ProtoReflect.Descriptor instead.
 func (*DynamicSection) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{8}
+	return file_lead_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DynamicSection) GetId() string {
@@ -540,7 +752,7 @@ type CreateExpectRequest struct {
 
 func (x *CreateExpectRequest) Reset() {
 	*x = CreateExpectRequest{}
-	mi := &file_lead_proto_msgTypes[9]
+	mi := &file_lead_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -552,7 +764,7 @@ func (x *CreateExpectRequest) String() string {
 func (*CreateExpectRequest) ProtoMessage() {}
 
 func (x *CreateExpectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[9]
+	mi := &file_lead_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -565,7 +777,7 @@ func (x *CreateExpectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateExpectRequest.ProtoReflect.Descriptor instead.
 func (*CreateExpectRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{9}
+	return file_lead_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CreateExpectRequest) GetTitle() string {
@@ -586,7 +798,7 @@ type UpdateExpectRequest struct {
 
 func (x *UpdateExpectRequest) Reset() {
 	*x = UpdateExpectRequest{}
-	mi := &file_lead_proto_msgTypes[10]
+	mi := &file_lead_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -598,7 +810,7 @@ func (x *UpdateExpectRequest) String() string {
 func (*UpdateExpectRequest) ProtoMessage() {}
 
 func (x *UpdateExpectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[10]
+	mi := &file_lead_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -611,7 +823,7 @@ func (x *UpdateExpectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateExpectRequest.ProtoReflect.Descriptor instead.
 func (*UpdateExpectRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{10}
+	return file_lead_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *UpdateExpectRequest) GetId() string {
@@ -643,7 +855,7 @@ type CreateSetRequest struct {
 
 func (x *CreateSetRequest) Reset() {
 	*x = CreateSetRequest{}
-	mi := &file_lead_proto_msgTypes[11]
+	mi := &file_lead_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +867,7 @@ func (x *CreateSetRequest) String() string {
 func (*CreateSetRequest) ProtoMessage() {}
 
 func (x *CreateSetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[11]
+	mi := &file_lead_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +880,7 @@ func (x *CreateSetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSetRequest.ProtoReflect.Descriptor instead.
 func (*CreateSetRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{11}
+	return file_lead_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CreateSetRequest) GetTitle() string {
@@ -729,7 +941,7 @@ type UpdateSetRequest struct {
 
 func (x *UpdateSetRequest) Reset() {
 	*x = UpdateSetRequest{}
-	mi := &file_lead_proto_msgTypes[12]
+	mi := &file_lead_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -741,7 +953,7 @@ func (x *UpdateSetRequest) String() string {
 func (*UpdateSetRequest) ProtoMessage() {}
 
 func (x *UpdateSetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[12]
+	mi := &file_lead_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -754,7 +966,7 @@ func (x *UpdateSetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSetRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSetRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{12}
+	return file_lead_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *UpdateSetRequest) GetId() string {
@@ -825,7 +1037,7 @@ type ChangeToSetRequest struct {
 
 func (x *ChangeToSetRequest) Reset() {
 	*x = ChangeToSetRequest{}
-	mi := &file_lead_proto_msgTypes[13]
+	mi := &file_lead_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -837,7 +1049,7 @@ func (x *ChangeToSetRequest) String() string {
 func (*ChangeToSetRequest) ProtoMessage() {}
 
 func (x *ChangeToSetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[13]
+	mi := &file_lead_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -850,7 +1062,7 @@ func (x *ChangeToSetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeToSetRequest.ProtoReflect.Descriptor instead.
 func (*ChangeToSetRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{13}
+	return file_lead_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ChangeToSetRequest) GetName() string {
@@ -936,7 +1148,7 @@ type CreateLeadDataRequest struct {
 
 func (x *CreateLeadDataRequest) Reset() {
 	*x = CreateLeadDataRequest{}
-	mi := &file_lead_proto_msgTypes[14]
+	mi := &file_lead_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -948,7 +1160,7 @@ func (x *CreateLeadDataRequest) String() string {
 func (*CreateLeadDataRequest) ProtoMessage() {}
 
 func (x *CreateLeadDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[14]
+	mi := &file_lead_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -961,7 +1173,7 @@ func (x *CreateLeadDataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateLeadDataRequest.ProtoReflect.Descriptor instead.
 func (*CreateLeadDataRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{14}
+	return file_lead_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *CreateLeadDataRequest) GetName() string {
@@ -1007,7 +1219,7 @@ type UpdateLeadDataRequest struct {
 
 func (x *UpdateLeadDataRequest) Reset() {
 	*x = UpdateLeadDataRequest{}
-	mi := &file_lead_proto_msgTypes[15]
+	mi := &file_lead_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1019,7 +1231,7 @@ func (x *UpdateLeadDataRequest) String() string {
 func (*UpdateLeadDataRequest) ProtoMessage() {}
 
 func (x *UpdateLeadDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[15]
+	mi := &file_lead_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1032,7 +1244,7 @@ func (x *UpdateLeadDataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateLeadDataRequest.ProtoReflect.Descriptor instead.
 func (*UpdateLeadDataRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{15}
+	return file_lead_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *UpdateLeadDataRequest) GetId() string {
@@ -1088,7 +1300,7 @@ type ChangeLeadPlaceRequest struct {
 
 func (x *ChangeLeadPlaceRequest) Reset() {
 	*x = ChangeLeadPlaceRequest{}
-	mi := &file_lead_proto_msgTypes[16]
+	mi := &file_lead_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1100,7 +1312,7 @@ func (x *ChangeLeadPlaceRequest) String() string {
 func (*ChangeLeadPlaceRequest) ProtoMessage() {}
 
 func (x *ChangeLeadPlaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[16]
+	mi := &file_lead_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1113,7 +1325,7 @@ func (x *ChangeLeadPlaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeLeadPlaceRequest.ProtoReflect.Descriptor instead.
 func (*ChangeLeadPlaceRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{16}
+	return file_lead_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ChangeLeadPlaceRequest) GetLeadDataId() string {
@@ -1141,7 +1353,7 @@ type ChangeLeadDataRequest struct {
 
 func (x *ChangeLeadDataRequest) Reset() {
 	*x = ChangeLeadDataRequest{}
-	mi := &file_lead_proto_msgTypes[17]
+	mi := &file_lead_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1153,7 +1365,7 @@ func (x *ChangeLeadDataRequest) String() string {
 func (*ChangeLeadDataRequest) ProtoMessage() {}
 
 func (x *ChangeLeadDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_lead_proto_msgTypes[17]
+	mi := &file_lead_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1166,7 +1378,7 @@ func (x *ChangeLeadDataRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeLeadDataRequest.ProtoReflect.Descriptor instead.
 func (*ChangeLeadDataRequest) Descriptor() ([]byte, []int) {
-	return file_lead_proto_rawDescGZIP(), []int{17}
+	return file_lead_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ChangeLeadDataRequest) GetId() string {
@@ -1189,7 +1401,34 @@ var file_lead_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x6c, 0x65,
 	0x61, 0x64, 0x1a, 0x0c, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x29, 0x0a,
+	0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xaf, 0x01,
+	0x0a, 0x16, 0x47, 0x65, 0x74, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x0e, 0x6c, 0x65, 0x61, 0x64,
+	0x43, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x14, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x4c, 0x65, 0x61, 0x64, 0x43, 0x6f, 0x6e, 0x76,
+	0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x52, 0x0e, 0x6c, 0x65, 0x61, 0x64, 0x43, 0x6f, 0x6e, 0x76,
+	0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x57, 0x0a, 0x17, 0x6c, 0x65, 0x61, 0x64, 0x43, 0x6f,
+	0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x46, 0x6f, 0x72, 0x53, 0x6f, 0x75, 0x72, 0x63,
+	0x65, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x4c,
+	0x65, 0x61, 0x64, 0x43, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x46, 0x6f, 0x72,
+	0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x52, 0x17, 0x6c, 0x65, 0x61, 0x64, 0x43, 0x6f, 0x6e, 0x76,
+	0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x46, 0x6f, 0x72, 0x53, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x22,
+	0x57, 0x0a, 0x0e, 0x4c, 0x65, 0x61, 0x64, 0x43, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f,
+	0x6e, 0x12, 0x26, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x44,
+	0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x63, 0x6f, 0x6e, 0x76, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x44, 0x61, 0x74, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x6c, 0x65, 0x61,
+	0x64, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x6c,
+	0x65, 0x61, 0x64, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x52, 0x0a, 0x17, 0x4c, 0x65, 0x61, 0x64,
+	0x43, 0x6f, 0x6e, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x46, 0x6f, 0x72, 0x53, 0x6f, 0x75,
+	0x72, 0x63, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x6c,
+	0x65, 0x61, 0x64, 0x73, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x0a, 0x6c, 0x65, 0x61, 0x64, 0x73, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x4f, 0x0a, 0x15,
+	0x47, 0x65, 0x74, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x59, 0x65,
+	0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x59,
+	0x65, 0x61, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x65, 0x6e, 0x64, 0x59, 0x65, 0x61, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x65, 0x6e, 0x64, 0x59, 0x65, 0x61, 0x72, 0x22, 0x29, 0x0a,
 	0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x22, 0x92, 0x01, 0x0a, 0x15, 0x47, 0x65, 0x74,
@@ -1318,7 +1557,7 @@ var file_lead_proto_rawDesc = []byte{
 	0x74, 0x61, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x20, 0x0a, 0x0b, 0x73, 0x65, 0x63,
 	0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
-	0x73, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x32, 0xd1, 0x02, 0x0a, 0x0b,
+	0x73, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x32, 0x9e, 0x03, 0x0a, 0x0b,
 	0x4c, 0x65, 0x61, 0x64, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x3a, 0x0a, 0x0a, 0x43,
 	0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x12, 0x17, 0x2e, 0x6c, 0x65, 0x61, 0x64,
 	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
@@ -1339,56 +1578,61 @@ var file_lead_proto_rawDesc = []byte{
 	0x74, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x2e, 0x67,
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
 	0x6d, 0x70, 0x74, 0x79, 0x1a, 0x19, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x47, 0x65, 0x74, 0x4c,
-	0x65, 0x61, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32,
-	0xce, 0x01, 0x0a, 0x0d, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x3e, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63,
-	0x74, 0x12, 0x19, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45,
-	0x78, 0x70, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x3e, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63,
-	0x74, 0x12, 0x19, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45,
-	0x78, 0x70, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63,
-	0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x3d, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63,
-	0x74, 0x12, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74,
-	0x65, 0x41, 0x62, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f,
+	0x65, 0x61, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x4b, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x70, 0x6f, 0x72, 0x74,
+	0x73, 0x12, 0x1b, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x47, 0x65, 0x74, 0x4c, 0x65, 0x61, 0x64,
+	0x52, 0x65, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c,
+	0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x47, 0x65, 0x74, 0x4c, 0x65, 0x61, 0x64, 0x52, 0x65, 0x70,
+	0x6f, 0x72, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xce, 0x01, 0x0a,
+	0x0d, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x3e,
+	0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x12, 0x19,
+	0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65,
+	0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e,
+	0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x12, 0x19,
+	0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65,
+	0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d,
+	0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3d,
+	0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x63, 0x74, 0x12, 0x18,
+	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x62,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xfa, 0x01,
+	0x0a, 0x0a, 0x53, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x38, 0x0a, 0x09,
+	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x12, 0x16, 0x2e, 0x6c, 0x65, 0x61, 0x64,
+	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x09, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x53, 0x65, 0x74, 0x12, 0x16, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f,
 	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x32, 0xfa, 0x01, 0x0a, 0x0a, 0x53, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
-	0x38, 0x0a, 0x09, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x12, 0x16, 0x2e, 0x6c,
-	0x65, 0x61, 0x64, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x09, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x12, 0x16, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x53, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13,
-	0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x3a, 0x0a, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x65, 0x74,
-	0x12, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
-	0x41, 0x62, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d,
-	0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x3c, 0x0a, 0x0b, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x54, 0x6f, 0x53, 0x65, 0x74, 0x12, 0x18,
-	0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x54, 0x6f, 0x53, 0x65,
-	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
-	0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa0, 0x02,
-	0x0a, 0x0f, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x12, 0x42, 0x0a, 0x0e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x44,
-	0x61, 0x74, 0x61, 0x12, 0x1b, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x42, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4c,
-	0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1b, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3f, 0x0a, 0x0e, 0x44, 0x65, 0x6c,
-	0x65, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x62, 0x73, 0x52, 0x65,
+	0x12, 0x3a, 0x0a, 0x09, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x53, 0x65, 0x74, 0x12, 0x18, 0x2e,
+	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x62, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x0b,
+	0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x54, 0x6f, 0x53, 0x65, 0x74, 0x12, 0x18, 0x2e, 0x6c, 0x65,
+	0x61, 0x64, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x54, 0x6f, 0x53, 0x65, 0x74, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41,
-	0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x0f, 0x43, 0x68,
-	0x61, 0x6e, 0x67, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x12, 0x1c, 0x2e,
-	0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x50,
-	0x6c, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f,
-	0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa0, 0x02, 0x0a, 0x0f, 0x4c,
+	0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x42,
+	0x0a, 0x0e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61,
+	0x12, 0x1b, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4c, 0x65,
+	0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e,
+	0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x42, 0x0a, 0x0e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4c, 0x65, 0x61, 0x64,
+	0x44, 0x61, 0x74, 0x61, 0x12, 0x1b, 0x2e, 0x6c, 0x65, 0x61, 0x64, 0x2e, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3f, 0x0a, 0x0e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x4c, 0x65, 0x61, 0x64, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x62, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x0f, 0x43, 0x68, 0x61, 0x6e, 0x67,
+	0x65, 0x4c, 0x65, 0x61, 0x64, 0x50, 0x6c, 0x61, 0x63, 0x65, 0x12, 0x1c, 0x2e, 0x6c, 0x65, 0x61,
+	0x64, 0x2e, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x4c, 0x65, 0x61, 0x64, 0x50, 0x6c, 0x61, 0x63,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a,
+	0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1403,75 +1647,83 @@ func file_lead_proto_rawDescGZIP() []byte {
 	return file_lead_proto_rawDescData
 }
 
-var file_lead_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_lead_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_lead_proto_goTypes = []any{
-	(*CreateLeadRequest)(nil),      // 0: lead.CreateLeadRequest
-	(*GetLeadCommonResponse)(nil),  // 1: lead.GetLeadCommonResponse
-	(*GetLeadCommonRequest)(nil),   // 2: lead.GetLeadCommonRequest
-	(*LeadCommonRequest)(nil),      // 3: lead.LeadCommonRequest
-	(*Section)(nil),                // 4: lead.Section
-	(*Lead)(nil),                   // 5: lead.Lead
-	(*UpdateLeadRequest)(nil),      // 6: lead.UpdateLeadRequest
-	(*GetLeadListResponse)(nil),    // 7: lead.GetLeadListResponse
-	(*DynamicSection)(nil),         // 8: lead.DynamicSection
-	(*CreateExpectRequest)(nil),    // 9: lead.CreateExpectRequest
-	(*UpdateExpectRequest)(nil),    // 10: lead.UpdateExpectRequest
-	(*CreateSetRequest)(nil),       // 11: lead.CreateSetRequest
-	(*UpdateSetRequest)(nil),       // 12: lead.UpdateSetRequest
-	(*ChangeToSetRequest)(nil),     // 13: lead.ChangeToSetRequest
-	(*CreateLeadDataRequest)(nil),  // 14: lead.CreateLeadDataRequest
-	(*UpdateLeadDataRequest)(nil),  // 15: lead.UpdateLeadDataRequest
-	(*ChangeLeadPlaceRequest)(nil), // 16: lead.ChangeLeadPlaceRequest
-	(*ChangeLeadDataRequest)(nil),  // 17: lead.ChangeLeadDataRequest
-	(*DeleteAbsRequest)(nil),       // 18: common.DeleteAbsRequest
-	(*emptypb.Empty)(nil),          // 19: google.protobuf.Empty
-	(*AbsResponse)(nil),            // 20: common.AbsResponse
+	(*GetLeadReportsResponse)(nil),  // 0: lead.GetLeadReportsResponse
+	(*LeadConversion)(nil),          // 1: lead.LeadConversion
+	(*LeadConversionForSource)(nil), // 2: lead.LeadConversionForSource
+	(*GetLeadReportsRequest)(nil),   // 3: lead.GetLeadReportsRequest
+	(*CreateLeadRequest)(nil),       // 4: lead.CreateLeadRequest
+	(*GetLeadCommonResponse)(nil),   // 5: lead.GetLeadCommonResponse
+	(*GetLeadCommonRequest)(nil),    // 6: lead.GetLeadCommonRequest
+	(*LeadCommonRequest)(nil),       // 7: lead.LeadCommonRequest
+	(*Section)(nil),                 // 8: lead.Section
+	(*Lead)(nil),                    // 9: lead.Lead
+	(*UpdateLeadRequest)(nil),       // 10: lead.UpdateLeadRequest
+	(*GetLeadListResponse)(nil),     // 11: lead.GetLeadListResponse
+	(*DynamicSection)(nil),          // 12: lead.DynamicSection
+	(*CreateExpectRequest)(nil),     // 13: lead.CreateExpectRequest
+	(*UpdateExpectRequest)(nil),     // 14: lead.UpdateExpectRequest
+	(*CreateSetRequest)(nil),        // 15: lead.CreateSetRequest
+	(*UpdateSetRequest)(nil),        // 16: lead.UpdateSetRequest
+	(*ChangeToSetRequest)(nil),      // 17: lead.ChangeToSetRequest
+	(*CreateLeadDataRequest)(nil),   // 18: lead.CreateLeadDataRequest
+	(*UpdateLeadDataRequest)(nil),   // 19: lead.UpdateLeadDataRequest
+	(*ChangeLeadPlaceRequest)(nil),  // 20: lead.ChangeLeadPlaceRequest
+	(*ChangeLeadDataRequest)(nil),   // 21: lead.ChangeLeadDataRequest
+	(*DeleteAbsRequest)(nil),        // 22: common.DeleteAbsRequest
+	(*emptypb.Empty)(nil),           // 23: google.protobuf.Empty
+	(*AbsResponse)(nil),             // 24: common.AbsResponse
 }
 var file_lead_proto_depIdxs = []int32{
-	4,  // 0: lead.GetLeadCommonResponse.leads:type_name -> lead.Section
-	4,  // 1: lead.GetLeadCommonResponse.expectations:type_name -> lead.Section
-	4,  // 2: lead.GetLeadCommonResponse.sets:type_name -> lead.Section
-	3,  // 3: lead.GetLeadCommonRequest.requests:type_name -> lead.LeadCommonRequest
-	5,  // 4: lead.Section.leads:type_name -> lead.Lead
-	8,  // 5: lead.GetLeadListResponse.sections:type_name -> lead.DynamicSection
-	17, // 6: lead.ChangeLeadPlaceRequest.changedSet:type_name -> lead.ChangeLeadDataRequest
-	0,  // 7: lead.LeadService.CreateLead:input_type -> lead.CreateLeadRequest
-	2,  // 8: lead.LeadService.GetLeadCommon:input_type -> lead.GetLeadCommonRequest
-	6,  // 9: lead.LeadService.UpdateLead:input_type -> lead.UpdateLeadRequest
-	18, // 10: lead.LeadService.DeleteLead:input_type -> common.DeleteAbsRequest
-	19, // 11: lead.LeadService.GetListSection:input_type -> google.protobuf.Empty
-	9,  // 12: lead.ExpectService.CreateExpect:input_type -> lead.CreateExpectRequest
-	10, // 13: lead.ExpectService.UpdateExpect:input_type -> lead.UpdateExpectRequest
-	18, // 14: lead.ExpectService.DeleteExpect:input_type -> common.DeleteAbsRequest
-	11, // 15: lead.SetService.CreateSet:input_type -> lead.CreateSetRequest
-	12, // 16: lead.SetService.UpdateSet:input_type -> lead.UpdateSetRequest
-	18, // 17: lead.SetService.DeleteSet:input_type -> common.DeleteAbsRequest
-	13, // 18: lead.SetService.ChangeToSet:input_type -> lead.ChangeToSetRequest
-	14, // 19: lead.LeadDataService.CreateLeadData:input_type -> lead.CreateLeadDataRequest
-	15, // 20: lead.LeadDataService.UpdateLeadData:input_type -> lead.UpdateLeadDataRequest
-	18, // 21: lead.LeadDataService.DeleteLeadData:input_type -> common.DeleteAbsRequest
-	16, // 22: lead.LeadDataService.ChangeLeadPlace:input_type -> lead.ChangeLeadPlaceRequest
-	20, // 23: lead.LeadService.CreateLead:output_type -> common.AbsResponse
-	1,  // 24: lead.LeadService.GetLeadCommon:output_type -> lead.GetLeadCommonResponse
-	20, // 25: lead.LeadService.UpdateLead:output_type -> common.AbsResponse
-	20, // 26: lead.LeadService.DeleteLead:output_type -> common.AbsResponse
-	7,  // 27: lead.LeadService.GetListSection:output_type -> lead.GetLeadListResponse
-	20, // 28: lead.ExpectService.CreateExpect:output_type -> common.AbsResponse
-	20, // 29: lead.ExpectService.UpdateExpect:output_type -> common.AbsResponse
-	20, // 30: lead.ExpectService.DeleteExpect:output_type -> common.AbsResponse
-	20, // 31: lead.SetService.CreateSet:output_type -> common.AbsResponse
-	20, // 32: lead.SetService.UpdateSet:output_type -> common.AbsResponse
-	20, // 33: lead.SetService.DeleteSet:output_type -> common.AbsResponse
-	20, // 34: lead.SetService.ChangeToSet:output_type -> common.AbsResponse
-	20, // 35: lead.LeadDataService.CreateLeadData:output_type -> common.AbsResponse
-	20, // 36: lead.LeadDataService.UpdateLeadData:output_type -> common.AbsResponse
-	20, // 37: lead.LeadDataService.DeleteLeadData:output_type -> common.AbsResponse
-	20, // 38: lead.LeadDataService.ChangeLeadPlace:output_type -> common.AbsResponse
-	23, // [23:39] is the sub-list for method output_type
-	7,  // [7:23] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	1,  // 0: lead.GetLeadReportsResponse.leadConversion:type_name -> lead.LeadConversion
+	2,  // 1: lead.GetLeadReportsResponse.leadConversionForSource:type_name -> lead.LeadConversionForSource
+	8,  // 2: lead.GetLeadCommonResponse.leads:type_name -> lead.Section
+	8,  // 3: lead.GetLeadCommonResponse.expectations:type_name -> lead.Section
+	8,  // 4: lead.GetLeadCommonResponse.sets:type_name -> lead.Section
+	7,  // 5: lead.GetLeadCommonRequest.requests:type_name -> lead.LeadCommonRequest
+	9,  // 6: lead.Section.leads:type_name -> lead.Lead
+	12, // 7: lead.GetLeadListResponse.sections:type_name -> lead.DynamicSection
+	21, // 8: lead.ChangeLeadPlaceRequest.changedSet:type_name -> lead.ChangeLeadDataRequest
+	4,  // 9: lead.LeadService.CreateLead:input_type -> lead.CreateLeadRequest
+	6,  // 10: lead.LeadService.GetLeadCommon:input_type -> lead.GetLeadCommonRequest
+	10, // 11: lead.LeadService.UpdateLead:input_type -> lead.UpdateLeadRequest
+	22, // 12: lead.LeadService.DeleteLead:input_type -> common.DeleteAbsRequest
+	23, // 13: lead.LeadService.GetListSection:input_type -> google.protobuf.Empty
+	3,  // 14: lead.LeadService.GetLeadReports:input_type -> lead.GetLeadReportsRequest
+	13, // 15: lead.ExpectService.CreateExpect:input_type -> lead.CreateExpectRequest
+	14, // 16: lead.ExpectService.UpdateExpect:input_type -> lead.UpdateExpectRequest
+	22, // 17: lead.ExpectService.DeleteExpect:input_type -> common.DeleteAbsRequest
+	15, // 18: lead.SetService.CreateSet:input_type -> lead.CreateSetRequest
+	16, // 19: lead.SetService.UpdateSet:input_type -> lead.UpdateSetRequest
+	22, // 20: lead.SetService.DeleteSet:input_type -> common.DeleteAbsRequest
+	17, // 21: lead.SetService.ChangeToSet:input_type -> lead.ChangeToSetRequest
+	18, // 22: lead.LeadDataService.CreateLeadData:input_type -> lead.CreateLeadDataRequest
+	19, // 23: lead.LeadDataService.UpdateLeadData:input_type -> lead.UpdateLeadDataRequest
+	22, // 24: lead.LeadDataService.DeleteLeadData:input_type -> common.DeleteAbsRequest
+	20, // 25: lead.LeadDataService.ChangeLeadPlace:input_type -> lead.ChangeLeadPlaceRequest
+	24, // 26: lead.LeadService.CreateLead:output_type -> common.AbsResponse
+	5,  // 27: lead.LeadService.GetLeadCommon:output_type -> lead.GetLeadCommonResponse
+	24, // 28: lead.LeadService.UpdateLead:output_type -> common.AbsResponse
+	24, // 29: lead.LeadService.DeleteLead:output_type -> common.AbsResponse
+	11, // 30: lead.LeadService.GetListSection:output_type -> lead.GetLeadListResponse
+	0,  // 31: lead.LeadService.GetLeadReports:output_type -> lead.GetLeadReportsResponse
+	24, // 32: lead.ExpectService.CreateExpect:output_type -> common.AbsResponse
+	24, // 33: lead.ExpectService.UpdateExpect:output_type -> common.AbsResponse
+	24, // 34: lead.ExpectService.DeleteExpect:output_type -> common.AbsResponse
+	24, // 35: lead.SetService.CreateSet:output_type -> common.AbsResponse
+	24, // 36: lead.SetService.UpdateSet:output_type -> common.AbsResponse
+	24, // 37: lead.SetService.DeleteSet:output_type -> common.AbsResponse
+	24, // 38: lead.SetService.ChangeToSet:output_type -> common.AbsResponse
+	24, // 39: lead.LeadDataService.CreateLeadData:output_type -> common.AbsResponse
+	24, // 40: lead.LeadDataService.UpdateLeadData:output_type -> common.AbsResponse
+	24, // 41: lead.LeadDataService.DeleteLeadData:output_type -> common.AbsResponse
+	24, // 42: lead.LeadDataService.ChangeLeadPlace:output_type -> common.AbsResponse
+	26, // [26:43] is the sub-list for method output_type
+	9,  // [9:26] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_lead_proto_init() }
@@ -1486,7 +1738,7 @@ func file_lead_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_lead_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   4,
 		},

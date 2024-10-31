@@ -25,6 +25,7 @@ const (
 	LeadService_UpdateLead_FullMethodName     = "/lead.LeadService/UpdateLead"
 	LeadService_DeleteLead_FullMethodName     = "/lead.LeadService/DeleteLead"
 	LeadService_GetListSection_FullMethodName = "/lead.LeadService/GetListSection"
+	LeadService_GetLeadReports_FullMethodName = "/lead.LeadService/GetLeadReports"
 )
 
 // LeadServiceClient is the client API for LeadService service.
@@ -38,6 +39,7 @@ type LeadServiceClient interface {
 	UpdateLead(ctx context.Context, in *UpdateLeadRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteLead(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetListSection(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetLeadListResponse, error)
+	GetLeadReports(ctx context.Context, in *GetLeadReportsRequest, opts ...grpc.CallOption) (*GetLeadReportsResponse, error)
 }
 
 type leadServiceClient struct {
@@ -98,6 +100,16 @@ func (c *leadServiceClient) GetListSection(ctx context.Context, in *emptypb.Empt
 	return out, nil
 }
 
+func (c *leadServiceClient) GetLeadReports(ctx context.Context, in *GetLeadReportsRequest, opts ...grpc.CallOption) (*GetLeadReportsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLeadReportsResponse)
+	err := c.cc.Invoke(ctx, LeadService_GetLeadReports_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LeadServiceServer is the server API for LeadService service.
 // All implementations must embed UnimplementedLeadServiceServer
 // for forward compatibility.
@@ -109,6 +121,7 @@ type LeadServiceServer interface {
 	UpdateLead(context.Context, *UpdateLeadRequest) (*AbsResponse, error)
 	DeleteLead(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	GetListSection(context.Context, *emptypb.Empty) (*GetLeadListResponse, error)
+	GetLeadReports(context.Context, *GetLeadReportsRequest) (*GetLeadReportsResponse, error)
 	mustEmbedUnimplementedLeadServiceServer()
 }
 
@@ -133,6 +146,9 @@ func (UnimplementedLeadServiceServer) DeleteLead(context.Context, *DeleteAbsRequ
 }
 func (UnimplementedLeadServiceServer) GetListSection(context.Context, *emptypb.Empty) (*GetLeadListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListSection not implemented")
+}
+func (UnimplementedLeadServiceServer) GetLeadReports(context.Context, *GetLeadReportsRequest) (*GetLeadReportsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLeadReports not implemented")
 }
 func (UnimplementedLeadServiceServer) mustEmbedUnimplementedLeadServiceServer() {}
 func (UnimplementedLeadServiceServer) testEmbeddedByValue()                     {}
@@ -245,6 +261,24 @@ func _LeadService_GetListSection_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LeadService_GetLeadReports_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLeadReportsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LeadServiceServer).GetLeadReports(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LeadService_GetLeadReports_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LeadServiceServer).GetLeadReports(ctx, req.(*GetLeadReportsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LeadService_ServiceDesc is the grpc.ServiceDesc for LeadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -271,6 +305,10 @@ var LeadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetListSection",
 			Handler:    _LeadService_GetListSection_Handler,
+		},
+		{
+			MethodName: "GetLeadReports",
+			Handler:    _LeadService_GetLeadReports_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -202,3 +202,10 @@ func (lc *LidClient) ChangeSetToGroup(ctx context.Context, p *pb.ChangeToSetRequ
 	}
 	return resp, nil
 }
+
+func (lc *LidClient) GetLeadReports(from string, till string, ctx context.Context) (*pb.GetLeadReportsResponse, error) {
+	return lc.leadClient.GetLeadReports(ctx, &pb.GetLeadReportsRequest{
+		StartYear: from,
+		EndYear:   till,
+	})
+}
