@@ -1,5 +1,4 @@
-# Build stage
-FROM golang:1.23-alpine AS builder
+FROM golang:latest AS builder
 
 WORKDIR /app
 
@@ -10,7 +9,6 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o lead-service ./cmd/main.go
 
-# Final stage
 FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
