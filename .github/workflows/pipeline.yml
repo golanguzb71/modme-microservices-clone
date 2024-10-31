@@ -1,26 +1,26 @@
-#name: CI/CD Pipeline
-#
-#on:
-#  push:
-#    branches:
-#      - master
-#
-#jobs:
-#  deploy:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Install sshpass
-#        run: sudo apt-get install -y sshpass
-#
-#      - name: Deploy to Server
-#        env:
-#          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-#          SERVER_IP: ${{ secrets.SERVER_IP }}
-#        run: |
-#          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no abdulaziz@$SERVER_IP << 'EOF'
-#          cd modme-microservices-clone || exit 1
-#          git pull origin master || exit 1
-#          docker-compose build || exit 1
-#          docker-compose up -d || exit 1
-#          EOF
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy to Server
+        env:
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+        run: |
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no abdulaziz@$SERVER_IP << 'EOF'
+          cd modme-microservices-clone || exit 1
+          git pull origin master || exit 1
+          docker-compose build || exit 1
+          docker-compose up -d || exit 1
+          EOF

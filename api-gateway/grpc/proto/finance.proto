@@ -94,6 +94,7 @@ message GetAllExpenseAbs{
   user.GetUserByIdResponse creator = 7;
   string paymentType = 8;
   string createdAt = 9;
+  string title = 10;
 }
 message CreateExpenseRequest{
   string title = 1;

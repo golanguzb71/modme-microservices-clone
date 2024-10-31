@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: education.proto
+// source: group.proto
 
 package pb
 
@@ -236,7 +236,7 @@ var RoomService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "education.proto",
+	Metadata: "group.proto",
 }
 
 const (
@@ -494,7 +494,7 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "education.proto",
+	Metadata: "group.proto",
 }
 
 const (
@@ -828,7 +828,7 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "education.proto",
+	Metadata: "group.proto",
 }
 
 const (
@@ -972,7 +972,7 @@ var AttendanceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "education.proto",
+	Metadata: "group.proto",
 }
 
 const (
@@ -1572,5 +1572,5 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "education.proto",
+	Metadata: "group.proto",
 }

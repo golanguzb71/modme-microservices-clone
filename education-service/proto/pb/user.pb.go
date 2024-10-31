@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.35.1
 // 	protoc        v3.21.12
-// source: user.proto
+// source: proxy.proto
 
 package pb
 

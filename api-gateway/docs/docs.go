@@ -3782,6 +3782,9 @@ const docTemplate = `{
                 "sum": {
                     "type": "string"
                 },
+                "title": {
+                    "type": "string"
+                },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
                 }

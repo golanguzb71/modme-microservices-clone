@@ -12,7 +12,6 @@ services:
       - postgres_lead_data:/var/lib/postgresql/data
     networks:
       - app-network
-
   postgres-sphere-education:
     image: postgres:15-alpine
     container_name: postgres-education-db
@@ -26,7 +25,6 @@ services:
       - postgres_education_data:/var/lib/postgresql/data
     networks:
       - app-network
-
   postgres-sphere-user:
     image: postgres:15-alpine
     container_name: postgres-user-db
@@ -40,25 +38,19 @@ services:
       - postgres_user_data:/var/lib/postgresql/data
     networks:
       - app-network
-
-  sphere-lead-service:
-    build:
-      context: ./lead-service
-      dockerfile: Dockerfile
-    container_name: lead-service
+  postgres-sphere-finance:
+    image: postgres:15-alpine
+    container_name: postgres-finance-db
     environment:
-      DB_HOST: postgres-sphere-lead
-      DB_PORT: 5432
-      DB_USER: lead_user
-      DB_PASSWORD: lead_password
-      DB_NAME: sphere_lead_db
-    depends_on:
-      - postgres-sphere-lead
+      POSTGRES_DB: sphere_finance_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "9017:8080"
+      - "9020:5432"
+    volumes:
+      - postgres_finance_data:/var/lib/postgresql/data
     networks:
       - app-network
-
   sphere-user-service:
     build:
       context: ./user-service
@@ -76,7 +68,6 @@ services:
       - "9018:8080"
     networks:
       - app-network
-
   sphere-education-service:
     build:
       context: ./education-service
@@ -94,7 +85,40 @@ services:
       - "9016:8080"
     networks:
       - app-network
-
+  sphere-lead-service:
+    build:
+      context: ./lead-service
+      dockerfile: Dockerfile
+    container_name: lead-service
+    environment:
+      DB_HOST: postgres-sphere-lead
+      DB_PORT: 5432
+      DB_USER: lead_user
+      DB_PASSWORD: lead_password
+      DB_NAME: sphere_lead_db
+    depends_on:
+      - postgres-sphere-lead
+    ports:
+      - "9017:8080"
+    networks:
+      - app-network
+  sphere-finance-service:
+    build:
+      context: ./finance-service
+      dockerfile: Dockerfile
+    container_name: finance-service
+    environment:
+      DB_HOST: postgres-sphere-finance
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: sphere_finance_db
+    depends_on:
+      - postgres-sphere-finance
+    ports:
+      - "9021:8080"
+    networks:
+      - app-network
   sphere-api-gateway:
     build:
       context: ./api-gateway
@@ -113,3 +137,4 @@ volumes:
   postgres_lead_data:
   postgres_education_data:
   postgres_user_data:
+  postgres_finance_data:

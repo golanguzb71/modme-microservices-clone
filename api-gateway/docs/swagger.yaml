@@ -411,6 +411,8 @@ definitions:
         type: string
       sum:
         type: string
+      title:
+        type: string
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
     type: object

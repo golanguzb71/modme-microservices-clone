@@ -11,12 +11,25 @@ import (
 )
 
 type UserRepository struct {
-	db          *sql.DB
-	groupClient *clients.GroupClient
+	db              *sql.DB
+	groupClient     *clients.GroupClient
+	groupClientChan chan *clients.GroupClient
 }
 
-func NewUserRepository(db *sql.DB, client *clients.GroupClient) *UserRepository {
-	return &UserRepository{db: db, groupClient: client}
+func NewUserRepository(db *sql.DB, clientChan chan *clients.GroupClient) *UserRepository {
+	return &UserRepository{db: db, groupClientChan: clientChan}
+}
+
+func (r *UserRepository) ensureGroupClient() error {
+	if r.groupClient == nil {
+		select {
+		case client := <-r.groupClientChan:
+			r.groupClient = client
+		case <-time.After(5 * time.Second):
+			return fmt.Errorf("failed to initialize GroupClient within timeout")
+		}
+	}
+	return nil
 }
 
 func (r *UserRepository) CreateUser(gender bool, number string, birthDate string, name string, password string, role string) (*pb.AbsResponse, error) {
@@ -34,21 +47,28 @@ func (r *UserRepository) CreateUser(gender bool, number string, birthDate string
 	}, nil
 }
 func (r *UserRepository) GetTeachers(isDeleted bool) (*pb.GetTeachersResponse, error) {
+	if err := r.ensureGroupClient(); err != nil {
+		return nil, err
+	}
+
 	rows, err := r.db.Query(`SELECT id, full_name, phone_number FROM users WHERE is_deleted=$1 AND role='TEACHER'`, isDeleted)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
+
 	var response pb.GetTeachersResponse
 	for rows.Next() {
 		var id, fullName, phoneNumber string
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
+
 		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(id, false)
 		if err != nil {
 			return nil, err
 		}
+
 		response.Teachers = append(response.Teachers, &pb.AbsTeacher{
 			Id:           id,
 			FullName:     fullName,
@@ -147,7 +167,6 @@ func (r *UserRepository) GetAllEmployee(isArchived bool) (*pb.GetAllEmployeeResp
 
 	return &pb.GetAllEmployeeResponse{Employees: employees}, nil
 }
-
 func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
 	res := pb.GetUserByIdResponse{}
 	var password string
@@ -165,7 +184,6 @@ func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserBy
 	}
 	return &res, password, nil
 }
-
 func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, error) {
 	query := `SELECT id, phone_number, role, full_name, birth_date, gender, is_deleted, created_at
               FROM users WHERE is_deleted = $1`

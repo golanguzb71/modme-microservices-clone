@@ -12,7 +12,6 @@ import (
 	"user-service/internal/repository"
 	"user-service/internal/service"
 	"user-service/internal/utils"
-	"user-service/migrations"
 	"user-service/proto/pb"
 )
 
@@ -21,28 +20,31 @@ func RunServer() {
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}
+
 	db, err := repository.NewPostgresRepository(cfg)
 	if err != nil {
 		log.Fatalf("Failed to load database: %v", err)
 	}
 	defer db.Close()
 
-	var groupClient *clients.GroupClient
-	//go func() {
-	for {
-		groupClient, err = clients.NewGroupClient(cfg.Grpc.EducationService.Address)
-		if err != nil {
-			log.Println("Failed to connect to education service, retrying in 3 seconds...")
-			time.Sleep(3 * time.Second)
-			continue
+	groupClientChan := make(chan *clients.GroupClient)
+	go func() {
+		time.Sleep(2 * time.Second)
+		var client *clients.GroupClient
+		for {
+			client, err = clients.NewGroupClient(cfg.Grpc.EducationService.Address)
+			if err == nil {
+				log.Println("Connected to Education Service successfully.")
+				groupClientChan <- client
+				close(groupClientChan)
+				break
+			}
+			log.Printf("Waiting for Education Service...")
+			time.Sleep(2 * time.Second)
 		}
-		log.Println("Connected to education service.")
-		break
-	}
-	//}()
-	migrations.SetUpMigrating(cfg.Database.Action, db)
+	}()
 
-	userRepo := repository.NewUserRepository(db, groupClient)
+	userRepo := repository.NewUserRepository(db, groupClientChan)
 	userService := service.NewUserService(userRepo)
 	authService := service.NewAuthService(userRepo)
 
@@ -50,12 +52,15 @@ func RunServer() {
 	if err != nil {
 		log.Fatalf("Error while listening: %v", err)
 	}
+
 	server := grpc.NewServer(
 		grpc.UnaryInterceptor(utils.RecoveryInterceptor),
 	)
 	pb.RegisterUserServiceServer(server, userService)
 	pb.RegisterAuthServiceServer(server, authService)
+
 	log.Printf("Server listening on port %v", cfg.Server.Port)
+
 	if err := server.Serve(listen); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}

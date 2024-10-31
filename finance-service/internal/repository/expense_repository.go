@@ -80,7 +80,7 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 		args = append(args, id)
 	}
 
-	baseQuery += " ORDER BY e.given_date DESC LIMIT $%d OFFSET $%d"
+	baseQuery += " ORDER BY e.created_at DESC LIMIT $%d OFFSET $%d"
 	args = append(args, size, offset)
 	baseQuery = fmt.Sprintf(baseQuery, paramCount+1, paramCount+2)
 
