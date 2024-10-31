@@ -19,8 +19,8 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
         run: |
           sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no abdulaziz@$SERVER_IP << 'EOF'
-          cd modme-microservices-clone || exit 1
-          git pull origin master || exit 1
-          docker-compose build || exit 1
-          docker-compose up -d || exit 1
+          cd modme-microservices-clone
+          git pull origin master
+          docker compose build
+          docker compose up -d
           EOF
