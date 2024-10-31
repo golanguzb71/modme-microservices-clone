@@ -46,8 +46,6 @@ CREATE TABLE IF NOT EXISTS expense
     payment_method varchar check ( payment_method in ('CASH', 'CLICK', 'PAYME')) NOT NULL
 );
 
-
-
 CREATE TABLE IF NOT EXISTS teacher_salary
 (
     teacher_id        uuid PRIMARY KEY,

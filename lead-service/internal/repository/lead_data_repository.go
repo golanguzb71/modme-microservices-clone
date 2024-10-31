@@ -33,11 +33,19 @@ func (r *LeadDataRepository) CreateLeadData(phoneNumber, leadID, expectID, setID
 		return status.Errorf(codes.Aborted, err.Error())
 	}
 	var checker bool
-	_ = r.db.QueryRow(`SELECT exists(SELECT 1 FROM lead_reports where source=$1)`, title).Scan(&checker)
+	_ = r.db.QueryRow(`SELECT exists(SELECT 1 FROM lead_source_reports where source=$1)`, title).Scan(&checker)
 	if checker {
-		_, _ = r.db.Exec(`UPDATE lead_reports SET lead_count=lead_count+1 where source=$1`, title)
+		_, _ = r.db.Exec(`UPDATE lead_source_reports SET lead_count=lead_count+1 where source=$1`, title)
 	} else {
-		_, _ = r.db.Exec(`INSERT INTO lead_reports(id, lead_count, source , created_at) values ($1 , $2 , $3 , $4)`, uuid.New(), 1, title, time.Now())
+		_, _ = r.db.Exec(`INSERT INTO lead_source_reports(id, lead_count, source , created_at) values ($1 , $2 , $3 , $4)`, uuid.New(), 1, title, time.Now())
+	}
+	format := time.Now().Format("2006-01")
+
+	_ = r.db.QueryRow(`SELECT exists(SELECT 1 FROM lead_conversion_reports where conversion_date=$1)`, format).Scan(&checker)
+	if checker {
+		_, _ = r.db.Exec(`UPDATE lead_conversion_reports SET lead_count=lead_count+1 where conversion_date=$1`, format)
+	} else {
+		_, _ = r.db.Exec(`INSERT INTO lead_conversion_reports(id, lead_count, conversion_date, created_at) values ($1 , $2 , $3 , $4)`, uuid.New(), 1, format, time.Now())
 	}
 	return nil
 }

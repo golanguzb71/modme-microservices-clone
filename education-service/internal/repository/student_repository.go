@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"math"
 	"strconv"
 	"time"
 )
@@ -37,6 +38,9 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 	if err != nil {
 		return nil, fmt.Errorf("failed to get total count: %v", err)
 	}
+
+	totalPages := int32(math.Ceil(float64(totalCount) / float64(sizeInt)))
+
 	studentQuery := `
     SELECT id, name, gender, date_of_birth, phone, address, passport_id, additional_contact, 
            balance, condition, telegram_username, created_at
@@ -124,10 +128,10 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		student.Groups = append(student.Groups, &group)
 	}
 
-	var response pb.GetAllStudentResponse
-	response.Response = students
-	response.TotalCount = int32((int(totalCount) + sizeInt - 1) / sizeInt)
-	return &response, nil
+	return &pb.GetAllStudentResponse{
+		Response:   students,
+		TotalCount: totalPages,
+	}, nil
 }
 func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
 	studentId := uuid.New()

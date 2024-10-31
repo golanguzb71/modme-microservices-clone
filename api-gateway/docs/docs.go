@@ -967,6 +967,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/expense/get-chart-diagram/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Queries the finance service for expense data between 'from' and 'to' dates, returning it as a chart diagram.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "expense"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date for the chart (YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date for the chart (YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chart data successfully retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllExpenseDiagramResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or error retrieving chart data",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -3949,6 +3999,38 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
+                }
+            }
+        },
+        "pb.GetAllExpenseDiagramResponse": {
+            "type": "object",
+            "properties": {
+                "amountCommonExpense": {
+                    "type": "string"
+                },
+                "monthAmount": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "months": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userOrCategories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userOrCategoriesAmount": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },

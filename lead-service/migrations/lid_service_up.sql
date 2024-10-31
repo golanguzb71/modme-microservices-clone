@@ -38,10 +38,18 @@ CREATE TABLE IF NOT EXISTS lead_user
     created_at   timestamp DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS lead_reports
+CREATE TABLE IF NOT EXISTS lead_source_reports
 (
     id         uuid primary key,
     lead_count int,
     source     varchar,
     created_at timestamp DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS lead_conversion_reports
+(
+    id              uuid primary key,
+    lead_count      int,
+    conversion_date varchar,
+    created_at      timestamp DEFAULT NOW()
 );

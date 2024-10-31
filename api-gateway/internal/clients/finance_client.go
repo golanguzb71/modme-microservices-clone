@@ -62,6 +62,13 @@ func (fc *FinanceClient) GetHistoryDiscount(id string, ctx context.Context) (*pb
 	return fc.discountClient.GetHistoryDiscount(ctx, &pb.GetHistoryDiscountRequest{StudentId: id})
 }
 
+func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx context.Context) (*pb.GetAllExpenseDiagramResponse, error) {
+	return fc.expenseClient.GetAllExpenseDiagram(ctx, &pb.GetAllExpenseDiagramRequest{
+		From: from,
+		To:   to,
+	})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

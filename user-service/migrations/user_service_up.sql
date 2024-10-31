@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users
     phone_number  varchar UNIQUE                                                   NOT NULL,
     password      varchar                                                          NOT NULL,
     role          varchar check ( role in ('CEO', 'TEACHER', 'ADMIN', 'EMPLOYEE')) NOT NULL,
-    birth_date    date                                                             NOT NULL,
+    birth_date    date                                                                      DEFAULT '2000-12-12',
     gender        boolean                                                          NOT NULL DEFAULT TRUE,
     is_deleted    boolean                                                          NOT NULL DEFAULT FALSE,
     self_discount boolean                                                                   DEFAULT FALSE,

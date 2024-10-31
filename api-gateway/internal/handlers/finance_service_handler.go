@@ -270,8 +270,29 @@ func GetAllInformation(ctx *gin.Context) {
 	}
 }
 
+// GetChartDiagram godoc
+// @Summary ADMIN , CEO
+// @Description Queries the finance service for expense data between 'from' and 'to' dates, returning it as a chart diagram.
+// @Tags expense
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date for the chart (YYYY-MM-DD)"
+// @Param to path string true "End date for the chart (YYYY-MM-DD)"
+// @Success 200 {object} pb.GetAllExpenseDiagramResponse "Chart data successfully retrieved"
+// @Failure 409 {object} utils.AbsResponse "Conflict or error retrieving chart data"
+// @Security Bearer
+// @Router /api/finance/expense/get-chart-diagram/{from}/{to} [get]
 func GetChartDiagram(ctx *gin.Context) {
-
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetExpenseChartDiagram(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
 }
 
 // GetHistoryDiscount retrieves the discount history for a specific user.

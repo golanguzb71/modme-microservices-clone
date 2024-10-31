@@ -453,6 +453,27 @@ definitions:
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
     type: object
+  pb.GetAllExpenseDiagramResponse:
+    properties:
+      amountCommonExpense:
+        type: string
+      monthAmount:
+        items:
+          type: string
+        type: array
+      months:
+        items:
+          type: string
+        type: array
+      userOrCategories:
+        items:
+          type: string
+        type: array
+      userOrCategoriesAmount:
+        items:
+          type: string
+        type: array
+    type: object
   pb.GetAllExpenseResponse:
     properties:
       expenses:
@@ -1581,6 +1602,39 @@ paths:
             $ref: '#/definitions/utils.AbsResponse'
         "500":
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - expense
+  /api/finance/expense/get-chart-diagram/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Queries the finance service for expense data between 'from' and
+        'to' dates, returning it as a chart diagram.
+      parameters:
+      - description: Start date for the chart (YYYY-MM-DD)
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: End date for the chart (YYYY-MM-DD)
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Chart data successfully retrieved
+          schema:
+            $ref: '#/definitions/pb.GetAllExpenseDiagramResponse'
+        "409":
+          description: Conflict or error retrieving chart data
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:

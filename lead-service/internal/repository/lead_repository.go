@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"lid-service/proto/pb"
 	"log"
-	"time"
 )
 
 type LeadRepository struct {
@@ -221,18 +220,8 @@ func (r *LeadRepository) GetAllLeads() (*pb.GetLeadListResponse, error) {
 }
 
 func (r *LeadRepository) GetLeadReports(endYear string, startYear string) (*pb.GetLeadReportsResponse, error) {
-	startTime, err := time.Parse("2006-01-02", startYear)
-	if err != nil {
-		return nil, fmt.Errorf("invalid start year format: %v", err)
-	}
-
-	endTime, err := time.Parse("2006-01-02", endYear)
-	if err != nil {
-		return nil, fmt.Errorf("invalid end year format: %v", err)
-	}
-
-	if startTime.After(endTime) {
-		return nil, fmt.Errorf("start date must be less than or equal to end date")
+	if startYear > endYear {
+		return nil, fmt.Errorf("start year must be less than or equal to end year")
 	}
 
 	response := &pb.GetLeadReportsResponse{
@@ -241,57 +230,57 @@ func (r *LeadRepository) GetLeadReports(endYear string, startYear string) (*pb.G
 	}
 
 	conversionQuery := `
-        SELECT 
-            TO_CHAR(created_at, 'YYYY-MM') AS conversion_date, 
-            SUM(lead_count) AS total_leads
-        FROM 
-            lead_reports
-        WHERE 
-            created_at BETWEEN $1 AND $2
-        GROUP BY 
-            TO_CHAR(created_at, 'YYYY-MM')
-        ORDER BY 
-            conversion_date
+        SELECT conversion_date, SUM(lead_count) as total_leads
+        FROM lead_conversion_reports
+        WHERE conversion_date >= $1 AND conversion_date <= $2
+        GROUP BY conversion_date
+        ORDER BY conversion_date
     `
-	conversionRows, err := r.db.Query(conversionQuery, startYear, endYear)
+	conversionStartDate := startYear
+	conversionEndDate := endYear
+	conversionRows, err := r.db.Query(conversionQuery, conversionStartDate, conversionEndDate)
 	if err != nil {
 		return nil, fmt.Errorf("error querying lead conversions: %v", err)
 	}
 	defer conversionRows.Close()
 
 	for conversionRows.Next() {
-		var conversion pb.LeadConversion
-		if err := conversionRows.Scan(&conversion.ConversionDate, &conversion.LeadCount); err != nil {
+		var conversionDate string
+		var leadCount int32
+		if err := conversionRows.Scan(&conversionDate, &leadCount); err != nil {
 			return nil, fmt.Errorf("error scanning lead conversion row: %v", err)
 		}
-		response.LeadConversion = append(response.LeadConversion, &conversion)
+
+		response.LeadConversion = append(response.LeadConversion, &pb.LeadConversion{
+			ConversionDate: conversionDate,
+			LeadCount:      leadCount,
+		})
 	}
 
 	sourceQuery := `
-        SELECT 
-            source, 
-            SUM(lead_count) AS total_leads
-        FROM 
-            lead_reports
-        WHERE 
-            created_at BETWEEN $1 AND $2
-        GROUP BY 
-            source
-        ORDER BY 
-            total_leads DESC
+        SELECT source, SUM(lead_count) as total_leads
+        FROM lead_source_reports
+        WHERE created_at >= $1 AND created_at <= $2
+        GROUP BY source
+        ORDER BY total_leads DESC
     `
-	sourceRows, err := r.db.Query(sourceQuery, startYear, endYear)
+	sourceRows, err := r.db.Query(sourceQuery, conversionStartDate, conversionEndDate)
 	if err != nil {
-		return nil, fmt.Errorf("error querying lead conversions by source: %v", err)
+		return nil, fmt.Errorf("error querying lead sources: %v", err)
 	}
 	defer sourceRows.Close()
 
 	for sourceRows.Next() {
-		var sourceConversion pb.LeadConversionForSource
-		if err := sourceRows.Scan(&sourceConversion.Source, &sourceConversion.LeadsCount); err != nil {
-			return nil, fmt.Errorf("error scanning lead conversion by source row: %v", err)
+		var source string
+		var leadsCount int32
+		if err := sourceRows.Scan(&source, &leadsCount); err != nil {
+			return nil, fmt.Errorf("error scanning lead source row: %v", err)
 		}
-		response.LeadConversionForSource = append(response.LeadConversionForSource, &sourceConversion)
+
+		response.LeadConversionForSource = append(response.LeadConversionForSource, &pb.LeadConversionForSource{
+			Source:     source,
+			LeadsCount: leadsCount,
+		})
 	}
 
 	return response, nil

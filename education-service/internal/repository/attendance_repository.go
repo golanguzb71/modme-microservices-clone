@@ -16,6 +16,7 @@ type AttendanceRepository struct {
 func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
+
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
@@ -25,6 +26,7 @@ func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string
 	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status)
 	return err
 }
+
 func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string, teacherId string, attendDate string) error {
 	query := `
         DELETE FROM attendance
