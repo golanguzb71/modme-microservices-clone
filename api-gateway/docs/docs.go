@@ -1017,57 +1017,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment/student/paidUnpaid": {
-            "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Pay or unpay a student's payment by student ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payment"
-                ],
-                "summary": "ADMIN , CEO",
-                "parameters": [
-                    {
-                        "description": "Payment Information",
-                        "name": "payment",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/pb.PayStudentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.AbsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.AbsResponse"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "$ref": "#/definitions/utils.AbsResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -4729,29 +4678,6 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
-                }
-            }
-        },
-        "pb.PayStudentRequest": {
-            "type": "object",
-            "properties": {
-                "comment": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string"
-                },
-                "method": {
-                    "type": "string"
-                },
-                "sum": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "string"
                 }
             }
         },

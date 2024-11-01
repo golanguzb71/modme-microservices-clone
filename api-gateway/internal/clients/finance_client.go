@@ -70,10 +70,6 @@ func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx cont
 	})
 }
 
-func (fc *FinanceClient) PayUnpayStudent(ctx context.Context, req *pb.PayStudentRequest) (*pb.AbsResponse, error) {
-	return fc.paymentClient.PayStudent(ctx, req)
-}
-
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

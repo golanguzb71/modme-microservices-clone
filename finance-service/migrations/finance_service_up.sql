@@ -46,29 +46,20 @@ CREATE TABLE IF NOT EXISTS expense
     payment_method varchar check ( payment_method in ('CASH', 'CLICK', 'PAYME')) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS student_pay
+CREATE TABLE IF NOT EXISTS student_payments
 (
-    id           uuid primary key,
-    student_id   uuid             NOT NULL,
-    payment_type varchar          NOT NULL,
-    amount       double precision NOT NULL,
-    given_date   date             NOT NULL,
-    comment      varchar          NOT NULL,
-    created_at   timestamp DEFAULT NOW(),
-    created_by   uuid             NOT NULL
+    id              uuid primary key,
+    student_id      uuid                                                                   NOT NULL,
+    method          varchar check ( student_payments.method in ('CLICK', 'CASH', 'PAYME')) NOT NULL,
+    amount          double precision                                                       NOT NULL,
+    given_date      date                                                                   NOT NULL,
+    comment         varchar                                                                NOT NULL,
+    created_at      timestamp DEFAULT NOW(),
+    payment_type    varchar check ( payment_type in ('ADD', 'TAKE_OFF') )                  NOT NULL,
+    created_by_id   uuid,
+    created_by_name varchar                                                                NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS student_unpay
-(
-    id           uuid primary key,
-    student_id   uuid             NOT NULL,
-    payment_type varchar          NOT NULL,
-    amount       double precision NOT NULL,
-    given_date   date             NOT NULL,
-    comment      varchar          NOT NULL,
-    created_at   timestamp DEFAULT NOW(),
-    created_by   uuid             NOT NULL
-);
 
 
 CREATE TABLE IF NOT EXISTS teacher_salary
