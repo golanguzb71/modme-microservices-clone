@@ -44,8 +44,75 @@ func (r *ExpenseRepository) DeleteExpense(id string) error {
 	return nil
 }
 
-func (r *ExpenseRepository) GetExpenseDiagram(from, to string) (*pb.GetAllExpenseDiagramResponse, error) {
-	return nil, nil
+func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpenseDiagramResponse, error) {
+	query := `
+	SELECT 
+		CASE 
+			WHEN expense_type = 'USER' THEN user_id::text
+			WHEN expense_type = 'CATEGORY' THEN c.name
+		END AS userOrCategories,
+		SUM(e.sum) AS userOrCategoriesAmount,
+		TO_CHAR(e.given_date, 'YYYY-MM') AS month,
+		SUM(SUM(e.sum)) OVER () AS amountCommonExpense,
+		expense_type,
+		user_id
+	FROM expense e
+	LEFT JOIN category c ON e.category_id = c.id
+	WHERE e.given_date BETWEEN $1 AND $2
+	GROUP BY userOrCategories, month, expense_type, user_id
+	ORDER BY month;
+	`
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var response pb.GetAllExpenseDiagramResponse
+	userOrCategoriesMap := make(map[string]float64)
+	monthAmountMap := make(map[string]float64)
+	var commonExpense float64
+
+	for rows.Next() {
+		var (
+			userOrCategory       string
+			userOrCategoryAmount float64
+			month                string
+			amountCommonExpense  float64
+			expenseType          string
+			userID               sql.NullString
+		)
+		if err := rows.Scan(&userOrCategory, &userOrCategoryAmount, &month, &amountCommonExpense, &expenseType, &userID); err != nil {
+			return nil, fmt.Errorf("error scanning row: %v", err)
+		}
+
+		if expenseType == "USER" && userID.Valid {
+			userResp, err := r.userClient.GetUserById(context.TODO(), userID.String)
+			if err != nil {
+				return nil, fmt.Errorf("error fetching user name: %v", err)
+			}
+			userOrCategory = userResp.Name
+		}
+
+		userOrCategoriesMap[userOrCategory] += userOrCategoryAmount
+		monthAmountMap[month] += userOrCategoryAmount
+		commonExpense = amountCommonExpense
+	}
+
+	for userOrCategory, amount := range userOrCategoriesMap {
+		response.UserOrCategories = append(response.UserOrCategories, userOrCategory)
+		response.UserOrCategoriesAmount = append(response.UserOrCategoriesAmount, fmt.Sprintf("%.2f", amount))
+	}
+
+	for month, amount := range monthAmountMap {
+		response.Months = append(response.Months, month)
+		response.MonthAmount = append(response.MonthAmount, fmt.Sprintf("%.2f", amount))
+	}
+
+	response.AmountCommonExpense = fmt.Sprintf("%.2f", commonExpense)
+
+	return &response, nil
 }
 
 func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
@@ -179,7 +246,6 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 		Expenses:       expenses,
 	}, nil
 }
-
 func NewExpenseRepository(db *sql.DB, userClient *clients.UserClient) *ExpenseRepository {
 	return &ExpenseRepository{db: db, userClient: userClient}
 }

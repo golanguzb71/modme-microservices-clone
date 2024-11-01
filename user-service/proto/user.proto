@@ -13,6 +13,7 @@ service UserService {
 }
 message GetAllStuffResponse{
   repeated GetUserByIdResponse stuff = 1;
+
 }
 message UpdateUserRequest{
   string id = 6;
