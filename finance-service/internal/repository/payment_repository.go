@@ -153,8 +153,13 @@ func (r *PaymentRepository) PaymentReturn(paymentId, actionByName, actionById st
 	if err != nil {
 		return nil, fmt.Errorf("failed to delete payment: %v", err)
 	}
+	if payment.PaymentType == "TAKE_OFF" {
+		payment.PaymentType = "ADD"
+	} else {
+		payment.PaymentType = "TAKE_OFF"
+	}
 
-	err = r.educationClient.ChangeUserBalanceHistory(payment.StudentID, fmt.Sprintf("%.2f", payment.Amount), payment.GivenDate, payment.Comment, "RETURN", actionById, actionByName, "")
+	err = r.educationClient.ChangeUserBalanceHistory(payment.StudentID, fmt.Sprintf("%.2f", payment.Amount), payment.GivenDate, payment.Comment, payment.PaymentType, actionById, actionByName, "")
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user balance history: %v", err)
 	}
@@ -178,15 +183,11 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 		}
 	}()
 
-	var exists bool
-	query := `SELECT EXISTS(SELECT 1 FROM student_payments WHERE id = $1)`
-	err = tx.QueryRow(query, paymentId).Scan(&exists)
+	var paymentType string
+	query := `SELECT payment_type FROM student_payments where id=$1`
+	err = tx.QueryRow(query, paymentId).Scan(&paymentType)
 	if err != nil {
 		return nil, fmt.Errorf("error checking payment existence: %v", err)
-	}
-
-	if !exists {
-		return nil, errors.New("payment not found")
 	}
 
 	updateQuery := `UPDATE student_payments 
@@ -196,8 +197,9 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 	if err != nil {
 		return nil, fmt.Errorf("failed to update payment: %v", err)
 	}
+	fmt.Println(debit)
 
-	err = r.educationClient.ChangeUserBalanceHistory(userId, fmt.Sprintf("%.2f", debit), date, comment, "UPDATE", actionById, actionByName, groupId)
+	err = r.educationClient.ChangeUserBalanceHistory(userId, debit, date, comment, paymentType, actionById, actionByName, groupId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user balance history: %v", err)
 	}
