@@ -275,3 +275,25 @@ func GetAllStaff(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetUserHistoryById retrieves the history for a specific user by user ID.
+// @Summary ADMIN, CEO, TEACHER
+// @Description Fetches the history data for a given user ID.
+// @Tags user
+// @Param userId path string true "User ID"
+// @Success 200 {object} pb.GetHistoryByUserIdResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/user/history/{userId} [get]
+func GetUserHistoryById(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	userId := ctx.Param("userId")
+	resp, err := userClient.GetHistoryByUserId(ctxR, userId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

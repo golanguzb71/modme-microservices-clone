@@ -18,7 +18,6 @@ type GroupRepository struct {
 func NewGroupRepository(db *sql.DB, userClient *clients.UserClient) *GroupRepository {
 	return &GroupRepository{db: db, userClient: userClient}
 }
-
 func (r *GroupRepository) CreateGroup(name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) (string, error) {
 	query := `
 		INSERT INTO groups(course_id, teacher_id, room_id, date_type, days, start_time, start_date, end_date, is_archived, name) 
@@ -41,7 +40,7 @@ func (r *GroupRepository) UpdateGroup(id string, name string, courseId int32, te
 	return nil
 }
 func (r *GroupRepository) DeleteGroup(id string) error {
-	query := `UPDATE groups set is_archived=TRUE WHERE id=$1`
+	query := `UPDATE groups SET is_archived = NOT is_archived WHERE id = $1`
 	_, err := r.db.Exec(query, id)
 	if err != nil {
 		return err

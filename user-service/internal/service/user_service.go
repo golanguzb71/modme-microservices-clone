@@ -44,3 +44,7 @@ func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployee
 func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllStuffResponse, error) {
 	return u.userRepo.GetAllStuff(req.IsArchived)
 }
+
+func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetHistoryByUserIdResponse, error) {
+	return u.userRepo.GetHistoryByUserId(req.UserId)
+}

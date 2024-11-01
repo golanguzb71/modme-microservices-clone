@@ -222,3 +222,39 @@ func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, 
 	}
 	return &response, nil
 }
+
+func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdResponse, error) {
+	query := `
+	SELECT 
+		updated_field,
+		old_value,
+		current_value,
+		created_at
+	FROM users_history
+	WHERE user_id = $1
+	ORDER BY created_at DESC;
+	`
+
+	rows, err := r.db.Query(query, id)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching user history: %v", err)
+	}
+	defer rows.Close()
+
+	var historyItems []*pb.AbsGetHistoryByUserIdResponse
+	for rows.Next() {
+		var item pb.AbsGetHistoryByUserIdResponse
+		if err := rows.Scan(&item.UpdatedField, &item.OldValue, &item.CurrentValue, &item.CreatedAt); err != nil {
+			return nil, fmt.Errorf("error scanning history item: %v", err)
+		}
+		historyItems = append(historyItems, &item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating through history rows: %v", err)
+	}
+
+	return &pb.GetHistoryByUserIdResponse{
+		Histories: historyItems,
+	}, nil
+}

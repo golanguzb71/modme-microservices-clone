@@ -133,3 +133,20 @@ message CreateExpenseRequest{
   string paymentMethod = 8;
 }
 // expense service end
+
+
+// payment service start
+service PaymentService{
+  rpc PayStudent(PayStudentRequest) returns(common.AbsResponse);
+}
+message PayStudentRequest{
+  string comment = 1;
+  string date = 2;
+  string method = 3;
+  string sum = 4;
+  string userId = 5;
+  string type = 6;
+  string createdBy = 7;
+}
+
+// payment service end

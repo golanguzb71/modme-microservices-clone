@@ -1017,6 +1017,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/payment/student/paidUnpaid": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Pay or unpay a student's payment by student ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payment"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "description": "Payment Information",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.PayStudentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -3222,6 +3273,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/history/{userId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches the history data for a given user ID.",
+                "tags": [
+                    "user"
+                ],
+                "summary": "ADMIN, CEO, TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetHistoryByUserIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/login": {
             "post": {
                 "description": "Authenticate a user and return a token upon successful login.",
@@ -3364,6 +3452,23 @@ const docTemplate = `{
                 },
                 "withTeacher": {
                     "type": "boolean"
+                }
+            }
+        },
+        "pb.AbsGetHistoryByUserIdResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "currentValue": {
+                    "type": "string"
+                },
+                "oldValue": {
+                    "type": "string"
+                },
+                "updatedField": {
+                    "type": "string"
                 }
             }
         },
@@ -4304,6 +4409,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetHistoryByUserIdResponse": {
+            "type": "object",
+            "properties": {
+                "histories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsGetHistoryByUserIdResponse"
+                    }
+                }
+            }
+        },
         "pb.GetHistoryDiscountResponse": {
             "type": "object",
             "properties": {
@@ -4613,6 +4729,29 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
+                }
+            }
+        },
+        "pb.PayStudentRequest": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },

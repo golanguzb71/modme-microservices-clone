@@ -37,7 +37,7 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *pb.DeleteAbsRequest
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AbsResponse{Status: 200, Message: "Group deleted successfully"}, nil
+	return &pb.AbsResponse{Status: 200, Message: "Group toggled successfully"}, nil
 }
 
 func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) (*pb.GetGroupsResponse, error) {

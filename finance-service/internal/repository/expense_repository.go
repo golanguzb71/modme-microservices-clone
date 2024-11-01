@@ -43,7 +43,6 @@ func (r *ExpenseRepository) DeleteExpense(id string) error {
 	}
 	return nil
 }
-
 func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpenseDiagramResponse, error) {
 	query := `
 	SELECT 
@@ -114,7 +113,6 @@ func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpens
 
 	return &response, nil
 }
-
 func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
 	offset := (page - 1) * size
 

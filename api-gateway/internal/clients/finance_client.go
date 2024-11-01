@@ -11,6 +11,7 @@ type FinanceClient struct {
 	discountClient pb.DiscountServiceClient
 	categoryClient pb.CategoryServiceClient
 	expenseClient  pb.ExpenseServiceClient
+	paymentClient  pb.PaymentServiceClient
 }
 
 func (fc *FinanceClient) GetDiscountsInformationByGroupId(ctx context.Context, groupId string) (*pb.GetInformationDiscountResponse, error) {
@@ -69,6 +70,10 @@ func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx cont
 	})
 }
 
+func (fc *FinanceClient) PayUnpayStudent(ctx context.Context, req *pb.PayStudentRequest) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PayStudent(ctx, req)
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -77,5 +82,6 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	discountClient := pb.NewDiscountServiceClient(conn)
 	categoryClient := pb.NewCategoryServiceClient(conn)
 	expenseClient := pb.NewExpenseServiceClient(conn)
-	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient}, nil
+	paymentClient := pb.NewPaymentServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient, paymentClient: paymentClient}, nil
 }

@@ -319,3 +319,18 @@ func GetHistoryDiscount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+func PaymentAdd(ctx *gin.Context) {
+	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	//defer cancel()
+}
+
+func PaymentReturn(ctx *gin.Context) {
+	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	//defer cancel()
+}
+
+func PaymentUpdate(ctx *gin.Context) {
+	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	//defer cancel()
+}

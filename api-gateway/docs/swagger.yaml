@@ -40,6 +40,17 @@ definitions:
       withTeacher:
         type: boolean
     type: object
+  pb.AbsGetHistoryByUserIdResponse:
+    properties:
+      createdAt:
+        type: string
+      currentValue:
+        type: string
+      oldValue:
+        type: string
+      updatedField:
+        type: string
+    type: object
   pb.AbsGroup:
     properties:
       course:
@@ -650,6 +661,13 @@ definitions:
       totalPageCount:
         type: integer
     type: object
+  pb.GetHistoryByUserIdResponse:
+    properties:
+      histories:
+        items:
+          $ref: '#/definitions/pb.AbsGetHistoryByUserIdResponse'
+        type: array
+    type: object
   pb.GetHistoryDiscountResponse:
     properties:
       discounts:
@@ -851,6 +869,21 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
+    type: object
+  pb.PayStudentRequest:
+    properties:
+      comment:
+        type: string
+      date:
+        type: string
+      method:
+        type: string
+      sum:
+        type: string
+      type:
+        type: string
+      userId:
+        type: string
     type: object
   pb.SearchStudentResponse:
     properties:
@@ -1642,6 +1675,38 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
+  /api/finance/payment/student/paidUnpaid:
+    post:
+      consumes:
+      - application/json
+      description: Pay or unpay a student's payment by student ID
+      parameters:
+      - description: Payment Information
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/pb.PayStudentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payment
   /api/group/create:
     post:
       consumes:
@@ -3036,6 +3101,29 @@ paths:
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       summary: CEO , ADMIN , TEACHER
+      tags:
+      - user
+  /api/user/history/{userId}:
+    get:
+      description: Fetches the history data for a given user ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetHistoryByUserIdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN, CEO, TEACHER
       tags:
       - user
   /api/user/login:

@@ -10,10 +10,19 @@ service UserService {
   rpc DeleteUserById(UserAbsRequest) returns(common.AbsResponse);
   rpc GetAllEmployee(GetAllEmployeeRequest) returns(GetAllEmployeeResponse);
   rpc GetAllStuff(GetAllEmployeeRequest) returns(GetAllStuffResponse);
+  rpc GetHistoryByUserId(UserAbsRequest) returns(GetHistoryByUserIdResponse);
 }
 message GetAllStuffResponse{
   repeated GetUserByIdResponse stuff = 1;
-
+}
+message GetHistoryByUserIdResponse{
+  repeated AbsGetHistoryByUserIdResponse histories = 1;
+}
+message AbsGetHistoryByUserIdResponse{
+  string updatedField = 1;
+  string oldValue = 2;
+  string currentValue = 3;
+  string createdAt = 4;
 }
 message UpdateUserRequest{
   string id = 6;
