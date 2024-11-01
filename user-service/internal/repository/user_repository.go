@@ -222,7 +222,6 @@ func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, 
 	}
 	return &response, nil
 }
-
 func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdResponse, error) {
 	query := `
 	SELECT 

@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"finance-service/internal/clients"
 	"finance-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
@@ -12,39 +13,62 @@ import (
 )
 
 type PaymentRepository struct {
-	db *sql.DB
+	db              *sql.DB
+	educationClient *clients.EducationClient
 }
 
 func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentId, actionByName, actionById, groupId string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
 	validMethods := map[string]bool{"CLICK": true, "CASH": true, "PAYME": true}
 	if !validMethods[method] {
 		return errors.New("invalid payment method")
 	}
-
 	amount, err := strconv.ParseFloat(sum, 64)
 	if err != nil {
 		return fmt.Errorf("invalid sum amount: %v", err)
 	}
-
 	parsedDate, err := time.Parse("2006-01-02", givenDate)
 	if err != nil {
 		return fmt.Errorf("invalid date format: %v", err)
 	}
 	paymentID := uuid.New()
-
 	query := `INSERT INTO student_payments 
 		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at , group_id)
-		VALUES ($1, $2, $3, $4, $5, $6, 'ADD', $7, $8 , $9 , $9)`
-
-	_, err = r.db.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+		VALUES ($1, $2, $3, $4, $5, $6, 'ADD', $7, $8 , $9 , $10)`
+	_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
 	if err != nil {
 		return fmt.Errorf("failed to add payment: %v", err)
 	}
-
+	err = r.educationClient.ChangeUserBalanceHistory(studentId, sum, givenDate, comment, "ADD", actionById, actionByName, groupId)
+	if err != nil {
+		return fmt.Errorf("failed to update user balance history: %v", err)
+	}
 	return nil
 }
 
 func (r *PaymentRepository) TakeOffPayment(date, sum, method, comment, studentId, actionByName, actionById string) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
 	validMethods := map[string]bool{"CLICK": true, "CASH": true, "PAYME": true}
 	if !validMethods[method] {
 		return errors.New("invalid payment method")
@@ -63,14 +87,18 @@ func (r *PaymentRepository) TakeOffPayment(date, sum, method, comment, studentId
 	paymentID := uuid.New()
 
 	query := `INSERT INTO student_payments 
-		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name)
-		VALUES ($1, $2, $3, $4, $5, $6, 'TAKE_OFF', $7, $8)`
+		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, 'TAKE_OFF', $7, $8 , $9)`
 
-	_, err = r.db.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName)
+	_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now())
 	if err != nil {
 		return fmt.Errorf("failed to take off payment: %v", err)
 	}
 
+	err = r.educationClient.ChangeUserBalanceHistory(studentId, sum, date, comment, "TAKE_OFF", actionById, actionByName, "")
+	if err != nil {
+		return fmt.Errorf("failed to update user balance history: %v", err)
+	}
 	return nil
 }
 
@@ -88,9 +116,21 @@ func (r *PaymentRepository) PaymentReturn(paymentId, actionByName, actionById st
 		CreatedAt     string
 	}
 
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
 	query := `SELECT id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name, created_at 
 			  FROM student_payments WHERE id = $1`
-	err := r.db.QueryRow(query, paymentId).Scan(
+	err = tx.QueryRow(query, paymentId).Scan(
 		&payment.ID,
 		&payment.StudentID,
 		&payment.Method,
@@ -109,21 +149,38 @@ func (r *PaymentRepository) PaymentReturn(paymentId, actionByName, actionById st
 	}
 
 	deleteQuery := `DELETE FROM student_payments WHERE id = $1`
-	_, err = r.db.Exec(deleteQuery, paymentId)
+	_, err = tx.Exec(deleteQuery, paymentId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to delete payment: %v", err)
 	}
 
+	err = r.educationClient.ChangeUserBalanceHistory(payment.StudentID, fmt.Sprintf("%.2f", payment.Amount), payment.GivenDate, payment.Comment, "RETURN", actionById, actionByName, "")
+	if err != nil {
+		return nil, fmt.Errorf("failed to update user balance history: %v", err)
+	}
+
 	return &pb.AbsResponse{
 		Status:  http.StatusOK,
-		Message: fmt.Sprintf("payment returned successfully"),
+		Message: "payment returned successfully",
 	}, nil
 }
 
 func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method string, userId string, comment string, debit, actionByName, actionById, groupId string) (*pb.AbsResponse, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %v", err)
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
 	var exists bool
 	query := `SELECT EXISTS(SELECT 1 FROM student_payments WHERE id = $1)`
-	err := r.db.QueryRow(query, paymentId).Scan(&exists)
+	err = tx.QueryRow(query, paymentId).Scan(&exists)
 	if err != nil {
 		return nil, fmt.Errorf("error checking payment existence: %v", err)
 	}
@@ -133,12 +190,16 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 	}
 
 	updateQuery := `UPDATE student_payments 
-		SET given_date = $1, method = $2, comment = $3, amount = $4, created_by_id = $5, created_by_name = $6 , group_id=$8
-		WHERE id = $7`
-
-	_, err = r.db.Exec(updateQuery, date, method, comment, debit, actionById, actionByName, paymentId, groupId)
+					SET given_date = $1, method = $2, comment = $3, amount = $4, created_by_id = $5, created_by_name = $6, group_id = $8 
+					WHERE id = $7`
+	_, err = tx.Exec(updateQuery, date, method, comment, debit, actionById, actionByName, paymentId, groupId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update payment: %v", err)
+	}
+
+	err = r.educationClient.ChangeUserBalanceHistory(userId, fmt.Sprintf("%.2f", debit), date, comment, "UPDATE", actionById, actionByName, groupId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update user balance history: %v", err)
 	}
 
 	return &pb.AbsResponse{
@@ -206,7 +267,7 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 			created_by_id, 
 			created_by_name, 
 			created_at ,
-			group_id
+			coalesce(group_id , 0)
 		FROM 
 			student_payments 
 		WHERE 
@@ -260,6 +321,6 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 	}, nil
 }
 
-func NewPaymentRepository(db *sql.DB) *PaymentRepository {
-	return &PaymentRepository{db: db}
+func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
+	return &PaymentRepository{db: db, educationClient: client}
 }

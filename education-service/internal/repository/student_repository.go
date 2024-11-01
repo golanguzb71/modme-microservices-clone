@@ -574,3 +574,6 @@ func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bo
 
 	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
 }
+func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
+	return nil, nil
+}

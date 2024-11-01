@@ -31,3 +31,20 @@ func (ec *EducationClient) GetStudentById(studentId string) (string, string, err
 func (ec *EducationClient) GetStudentsByGroupId(groupId string) (*pb.GetStudentsByGroupIdResponse, error) {
 	return ec.studentClient.GetStudentsByGroupId(context.TODO(), &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: true})
 }
+
+func (ec *EducationClient) ChangeUserBalanceHistory(studentId string, amount string, givenDate string, comment string, paymentType string, actionById string, actionByName string, groupId string) error {
+	_, err := ec.studentClient.ChangeUserBalanceHistory(context.TODO(), &pb.ChangeUserBalanceHistoryRequest{
+		StudentId:     studentId,
+		Amount:        amount,
+		GivenDate:     givenDate,
+		Comment:       comment,
+		PaymentType:   paymentType,
+		CreatedBy:     actionById,
+		CreatedByName: actionByName,
+		GroupId:       groupId,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}

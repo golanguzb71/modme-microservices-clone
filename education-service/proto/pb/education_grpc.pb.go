@@ -976,21 +976,22 @@ var AttendanceService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	StudentService_GetAllStudent_FullMethodName          = "/education.StudentService/GetAllStudent"
-	StudentService_CreateStudent_FullMethodName          = "/education.StudentService/CreateStudent"
-	StudentService_UpdateStudent_FullMethodName          = "/education.StudentService/UpdateStudent"
-	StudentService_DeleteStudent_FullMethodName          = "/education.StudentService/DeleteStudent"
-	StudentService_AddToGroup_FullMethodName             = "/education.StudentService/AddToGroup"
-	StudentService_GetStudentById_FullMethodName         = "/education.StudentService/GetStudentById"
-	StudentService_GetNoteByStudent_FullMethodName       = "/education.StudentService/GetNoteByStudent"
-	StudentService_CreateNoteForStudent_FullMethodName   = "/education.StudentService/CreateNoteForStudent"
-	StudentService_DeleteStudentNote_FullMethodName      = "/education.StudentService/DeleteStudentNote"
-	StudentService_SearchStudent_FullMethodName          = "/education.StudentService/SearchStudent"
-	StudentService_GetHistoryGroupById_FullMethodName    = "/education.StudentService/GetHistoryGroupById"
-	StudentService_GetHistoryStudentById_FullMethodName  = "/education.StudentService/GetHistoryStudentById"
-	StudentService_TransferLessonDate_FullMethodName     = "/education.StudentService/TransferLessonDate"
-	StudentService_ChangeConditionStudent_FullMethodName = "/education.StudentService/ChangeConditionStudent"
-	StudentService_GetStudentsByGroupId_FullMethodName   = "/education.StudentService/GetStudentsByGroupId"
+	StudentService_GetAllStudent_FullMethodName            = "/education.StudentService/GetAllStudent"
+	StudentService_CreateStudent_FullMethodName            = "/education.StudentService/CreateStudent"
+	StudentService_UpdateStudent_FullMethodName            = "/education.StudentService/UpdateStudent"
+	StudentService_DeleteStudent_FullMethodName            = "/education.StudentService/DeleteStudent"
+	StudentService_AddToGroup_FullMethodName               = "/education.StudentService/AddToGroup"
+	StudentService_GetStudentById_FullMethodName           = "/education.StudentService/GetStudentById"
+	StudentService_GetNoteByStudent_FullMethodName         = "/education.StudentService/GetNoteByStudent"
+	StudentService_CreateNoteForStudent_FullMethodName     = "/education.StudentService/CreateNoteForStudent"
+	StudentService_DeleteStudentNote_FullMethodName        = "/education.StudentService/DeleteStudentNote"
+	StudentService_SearchStudent_FullMethodName            = "/education.StudentService/SearchStudent"
+	StudentService_GetHistoryGroupById_FullMethodName      = "/education.StudentService/GetHistoryGroupById"
+	StudentService_GetHistoryStudentById_FullMethodName    = "/education.StudentService/GetHistoryStudentById"
+	StudentService_TransferLessonDate_FullMethodName       = "/education.StudentService/TransferLessonDate"
+	StudentService_ChangeConditionStudent_FullMethodName   = "/education.StudentService/ChangeConditionStudent"
+	StudentService_GetStudentsByGroupId_FullMethodName     = "/education.StudentService/GetStudentsByGroupId"
+	StudentService_ChangeUserBalanceHistory_FullMethodName = "/education.StudentService/ChangeUserBalanceHistory"
 )
 
 // StudentServiceClient is the client API for StudentService service.
@@ -1014,6 +1015,7 @@ type StudentServiceClient interface {
 	TransferLessonDate(ctx context.Context, in *TransferLessonRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	ChangeConditionStudent(ctx context.Context, in *ChangeConditionStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetStudentsByGroupId(ctx context.Context, in *GetStudentsByGroupIdRequest, opts ...grpc.CallOption) (*GetStudentsByGroupIdResponse, error)
+	ChangeUserBalanceHistory(ctx context.Context, in *ChangeUserBalanceHistoryRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
 
 type studentServiceClient struct {
@@ -1174,6 +1176,16 @@ func (c *studentServiceClient) GetStudentsByGroupId(ctx context.Context, in *Get
 	return out, nil
 }
 
+func (c *studentServiceClient) ChangeUserBalanceHistory(ctx context.Context, in *ChangeUserBalanceHistoryRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, StudentService_ChangeUserBalanceHistory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility.
@@ -1195,6 +1207,7 @@ type StudentServiceServer interface {
 	TransferLessonDate(context.Context, *TransferLessonRequest) (*AbsResponse, error)
 	ChangeConditionStudent(context.Context, *ChangeConditionStudentRequest) (*AbsResponse, error)
 	GetStudentsByGroupId(context.Context, *GetStudentsByGroupIdRequest) (*GetStudentsByGroupIdResponse, error)
+	ChangeUserBalanceHistory(context.Context, *ChangeUserBalanceHistoryRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -1249,6 +1262,9 @@ func (UnimplementedStudentServiceServer) ChangeConditionStudent(context.Context,
 }
 func (UnimplementedStudentServiceServer) GetStudentsByGroupId(context.Context, *GetStudentsByGroupIdRequest) (*GetStudentsByGroupIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudentsByGroupId not implemented")
+}
+func (UnimplementedStudentServiceServer) ChangeUserBalanceHistory(context.Context, *ChangeUserBalanceHistoryRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeUserBalanceHistory not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 func (UnimplementedStudentServiceServer) testEmbeddedByValue()                        {}
@@ -1541,6 +1557,24 @@ func _StudentService_GetStudentsByGroupId_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_ChangeUserBalanceHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeUserBalanceHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).ChangeUserBalanceHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_ChangeUserBalanceHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).ChangeUserBalanceHistory(ctx, req.(*ChangeUserBalanceHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1607,6 +1641,10 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStudentsByGroupId",
 			Handler:    _StudentService_GetStudentsByGroupId_Handler,
+		},
+		{
+			MethodName: "ChangeUserBalanceHistory",
+			Handler:    _StudentService_ChangeUserBalanceHistory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
