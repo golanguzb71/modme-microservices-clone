@@ -320,17 +320,154 @@ func GetHistoryDiscount(ctx *gin.Context) {
 	return
 }
 
+// PaymentAdd godoc
+// @Summary ADMIN , CEO
+// @Description Add a payment for a student
+// @Tags payments
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param request body pb.PaymentAddRequest true "Payment Add Request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/finance/payment/student/add [post]
 func PaymentAdd(ctx *gin.Context) {
-	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	//defer cancel()
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	req := pb.PaymentAddRequest{}
+	err = ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	req.ActionByName = user.Name
+	req.ActionById = user.Id
+	resp, err := financeClient.PaymentAdd(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }
 
+// PaymentReturn godoc
+// @Summary ADMIN , CEO
+// @Description Return a payment for a student
+// @Tags payments
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param request body pb.PaymentReturnRequest true "Payment Return Request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/finance/payment/student/return [post]
 func PaymentReturn(ctx *gin.Context) {
-	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	//defer cancel()
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	user, err := utils.GetUserFromContext(ctx)
+	req := pb.PaymentReturnRequest{}
+	err = ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	req.ActionByName = user.Name
+	req.ActionById = user.Id
+	resp, err := financeClient.PaymentReturn(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }
 
+// PaymentUpdate godoc
+// @Summary ADMIN , CEO
+// @Description Update a payment for a student
+// @Tags payments
+// @Security Bearer
+// @Accept json
+// @Produce json
+// @Param request body pb.PaymentUpdateRequest true "Payment Update Request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Failure 409 {object} utils.AbsResponse
+// @Router /api/finance/payment/student/update [patch]
 func PaymentUpdate(ctx *gin.Context) {
-	//ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	//defer cancel()
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	user, err := utils.GetUserFromContext(ctx)
+	req := pb.PaymentUpdateRequest{}
+	err = ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	req.ActionByName = user.Name
+	req.ActionById = user.Id
+	resp, err := financeClient.PaymentUpdate(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+// GetMonthlyStatusPayment godoc
+// @Summary ADMIN , CEO
+// @Description Get the monthly payment status for a student.
+// @Tags payments
+// @Produce json
+// @Param studentId path string true "Student ID"
+// @Success 200 {object} pb.GetMonthlyStatusResponse
+// @Failure 400 {object} utils.AbsResponse "Invalid request parameters or failed retrieval"
+// @Security Bearer
+// @Router /api/finance/payment/student/get-monthly-status/{studentId} [get]
+func GetMonthlyStatusPayment(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	studentId := ctx.Param("studentId")
+	resp, err := financeClient.GetMonthlyStatusPayment(ctxR, studentId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetAllPayments godoc
+// @Summary ADMIN , CEO
+// @Description Get all payment records for a student within a specified month.
+// @Tags payments
+// @Produce json
+// @Param studentId path string true "Student ID"
+// @Param month path string true "Month (format: YYYY-MM)"
+// @Success 200 {object} pb.GetAllPaymentsByMonthResponse
+// @Failure 400 {object} utils.AbsResponse "Invalid request parameters or failed retrieval"
+// @Security  Bearer
+// @Router /api/finance/payment/get-all-payments/{studentId}/{month} [get]
+func GetAllPayments(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	studentId := ctx.Param("studentId")
+	month := ctx.Param("month")
+	resp, err := financeClient.GetAllPayments(ctxR, month, studentId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
 }

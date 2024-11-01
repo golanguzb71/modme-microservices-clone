@@ -57,7 +57,8 @@ CREATE TABLE IF NOT EXISTS student_payments
     created_at      timestamp DEFAULT NOW(),
     payment_type    varchar check ( payment_type in ('ADD', 'TAKE_OFF') )                  NOT NULL,
     created_by_id   uuid,
-    created_by_name varchar                                                                NOT NULL
+    created_by_name varchar                                                                NOT NULL,
+    group_id        bigint
 );
 
 

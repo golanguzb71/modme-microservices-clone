@@ -653,6 +653,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
+// expense service end
 // payment service start
 type PaymentServiceClient interface {
 	PaymentAdd(ctx context.Context, in *PaymentAddRequest, opts ...grpc.CallOption) (*AbsResponse, error)
@@ -724,6 +725,7 @@ func (c *paymentServiceClient) GetAllPaymentsByMonth(ctx context.Context, in *Ge
 // All implementations must embed UnimplementedPaymentServiceServer
 // for forward compatibility.
 //
+// expense service end
 // payment service start
 type PaymentServiceServer interface {
 	PaymentAdd(context.Context, *PaymentAddRequest) (*AbsResponse, error)

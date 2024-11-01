@@ -134,8 +134,6 @@ message CreateExpenseRequest{
   string paymentMethod = 8;
 }
 // expense service end
-
-
 // payment service start
 service PaymentService{
   rpc PaymentAdd(PaymentAddRequest) returns(common.AbsResponse);
@@ -159,6 +157,9 @@ message AbsGetAllPaymentsByMonthResponse{
   string created_by_id = 5;
   string created_by_name = 6;
   string created_at = 7;
+  string paymentId = 8;
+  string groupId = 9;
+  string groupName = 10;
 }
 message GetMonthlyStatusResponse{
   repeated AbsGetMonthlyStatusResponse monthStatus = 1;
@@ -177,6 +178,9 @@ message PaymentAddRequest{
   string sum = 4;
   string userId = 5;
   string type = 6;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
 }
 message PaymentUpdateRequest{
   string debit = 1;
@@ -185,8 +189,13 @@ message PaymentUpdateRequest{
   string comment = 4;
   string userId = 5;
   string paymentId = 6;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
 }
 message PaymentReturnRequest{
   string paymentId = 1;
+  string actionById = 2;
+  string actionByName = 3;
 }
 // payment service end

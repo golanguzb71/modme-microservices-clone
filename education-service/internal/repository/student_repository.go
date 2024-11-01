@@ -46,7 +46,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
            balance, condition, telegram_username, created_at
     FROM students
     WHERE condition = $1
-    ORDER BY id
+    ORDER BY created_at desc 
     LIMIT $2 OFFSET $3`
 	studentRows, err := r.db.Query(studentQuery, condition, sizeInt, offset)
 	if err != nil {
