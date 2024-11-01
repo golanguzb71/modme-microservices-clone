@@ -642,16 +642,25 @@ var ExpenseService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	PaymentService_PayStudent_FullMethodName = "/finance.PaymentService/PayStudent"
+	PaymentService_PaymentAdd_FullMethodName            = "/finance.PaymentService/PaymentAdd"
+	PaymentService_PaymentReturn_FullMethodName         = "/finance.PaymentService/PaymentReturn"
+	PaymentService_PaymentUpdate_FullMethodName         = "/finance.PaymentService/PaymentUpdate"
+	PaymentService_GetMonthlyStatus_FullMethodName      = "/finance.PaymentService/GetMonthlyStatus"
+	PaymentService_GetAllPaymentsByMonth_FullMethodName = "/finance.PaymentService/GetAllPaymentsByMonth"
 )
 
 // PaymentServiceClient is the client API for PaymentService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
+// expense service end
 // payment service start
 type PaymentServiceClient interface {
-	PayStudent(ctx context.Context, in *PayStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	PaymentAdd(ctx context.Context, in *PaymentAddRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	PaymentReturn(ctx context.Context, in *PaymentReturnRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	PaymentUpdate(ctx context.Context, in *PaymentUpdateRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetMonthlyStatus(ctx context.Context, in *GetMonthlyStatusRequest, opts ...grpc.CallOption) (*GetMonthlyStatusResponse, error)
+	GetAllPaymentsByMonth(ctx context.Context, in *GetAllPaymentsByMonthRequest, opts ...grpc.CallOption) (*GetAllPaymentsByMonthResponse, error)
 }
 
 type paymentServiceClient struct {
@@ -662,10 +671,50 @@ func NewPaymentServiceClient(cc grpc.ClientConnInterface) PaymentServiceClient {
 	return &paymentServiceClient{cc}
 }
 
-func (c *paymentServiceClient) PayStudent(ctx context.Context, in *PayStudentRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+func (c *paymentServiceClient) PaymentAdd(ctx context.Context, in *PaymentAddRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AbsResponse)
-	err := c.cc.Invoke(ctx, PaymentService_PayStudent_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PaymentService_PaymentAdd_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentServiceClient) PaymentReturn(ctx context.Context, in *PaymentReturnRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, PaymentService_PaymentReturn_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentServiceClient) PaymentUpdate(ctx context.Context, in *PaymentUpdateRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, PaymentService_PaymentUpdate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentServiceClient) GetMonthlyStatus(ctx context.Context, in *GetMonthlyStatusRequest, opts ...grpc.CallOption) (*GetMonthlyStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMonthlyStatusResponse)
+	err := c.cc.Invoke(ctx, PaymentService_GetMonthlyStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentServiceClient) GetAllPaymentsByMonth(ctx context.Context, in *GetAllPaymentsByMonthRequest, opts ...grpc.CallOption) (*GetAllPaymentsByMonthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllPaymentsByMonthResponse)
+	err := c.cc.Invoke(ctx, PaymentService_GetAllPaymentsByMonth_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -676,9 +725,14 @@ func (c *paymentServiceClient) PayStudent(ctx context.Context, in *PayStudentReq
 // All implementations must embed UnimplementedPaymentServiceServer
 // for forward compatibility.
 //
+// expense service end
 // payment service start
 type PaymentServiceServer interface {
-	PayStudent(context.Context, *PayStudentRequest) (*AbsResponse, error)
+	PaymentAdd(context.Context, *PaymentAddRequest) (*AbsResponse, error)
+	PaymentReturn(context.Context, *PaymentReturnRequest) (*AbsResponse, error)
+	PaymentUpdate(context.Context, *PaymentUpdateRequest) (*AbsResponse, error)
+	GetMonthlyStatus(context.Context, *GetMonthlyStatusRequest) (*GetMonthlyStatusResponse, error)
+	GetAllPaymentsByMonth(context.Context, *GetAllPaymentsByMonthRequest) (*GetAllPaymentsByMonthResponse, error)
 	mustEmbedUnimplementedPaymentServiceServer()
 }
 
@@ -689,8 +743,20 @@ type PaymentServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPaymentServiceServer struct{}
 
-func (UnimplementedPaymentServiceServer) PayStudent(context.Context, *PayStudentRequest) (*AbsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PayStudent not implemented")
+func (UnimplementedPaymentServiceServer) PaymentAdd(context.Context, *PaymentAddRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaymentAdd not implemented")
+}
+func (UnimplementedPaymentServiceServer) PaymentReturn(context.Context, *PaymentReturnRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaymentReturn not implemented")
+}
+func (UnimplementedPaymentServiceServer) PaymentUpdate(context.Context, *PaymentUpdateRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaymentUpdate not implemented")
+}
+func (UnimplementedPaymentServiceServer) GetMonthlyStatus(context.Context, *GetMonthlyStatusRequest) (*GetMonthlyStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMonthlyStatus not implemented")
+}
+func (UnimplementedPaymentServiceServer) GetAllPaymentsByMonth(context.Context, *GetAllPaymentsByMonthRequest) (*GetAllPaymentsByMonthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPaymentsByMonth not implemented")
 }
 func (UnimplementedPaymentServiceServer) mustEmbedUnimplementedPaymentServiceServer() {}
 func (UnimplementedPaymentServiceServer) testEmbeddedByValue()                        {}
@@ -713,20 +779,92 @@ func RegisterPaymentServiceServer(s grpc.ServiceRegistrar, srv PaymentServiceSer
 	s.RegisterService(&PaymentService_ServiceDesc, srv)
 }
 
-func _PaymentService_PayStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PayStudentRequest)
+func _PaymentService_PaymentAdd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaymentAddRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PaymentServiceServer).PayStudent(ctx, in)
+		return srv.(PaymentServiceServer).PaymentAdd(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PaymentService_PayStudent_FullMethodName,
+		FullMethod: PaymentService_PaymentAdd_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServiceServer).PayStudent(ctx, req.(*PayStudentRequest))
+		return srv.(PaymentServiceServer).PaymentAdd(ctx, req.(*PaymentAddRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentService_PaymentReturn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaymentReturnRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).PaymentReturn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_PaymentReturn_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).PaymentReturn(ctx, req.(*PaymentReturnRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentService_PaymentUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PaymentUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).PaymentUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_PaymentUpdate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).PaymentUpdate(ctx, req.(*PaymentUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentService_GetMonthlyStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMonthlyStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).GetMonthlyStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_GetMonthlyStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).GetMonthlyStatus(ctx, req.(*GetMonthlyStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentService_GetAllPaymentsByMonth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPaymentsByMonthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).GetAllPaymentsByMonth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_GetAllPaymentsByMonth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).GetAllPaymentsByMonth(ctx, req.(*GetAllPaymentsByMonthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -739,8 +877,24 @@ var PaymentService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*PaymentServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "PayStudent",
-			Handler:    _PaymentService_PayStudent_Handler,
+			MethodName: "PaymentAdd",
+			Handler:    _PaymentService_PaymentAdd_Handler,
+		},
+		{
+			MethodName: "PaymentReturn",
+			Handler:    _PaymentService_PaymentReturn_Handler,
+		},
+		{
+			MethodName: "PaymentUpdate",
+			Handler:    _PaymentService_PaymentUpdate_Handler,
+		},
+		{
+			MethodName: "GetMonthlyStatus",
+			Handler:    _PaymentService_GetMonthlyStatus_Handler,
+		},
+		{
+			MethodName: "GetAllPaymentsByMonth",
+			Handler:    _PaymentService_GetAllPaymentsByMonth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

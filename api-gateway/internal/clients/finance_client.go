@@ -70,8 +70,27 @@ func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx cont
 	})
 }
 
-func (fc *FinanceClient) PayUnpayStudent(ctx context.Context, req *pb.PayStudentRequest) (*pb.AbsResponse, error) {
-	return fc.paymentClient.PayStudent(ctx, req)
+func (fc *FinanceClient) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PaymentAdd(ctx, req)
+}
+
+func (fc *FinanceClient) PaymentReturn(ctx context.Context, req *pb.PaymentReturnRequest) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PaymentReturn(ctx, req)
+}
+
+func (fc *FinanceClient) PaymentUpdate(ctx context.Context, p *pb.PaymentUpdateRequest) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PaymentUpdate(ctx, p)
+}
+
+func (fc *FinanceClient) GetMonthlyStatusPayment(ctx context.Context, studentId string) (*pb.GetMonthlyStatusResponse, error) {
+	return fc.paymentClient.GetMonthlyStatus(ctx, &pb.GetMonthlyStatusRequest{UserId: studentId})
+}
+
+func (fc *FinanceClient) GetAllPayments(ctx context.Context, month string, studentId string) (*pb.GetAllPaymentsByMonthResponse, error) {
+	return fc.paymentClient.GetAllPaymentsByMonth(ctx, &pb.GetAllPaymentsByMonthRequest{
+		UserId: studentId,
+		Month:  month,
+	})
 }
 
 func NewFinanceClient(addr string) (*FinanceClient, error) {

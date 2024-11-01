@@ -40,6 +40,29 @@ definitions:
       withTeacher:
         type: boolean
     type: object
+  pb.AbsGetAllPaymentsByMonthResponse:
+    properties:
+      amount:
+        type: string
+      comment:
+        type: string
+      created_at:
+        type: string
+      created_by_id:
+        type: string
+      created_by_name:
+        type: string
+      givenDate:
+        type: string
+      groupId:
+        type: string
+      groupName:
+        type: string
+      payment_type:
+        type: string
+      paymentId:
+        type: string
+    type: object
   pb.AbsGetHistoryByUserIdResponse:
     properties:
       createdAt:
@@ -49,6 +72,13 @@ definitions:
       oldValue:
         type: string
       updatedField:
+        type: string
+    type: object
+  pb.AbsGetMonthlyStatusResponse:
+    properties:
+      balance:
+        type: string
+      month:
         type: string
     type: object
   pb.AbsGroup:
@@ -494,6 +524,13 @@ definitions:
       totalPageCount:
         type: integer
     type: object
+  pb.GetAllPaymentsByMonthResponse:
+    properties:
+      payments:
+        items:
+          $ref: '#/definitions/pb.AbsGetAllPaymentsByMonthResponse'
+        type: array
+    type: object
   pb.GetAllStudentResponse:
     properties:
       response:
@@ -733,6 +770,13 @@ definitions:
           $ref: '#/definitions/pb.DynamicSection'
         type: array
     type: object
+  pb.GetMonthlyStatusResponse:
+    properties:
+      monthStatus:
+        items:
+          $ref: '#/definitions/pb.AbsGetMonthlyStatusResponse'
+        type: array
+    type: object
   pb.GetNotesByStudent:
     properties:
       notes:
@@ -870,17 +914,53 @@ definitions:
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
     type: object
-  pb.PayStudentRequest:
+  pb.PaymentAddRequest:
     properties:
+      actionById:
+        type: string
+      actionByName:
+        type: string
       comment:
         type: string
       date:
+        type: string
+      groupId:
         type: string
       method:
         type: string
       sum:
         type: string
       type:
+        type: string
+      userId:
+        type: string
+    type: object
+  pb.PaymentReturnRequest:
+    properties:
+      actionById:
+        type: string
+      actionByName:
+        type: string
+      paymentId:
+        type: string
+    type: object
+  pb.PaymentUpdateRequest:
+    properties:
+      actionById:
+        type: string
+      actionByName:
+        type: string
+      comment:
+        type: string
+      date:
+        type: string
+      debit:
+        type: string
+      groupId:
+        type: string
+      method:
+        type: string
+      paymentId:
         type: string
       userId:
         type: string
@@ -1675,18 +1755,48 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
-  /api/finance/payment/student/paidUnpaid:
+  /api/finance/payment/get-all-payments/{studentId}/{month}:
+    get:
+      description: Get all payment records for a student within a specified month.
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      - description: 'Month (format: YYYY-MM)'
+        in: path
+        name: month
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllPaymentsByMonthResponse'
+        "400":
+          description: Invalid request parameters or failed retrieval
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/student/add:
     post:
       consumes:
       - application/json
-      description: Pay or unpay a student's payment by student ID
+      description: Add a payment for a student
       parameters:
-      - description: Payment Information
+      - description: Payment Add Request
         in: body
-        name: payment
+        name: request
         required: true
         schema:
-          $ref: '#/definitions/pb.PayStudentRequest'
+          $ref: '#/definitions/pb.PaymentAddRequest'
       produces:
       - application/json
       responses:
@@ -1706,7 +1816,96 @@ paths:
       - Bearer: []
       summary: ADMIN , CEO
       tags:
-      - payment
+      - payments
+  /api/finance/payment/student/get-monthly-status/{studentId}:
+    get:
+      description: Get the monthly payment status for a student.
+      parameters:
+      - description: Student ID
+        in: path
+        name: studentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetMonthlyStatusResponse'
+        "400":
+          description: Invalid request parameters or failed retrieval
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/student/return:
+    post:
+      consumes:
+      - application/json
+      description: Return a payment for a student
+      parameters:
+      - description: Payment Return Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.PaymentReturnRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/student/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update a payment for a student
+      parameters:
+      - description: Payment Update Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.PaymentUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
   /api/group/create:
     post:
       consumes:

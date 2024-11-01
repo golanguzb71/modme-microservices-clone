@@ -14,27 +14,39 @@ type PaymentService struct {
 	repo *repository.PaymentRepository
 }
 
-func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {
-	return &PaymentService{repo: repo}
-}
-
-func (ps *PaymentService) PayStudent(ctx context.Context, req *pb.PayStudentRequest) (*pb.AbsResponse, error) {
-	if req.Type == "PAID" {
-		if err := ps.repo.PaidStudent(req.UserId, req.Comment, req.Sum, req.Date, req.Method, req.CreatedBy); err != nil {
+func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
+	if req.Type == "ADD" {
+		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
 			Status:  http.StatusCreated,
-			Message: "student paid added",
+			Message: "payment added",
 		}, nil
-	} else if req.Type == "UNPAID" {
-		if err := ps.repo.UnPaidStudent(req.UserId, req.Comment, req.Sum, req.Date, req.Method, req.CreatedBy); err != nil {
+	} else if req.Type == "TAKE_OFF" {
+		if err := ps.repo.TakeOffPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
 			Status:  http.StatusCreated,
-			Message: "student unpaid",
+			Message: "payment take_off successfully",
 		}, nil
 	}
-	return nil, status.Error(codes.Aborted, "request type invalid")
+	return nil, status.Errorf(codes.Aborted, "invalid request type")
+}
+func (ps *PaymentService) PaymentReturn(ctx context.Context, req *pb.PaymentReturnRequest) (*pb.AbsResponse, error) {
+	return ps.repo.PaymentReturn(req.PaymentId, req.ActionByName, req.ActionById)
+}
+func (ps *PaymentService) PaymentUpdate(ctx context.Context, req *pb.PaymentUpdateRequest) (*pb.AbsResponse, error) {
+	return ps.repo.PaymentUpdate(req.PaymentId, req.Date, req.Method, req.UserId, req.Comment, req.Debit, req.ActionByName, req.ActionById, req.GroupId)
+}
+func (ps *PaymentService) GetMonthlyStatus(ctx context.Context, req *pb.GetMonthlyStatusRequest) (*pb.GetMonthlyStatusResponse, error) {
+	return ps.repo.GetMonthlyStatus(req.UserId)
+}
+func (ps *PaymentService) GetAllPaymentsByMonth(ctx context.Context, req *pb.GetAllPaymentsByMonthRequest) (*pb.GetAllPaymentsByMonthResponse, error) {
+	return ps.repo.GetAllPaymentsByMonth(req.Month, req.UserId)
+}
+
+func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {
+	return &PaymentService{repo: repo}
 }

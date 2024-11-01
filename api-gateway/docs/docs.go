@@ -1017,14 +1017,61 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment/student/paidUnpaid": {
+        "/api/finance/payment/get-all-payments/{studentId}/{month}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get all payment records for a student within a specified month.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Month (format: YYYY-MM)",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllPaymentsByMonthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters or failed retrieval",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/student/add": {
             "post": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Pay or unpay a student's payment by student ID",
+                "description": "Add a payment for a student",
                 "consumes": [
                     "application/json"
                 ],
@@ -1032,17 +1079,159 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "payment"
+                    "payments"
                 ],
                 "summary": "ADMIN , CEO",
                 "parameters": [
                     {
-                        "description": "Payment Information",
-                        "name": "payment",
+                        "description": "Payment Add Request",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.PayStudentRequest"
+                            "$ref": "#/definitions/pb.PaymentAddRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/student/get-monthly-status/{studentId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get the monthly payment status for a student.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetMonthlyStatusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters or failed retrieval",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/student/return": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Return a payment for a student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "description": "Payment Return Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.PaymentReturnRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/student/update": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update a payment for a student",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "description": "Payment Update Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.PaymentUpdateRequest"
                         }
                     }
                 ],
@@ -3455,6 +3644,41 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsGetAllPaymentsByMonthResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by_id": {
+                    "type": "string"
+                },
+                "created_by_name": {
+                    "type": "string"
+                },
+                "givenDate": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "paymentId": {
+                    "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsGetHistoryByUserIdResponse": {
             "type": "object",
             "properties": {
@@ -3468,6 +3692,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedField": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.AbsGetMonthlyStatusResponse": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "month": {
                     "type": "string"
                 }
             }
@@ -4153,6 +4388,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetAllPaymentsByMonthResponse": {
+            "type": "object",
+            "properties": {
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsGetAllPaymentsByMonthResponse"
+                    }
+                }
+            }
+        },
         "pb.GetAllStudentResponse": {
             "type": "object",
             "properties": {
@@ -4521,6 +4767,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetMonthlyStatusResponse": {
+            "type": "object",
+            "properties": {
+                "monthStatus": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsGetMonthlyStatusResponse"
+                    }
+                }
+            }
+        },
         "pb.GetNotesByStudent": {
             "type": "object",
             "properties": {
@@ -4732,13 +4989,22 @@ const docTemplate = `{
                 }
             }
         },
-        "pb.PayStudentRequest": {
+        "pb.PaymentAddRequest": {
             "type": "object",
             "properties": {
+                "actionById": {
+                    "type": "string"
+                },
+                "actionByName": {
+                    "type": "string"
+                },
                 "comment": {
                     "type": "string"
                 },
                 "date": {
+                    "type": "string"
+                },
+                "groupId": {
                     "type": "string"
                 },
                 "method": {
@@ -4748,6 +5014,52 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.PaymentReturnRequest": {
+            "type": "object",
+            "properties": {
+                "actionById": {
+                    "type": "string"
+                },
+                "actionByName": {
+                    "type": "string"
+                },
+                "paymentId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.PaymentUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "actionById": {
+                    "type": "string"
+                },
+                "actionByName": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "debit": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "paymentId": {
                     "type": "string"
                 },
                 "userId": {

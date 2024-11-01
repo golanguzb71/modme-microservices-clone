@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"education-service/internal/clients"
 	"education-service/proto/pb"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"math"
 	"strconv"
 	"time"
@@ -46,7 +49,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
            balance, condition, telegram_username, created_at
     FROM students
     WHERE condition = $1
-    ORDER BY id
+    ORDER BY created_at desc 
     LIMIT $2 OFFSET $3`
 	studentRows, err := r.db.Query(studentQuery, condition, sizeInt, offset)
 	if err != nil {
@@ -573,4 +576,99 @@ func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bo
 	}
 
 	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
+}
+func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to begin transaction")
+	}
+	var currentBalance float64
+	groupName := ""
+
+	err = tx.QueryRow("SELECT balance FROM students WHERE id = $1", studentId).Scan(&currentBalance)
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "Failed to get current balance")
+	}
+
+	if paymentType != "TAKE_OFF" {
+		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
+	}
+
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "Failed to get group name")
+	}
+
+	var newBalance float64
+	if paymentType == "ADD" {
+		amountValue, err := strconv.ParseFloat(amount, 64)
+		if err != nil {
+			tx.Rollback()
+			return nil, status.Errorf(codes.InvalidArgument, "Invalid amount")
+		}
+		newBalance = currentBalance + amountValue
+		_, err = tx.Exec("UPDATE students SET balance = $1 WHERE id = $2", newBalance, studentId)
+		if err != nil {
+			tx.Rollback()
+			return nil, status.Errorf(codes.Internal, "Failed to update balance")
+		}
+	} else if paymentType == "TAKE_OFF" {
+		amountValue, err := strconv.ParseFloat(amount, 64)
+		if err != nil {
+			tx.Rollback()
+			return nil, status.Errorf(codes.InvalidArgument, "Invalid amount")
+		}
+		if currentBalance < amountValue {
+			tx.Rollback()
+			return nil, status.Errorf(codes.InvalidArgument, "Insufficient balance")
+		}
+		newBalance = currentBalance - amountValue
+		_, err = tx.Exec("UPDATE students SET balance = $1 WHERE id = $2", newBalance, studentId)
+		if err != nil {
+			tx.Rollback()
+			return nil, status.Errorf(codes.Internal, "Failed to update balance")
+		}
+	} else {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Aborted, "Payment type invalid")
+	}
+
+	historyData := map[string]interface{}{
+		"comment":       comment,
+		"groupId":       groupId,
+		"groupName":     groupName,
+		"createdById":   createdById,
+		"createdByName": createdByName,
+		"givenDate":     givenDate,
+		"amount":        amount,
+		"paymentType":   paymentType,
+	}
+
+	historyJSON, err := json.Marshal(historyData)
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "Failed to marshal history data")
+	}
+
+	field := "balance_add"
+	if paymentType == "TAKE_OFF" {
+		field = "balance_take_off"
+	}
+
+	_, err = tx.Exec(`
+		INSERT INTO student_history (id, student_id, field, old_value, current_value, created_at)
+		VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
+	`, studentId, field, currentBalance, historyJSON, time.Now())
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "Failed to log history")
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to commit transaction")
+	}
+
+	return &pb.AbsResponse{Message: "Balance updated successfully"}, nil
 }

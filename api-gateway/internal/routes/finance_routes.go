@@ -33,6 +33,8 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			payment.POST("/student/add", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentAdd)
 			payment.POST("/student/return", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentReturn)
 			payment.PATCH("/student/update", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentUpdate)
+			payment.GET("/student/get-monthly-status/:studentId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetMonthlyStatusPayment)
+			payment.GET("/get-all-payments/:studentId/:month", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
 		}
 	}
 }

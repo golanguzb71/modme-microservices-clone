@@ -248,6 +248,17 @@ service StudentService{
   rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
   rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
   rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+  rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
+}
+message ChangeUserBalanceHistoryRequest{
+  string studentId = 1;
+  string amount = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
 }
 message DeleteStudentRequest{
   string studentId = 1;

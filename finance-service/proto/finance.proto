@@ -137,16 +137,66 @@ message CreateExpenseRequest{
 
 // payment service start
 service PaymentService{
-  rpc PayStudent(PayStudentRequest) returns(common.AbsResponse);
+  rpc PaymentAdd(PaymentAddRequest) returns(common.AbsResponse);
+  rpc PaymentReturn(PaymentReturnRequest) returns(common.AbsResponse);
+  rpc PaymentUpdate(PaymentUpdateRequest) returns(common.AbsResponse);
+  rpc GetMonthlyStatus(GetMonthlyStatusRequest) returns(GetMonthlyStatusResponse);
+  rpc GetAllPaymentsByMonth(GetAllPaymentsByMonthRequest) returns(GetAllPaymentsByMonthResponse);
 }
-message PayStudentRequest{
+message GetAllPaymentsByMonthRequest{
+  string userId = 1;
+  string month = 2;
+}
+message GetAllPaymentsByMonthResponse{
+  repeated AbsGetAllPaymentsByMonthResponse payments = 1;
+}
+message AbsGetAllPaymentsByMonthResponse{
+  string givenDate = 1;
+  string payment_type = 2;
+  string amount = 3;
+  string comment = 4;
+  string created_by_id = 5;
+  string created_by_name = 6;
+  string created_at = 7;
+  string paymentId = 8;
+  string groupId = 9;
+  string groupName = 10;
+}
+message GetMonthlyStatusResponse{
+  repeated AbsGetMonthlyStatusResponse monthStatus = 1;
+}
+message AbsGetMonthlyStatusResponse{
+  string month = 1;
+  string balance = 2;
+}
+message GetMonthlyStatusRequest{
+  string userId = 1;
+}
+message PaymentAddRequest{
   string comment = 1;
   string date = 2;
   string method = 3;
   string sum = 4;
   string userId = 5;
   string type = 6;
-  string createdBy = 7;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
 }
-
+message PaymentUpdateRequest{
+  string debit = 1;
+  string method = 2;
+  string date = 3;
+  string comment = 4;
+  string userId = 5;
+  string paymentId = 6;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
+}
+message PaymentReturnRequest{
+  string paymentId = 1;
+  string actionById = 2;
+  string actionByName = 3;
+}
 // payment service end
