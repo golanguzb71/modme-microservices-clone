@@ -58,6 +58,8 @@ definitions:
         type: string
       groupName:
         type: string
+      method:
+        type: string
       payment_type:
         type: string
       paymentId:

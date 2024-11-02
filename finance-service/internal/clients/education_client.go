@@ -58,3 +58,17 @@ func (ec *EducationClient) ChangeUserBalanceHistory(studentId string, amount str
 	}
 	return nil
 }
+
+func (ec *EducationClient) ChangeUserBalanceHistoryByDebit(ctx context.Context, studentId, oldDebit, givenDate, comment, paymentType, createdBy, createdByName, groupId, currentDebit string) (*pb.AbsResponse, error) {
+	return ec.studentClient.ChangeUserBalanceHistoryByDebit(ctx, &pb.ChangeUserBalanceHistoryByDebitRequest{
+		StudentId:     studentId,
+		OldDebit:      oldDebit,
+		GivenDate:     givenDate,
+		Comment:       comment,
+		PaymentType:   paymentType,
+		CreatedBy:     createdBy,
+		CreatedByName: createdByName,
+		GroupId:       groupId,
+		CurrentDebit:  currentDebit,
+	})
+}

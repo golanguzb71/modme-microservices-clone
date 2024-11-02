@@ -13,6 +13,15 @@ service DiscountService{
   rpc CreateDiscount(AbsDiscountRequest) returns(common.AbsResponse);
   rpc DeleteDiscount(AbsDiscountRequest) returns(common.AbsResponse);
   rpc GetHistoryDiscount(GetHistoryDiscountRequest) returns (GetHistoryDiscountResponse);
+  rpc GetDiscountByStudentId(GetDiscountByStudentIdRequest) returns(GetDiscountByStudentIdResponse);
+}
+message GetDiscountByStudentIdResponse{
+  string amount = 1;
+  bool isHave = 2;
+}
+message GetDiscountByStudentIdRequest{
+  string studentId = 1;
+  string groupId = 2;
 }
 message GetHistoryDiscountRequest{
   string studentId = 1;
@@ -161,6 +170,7 @@ message AbsGetAllPaymentsByMonthResponse{
   string paymentId = 8;
   string groupId = 9;
   string groupName = 10;
+  string method = 11;
 }
 message GetMonthlyStatusResponse{
   repeated AbsGetMonthlyStatusResponse monthStatus = 1;
@@ -200,3 +210,23 @@ message PaymentReturnRequest{
   string actionByName = 3;
 }
 // payment service end
+
+// teacher salary service start
+service TeacherSalaryService{
+  rpc CreateTeacherSalary(CreateTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc DeleteTeacherSalary(DeleteTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc GetTeacherSalary(GetTeacherSalaryRequest) returns(common.AbsResponse);
+}
+message GetTeacherSalaryRequest{
+
+}
+message DeleteTeacherSalaryRequest{
+
+}
+message CreateTeacherSalaryRequest{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+
+// teacher salary service end

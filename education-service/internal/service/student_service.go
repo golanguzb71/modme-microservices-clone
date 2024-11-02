@@ -95,3 +95,7 @@ func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetSt
 func (s *StudentService) ChangeUserBalanceHistory(ctx context.Context, req *pb.ChangeUserBalanceHistoryRequest) (*pb.AbsResponse, error) {
 	return s.repo.ChangeUserBalanceHistory(req.Comment, req.GroupId, req.CreatedBy, req.CreatedByName, req.GivenDate, req.Amount, req.PaymentType, req.StudentId)
 }
+
+func (s *StudentService) ChangeUserBalanceHistoryByDebit(ctx context.Context, req *pb.ChangeUserBalanceHistoryByDebitRequest) (*pb.AbsResponse, error) {
+	return s.repo.ChangeUserBalanceHistoryByDebit(req.StudentId, req.OldDebit, req.CurrentDebit, req.GivenDate, req.Comment, req.PaymentType, req.CreatedBy, req.CreatedByName, req.GroupId)
+}

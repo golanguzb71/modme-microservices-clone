@@ -5,6 +5,7 @@ import (
 	"api-gateway/internal/utils"
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/shopspring/decimal"
 	"net/http"
 	"strconv"
 	"time"
@@ -344,7 +345,15 @@ func PaymentAdd(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	amount, err := decimal.NewFromString(req.Sum)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	if amount.LessThan(decimal.NewFromInt(10000)) {
+		utils.RespondError(ctx, http.StatusBadRequest, "min 10 000 USD")
+		return
+	}
 	req.ActionByName = user.Name
 	req.ActionById = user.Id
 	resp, err := financeClient.PaymentAdd(&req)
@@ -409,6 +418,15 @@ func PaymentUpdate(ctx *gin.Context) {
 	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	amount, err := decimal.NewFromString(req.Debit)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	if amount.LessThan(decimal.NewFromInt(10000)) {
+		utils.RespondError(ctx, http.StatusBadRequest, "min 10 000 USD")
 		return
 	}
 	req.ActionByName = user.Name

@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -93,23 +94,31 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *string, groupId s
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	endOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month()+1, 0, 23, 59, 59, 999999999, tillDateParsed.Location())
+	endOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 23, 59, 59, 999999999, tillDateParsed.Location()).AddDate(0, 1, -1)
 
-	totalLessonsInMonth := calculateLessonsInMonth(groupDays, dateType, tillDateParsed, endOfMonth)
-
-	remainingLessons := calculateRemainingLessons(groupDays, dateType, tillDateParsed, endOfMonth)
-
-	if totalLessonsInMonth > 0 {
-		remainingMoney := (coursePrice / float64(totalLessonsInMonth)) * float64(remainingLessons)
-		return remainingMoney, nil
+	totalLessonsInMonth := calculateLessonsInMonth(groupDays, dateType, time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location()), endOfMonth)
+	if totalLessonsInMonth == 0 {
+		return 0, fmt.Errorf("no lessons scheduled for the given month, avoiding division by zero")
 	}
 
-	return 0, nil
-}
+	remainingLessons := calculateRemainingLessons(groupDays, dateType, tillDateParsed, endOfMonth)
+	if remainingLessons > totalLessonsInMonth {
+		remainingLessons = totalLessonsInMonth
+	}
 
-func calculateLessonsInMonth(groupDays []string, dateType string, startDate time.Time, endDate time.Time) int {
+	remainingMoney := coursePrice / float64(totalLessonsInMonth) * float64(remainingLessons)
+
+	if remainingMoney < 0 {
+		remainingMoney = math.Ceil(remainingMoney)
+	} else {
+		remainingMoney = math.Floor(remainingMoney)
+	}
+
+	return remainingMoney, nil
+}
+func calculateLessonsInMonth(groupDays []string, dateType string, startDate, endDate time.Time) int {
 	totalLessons := 0
-	for currentDate := startDate; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		if isLessonDay(currentDate, groupDays, dateType) {
 			totalLessons++
 		}
@@ -117,9 +126,9 @@ func calculateLessonsInMonth(groupDays []string, dateType string, startDate time
 	return totalLessons
 }
 
-func calculateRemainingLessons(groupDays []string, dateType string, currentDate time.Time, endDate time.Time) int {
+func calculateRemainingLessons(groupDays []string, dateType string, currentDate, endDate time.Time) int {
 	remainingLessons := 0
-	for ; currentDate.Before(endDate) || currentDate.Equal(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+	for ; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		if isLessonDay(currentDate, groupDays, dateType) {
 			remainingLessons++
 		}
@@ -136,14 +145,13 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 				return currentDate.Day()%2 == 0
 			case "TOQ":
 				return currentDate.Day()%2 != 0
-			case "BOSHQA":
+			default:
 				return true
 			}
 		}
 	}
 	return false
 }
-
 func getDayName(weekday time.Weekday) string {
 	days := map[time.Weekday]string{
 		time.Monday:    "DUSHANBA",

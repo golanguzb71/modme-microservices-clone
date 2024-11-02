@@ -6,31 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/grpc/proto/pb/education_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/education_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/finance_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/education_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/education_service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/service/student_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/service/student_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/migrations/education_service_down.sql" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/migrations/education_service_down.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/clients/education_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/clients/education_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/proto/education.proto" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/education.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/proto/pb/education.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/pb/education.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/proto/pb/education_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/pb/education_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/finance.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/migrations/finance_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/migrations/finance_service_up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/finance.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,9 +57,9 @@
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
     "Go Build.go build api-gateway/cmd.executor": "Debug",
-    "Go Build.go build education-service/cmd.executor": "Run",
-    "Go Build.go build finance-service/cmd.executor": "Debug",
-    "Go Build.go build lid-service/cmd.executor": "Debug",
+    "Go Build.go build education-service/cmd.executor": "Debug",
+    "Go Build.go build finance-service/cmd.executor": "Run",
+    "Go Build.go build lid-service/cmd.executor": "Run",
     "Go Build.go build user-service/cmd.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -83,7 +67,7 @@
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "git-widget-placeholder": "finance__service__branc",
     "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/home/abdulaziz/GolandProjects/modme-microservices-clone/education-service/proto",
+    "last_opened_file_path": "/home/abdulaziz/GolandProjects/modme-microservices-clone/finance-service",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -163,10 +147,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build education-service/cmd" />
-        <item itemvalue="Go Build.go build lid-service/cmd" />
-        <item itemvalue="Go Build.go build api-gateway/cmd" />
         <item itemvalue="Go Build.go build finance-service/cmd" />
+        <item itemvalue="Go Build.go build lid-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
+        <item itemvalue="Go Build.go build api-gateway/cmd" />
       </list>
     </recent_temporary>
   </component>

@@ -249,6 +249,18 @@ service StudentService{
   rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
   rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
   rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
+  rpc ChangeUserBalanceHistoryByDebit(ChangeUserBalanceHistoryByDebitRequest) returns(common.AbsResponse);
+}
+message ChangeUserBalanceHistoryByDebitRequest{
+  string studentId = 1;
+  string oldDebit = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
+  string currentDebit = 9;
 }
 message ChangeUserBalanceHistoryRequest{
   string studentId = 1;
