@@ -14,6 +14,8 @@ database:
 grpc:
   userService:
     address: "localhost:50055"
+  financeService:
+    address: "localhost:50056"
 
 #server:
 #  port: 8080

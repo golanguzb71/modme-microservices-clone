@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package finance;
+
+option go_package = "proto/pb";
+
+// discount service start
+service DiscountService{
+  rpc GetDiscountByStudentId(GetDiscountByStudentIdRequest) returns(GetDiscountByStudentIdResponse);
+}
+message GetDiscountByStudentIdResponse{
+  string amount = 1;
+  bool isHave = 2;
+}
+message GetDiscountByStudentIdRequest{
+  string studentId = 1;
+}
+// discount service end

@@ -43,3 +43,7 @@ func (ds *DiscountService) GetHistoryDiscount(ctx context.Context, req *pb.GetHi
 func (ds *DiscountService) GetAllInformationDiscount(ctx context.Context, req *pb.GetInformationDiscountRequest) (*pb.GetInformationDiscountResponse, error) {
 	return ds.repo.GetAllDiscountByGroup(req.GroupId)
 }
+
+func (ds *DiscountService) GetDiscountByStudentId(ctx context.Context, req *pb.GetDiscountByStudentIdRequest) (*pb.GetDiscountByStudentIdResponse, error) {
+	return ds.repo.GetDiscountByStudentId(req.StudentId, req.GroupId)
+}

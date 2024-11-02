@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"education-service/internal/clients"
 	"education-service/internal/utils"
@@ -19,8 +20,9 @@ import (
 )
 
 type StudentRepository struct {
-	db         *sql.DB
-	userClient *clients.UserClient
+	db             *sql.DB
+	userClient     *clients.UserClient
+	discountClient *clients.FinanceClient
 }
 
 func NewStudentRepository(db *sql.DB, userClient *clients.UserClient) *StudentRepository {
@@ -537,10 +539,12 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
+	manaulPriceForCourse := r.discountClient.GetDiscountByStudentId(context.TODO(), studentId)
+
 	if returnTheMoney {
 		switch status {
 		case "FREEZE":
-			amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, tillDate)
+			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, tillDate)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
@@ -552,7 +556,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 			}
 		case "DELETE":
 			date := time.Now().Format("2006-01-02")
-			amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, date)
+			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, date)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
@@ -571,6 +575,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		}
 		_, err = r.ChangeUserBalanceHistory("student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
 		if err != nil {
+			tx.Rollback()
 			return nil, err
 		}
 	}
@@ -617,7 +622,6 @@ func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bo
 
 	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
 }
-
 func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -675,7 +679,6 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		Message: "balance edited",
 	}, nil
 }
-
 func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, oldDebit string, currentDebit string, givenDate string, comment string, paymentType string, createdById string, createdByName string, groupId string) (*pb.AbsResponse, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -732,7 +735,6 @@ func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, ol
 		Message: "balance edited",
 	}, nil
 }
-
 func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newBalance float64, studentId string, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType string) error {
 	result, err := tx.Exec("UPDATE students SET balance = $1 WHERE id = $2", newBalance, studentId)
 	if err != nil {

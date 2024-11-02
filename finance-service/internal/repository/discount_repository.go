@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"finance-service/internal/clients"
 	"finance-service/proto/pb"
+	"fmt"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -128,6 +129,35 @@ func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscou
 
 	return &pb.GetHistoryDiscountResponse{Discounts: discounts}, nil
 }
+
+func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (*pb.GetDiscountByStudentIdResponse, error) {
+	var discount, startAt, endAt string
+	err := r.db.QueryRow(`SELECT discount, start_at, end_at FROM student_discount WHERE student_id=$1 AND group_id=$2`, studentId, groupId).Scan(&discount, &startAt, &endAt)
+	if err != nil {
+		return nil, err
+	}
+	layout := "2006-01-02 15:04:05"
+	startTime, err := time.Parse(layout, startAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse start_at: %v", err)
+	}
+
+	endTime, err := time.Parse(layout, endAt)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse end_at: %v", err)
+	}
+
+	now := time.Now()
+	if now.After(startTime) && now.Before(endTime) {
+		response := &pb.GetDiscountByStudentIdResponse{
+			Amount: discount,
+			IsHave: true,
+		}
+		return response, nil
+	}
+	return nil, fmt.Errorf("current time is not within the discount period")
+}
+
 func NewDiscountRepository(db *sql.DB, studentClient *clients.EducationClient) *DiscountRepository {
 	return &DiscountRepository{db: db, studentClient: studentClient}
 }

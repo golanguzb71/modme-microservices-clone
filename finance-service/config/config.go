@@ -27,6 +27,9 @@ type GrpcConfig struct {
 	EducationService struct {
 		Address string `yaml:"address"`
 	} `yaml:"educationService"`
+	FinanceService struct {
+		Address string `yaml:"address"`
+	} `yaml:"financeService"`
 }
 
 type Config struct {
