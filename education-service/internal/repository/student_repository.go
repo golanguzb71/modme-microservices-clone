@@ -563,13 +563,12 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 			}
 		}
 	} else if status == "ACTIVE" {
-		date := time.Now().Format("2006-01-02")
-		amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, date)
+		amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, tillDate)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
 		}
-		_, err = r.ChangeUserBalanceHistory("student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
+		_, err = r.ChangeUserBalanceHistory("student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
 		if err != nil {
 			return nil, err
 		}
@@ -617,6 +616,7 @@ func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bo
 
 	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
 }
+
 func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
