@@ -3671,6 +3671,9 @@ const docTemplate = `{
                 "groupName": {
                     "type": "string"
                 },
+                "method": {
+                    "type": "string"
+                },
                 "paymentId": {
                     "type": "string"
                 },

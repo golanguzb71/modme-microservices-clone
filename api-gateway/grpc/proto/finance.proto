@@ -160,6 +160,7 @@ message AbsGetAllPaymentsByMonthResponse{
   string paymentId = 8;
   string groupId = 9;
   string groupName = 10;
+  string method = 11;
 }
 message GetMonthlyStatusResponse{
   repeated AbsGetMonthlyStatusResponse monthStatus = 1;

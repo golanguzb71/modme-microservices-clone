@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"finance-service/internal/clients"
@@ -189,8 +190,9 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 	}()
 
 	var paymentType string
-	query := `SELECT payment_type FROM student_payments where id=$1`
-	err = tx.QueryRow(query, paymentId).Scan(&paymentType)
+	var oldDebit string
+	query := `SELECT payment_type , amount FROM student_payments where id=$1`
+	err = tx.QueryRow(query, paymentId).Scan(&paymentType, &oldDebit)
 	if err != nil {
 		return nil, fmt.Errorf("error checking payment existence: %v", err)
 	}
@@ -202,9 +204,8 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 	if err != nil {
 		return nil, fmt.Errorf("failed to update payment: %v", err)
 	}
-	fmt.Println(debit)
 
-	err = r.educationClient.ChangeUserBalanceHistory(userId, debit, date, comment, paymentType, actionById, actionByName, groupId)
+	_, err = r.educationClient.ChangeUserBalanceHistoryByDebit(context.TODO(), userId, oldDebit, date, comment, paymentType, actionById, actionByName, groupId, debit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user balance history: %v", err)
 	}
@@ -274,7 +275,8 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 			created_by_id, 
 			created_by_name, 
 			created_at ,
-			coalesce(group_id , 0)
+			coalesce(group_id , 0),
+			method
 		FROM 
 			student_payments 
 		WHERE 
@@ -306,6 +308,7 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 			&payment.CreatedByName,
 			&payment.CreatedAt,
 			&payment.GroupId,
+			&payment.Method,
 		); err != nil {
 			return nil, fmt.Errorf("error scanning row: %v", err)
 		}

@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"math"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -665,22 +666,89 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		tx.Rollback()
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid payment type: %s", paymentType)
 	}
+	err = r.BalanceHistoryMaker(tx, currentBalance, newBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType)
+	if err != nil {
+		return nil, status.Errorf(codes.Canceled, err.Error())
+	}
+	return &pb.AbsResponse{
+		Status:  http.StatusOK,
+		Message: "balance edited",
+	}, nil
+}
 
+func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, oldDebit string, currentDebit string, givenDate string, comment string, paymentType string, createdById string, createdByName string, groupId string) (*pb.AbsResponse, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to begin transaction: %v", err)
+	}
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	var currentBalance float64
+	var groupName string
+
+	err = tx.QueryRow("SELECT balance FROM students WHERE id = $1", studentId).Scan(&currentBalance)
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "Failed to get current balance: %v", err)
+	}
+
+	if paymentType != "TAKE_OFF" && groupId != "" {
+		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
+		if errors.Is(err, sql.ErrNoRows) {
+			groupName = ""
+		} else if err != nil {
+			tx.Rollback()
+			return nil, status.Errorf(codes.Internal, "Failed to query group name: %v", err)
+		}
+	}
+	oldBalance := currentBalance
+	amountValue, err := strconv.ParseFloat(oldDebit, 64)
+	currentAmountValue, err := strconv.ParseFloat(currentDebit, 64)
+	if err != nil {
+		tx.Rollback()
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid amount: %v", err)
+	}
+	switch paymentType {
+	case "ADD":
+		currentBalance = (currentBalance - amountValue) + currentAmountValue
+	case "TAKE_OFF":
+		currentBalance = (currentBalance + amountValue) - currentAmountValue
+	default:
+		tx.Rollback()
+		return nil, status.Errorf(codes.Aborted, "invalid payment type")
+	}
+	err = r.BalanceHistoryMaker(tx, oldBalance, currentBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, fmt.Sprintf("%.2f", currentAmountValue), paymentType)
+	if err != nil {
+		return nil, status.Errorf(codes.Canceled, err.Error())
+	}
+	return &pb.AbsResponse{
+		Status:  http.StatusOK,
+		Message: "balance edited",
+	}, nil
+}
+
+func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newBalance float64, studentId string, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType string) error {
 	result, err := tx.Exec("UPDATE students SET balance = $1 WHERE id = $2", newBalance, studentId)
 	if err != nil {
 		tx.Rollback()
-		return nil, status.Errorf(codes.Internal, "Failed to update balance: %v", err)
+		return err
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
 		tx.Rollback()
-		return nil, status.Errorf(codes.Internal, "Failed to get rows affected: %v", err)
+		return err
 	}
 
 	if rowsAffected == 0 {
 		tx.Rollback()
-		return nil, status.Errorf(codes.NotFound, "Student not found")
+		return err
 	}
 
 	historyData := map[string]interface{}{
@@ -697,7 +765,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 	historyJSON, err := json.Marshal(historyData)
 	if err != nil {
 		tx.Rollback()
-		return nil, status.Errorf(codes.Internal, "Failed to marshal history data: %v", err)
+		return err
 	}
 
 	field := "balance_add"
@@ -710,13 +778,12 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
     `, studentId, field, currentBalance, historyJSON, time.Now())
 	if err != nil {
 		tx.Rollback()
-		return nil, status.Errorf(codes.Internal, "Failed to log history: %v", err)
+		return err
 	}
 
 	if err = tx.Commit(); err != nil {
 		tx.Rollback()
-		return nil, status.Errorf(codes.Internal, "Failed to commit transaction: %v", err)
+		return err
 	}
-
-	return &pb.AbsResponse{Message: "Balance updated successfully"}, nil
+	return nil
 }

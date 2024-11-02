@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -93,7 +94,6 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *string, groupId s
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	// Set end date as the last day of the month up to the end of the day.
 	endOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 23, 59, 59, 999999999, tillDateParsed.Location()).AddDate(0, 1, -1)
 
 	totalLessonsInMonth := calculateLessonsInMonth(groupDays, dateType, time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location()), endOfMonth)
@@ -107,13 +107,15 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *string, groupId s
 	}
 
 	remainingMoney := coursePrice / float64(totalLessonsInMonth) * float64(remainingLessons)
+
 	if remainingMoney < 0 {
-		remainingMoney = 0 // Ensure non-negative money value
+		remainingMoney = math.Ceil(remainingMoney)
+	} else {
+		remainingMoney = math.Floor(remainingMoney)
 	}
 
 	return remainingMoney, nil
 }
-
 func calculateLessonsInMonth(groupDays []string, dateType string, startDate, endDate time.Time) int {
 	totalLessons := 0
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
