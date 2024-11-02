@@ -333,8 +333,6 @@ func GetHistoryDiscount(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/finance/payment/student/add [post]
 func PaymentAdd(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
 	user, err := utils.GetUserFromContext(ctx)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
@@ -349,7 +347,7 @@ func PaymentAdd(ctx *gin.Context) {
 
 	req.ActionByName = user.Name
 	req.ActionById = user.Id
-	resp, err := financeClient.PaymentAdd(ctxR, &req)
+	resp, err := financeClient.PaymentAdd(&req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return

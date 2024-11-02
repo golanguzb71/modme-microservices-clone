@@ -199,3 +199,105 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "education.proto",
 }
+
+const (
+	GroupService_GetGroupById_FullMethodName = "/education.GroupService/GetGroupById"
+)
+
+// GroupServiceClient is the client API for GroupService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type GroupServiceClient interface {
+	GetGroupById(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupAbsResponse, error)
+}
+
+type groupServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewGroupServiceClient(cc grpc.ClientConnInterface) GroupServiceClient {
+	return &groupServiceClient{cc}
+}
+
+func (c *groupServiceClient) GetGroupById(ctx context.Context, in *GetGroupByIdRequest, opts ...grpc.CallOption) (*GetGroupAbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGroupAbsResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetGroupById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// GroupServiceServer is the server API for GroupService service.
+// All implementations must embed UnimplementedGroupServiceServer
+// for forward compatibility.
+type GroupServiceServer interface {
+	GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error)
+	mustEmbedUnimplementedGroupServiceServer()
+}
+
+// UnimplementedGroupServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedGroupServiceServer struct{}
+
+func (UnimplementedGroupServiceServer) GetGroupById(context.Context, *GetGroupByIdRequest) (*GetGroupAbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupById not implemented")
+}
+func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
+func (UnimplementedGroupServiceServer) testEmbeddedByValue()                      {}
+
+// UnsafeGroupServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GroupServiceServer will
+// result in compilation errors.
+type UnsafeGroupServiceServer interface {
+	mustEmbedUnimplementedGroupServiceServer()
+}
+
+func RegisterGroupServiceServer(s grpc.ServiceRegistrar, srv GroupServiceServer) {
+	// If the following call pancis, it indicates UnimplementedGroupServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&GroupService_ServiceDesc, srv)
+}
+
+func _GroupService_GetGroupById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetGroupById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetGroupById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetGroupById(ctx, req.(*GetGroupByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// GroupService_ServiceDesc is the grpc.ServiceDesc for GroupService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var GroupService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "education.GroupService",
+	HandlerType: (*GroupServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetGroupById",
+			Handler:    _GroupService_GetGroupById_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "education.proto",
+}

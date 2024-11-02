@@ -8,6 +8,7 @@ import (
 
 type EducationClient struct {
 	studentClient pb.StudentServiceClient
+	groupClient   pb.GroupServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -17,7 +18,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	}
 
 	studentClient := pb.NewStudentServiceClient(conn)
-	return &EducationClient{studentClient: studentClient}, nil
+	groupClient := pb.NewGroupServiceClient(conn)
+	return &EducationClient{studentClient: studentClient, groupClient: groupClient}, nil
 }
 
 func (ec *EducationClient) GetStudentById(studentId string) (string, string, error) {
@@ -30,6 +32,14 @@ func (ec *EducationClient) GetStudentById(studentId string) (string, string, err
 
 func (ec *EducationClient) GetStudentsByGroupId(groupId string) (*pb.GetStudentsByGroupIdResponse, error) {
 	return ec.studentClient.GetStudentsByGroupId(context.TODO(), &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: true})
+}
+
+func (ec *EducationClient) GetGroupNameById(groupId string) string {
+	group, err := ec.groupClient.GetGroupById(context.TODO(), &pb.GetGroupByIdRequest{Id: groupId})
+	if err != nil {
+		return ""
+	}
+	return group.Name
 }
 
 func (ec *EducationClient) ChangeUserBalanceHistory(studentId string, amount string, givenDate string, comment string, paymentType string, actionById string, actionByName string, groupId string) error {

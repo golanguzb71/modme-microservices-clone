@@ -242,6 +242,10 @@ definitions:
     type: object
   pb.ChangeConditionStudentRequest:
     properties:
+      actionById:
+        type: string
+      actionByName:
+        type: string
       groupId:
         type: string
       returnTheMoney:

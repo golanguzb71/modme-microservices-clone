@@ -40,7 +40,7 @@ func (s *StudentService) UpdateStudent(ctx context.Context, req *pb.UpdateStuden
 }
 
 func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteStudentRequest) (*pb.AbsResponse, error) {
-	if err := s.repo.DeleteStudent(req.StudentId, req.ReturnMoney); err != nil {
+	if err := s.repo.DeleteStudent(req.StudentId, req.ReturnMoney, req.ActionById, req.ActionByName); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -85,7 +85,7 @@ func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.Transfe
 }
 
 func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
-	return s.repo.ChangeConditionStudent(req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate)
+	return s.repo.ChangeConditionStudent(req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName)
 }
 
 func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetStudentsByGroupIdRequest) (*pb.GetStudentsByGroupIdResponse, error) {

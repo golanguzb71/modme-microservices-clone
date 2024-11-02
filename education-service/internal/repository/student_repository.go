@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"education-service/internal/clients"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"encoding/json"
 	"errors"
@@ -157,7 +158,7 @@ func (r *StudentRepository) UpdateStudent(studentId string, number string, name 
 	}
 	return nil
 }
-func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool) error {
+func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool, actionById, actionByName string) error {
 	var cond string
 	if err := r.db.QueryRow(`select condition from students where id = $1`, studentId).Scan(&cond); err != nil {
 		return err
@@ -176,7 +177,7 @@ func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool) er
 			if err != nil {
 				return err
 			}
-			_, _ = r.ChangeConditionStudent(studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"))
+			_, _ = r.ChangeConditionStudent(studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
 		}
 		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1`, studentId)
 		if err != nil {
@@ -480,7 +481,7 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 		Message: "accomplished",
 	}, nil
 }
-func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
 	if status != "FREEZE" && status != "ACTIVE" && status != "DELETE" {
 		return nil, fmt.Errorf("invalid status: %s", status)
 	}
@@ -533,6 +534,45 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
+	}
+
+	if returnTheMoney {
+		switch status {
+		case "FREEZE":
+			amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, tillDate)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+			_, err = r.ChangeUserBalanceHistory("student guruhdan muzlatildi. qolgan pul qaytarib berildi.", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "ADD", studentId)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+		case "DELETE":
+			date := time.Now().Format("2006-01-02")
+			amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, date)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+			_, err = r.ChangeUserBalanceHistory("student guruhdan o'chirildi . qolgan pul qaytarib berildi.", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "ADD", studentId)
+			if err != nil {
+				tx.Rollback()
+				return nil, err
+			}
+		}
+	} else if status == "ACTIVE" {
+		date := time.Now().Format("2006-01-02")
+		amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, date)
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+		_, err = r.ChangeUserBalanceHistory("student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -601,7 +641,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 
 	if paymentType != "TAKE_OFF" && groupId != "" {
 		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			groupName = ""
 		} else if err != nil {
 			tx.Rollback()
@@ -620,11 +660,6 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 	case "ADD":
 		newBalance = currentBalance + amountValue
 	case "TAKE_OFF":
-		if currentBalance < amountValue {
-			tx.Rollback()
-			return nil, status.Errorf(codes.InvalidArgument, "Insufficient balance: current %.2f, requested %.2f",
-				currentBalance, amountValue)
-		}
 		newBalance = currentBalance - amountValue
 	default:
 		tx.Rollback()

@@ -3954,6 +3954,12 @@ const docTemplate = `{
         "pb.ChangeConditionStudentRequest": {
             "type": "object",
             "properties": {
+                "actionById": {
+                    "type": "string"
+                },
+                "actionByName": {
+                    "type": "string"
+                },
                 "groupId": {
                     "type": "string"
                 },
