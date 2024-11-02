@@ -79,3 +79,25 @@ message GetGroupStudent{
   string teacherName = 15;
   double priceForStudent = 13;
 }
+
+
+service GroupService {
+  rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+}
+message GetGroupByIdRequest{
+  string id = 1;
+}
+message GetGroupAbsResponse{
+  string id = 1;
+  string teacherName = 3;
+  string teacherId = 14;
+  string lessonStartTime = 4;
+  int32 studentCount = 6;
+  string name = 7;
+  bool isArchived = 8;
+  string createdAt = 9;
+  string startDate = 10;
+  string endDate = 11;
+  repeated string days = 12;
+  string dateType = 13;
+}

@@ -139,8 +139,8 @@ func (lc *EducationClient) UpdateStudent(ctx context.Context, p *pb.UpdateStuden
 	return lc.studentClient.UpdateStudent(ctx, p)
 }
 
-func (lc *EducationClient) DeleteStudent(ctx context.Context, id string, returnMoney bool) (*pb.AbsResponse, error) {
-	return lc.studentClient.DeleteStudent(ctx, &pb.DeleteStudentRequest{StudentId: id, ReturnMoney: returnMoney})
+func (lc *EducationClient) DeleteStudent(ctx context.Context, id string, returnMoney bool, actionId, actionName string) (*pb.AbsResponse, error) {
+	return lc.studentClient.DeleteStudent(ctx, &pb.DeleteStudentRequest{StudentId: id, ReturnMoney: returnMoney, ActionByName: actionName, ActionById: actionId})
 }
 
 func (lc *EducationClient) GetStudentById(ctx context.Context, id string) (*pb.GetStudentByIdResponse, error) {

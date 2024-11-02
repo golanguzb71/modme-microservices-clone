@@ -598,7 +598,12 @@ func DeleteStudent(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	response, err := educationClient.DeleteStudent(ctxR, id, returnMoney)
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	response, err := educationClient.DeleteStudent(ctxR, id, returnMoney, user.Id, user.Name)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -829,6 +834,13 @@ func ChangeConditionStudent(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	req.ActionById = user.Id
+	req.ActionByName = user.Name
 	resp, err := educationClient.ChangeConditionStudent(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())

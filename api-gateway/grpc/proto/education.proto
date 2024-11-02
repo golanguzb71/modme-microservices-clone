@@ -8,7 +8,6 @@ import "common.proto";
 
 import "google/protobuf/empty.proto";
 
-
 // room service start
 service RoomService{
   rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
@@ -249,10 +248,31 @@ service StudentService{
   rpc GetHistoryStudentById(NoteStudentByAbsRequest) returns(GetHistoryStudentResponse);
   rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
   rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
+  rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+  rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
+}
+message ChangeUserBalanceHistoryRequest{
+  string studentId = 1;
+  string amount = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
 }
 message DeleteStudentRequest{
   string studentId = 1;
   bool returnMoney = 2;
+  string actionById = 3;
+  string actionByName = 4;
+}
+message GetStudentsByGroupIdResponse{
+  repeated AbsStudent students = 1;
+}
+message GetStudentsByGroupIdRequest{
+  string groupId = 1;
+  bool withOutdated = 2;
 }
 message ChangeConditionStudentRequest{
   string studentId = 4;
@@ -260,6 +280,8 @@ message ChangeConditionStudentRequest{
   string status = 1;
   bool returnTheMoney = 2;
   string tillDate = 3;
+  string actionById = 6;
+  string actionByName = 7;
 }
 message TransferLessonRequest{
   string from = 1;
@@ -392,8 +414,7 @@ message GetStudentByIdResponse{
 message NoteStudentByAbsRequest{
   string id = 1;
 }
-message GetGroupStudent
-{
+message GetGroupStudent{
   string id = 1;
   string name = 2;
   string dateType = 3;

@@ -70,8 +70,8 @@ func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx cont
 	})
 }
 
-func (fc *FinanceClient) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
-	return fc.paymentClient.PaymentAdd(ctx, req)
+func (fc *FinanceClient) PaymentAdd(req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PaymentAdd(context.TODO(), req)
 }
 
 func (fc *FinanceClient) PaymentReturn(ctx context.Context, req *pb.PaymentReturnRequest) (*pb.AbsResponse, error) {

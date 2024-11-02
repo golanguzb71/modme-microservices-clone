@@ -263,6 +263,8 @@ message ChangeUserBalanceHistoryRequest{
 message DeleteStudentRequest{
   string studentId = 1;
   bool returnMoney = 2;
+  string actionById = 3;
+  string actionByName = 4;
 }
 message GetStudentsByGroupIdResponse{
   repeated AbsStudent students = 1;
@@ -277,6 +279,8 @@ message ChangeConditionStudentRequest{
   string status = 1;
   bool returnTheMoney = 2;
   string tillDate = 3;
+  string actionById = 6;
+  string actionByName = 7;
 }
 message TransferLessonRequest{
   string from = 1;

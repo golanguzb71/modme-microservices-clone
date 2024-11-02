@@ -45,7 +45,12 @@ func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentI
 	query := `INSERT INTO student_payments 
 		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at , group_id)
 		VALUES ($1, $2, $3, $4, $5, $6, 'ADD', $7, $8 , $9 , $10)`
-	_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+	if groupId == "" {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil)
+	} else {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+
+	}
 	if err != nil {
 		return fmt.Errorf("failed to add payment: %v", err)
 	}
@@ -310,10 +315,10 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 		} else {
 			payment.GivenDate = ""
 		}
+		payment.GroupName = r.educationClient.GetGroupNameById(payment.GroupId)
 
 		payments = append(payments, &payment)
 	}
-
 	if err = rows.Err(); err != nil {
 		return nil, fmt.Errorf("error during row iteration: %v", err)
 	}
