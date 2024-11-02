@@ -210,3 +210,23 @@ message PaymentReturnRequest{
   string actionByName = 3;
 }
 // payment service end
+
+// teacher salary service start
+service TeacherSalaryService{
+  rpc CreateTeacherSalary(CreateTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc DeleteTeacherSalary(DeleteTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc GetTeacherSalary(GetTeacherSalaryRequest) returns(common.AbsResponse);
+}
+message GetTeacherSalaryRequest{
+
+}
+message DeleteTeacherSalaryRequest{
+
+}
+message CreateTeacherSalaryRequest{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+
+// teacher salary service end

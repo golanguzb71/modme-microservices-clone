@@ -20,13 +20,26 @@ import (
 )
 
 type StudentRepository struct {
-	db             *sql.DB
-	userClient     *clients.UserClient
-	discountClient *clients.FinanceClient
+	db                *sql.DB
+	userClient        *clients.UserClient
+	discountClient    *clients.FinanceClient
+	financeClientChan chan *clients.FinanceClient
 }
 
-func NewStudentRepository(db *sql.DB, userClient *clients.UserClient) *StudentRepository {
-	return &StudentRepository{db: db, userClient: userClient}
+func NewStudentRepository(db *sql.DB, userClient *clients.UserClient, financeClientChan chan *clients.FinanceClient) *StudentRepository {
+	return &StudentRepository{db: db, userClient: userClient, financeClientChan: financeClientChan}
+}
+
+func (r *StudentRepository) ensureFinanceClient() error {
+	if r.discountClient == nil {
+		select {
+		case client := <-r.financeClientChan:
+			r.discountClient = client
+		case <-time.After(5 * time.Second):
+			return fmt.Errorf("failed to initialize GroupClient within timeout")
+		}
+	}
+	return nil
 }
 func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
@@ -485,6 +498,9 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 	}, nil
 }
 func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
+	if err := r.ensureFinanceClient(); err != nil {
+		return nil, err
+	}
 	if status != "FREEZE" && status != "ACTIVE" && status != "DELETE" {
 		return nil, fmt.Errorf("invalid status: %s", status)
 	}
@@ -539,8 +555,8 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
-	manaulPriceForCourse := r.discountClient.GetDiscountByStudentId(context.TODO(), studentId)
-
+	manaulPriceForCourse := r.discountClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+	fmt.Println(*manaulPriceForCourse)
 	if returnTheMoney {
 		switch status {
 		case "FREEZE":
@@ -567,8 +583,10 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 				return nil, err
 			}
 		}
-	} else if status == "ACTIVE" {
-		amount, err := utils.CalculateMoneyForStatus(r.db, nil, groupId, tillDate)
+	}
+
+	if status == "ACTIVE" {
+		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, tillDate)
 		if err != nil {
 			tx.Rollback()
 			return nil, err

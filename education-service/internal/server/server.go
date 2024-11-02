@@ -8,11 +8,13 @@ import (
 	"education-service/internal/utils"
 	"education-service/migrations"
 	"education-service/proto/pb"
+	"fmt"
 	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 	"strconv"
+	"time"
 )
 
 func RunServer() {
@@ -32,6 +34,24 @@ func RunServer() {
 		log.Fatalf("error %v", err)
 	}
 
+	financeClientChan := make(chan *clients.FinanceClient)
+	go func() {
+		time.Sleep(2 * time.Second)
+		var client *clients.FinanceClient
+		for {
+			fmt.Println(cfg.Grpc.FinanceService.Address)
+			client, err = clients.NewFinanceClient(cfg.Grpc.FinanceService.Address)
+			if err == nil {
+				log.Println("Connected to Finance Service successfully.")
+				financeClientChan <- client
+				close(financeClientChan)
+				break
+			}
+			log.Printf("Waiting for Finance Service...")
+			time.Sleep(2 * time.Second)
+		}
+	}()
+
 	roomRepo := repository.NewRoomRepository(db)
 	roomService := service.NewRoomService(roomRepo)
 	courseRepo := repository.NewCourseRepository(db)
@@ -40,7 +60,7 @@ func RunServer() {
 	groupService := service.NewGroupService(groupRepo)
 	attendanceRepo := repository.NewAttendanceRepository(db)
 	attendanceService := service.NewAttendanceService(attendanceRepo)
-	studentRepo := repository.NewStudentRepository(db, userClient)
+	studentRepo := repository.NewStudentRepository(db, userClient, financeClientChan)
 	studentService := service.NewStudentService(studentRepo)
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {

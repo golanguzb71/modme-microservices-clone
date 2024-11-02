@@ -61,8 +61,6 @@ CREATE TABLE IF NOT EXISTS student_payments
     group_id        bigint
 );
 
-
-
 CREATE TABLE IF NOT EXISTS teacher_salary
 (
     teacher_id        uuid PRIMARY KEY,
@@ -72,14 +70,6 @@ CREATE TABLE IF NOT EXISTS teacher_salary
             WHEN salary_type = 'PERCENT' THEN salary_type_count BETWEEN 1 AND 100
             ELSE TRUE
             END
-        )
+        ),
+    created_at        timestamp DEFAULT NOW()
 );
-
-CREATE TABLE IF NOT EXISTS teacher_finance
-(
-    id         uuid primary key,
-    group_id   bigint           NOT NULL,
-    student_id uuid             NOT NULL,
-    sum        DOUBLE PRECISION NOT NULL,
-    created_at timestamp DEFAULT NOW()
-)

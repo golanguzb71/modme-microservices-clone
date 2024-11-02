@@ -14,5 +14,6 @@ message GetDiscountByStudentIdResponse{
 }
 message GetDiscountByStudentIdRequest{
   string studentId = 1;
+  string groupId = 2;
 }
 // discount service end

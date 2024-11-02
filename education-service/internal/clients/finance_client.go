@@ -20,8 +20,8 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	return &FinanceClient{discountClient: discountClient}, nil
 }
 
-func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId string) *string {
-	resp, err := fc.discountClient.GetDiscountByStudentId(ctx, &pb.GetDiscountByStudentIdRequest{StudentId: studentId})
+func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) *string {
+	resp, err := fc.discountClient.GetDiscountByStudentId(ctx, &pb.GetDiscountByStudentIdRequest{StudentId: studentId, GroupId: groupId})
 	if err != nil {
 		return nil
 	}

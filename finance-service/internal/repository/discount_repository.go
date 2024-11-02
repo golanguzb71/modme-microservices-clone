@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"finance-service/internal/clients"
 	"finance-service/proto/pb"
 	"fmt"
@@ -131,30 +132,37 @@ func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscou
 }
 
 func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (*pb.GetDiscountByStudentIdResponse, error) {
-	var discount, startAt, endAt string
+	var discount float64
+	var startAt, endAt string
+
 	err := r.db.QueryRow(`SELECT discount, start_at, end_at FROM student_discount WHERE student_id=$1 AND group_id=$2`, studentId, groupId).Scan(&discount, &startAt, &endAt)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("no discount found for the given student and group")
+		}
+		return nil, fmt.Errorf("failed to query database: %v", err)
 	}
-	layout := "2006-01-02 15:04:05"
-	startTime, err := time.Parse(layout, startAt)
+
+	startTime, err := time.Parse("2006-01-02T15:04:05Z", startAt)
 	if err != nil {
+		fmt.Println(err.Error())
 		return nil, fmt.Errorf("failed to parse start_at: %v", err)
 	}
 
-	endTime, err := time.Parse(layout, endAt)
+	endTime, err := time.Parse("2006-01-02T15:04:05Z", endAt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse end_at: %v", err)
 	}
-
+	fmt.Println(discount)
 	now := time.Now()
 	if now.After(startTime) && now.Before(endTime) {
 		response := &pb.GetDiscountByStudentIdResponse{
-			Amount: discount,
+			Amount: fmt.Sprintf("%.2f", discount),
 			IsHave: true,
 		}
 		return response, nil
 	}
+
 	return nil, fmt.Errorf("current time is not within the discount period")
 }
 
