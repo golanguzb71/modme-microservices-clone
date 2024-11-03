@@ -37,6 +37,8 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			payment.PATCH("/student/update", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentUpdate)
 			payment.GET("/student/get-monthly-status/:studentId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetMonthlyStatusPayment)
 			payment.GET("/get-all-payments/:studentId/:month", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
+			payment.GET("/payment-take-off/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllTakeOffPayment)
+			payment.GET("/payment-take-off/chart/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetPaymentTakeOffChart)
 		}
 		salary := finance.Group("/salary")
 		{

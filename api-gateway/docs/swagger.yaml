@@ -160,6 +160,23 @@ definitions:
       id:
         type: string
     type: object
+  pb.AbsPaymentTakeOff:
+    properties:
+      comment:
+        type: string
+      creatorId:
+        type: string
+      creatorName:
+        type: string
+      givenDate:
+        type: string
+      paymentId:
+        type: string
+      studentId:
+        type: string
+      studentName:
+        type: string
+    type: object
   pb.AbsRoom:
     properties:
       capacity:
@@ -213,6 +230,13 @@ definitions:
         type: string
       student:
         $ref: '#/definitions/pb.AbsStudent'
+    type: object
+  pb.AbsTakeOfChartResponse:
+    properties:
+      amount:
+        type: string
+      yearMonth:
+        type: string
     type: object
   pb.AbsTeacher:
     properties:
@@ -547,6 +571,20 @@ definitions:
         type: array
       totalPageCount:
         type: integer
+    type: object
+  pb.GetAllPaymentTakeOffChartResponse:
+    properties:
+      chartResponse:
+        items:
+          $ref: '#/definitions/pb.AbsTakeOfChartResponse'
+        type: array
+    type: object
+  pb.GetAllPaymentTakeOffResponse:
+    properties:
+      pennies:
+        items:
+          $ref: '#/definitions/pb.AbsPaymentTakeOff'
+        type: array
     type: object
   pb.GetAllPaymentsByMonthResponse:
     properties:
@@ -1020,6 +1058,10 @@ definitions:
     type: object
   pb.SetAttendanceRequest:
     properties:
+      actionById:
+        type: string
+      actionByRole:
+        type: string
       attendDate:
         type: string
       groupId:
@@ -1786,6 +1828,43 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
+  /api/finance/payment-takeoff-chart/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a chart representation of take-off payments within a specified
+        date range.
+      parameters:
+      - description: 'Start date (format: YYYY-MM-DD)'
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: 'End date (format: YYYY-MM-DD)'
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Chart data of take-off payments
+          schema:
+            $ref: '#/definitions/pb.GetAllPaymentTakeOffChartResponse'
+        "409":
+          description: Error message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
   /api/finance/payment/get-all-payments/{studentId}/{month}:
     get:
       description: Get all payment records for a student within a specified month.
@@ -1809,6 +1888,42 @@ paths:
             $ref: '#/definitions/pb.GetAllPaymentsByMonthResponse'
         "400":
           description: Invalid request parameters or failed retrieval
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/payment-take-off/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all take-off payments within a specified date range.
+      parameters:
+      - description: 'Start date (format: YYYY-MM-DD)'
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: 'End date (format: YYYY-MM-DD)'
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of take-off payments
+          schema:
+            $ref: '#/definitions/pb.GetAllPaymentTakeOffResponse'
+        "409":
+          description: Error message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Server error
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:

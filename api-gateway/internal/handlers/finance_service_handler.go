@@ -561,3 +561,57 @@ func DeleteTeacherSalary(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, resp.Status, resp.Message)
 	return
 }
+
+// GetAllTakeOffPayment handles the HTTP request to retrieve all take-off payments.
+// @Summary ADMIN , CEO
+// @Description Retrieve all take-off payments within a specified date range.
+// @Tags payments
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date (format: YYYY-MM-DD)"
+// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Success 200 {object} pb.GetAllPaymentTakeOffResponse "List of take-off payments"
+// @Failure 409 {object} utils.AbsResponse "Error message"
+// @Failure 500 {object} utils.AbsResponse "Server error"
+// @Security Bearer
+// @Router /api/finance/payment/payment-take-off/{from}/{to} [get]
+func GetAllTakeOffPayment(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetAllTakeOfPayment(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetPaymentTakeOffChart handles the HTTP request to retrieve a chart of take-off payments.
+// @Summary ADMIN , CEO
+// @Description Retrieve a chart representation of take-off payments within a specified date range.
+// @Tags payments
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date (format: YYYY-MM-DD)"
+// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Success 200 {object} pb.GetAllPaymentTakeOffChartResponse "Chart data of take-off payments"
+// @Failure 409 {object} utils.AbsResponse "Error message"
+// @Failure 500 {object} utils.AbsResponse "Server error"
+// @Security Bearer
+// @Router /api/finance/payment-takeoff-chart/{from}/{to} [get]
+func GetPaymentTakeOffChart(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetPaymentTakeOffChart(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

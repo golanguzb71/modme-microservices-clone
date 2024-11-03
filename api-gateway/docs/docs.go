@@ -1017,6 +1017,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/payment-takeoff-chart/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve a chart representation of take-off payments within a specified date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chart data of take-off payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllPaymentTakeOffChartResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/payment/get-all-payments/{studentId}/{month}": {
             "get": {
                 "security": [
@@ -1057,6 +1113,62 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid request parameters or failed retrieval",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/payment-take-off/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve all take-off payments within a specified date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of take-off payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllPaymentTakeOffResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -3950,6 +4062,32 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsPaymentTakeOff": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "string"
+                },
+                "creatorName": {
+                    "type": "string"
+                },
+                "givenDate": {
+                    "type": "string"
+                },
+                "paymentId": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsRoom": {
             "type": "object",
             "properties": {
@@ -4030,6 +4168,17 @@ const docTemplate = `{
                 },
                 "student": {
                     "$ref": "#/definitions/pb.AbsStudent"
+                }
+            }
+        },
+        "pb.AbsTakeOfChartResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "yearMonth": {
+                    "type": "string"
                 }
             }
         },
@@ -4544,6 +4693,28 @@ const docTemplate = `{
                 },
                 "totalPageCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.GetAllPaymentTakeOffChartResponse": {
+            "type": "object",
+            "properties": {
+                "chartResponse": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTakeOfChartResponse"
+                    }
+                }
+            }
+        },
+        "pb.GetAllPaymentTakeOffResponse": {
+            "type": "object",
+            "properties": {
+                "pennies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsPaymentTakeOff"
+                    }
                 }
             }
         },
@@ -5274,6 +5445,12 @@ const docTemplate = `{
         "pb.SetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "actionById": {
+                    "type": "string"
+                },
+                "actionByRole": {
+                    "type": "string"
+                },
                 "attendDate": {
                     "type": "string"
                 },

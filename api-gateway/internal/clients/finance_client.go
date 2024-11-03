@@ -121,6 +121,20 @@ func (fc *FinanceClient) DeleteTeacherSalary(ctx context.Context, teacherId stri
 	return fc.teacherSalaryClient.DeleteTeacherSalary(ctx, &pb.DeleteTeacherSalaryRequest{TeacherId: teacherId})
 }
 
+func (fc *FinanceClient) GetAllTakeOfPayment(from string, to string, ctx context.Context) (*pb.GetAllPaymentTakeOffResponse, error) {
+	return fc.paymentClient.GetAllPaymentTakeOff(ctx, &pb.GetAllPaymentTakeOffRequest{
+		From: from,
+		To:   to,
+	})
+}
+
+func (fc *FinanceClient) GetPaymentTakeOffChart(from string, to string, ctx context.Context) (*pb.GetAllPaymentTakeOffChartResponse, error) {
+	return fc.paymentClient.GetAllPaymentTakeOffChart(ctx, &pb.GetAllPaymentTakeOffRequest{
+		From: from,
+		To:   to,
+	})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

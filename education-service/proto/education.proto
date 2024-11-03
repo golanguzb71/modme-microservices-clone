@@ -227,6 +227,8 @@ message SetAttendanceRequest{
   int32 status = 3;
   string studentId = 4;
   string teacherId = 5;
+  string actionById = 6;
+  string actionByRole = 7;
 }
 
 // attendance service end
