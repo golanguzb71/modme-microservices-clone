@@ -200,3 +200,28 @@ message PaymentReturnRequest{
   string actionByName = 3;
 }
 // payment service end
+
+// teacher salary service start
+service TeacherSalaryService{
+  rpc CreateTeacherSalary(CreateTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc DeleteTeacherSalary(DeleteTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc GetTeacherSalary(google.protobuf.Empty) returns(GetTeachersSalaryRequest);
+  rpc GetTeacherSalaryByTeacherID(DeleteTeacherSalaryRequest) returns(AbsGetTeachersSalary);
+}
+message GetTeachersSalaryRequest{
+  repeated AbsGetTeachersSalary salaries = 1;
+}
+message AbsGetTeachersSalary{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+message DeleteTeacherSalaryRequest{
+  string teacherId = 1;
+}
+message CreateTeacherSalaryRequest{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+// teacher salary service end

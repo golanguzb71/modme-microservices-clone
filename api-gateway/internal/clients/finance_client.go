@@ -3,15 +3,18 @@ package client
 import (
 	"api-gateway/grpc/proto/pb"
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"strconv"
 )
 
 type FinanceClient struct {
-	discountClient pb.DiscountServiceClient
-	categoryClient pb.CategoryServiceClient
-	expenseClient  pb.ExpenseServiceClient
-	paymentClient  pb.PaymentServiceClient
+	discountClient      pb.DiscountServiceClient
+	categoryClient      pb.CategoryServiceClient
+	expenseClient       pb.ExpenseServiceClient
+	paymentClient       pb.PaymentServiceClient
+	teacherSalaryClient pb.TeacherSalaryServiceClient
 }
 
 func (fc *FinanceClient) GetDiscountsInformationByGroupId(ctx context.Context, groupId string) (*pb.GetInformationDiscountResponse, error) {
@@ -87,10 +90,35 @@ func (fc *FinanceClient) GetMonthlyStatusPayment(ctx context.Context, studentId 
 }
 
 func (fc *FinanceClient) GetAllPayments(ctx context.Context, month string, studentId string) (*pb.GetAllPaymentsByMonthResponse, error) {
-	return fc.paymentClient.GetAllPaymentsByMonth(ctx, &pb.GetAllPaymentsByMonthRequest{
+	resp, err := fc.paymentClient.GetAllPaymentsByMonth(ctx, &pb.GetAllPaymentsByMonthRequest{
 		UserId: studentId,
 		Month:  month,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, payment := range resp.Payments {
+		amountFloat, parseErr := strconv.ParseFloat(payment.Amount, 64)
+		if parseErr != nil {
+			return nil, fmt.Errorf("failed to parse amount '%s': %v", payment.Amount, parseErr)
+		}
+		payment.Amount = fmt.Sprintf("%.0f", amountFloat)
+	}
+
+	return resp, nil
+}
+
+func (fc *FinanceClient) GetSalaryAllTeacher(ctx context.Context) (*pb.GetTeachersSalaryRequest, error) {
+	return fc.teacherSalaryClient.GetTeacherSalary(ctx, &emptypb.Empty{})
+}
+
+func (fc *FinanceClient) AddSalaryTeacher(ctx context.Context, req *pb.CreateTeacherSalaryRequest) (*pb.AbsResponse, error) {
+	return fc.teacherSalaryClient.CreateTeacherSalary(ctx, req)
+}
+
+func (fc *FinanceClient) DeleteTeacherSalary(ctx context.Context, teacherId string) (*pb.AbsResponse, error) {
+	return fc.teacherSalaryClient.DeleteTeacherSalary(ctx, &pb.DeleteTeacherSalaryRequest{TeacherId: teacherId})
 }
 
 func NewFinanceClient(addr string) (*FinanceClient, error) {
@@ -102,5 +130,6 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	categoryClient := pb.NewCategoryServiceClient(conn)
 	expenseClient := pb.NewExpenseServiceClient(conn)
 	paymentClient := pb.NewPaymentServiceClient(conn)
-	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient, paymentClient: paymentClient}, nil
+	teacherClient := pb.NewTeacherSalaryServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient, paymentClient: paymentClient, teacherSalaryClient: teacherClient}, nil
 }

@@ -900,3 +900,223 @@ var PaymentService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "finance.proto",
 }
+
+const (
+	TeacherSalaryService_CreateTeacherSalary_FullMethodName         = "/finance.TeacherSalaryService/CreateTeacherSalary"
+	TeacherSalaryService_DeleteTeacherSalary_FullMethodName         = "/finance.TeacherSalaryService/DeleteTeacherSalary"
+	TeacherSalaryService_GetTeacherSalary_FullMethodName            = "/finance.TeacherSalaryService/GetTeacherSalary"
+	TeacherSalaryService_GetTeacherSalaryByTeacherID_FullMethodName = "/finance.TeacherSalaryService/GetTeacherSalaryByTeacherID"
+)
+
+// TeacherSalaryServiceClient is the client API for TeacherSalaryService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// teacher salary service start
+type TeacherSalaryServiceClient interface {
+	CreateTeacherSalary(ctx context.Context, in *CreateTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	DeleteTeacherSalary(ctx context.Context, in *DeleteTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetTeacherSalary(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTeachersSalaryRequest, error)
+	GetTeacherSalaryByTeacherID(ctx context.Context, in *DeleteTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsGetTeachersSalary, error)
+}
+
+type teacherSalaryServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTeacherSalaryServiceClient(cc grpc.ClientConnInterface) TeacherSalaryServiceClient {
+	return &teacherSalaryServiceClient{cc}
+}
+
+func (c *teacherSalaryServiceClient) CreateTeacherSalary(ctx context.Context, in *CreateTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, TeacherSalaryService_CreateTeacherSalary_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *teacherSalaryServiceClient) DeleteTeacherSalary(ctx context.Context, in *DeleteTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, TeacherSalaryService_DeleteTeacherSalary_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *teacherSalaryServiceClient) GetTeacherSalary(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetTeachersSalaryRequest, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTeachersSalaryRequest)
+	err := c.cc.Invoke(ctx, TeacherSalaryService_GetTeacherSalary_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *teacherSalaryServiceClient) GetTeacherSalaryByTeacherID(ctx context.Context, in *DeleteTeacherSalaryRequest, opts ...grpc.CallOption) (*AbsGetTeachersSalary, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsGetTeachersSalary)
+	err := c.cc.Invoke(ctx, TeacherSalaryService_GetTeacherSalaryByTeacherID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// TeacherSalaryServiceServer is the server API for TeacherSalaryService service.
+// All implementations must embed UnimplementedTeacherSalaryServiceServer
+// for forward compatibility.
+//
+// teacher salary service start
+type TeacherSalaryServiceServer interface {
+	CreateTeacherSalary(context.Context, *CreateTeacherSalaryRequest) (*AbsResponse, error)
+	DeleteTeacherSalary(context.Context, *DeleteTeacherSalaryRequest) (*AbsResponse, error)
+	GetTeacherSalary(context.Context, *emptypb.Empty) (*GetTeachersSalaryRequest, error)
+	GetTeacherSalaryByTeacherID(context.Context, *DeleteTeacherSalaryRequest) (*AbsGetTeachersSalary, error)
+	mustEmbedUnimplementedTeacherSalaryServiceServer()
+}
+
+// UnimplementedTeacherSalaryServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedTeacherSalaryServiceServer struct{}
+
+func (UnimplementedTeacherSalaryServiceServer) CreateTeacherSalary(context.Context, *CreateTeacherSalaryRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTeacherSalary not implemented")
+}
+func (UnimplementedTeacherSalaryServiceServer) DeleteTeacherSalary(context.Context, *DeleteTeacherSalaryRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTeacherSalary not implemented")
+}
+func (UnimplementedTeacherSalaryServiceServer) GetTeacherSalary(context.Context, *emptypb.Empty) (*GetTeachersSalaryRequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeacherSalary not implemented")
+}
+func (UnimplementedTeacherSalaryServiceServer) GetTeacherSalaryByTeacherID(context.Context, *DeleteTeacherSalaryRequest) (*AbsGetTeachersSalary, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeacherSalaryByTeacherID not implemented")
+}
+func (UnimplementedTeacherSalaryServiceServer) mustEmbedUnimplementedTeacherSalaryServiceServer() {}
+func (UnimplementedTeacherSalaryServiceServer) testEmbeddedByValue()                              {}
+
+// UnsafeTeacherSalaryServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TeacherSalaryServiceServer will
+// result in compilation errors.
+type UnsafeTeacherSalaryServiceServer interface {
+	mustEmbedUnimplementedTeacherSalaryServiceServer()
+}
+
+func RegisterTeacherSalaryServiceServer(s grpc.ServiceRegistrar, srv TeacherSalaryServiceServer) {
+	// If the following call pancis, it indicates UnimplementedTeacherSalaryServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&TeacherSalaryService_ServiceDesc, srv)
+}
+
+func _TeacherSalaryService_CreateTeacherSalary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTeacherSalaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeacherSalaryServiceServer).CreateTeacherSalary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TeacherSalaryService_CreateTeacherSalary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeacherSalaryServiceServer).CreateTeacherSalary(ctx, req.(*CreateTeacherSalaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TeacherSalaryService_DeleteTeacherSalary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTeacherSalaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeacherSalaryServiceServer).DeleteTeacherSalary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TeacherSalaryService_DeleteTeacherSalary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeacherSalaryServiceServer).DeleteTeacherSalary(ctx, req.(*DeleteTeacherSalaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TeacherSalaryService_GetTeacherSalary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeacherSalaryServiceServer).GetTeacherSalary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TeacherSalaryService_GetTeacherSalary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeacherSalaryServiceServer).GetTeacherSalary(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TeacherSalaryService_GetTeacherSalaryByTeacherID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTeacherSalaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeacherSalaryServiceServer).GetTeacherSalaryByTeacherID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TeacherSalaryService_GetTeacherSalaryByTeacherID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeacherSalaryServiceServer).GetTeacherSalaryByTeacherID(ctx, req.(*DeleteTeacherSalaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// TeacherSalaryService_ServiceDesc is the grpc.ServiceDesc for TeacherSalaryService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var TeacherSalaryService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "finance.TeacherSalaryService",
+	HandlerType: (*TeacherSalaryServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateTeacherSalary",
+			Handler:    _TeacherSalaryService_CreateTeacherSalary_Handler,
+		},
+		{
+			MethodName: "DeleteTeacherSalary",
+			Handler:    _TeacherSalaryService_DeleteTeacherSalary_Handler,
+		},
+		{
+			MethodName: "GetTeacherSalary",
+			Handler:    _TeacherSalaryService_GetTeacherSalary_Handler,
+		},
+		{
+			MethodName: "GetTeacherSalaryByTeacherID",
+			Handler:    _TeacherSalaryService_GetTeacherSalaryByTeacherID_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "finance.proto",
+}

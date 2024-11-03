@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS student_payments
     amount          double precision                                                       NOT NULL,
     given_date      date                                                                   NOT NULL,
     comment         varchar                                                                NOT NULL,
-    created_at      timestamp DEFAULT NOW(),
+    created_at      timestamp                                                                       DEFAULT NOW(),
     payment_type    varchar check ( payment_type in ('ADD', 'TAKE_OFF') )                  NOT NULL,
-    created_by_id   uuid,
+    created_by_id   uuid                                                                   NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
     created_by_name varchar                                                                NOT NULL,
     group_id        bigint
 );
@@ -73,3 +73,4 @@ CREATE TABLE IF NOT EXISTS teacher_salary
         ),
     created_at        timestamp DEFAULT NOW()
 );
+

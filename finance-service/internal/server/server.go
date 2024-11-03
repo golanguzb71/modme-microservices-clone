@@ -39,6 +39,8 @@ func RunServer() {
 	expenseService := service.NewExpenseService(expenseRepo)
 	paymentRepo := repository.NewPaymentRepository(db, educationClient)
 	paymentService := service.NewPaymentService(paymentRepo)
+	salaryRepo := repository.NewTeacherSalaryRepository(db)
+	salaryService := service.NewTeacherSalaryService(salaryRepo)
 	list, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -52,6 +54,7 @@ func RunServer() {
 	pb.RegisterCategoryServiceServer(grpcServer, categoryService)
 	pb.RegisterExpenseServiceServer(grpcServer, expenseService)
 	pb.RegisterPaymentServiceServer(grpcServer, paymentService)
+	pb.RegisterTeacherSalaryServiceServer(grpcServer, salaryService)
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := grpcServer.Serve(list); err != nil {
 		log.Fatalf("Failed to serve  %v", err)
