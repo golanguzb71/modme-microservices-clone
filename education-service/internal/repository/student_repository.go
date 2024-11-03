@@ -22,7 +22,7 @@ import (
 type StudentRepository struct {
 	db                *sql.DB
 	userClient        *clients.UserClient
-	discountClient    *clients.FinanceClient
+	financeClient     *clients.FinanceClient
 	financeClientChan chan *clients.FinanceClient
 }
 
@@ -31,10 +31,10 @@ func NewStudentRepository(db *sql.DB, userClient *clients.UserClient, financeCli
 }
 
 func (r *StudentRepository) ensureFinanceClient() error {
-	if r.discountClient == nil {
+	if r.financeClient == nil {
 		select {
 		case client := <-r.financeClientChan:
-			r.discountClient = client
+			r.financeClient = client
 		case <-time.After(5 * time.Second):
 			return fmt.Errorf("failed to initialize GroupClient within timeout")
 		}
@@ -106,7 +106,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
         gs.condition AS student_group_condition, g.room_id, gs.last_specific_date AS student_activated_at
     FROM students s
     JOIN group_students gs ON s.id = gs.student_id
-    JOIN groups g ON gs.group_id = g.id
+    JOIN groups g ON gs.group_id = g.id and g.is_archived='false'
     JOIN courses c ON g.course_id = c.id
     WHERE s.id = ANY($1)
     ORDER BY s.id, g.id`
@@ -229,6 +229,10 @@ func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, crea
 	return nil
 }
 func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdResponse, error) {
+	if err := r.ensureFinanceClient(); err != nil {
+		return nil, err
+	}
+
 	var result pb.GetStudentByIdResponse
 
 	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at , condition
@@ -243,7 +247,7 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
                r.id, r.capacity, r.title, 
                c.id, c.title, c.duration_lesson, c.course_duration, c.price, c.description , g.teacher_id
         FROM group_students gs
-        JOIN groups g ON g.id = gs.group_id
+        JOIN groups g ON g.id = gs.group_id and g.is_archived='false'
         JOIN rooms r ON g.room_id = r.id
         JOIN courses c ON c.id = g.course_id
         WHERE gs.student_id = $1`, id)
@@ -267,7 +271,15 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 			return nil, err
 		}
 
+		discount := r.financeClient.GetDiscountByStudentId(context.TODO(), result.Id, groupStudent.Id)
 		groupStudent.PriceForStudent = course.Price
+		if discount != nil {
+			parsedDiscount, err := strconv.ParseFloat(*discount, 64)
+			if err != nil {
+				return nil, err
+			}
+			groupStudent.PriceForStudent = parsedDiscount
+		}
 		groupStudent.Room = &room
 		groupStudent.Course = &course
 		name, err := r.userClient.GetTeacherById(teacherId)
@@ -514,6 +526,9 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	} else {
 		tillDateParsed = sql.NullTime{Valid: false}
 	}
+	if !r.checkArgumentsIsActive(groupId, studentId) {
+		return nil, fmt.Errorf("group or student is not active")
+	}
 
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -555,8 +570,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
-	manaulPriceForCourse := r.discountClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
-	fmt.Println(*manaulPriceForCourse)
+	manaulPriceForCourse := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
 	if returnTheMoney {
 		switch status {
 		case "FREEZE":
@@ -565,11 +579,16 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 				tx.Rollback()
 				return nil, err
 			}
-			_, err = r.ChangeUserBalanceHistory("student guruhdan muzlatildi. qolgan pul qaytarib berildi.", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "ADD", studentId)
+			_, err = r.financeClient.PaymentAdd("Student guruhdan muzlatildi. golanga pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "ADD", actionById, actionByName, groupId)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
 			}
+			//_, err = r.ChangeUserBalanceHistory("student guruhdan muzlatildi. qolgan pul qaytarib berildi.", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "ADD", studentId)
+			//if err != nil {
+			//	tx.Rollback()
+			//	return nil, err
+			//}
 		case "DELETE":
 			date := time.Now().Format("2006-01-02")
 			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, date)
@@ -577,11 +596,16 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 				tx.Rollback()
 				return nil, err
 			}
-			_, err = r.ChangeUserBalanceHistory("student guruhdan o'chirildi . qolgan pul qaytarib berildi.", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "ADD", studentId)
+			_, err = r.financeClient.PaymentAdd("Student guruhdan o'chirildi . qolgan pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "ADD", actionById, actionByName, groupId)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
 			}
+			//_, err = r.ChangeUserBalanceHistory("student guruhdan o'chirildi . qolgan pul qaytarib berildi.", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "ADD", studentId)
+			//if err != nil {
+			//	tx.Rollback()
+			//	return nil, err
+			//}
 		}
 	}
 
@@ -591,13 +615,17 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 			tx.Rollback()
 			return nil, err
 		}
-		_, err = r.ChangeUserBalanceHistory("student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
+		_, err = r.financeClient.PaymentAdd("Student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "TAKE_OFF", actionById, actionByName, groupId)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
 		}
+		//_, err = r.ChangeUserBalanceHistory("Student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
+		//if err != nil {
+		//	tx.Rollback()
+		//	return nil, err
+		//}
 	}
-
 	if err := tx.Commit(); err != nil {
 		return nil, fmt.Errorf("failed to commit transaction: %v", err)
 	}
@@ -662,7 +690,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		return nil, status.Errorf(codes.Internal, "Failed to get current balance: %v", err)
 	}
 
-	if paymentType != "TAKE_OFF" && groupId != "" {
+	if paymentType != "TAKE_OFF" || groupId != "" {
 		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
 		if errors.Is(err, sql.ErrNoRows) {
 			groupName = ""
@@ -806,4 +834,18 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 		return err
 	}
 	return nil
+}
+
+func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bool {
+	var checker bool
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where is_archived='false' and id=$1)`, groupId).Scan(&checker)
+	if err != nil || !checker {
+		return false
+	}
+	err = r.db.QueryRow(`SELECT exists(SELECT 1 FROM students where condition='ACTIVE' and id=$1)`, studentId).Scan(&checker)
+	if err != nil || !checker {
+		return false
+	}
+
+	return checker
 }

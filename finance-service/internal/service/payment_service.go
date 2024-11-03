@@ -24,7 +24,7 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 			Message: "payment added",
 		}, nil
 	} else if req.Type == "TAKE_OFF" {
-		if err := ps.repo.TakeOffPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById); err != nil {
+		if err := ps.repo.TakeOffPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{

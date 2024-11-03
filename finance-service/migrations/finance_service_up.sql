@@ -73,3 +73,4 @@ CREATE TABLE IF NOT EXISTS teacher_salary
         ),
     created_at        timestamp DEFAULT NOW()
 );
+
