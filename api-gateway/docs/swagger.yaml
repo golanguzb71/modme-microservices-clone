@@ -83,6 +83,15 @@ definitions:
       month:
         type: string
     type: object
+  pb.AbsGetTeachersSalary:
+    properties:
+      amount:
+        type: integer
+      teacherId:
+        type: string
+      type:
+        type: string
+    type: object
   pb.AbsGroup:
     properties:
       course:
@@ -425,6 +434,15 @@ definitions:
       phoneNumber:
         type: string
       telegramUsername:
+        type: string
+    type: object
+  pb.CreateTeacherSalaryRequest:
+    properties:
+      amount:
+        type: integer
+      teacherId:
+        type: string
+      type:
         type: string
     type: object
   pb.CreateUserRequest:
@@ -795,6 +813,13 @@ definitions:
       teachers:
         items:
           $ref: '#/definitions/pb.AbsTeacher'
+        type: array
+    type: object
+  pb.GetTeachersSalaryRequest:
+    properties:
+      salaries:
+        items:
+          $ref: '#/definitions/pb.AbsGetTeachersSalary'
         type: array
     type: object
   pb.GetUpdateCourseAbs:
@@ -1912,6 +1937,82 @@ paths:
       summary: ADMIN , CEO
       tags:
       - payments
+  /api/finance/salary/delete/{teacherID}:
+    delete:
+      description: Deletes a salary entry for a specific teacher by ID
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: teacherID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Salary deleted successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - salary
+  /api/finance/salary/teacher-add:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new salary entry for a specific teacher
+      parameters:
+      - description: Salary details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateTeacherSalaryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Salary added successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - salary
+  /api/finance/salary/teacher-all:
+    get:
+      description: Retrieves the salary information for all teachers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetTeachersSalaryRequest'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - salary
   /api/group/create:
     post:
       consumes:

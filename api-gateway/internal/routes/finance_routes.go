@@ -11,10 +11,12 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	finance := api.Group("/finance")
 	{
 		discount := finance.Group("/discount")
-		discount.GET("/get-all-by-group/:groupId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDiscountInformationByGroup)
-		discount.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateDiscount)
-		discount.DELETE("/delete", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteDiscount)
-		discount.GET("/history/:userId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryDiscount)
+		{
+			discount.GET("/get-all-by-group/:groupId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDiscountInformationByGroup)
+			discount.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateDiscount)
+			discount.DELETE("/delete", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteDiscount)
+			discount.GET("/history/:userId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryDiscount)
+		}
 		category := finance.Group("/category")
 		{
 			category.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateCategory)
@@ -35,6 +37,12 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			payment.PATCH("/student/update", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentUpdate)
 			payment.GET("/student/get-monthly-status/:studentId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetMonthlyStatusPayment)
 			payment.GET("/get-all-payments/:studentId/:month", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
+		}
+		salary := finance.Group("/salary")
+		{
+			salary.GET("/teacher-all", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.GetSalaryAllTeacher)
+			salary.POST("/teacher-add", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.AddSalaryTeacher)
+			salary.DELETE("/delete/:teacherID", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.DeleteTeacherSalary)
 		}
 	}
 }

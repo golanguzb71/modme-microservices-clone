@@ -1257,6 +1257,128 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/salary/delete/{teacherID}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Deletes a salary entry for a specific teacher by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "salary"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Teacher ID",
+                        "name": "teacherID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salary deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/salary/teacher-add": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Adds a new salary entry for a specific teacher",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "salary"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "description": "Salary details",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CreateTeacherSalaryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Salary added successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/salary/teacher-all": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves the salary information for all teachers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "salary"
+                ],
+                "summary": "CEO",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetTeachersSalaryRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -3710,6 +3832,20 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsGetTeachersSalary": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "teacherId": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsGroup": {
             "type": "object",
             "properties": {
@@ -4234,6 +4370,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "telegramUsername": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.CreateTeacherSalaryRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "teacherId": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -4805,6 +4955,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsTeacher"
+                    }
+                }
+            }
+        },
+        "pb.GetTeachersSalaryRequest": {
+            "type": "object",
+            "properties": {
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsGetTeachersSalary"
                     }
                 }
             }

@@ -283,7 +283,7 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 			student_id = $1 AND 
 			TO_CHAR(given_date, 'YYYY-MM') = $2 
 		ORDER BY 
-			given_date`
+			created_at desc`
 
 	rows, err := r.db.Query(query, studentId, month)
 	if err != nil {

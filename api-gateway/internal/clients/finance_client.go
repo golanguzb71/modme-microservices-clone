@@ -8,10 +8,11 @@ import (
 )
 
 type FinanceClient struct {
-	discountClient pb.DiscountServiceClient
-	categoryClient pb.CategoryServiceClient
-	expenseClient  pb.ExpenseServiceClient
-	paymentClient  pb.PaymentServiceClient
+	discountClient      pb.DiscountServiceClient
+	categoryClient      pb.CategoryServiceClient
+	expenseClient       pb.ExpenseServiceClient
+	paymentClient       pb.PaymentServiceClient
+	teacherSalaryClient pb.TeacherSalaryServiceClient
 }
 
 func (fc *FinanceClient) GetDiscountsInformationByGroupId(ctx context.Context, groupId string) (*pb.GetInformationDiscountResponse, error) {
@@ -93,6 +94,18 @@ func (fc *FinanceClient) GetAllPayments(ctx context.Context, month string, stude
 	})
 }
 
+func (fc *FinanceClient) GetSalaryAllTeacher(ctx context.Context) (*pb.GetTeachersSalaryRequest, error) {
+	return fc.teacherSalaryClient.GetTeacherSalary(ctx, &emptypb.Empty{})
+}
+
+func (fc *FinanceClient) AddSalaryTeacher(ctx context.Context, req *pb.CreateTeacherSalaryRequest) (*pb.AbsResponse, error) {
+	return fc.teacherSalaryClient.CreateTeacherSalary(ctx, req)
+}
+
+func (fc *FinanceClient) DeleteTeacherSalary(ctx context.Context, teacherId string) (*pb.AbsResponse, error) {
+	return fc.teacherSalaryClient.DeleteTeacherSalary(ctx, &pb.DeleteTeacherSalaryRequest{TeacherId: teacherId})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
@@ -102,5 +115,6 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	categoryClient := pb.NewCategoryServiceClient(conn)
 	expenseClient := pb.NewExpenseServiceClient(conn)
 	paymentClient := pb.NewPaymentServiceClient(conn)
-	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient, paymentClient: paymentClient}, nil
+	teacherClient := pb.NewTeacherSalaryServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, categoryClient: categoryClient, expenseClient: expenseClient, paymentClient: paymentClient, teacherSalaryClient: teacherClient}, nil
 }
