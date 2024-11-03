@@ -198,11 +198,15 @@ func (r *PaymentRepository) PaymentUpdate(paymentId string, date string, method 
 	if err != nil {
 		return nil, fmt.Errorf("error checking payment existence: %v", err)
 	}
-
 	updateQuery := `UPDATE student_payments 
 					SET given_date = $1, method = $2, comment = $3, amount = $4, created_by_id = $5, created_by_name = $6, group_id = $8 
 					WHERE id = $7`
-	_, err = tx.Exec(updateQuery, date, method, comment, debit, actionById, actionByName, paymentId, groupId)
+	if groupId == "" {
+		_, err = tx.Exec(updateQuery, date, method, comment, debit, actionById, actionByName, paymentId, nil)
+	} else {
+		_, err = tx.Exec(updateQuery, date, method, comment, debit, actionById, actionByName, paymentId, groupId)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to update payment: %v", err)
 	}
@@ -274,7 +278,7 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 			payment_type, 
 			amount, 
 			comment, 
-			created_by_id, 
+			created_by_id,
 			created_by_name, 
 			created_at ,
 			coalesce(group_id , 0),

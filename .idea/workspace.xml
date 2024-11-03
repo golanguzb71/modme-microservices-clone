@@ -6,14 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/clients/finance_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/finance.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/finance_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/finance_grpc.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/finance-service/migrations/finance_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/migrations/finance_service_up.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,7 +50,7 @@
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
     "Go Build.go build api-gateway/cmd.executor": "Debug",
-    "Go Build.go build education-service/cmd.executor": "Debug",
+    "Go Build.go build education-service/cmd.executor": "Run",
     "Go Build.go build finance-service/cmd.executor": "Debug",
     "Go Build.go build lid-service/cmd.executor": "Run",
     "Go Build.go build user-service/cmd.executor": "Debug",
@@ -98,7 +91,7 @@
       <command value="go run cmd/main.go" />
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build finance-service/cmd">
+  <component name="RunManager" selected="Go Build.go build education-service/cmd">
     <configuration name="go build api-gateway/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="modme" />
       <working_directory value="$PROJECT_DIR$/api-gateway" />
@@ -146,8 +139,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build finance-service/cmd" />
         <item itemvalue="Go Build.go build education-service/cmd" />
+        <item itemvalue="Go Build.go build finance-service/cmd" />
         <item itemvalue="Go Build.go build lid-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
         <item itemvalue="Go Build.go build api-gateway/cmd" />
@@ -168,16 +161,5 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/education-service/internal/repository/student_repository.go</url>
-          <line>784</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
