@@ -690,7 +690,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		return nil, status.Errorf(codes.Internal, "Failed to get current balance: %v", err)
 	}
 
-	if paymentType != "TAKE_OFF" || groupId != "" {
+	if paymentType != "TAKE_OFF" && groupId != "" {
 		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
 		if errors.Is(err, sql.ErrNoRows) {
 			groupName = ""
@@ -835,7 +835,6 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 	}
 	return nil
 }
-
 func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bool {
 	var checker bool
 	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where is_archived='false' and id=$1)`, groupId).Scan(&checker)
