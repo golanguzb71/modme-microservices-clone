@@ -51,7 +51,15 @@ func (ps *PaymentService) GetAllPaymentTakeOff(ctx context.Context, req *pb.GetA
 	return ps.repo.GetAllPaymentTakeOff(req.From, req.To)
 }
 func (ps *PaymentService) GetAllPaymentTakeOffChart(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffChartResponse, error) {
-	return ps.repo.GetAllPaymentTakeOffChart(req.To, req.From)
+	return ps.repo.GetAllPaymentTakeOffChart(req.From, req.To)
+}
+
+func (ps *PaymentService) GetAllStudentPayments(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsResponse, error) {
+	return ps.repo.GetAllStudentPayments(req.From, req.To)
+}
+
+func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsChartResponse, error) {
+	return ps.repo.GetAllStudentPaymentsChart(req.From, req.To)
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {

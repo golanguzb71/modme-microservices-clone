@@ -153,6 +153,32 @@ service PaymentService{
   rpc GetAllPaymentsByMonth(GetAllPaymentsByMonthRequest) returns(GetAllPaymentsByMonthResponse);
   rpc GetAllPaymentTakeOff(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffResponse);
   rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
+  rpc GetAllStudentPayments(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsResponse);
+  rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
+}
+message GetAllStudentPaymentsChartResponse{
+  string cash = 1;
+  string payme = 2;
+  string click = 3;
+  string totalRevenue = 4;
+  repeated AbsTakeOfChartResponse paymentsChart = 5;
+}
+message GetAllStudentPaymentsRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetAllStudentPaymentsResponse{
+  repeated AbsStudentPayments payments = 1;
+}
+message AbsStudentPayments{
+  string givenDate = 1;
+  string studentId = 2;
+  string studentName = 3;
+  string amount = 4;
+  string method = 5;
+  string comment = 6;
+  string creatorName = 7;
+  string creatorId = 8;
 }
 message GetAllPaymentTakeOffChartResponse{
   repeated AbsTakeOfChartResponse chartResponse = 1;

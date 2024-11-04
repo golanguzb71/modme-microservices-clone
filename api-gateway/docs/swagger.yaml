@@ -231,6 +231,25 @@ definitions:
       student:
         $ref: '#/definitions/pb.AbsStudent'
     type: object
+  pb.AbsStudentPayments:
+    properties:
+      amount:
+        type: string
+      comment:
+        type: string
+      creatorId:
+        type: string
+      creatorName:
+        type: string
+      givenDate:
+        type: string
+      method:
+        type: string
+      studentId:
+        type: string
+      studentName:
+        type: string
+    type: object
   pb.AbsTakeOfChartResponse:
     properties:
       amount:
@@ -591,6 +610,28 @@ definitions:
       payments:
         items:
           $ref: '#/definitions/pb.AbsGetAllPaymentsByMonthResponse'
+        type: array
+    type: object
+  pb.GetAllStudentPaymentsChartResponse:
+    properties:
+      cash:
+        type: string
+      click:
+        type: string
+      payme:
+        type: string
+      paymentsChart:
+        items:
+          $ref: '#/definitions/pb.AbsTakeOfChartResponse'
+        type: array
+      totalRevenue:
+        type: string
+    type: object
+  pb.GetAllStudentPaymentsResponse:
+    properties:
+      payments:
+        items:
+          $ref: '#/definitions/pb.AbsStudentPayments'
         type: array
     type: object
   pb.GetAllStudentResponse:
@@ -1828,6 +1869,76 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
+  /api/finance/payment/all-student-payments/{from}/{to}:
+    get:
+      description: Retrieves a list of student payments between the provided 'from'
+        and 'to' date parameters.
+      parameters:
+      - description: 'Start date (format: YYYY-MM-DD)'
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: 'End date (format: YYYY-MM-DD)'
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of payments
+          schema:
+            $ref: '#/definitions/pb.GetAllStudentPaymentsResponse'
+        "409":
+          description: Conflict error with an explanation
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/all-student-payments/chart/{from}/{to}:
+    get:
+      description: Fetches payment data for students between the given 'from' and
+        'to' dates to be used in chart visualizations.
+      parameters:
+      - description: 'Start date (format: YYYY-MM-DD)'
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: 'End date (format: YYYY-MM-DD)'
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Chart data of payments
+          schema:
+            $ref: '#/definitions/pb.GetAllStudentPaymentsChartResponse'
+        "409":
+          description: Conflict error with an explanation
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN ,CEO
+      tags:
+      - payments
   /api/finance/payment/get-all-payments/{studentId}/{month}:
     get:
       description: Get all payment records for a student within a specified month.

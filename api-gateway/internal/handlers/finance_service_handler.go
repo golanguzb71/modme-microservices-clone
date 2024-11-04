@@ -615,3 +615,55 @@ func GetPaymentTakeOffChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetAllStudentPayment handles the request to retrieve all student payments within a specified date range.
+// @Summary ADMIN , CEO
+// @Description Retrieves a list of student payments between the provided 'from' and 'to' date parameters.
+// @Tags payments
+// @Produce json
+// @Param from path string true "Start date (format: YYYY-MM-DD)"
+// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Success 200 {object} pb.GetAllStudentPaymentsResponse "List of payments"
+// @Failure 409 {object} utils.AbsResponse "Conflict error with an explanation"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/finance/payment/all-student-payments/{from}/{to} [get]
+func GetAllStudentPayment(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetAllStudentPayment(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetAllPaymentsStudentChart retrieves data for student payments to display on a chart within a specified date range.
+// @Summary ADMIN ,CEO
+// @Description Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.
+// @Tags payments
+// @Produce json
+// @Param from path string true "Start date (format: YYYY-MM-DD)"
+// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Success 200 {object} pb.GetAllStudentPaymentsChartResponse "Chart data of payments"
+// @Failure 409 {object} utils.AbsResponse "Conflict error with an explanation"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/finance/payment/all-student-payments/chart/{from}/{to} [get]
+func GetAllPaymentsStudentChart(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetAllPaymentsStudent(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

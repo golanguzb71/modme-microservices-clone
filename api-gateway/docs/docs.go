@@ -1017,6 +1017,112 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/payment/all-student-payments/chart/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN ,CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chart data of payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsChartResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error with an explanation",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/all-student-payments/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves a list of student payments between the provided 'from' and 'to' date parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error with an explanation",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/payment/get-all-payments/{studentId}/{month}": {
             "get": {
                 "security": [
@@ -4171,6 +4277,35 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsStudentPayments": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "string"
+                },
+                "creatorName": {
+                    "type": "string"
+                },
+                "givenDate": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsTakeOfChartResponse": {
             "type": "object",
             "properties": {
@@ -4725,6 +4860,40 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsGetAllPaymentsByMonthResponse"
+                    }
+                }
+            }
+        },
+        "pb.GetAllStudentPaymentsChartResponse": {
+            "type": "object",
+            "properties": {
+                "cash": {
+                    "type": "string"
+                },
+                "click": {
+                    "type": "string"
+                },
+                "payme": {
+                    "type": "string"
+                },
+                "paymentsChart": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTakeOfChartResponse"
+                    }
+                },
+                "totalRevenue": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetAllStudentPaymentsResponse": {
+            "type": "object",
+            "properties": {
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentPayments"
                     }
                 }
             }
