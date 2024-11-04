@@ -1,0 +1,11 @@
+drop table group_student_condition_history;
+drop table group_students;
+drop table transfer_lesson;
+drop table student_history;
+drop table group_history;
+drop table student_note;
+drop table students;
+drop table attendance;
+drop table groups;
+drop table courses;
+drop table rooms;

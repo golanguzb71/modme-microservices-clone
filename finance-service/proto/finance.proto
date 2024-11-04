@@ -1,0 +1,262 @@
+syntax = "proto3";
+
+package finance;
+
+option go_package = "proto/pb";
+import "common.proto";
+import "user.proto";
+import "google/protobuf/empty.proto";
+
+// discount service start
+service DiscountService{
+  rpc GetAllInformationDiscount(GetInformationDiscountRequest) returns(GetInformationDiscountResponse);
+  rpc CreateDiscount(AbsDiscountRequest) returns(common.AbsResponse);
+  rpc DeleteDiscount(AbsDiscountRequest) returns(common.AbsResponse);
+  rpc GetHistoryDiscount(GetHistoryDiscountRequest) returns (GetHistoryDiscountResponse);
+  rpc GetDiscountByStudentId(GetDiscountByStudentIdRequest) returns(GetDiscountByStudentIdResponse);
+}
+message GetDiscountByStudentIdResponse{
+  string amount = 1;
+  bool isHave = 2;
+}
+message GetDiscountByStudentIdRequest{
+  string studentId = 1;
+  string groupId = 2;
+}
+message GetHistoryDiscountRequest{
+  string studentId = 1;
+}
+message GetHistoryDiscountResponse{
+  repeated AbsHistoryDiscount discounts = 1;
+}
+message AbsHistoryDiscount{
+  string groupId = 1;
+  string groupName = 10;
+  string studentId = 2;
+  string studentName = 11;
+  string discountPrice = 3;
+  string comment = 4;
+  string startDate = 5;
+  string endDate = 6;
+  bool withTeacher = 7;
+  string action = 8;
+  string createdAt = 9;
+}
+message AbsDiscountRequest{
+  string groupId = 1;
+  string studentId = 2;
+  string discountPrice = 3;
+  string comment = 4;
+  string startDate = 5;
+  string endDate = 6;
+  bool withTeacher = 7;
+}
+message GetInformationDiscountRequest{
+  string groupId = 1;
+}
+message GetInformationDiscountResponse{
+  repeated AbsStudentDiscount discounts = 1;
+}
+message AbsStudentDiscount{
+  string studentId = 1;
+  string studentName = 2;
+  string studentPhoneNumber = 3;
+  string discount = 4;
+  string cause = 5;
+  string createdAt = 6;
+  string startAt = 7;
+  string endAt = 8;
+  bool withTeacher = 9;
+}
+// discount service end
+
+// category service start
+service CategoryService{
+  rpc CreateCategory(CreateCategoryRequest) returns (common.AbsResponse);
+  rpc DeleteCategory(common.DeleteAbsRequest) returns (common.AbsResponse);
+  rpc GetAllCategory(google.protobuf.Empty) returns(GetAllCategoryRequest);
+}
+message CreateCategoryRequest{
+  string name = 1;
+  string desc = 2;
+}
+message GetAllCategoryRequest{
+  repeated AbsCategory categories = 1;
+}
+message AbsCategory{
+  string id = 1;
+  string name = 2;
+  string desc = 3;
+}
+// category service end
+
+// expense service start
+service ExpenseService{
+  rpc CreateExpense(CreateExpenseRequest) returns(common.AbsResponse);
+  rpc DeleteExpense(common.DeleteAbsRequest) returns(common.AbsResponse);
+  rpc GetAllExpense(GetAllExpenseRequest) returns(GetAllExpenseResponse);
+  rpc GetAllExpenseDiagram(GetAllExpenseDiagramRequest) returns(GetAllExpenseDiagramResponse);
+}
+message GetAllExpenseDiagramResponse{
+  repeated string userOrCategories = 1;
+  repeated string userOrCategoriesAmount = 2;
+  repeated string monthAmount = 3;
+  repeated string months = 4;
+  string amountCommonExpense = 5;
+}
+message GetAllExpenseDiagramRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetAllExpenseRequest{
+  string from = 1;
+  string to = 2;
+  string type = 3;
+  string id = 5;
+  common.PageRequest pageReq = 4;
+}
+message GetAllExpenseResponse{
+  int32 totalPageCount = 1;
+  repeated GetAllExpenseAbs expenses = 2;
+}
+message GetAllExpenseAbs{
+  string id = 1;
+  string givenDate = 2;
+  AbsCategory category = 3;
+  user.GetUserByIdResponse user = 4;
+  string expenseType = 5;
+  string sum = 6;
+  user.GetUserByIdResponse creator = 7;
+  string paymentType = 8;
+  string createdAt = 9;
+  string title = 10;
+}
+message CreateExpenseRequest{
+  string title = 1;
+  string givenDate = 2;
+  string expenseType = 3;
+  string categoryId = 4;
+  string userId = 5;
+  string sum = 6;
+  string createdById = 7;
+  string paymentMethod = 8;
+}
+// expense service end
+
+
+// payment service start
+service PaymentService{
+  rpc PaymentAdd(PaymentAddRequest) returns(common.AbsResponse);
+  rpc PaymentReturn(PaymentReturnRequest) returns(common.AbsResponse);
+  rpc PaymentUpdate(PaymentUpdateRequest) returns(common.AbsResponse);
+  rpc GetMonthlyStatus(GetMonthlyStatusRequest) returns(GetMonthlyStatusResponse);
+  rpc GetAllPaymentsByMonth(GetAllPaymentsByMonthRequest) returns(GetAllPaymentsByMonthResponse);
+  rpc GetAllPaymentTakeOff(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffResponse);
+  rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
+}
+message GetAllPaymentTakeOffChartResponse{
+  repeated AbsTakeOfChartResponse chartResponse = 1;
+}
+message AbsTakeOfChartResponse{
+  string yearMonth = 1;
+  string amount = 2;
+}
+message GetAllPaymentTakeOffRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetAllPaymentTakeOffResponse{
+  repeated AbsPaymentTakeOff pennies = 1;
+}
+message AbsPaymentTakeOff{
+  string paymentId = 1;
+  string givenDate = 2;
+  string studentName = 3;
+  string studentId = 4;
+  string comment = 5;
+  string creatorId = 6;
+  string creatorName = 7;
+}
+message GetAllPaymentsByMonthRequest{
+  string userId = 1;
+  string month = 2;
+}
+message GetAllPaymentsByMonthResponse{
+  repeated AbsGetAllPaymentsByMonthResponse payments = 1;
+}
+message AbsGetAllPaymentsByMonthResponse{
+  string givenDate = 1;
+  string payment_type = 2;
+  string amount = 3;
+  string comment = 4;
+  string created_by_id = 5;
+  string created_by_name = 6;
+  string created_at = 7;
+  string paymentId = 8;
+  string groupId = 9;
+  string groupName = 10;
+  string method = 11;
+}
+message GetMonthlyStatusResponse{
+  repeated AbsGetMonthlyStatusResponse monthStatus = 1;
+}
+message AbsGetMonthlyStatusResponse{
+  string month = 1;
+  string balance = 2;
+}
+message GetMonthlyStatusRequest{
+  string userId = 1;
+}
+message PaymentAddRequest{
+  string comment = 1;
+  string date = 2;
+  string method = 3;
+  string sum = 4;
+  string userId = 5;
+  string type = 6;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
+}
+message PaymentUpdateRequest{
+  string debit = 1;
+  string method = 2;
+  string date = 3;
+  string comment = 4;
+  string userId = 5;
+  string paymentId = 6;
+  string actionById = 7;
+  string actionByName = 8;
+  string groupId = 9;
+}
+message PaymentReturnRequest{
+  string paymentId = 1;
+  string actionById = 2;
+  string actionByName = 3;
+}
+// payment service end
+
+// teacher salary service start
+service TeacherSalaryService{
+  rpc CreateTeacherSalary(CreateTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc DeleteTeacherSalary(DeleteTeacherSalaryRequest) returns(common.AbsResponse);
+  rpc GetTeacherSalary(google.protobuf.Empty) returns(GetTeachersSalaryRequest);
+  rpc GetTeacherSalaryByTeacherID(DeleteTeacherSalaryRequest) returns(AbsGetTeachersSalary);
+}
+message GetTeachersSalaryRequest{
+  repeated AbsGetTeachersSalary salaries = 1;
+}
+message AbsGetTeachersSalary{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+message DeleteTeacherSalaryRequest{
+  string teacherId = 1;
+}
+message CreateTeacherSalaryRequest{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+}
+// teacher salary service end

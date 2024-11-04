@@ -1,0 +1,458 @@
+syntax = "proto3";
+
+package education;
+
+option go_package = "proto/pb";
+import "common.proto";
+
+import "google/protobuf/empty.proto";
+
+// room service start
+service RoomService{
+  rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
+  rpc GetRooms(google.protobuf.Empty)returns(GetUpdateRoomAbs);
+  rpc UpdateRoom(AbsRoom)returns(common.AbsResponse);
+  rpc DeleteRoom(common.DeleteAbsRequest)returns(common.AbsResponse);
+}
+
+message CreateRoomRequest{
+  string name = 1;
+  int32 capacity = 2;
+}
+
+
+message GetUpdateRoomAbs{
+  repeated AbsRoom rooms = 1;
+}
+
+message AbsRoom{
+  string id = 1;
+  int32 capacity = 2;
+  string name = 3;
+}
+// room service end
+
+// course service start
+service CourseService{
+  rpc CreateCourse(CreateCourseRequest)returns(common.AbsResponse);
+  rpc GetCourses(google.protobuf.Empty)returns(GetUpdateCourseAbs);
+  rpc GetCourseById(GetCourseByIdRequest)returns(GetCourseByIdResponse);
+  rpc UpdateCourse(AbsCourse)returns(common.AbsResponse);
+  rpc DeleteCourse(common.DeleteAbsRequest)returns(common.AbsResponse);
+}
+
+message CreateCourseRequest{
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+}
+
+message GetUpdateCourseAbs{
+  repeated AbsCourse courses = 1;
+}
+
+message AbsCourse{
+  string id = 6;
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+}
+
+message GetCourseByIdResponse{
+  string id = 7;
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+  int32 studentCount = 6;
+}
+
+message GetCourseByIdRequest{
+  string id = 1;
+}
+// course service end
+
+// group service start
+service GroupService{
+  rpc CreateGroup(CreateGroupRequest)returns(common.AbsResponse);
+  rpc GetGroups(GetGroupsRequest)returns(GetGroupsResponse);
+  rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+  rpc GetGroupsByCourseId(GetGroupByIdRequest) returns(GetGroupsByCourseResponse);
+  rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
+  rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
+  rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+}
+message GetGroupsByTeacherIdRequest{
+  string teacherId = 1;
+  bool isArchived = 2;
+}
+message GetGroupsByTeacherResponse{
+  repeated GetGroupByTeacherAbs groups = 1;
+}
+message GetGroupByTeacherAbs{
+  string id = 10;
+  string name = 1;
+  string courseName = 2;
+  string roomName = 3;
+  string lessonStartTime = 4;
+  string dayType = 5;
+  string groupStartAt = 6;
+  string groupEndAt = 7;
+  int32 activeStudentCount = 8;
+  repeated AbsStudent students = 9;
+}
+message CreateGroupRequest{
+  string name = 1;
+  int32 courseId = 2;
+  string teacherId = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+}
+message GetGroupByIdRequest{
+  string id = 1;
+}
+message GetUpdateGroupAbs{
+  string id = 10;
+  string name = 1;
+  int32 courseId = 2;
+  string teacherId = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+}
+message GetGroupsByCourseResponse{
+  repeated GetGroupByCourseAbsResponse groups = 1;
+}
+message GetGroupByCourseAbsResponse{
+  string id = 1;
+  string teacherName = 2;
+  string groupStartDate = 3;
+  string groupEndDate = 4;
+  string dateType = 5;
+  string lessonStartTime = 6;
+  string groupName = 7;
+}
+message GetGroupAbsResponse{
+  string id = 1;
+  AbsCourse course = 2;
+  string teacherName = 3;
+  string teacherId = 14;
+  string lessonStartTime = 4;
+  AbsRoom room = 5;
+  int32 studentCount = 6;
+  string name = 7;
+  bool isArchived = 8;
+  string createdAt = 9;
+  string startDate = 10;
+  string endDate = 11;
+  repeated string days = 12;
+  string dateType = 13;
+}
+message GetGroupsResponse{
+  repeated GetGroupAbsResponse groups = 1;
+  int32 totalPageCount = 2;
+}
+message GetGroupsRequest{
+  bool isArchived = 1;
+  common.PageRequest page = 2;
+}
+// group service end
+
+
+// attendance service start
+service AttendanceService{
+  rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
+  rpc SetAttendance(SetAttendanceRequest) returns(common.AbsResponse);
+}
+message GetAttendanceRequest{
+  string groupId = 1;
+  string from = 2;
+  string till = 3;
+  bool withOutdated = 4;
+}
+
+message GetAttendanceResponse{
+  repeated Day days = 1;
+  repeated Student students = 2;
+}
+
+message Day {
+  string date = 1;
+  string transferDate = 2;
+}
+
+message Student{
+  string id = 9;
+  string activatedAt = 1;
+  string addedAt = 2;
+  repeated Attendance attendance = 3;
+  double balance = 4;
+  string createdAt = 5;
+  string dateOfBirth = 6;
+  FreezeDetail freezeDetail = 7;
+  bool gender = 8;
+  string condition = 10;
+  string name = 11;
+  string phone = 12;
+}
+
+message Attendance{
+  string id = 1;
+  string attend_date = 2;
+  bool isCome = 3;
+  string studentId = 4;
+  string teacherId = 5;
+}
+
+message FreezeDetail{
+  string reason = 1;
+  string till_date = 2;
+}
+
+message SetAttendanceRequest{
+  string attendDate = 1;
+  string groupId = 2;
+  int32 status = 3;
+  string studentId = 4;
+  string teacherId = 5;
+  string actionById = 6;
+  string actionByRole = 7;
+}
+
+// attendance service end
+
+// student service start
+service StudentService{
+  rpc GetAllStudent(GetAllStudentRequest) returns(GetAllStudentResponse);
+  rpc CreateStudent(CreateStudentRequest) returns(common.AbsResponse);
+  rpc UpdateStudent(UpdateStudentRequest) returns(common.AbsResponse);
+  rpc DeleteStudent(DeleteStudentRequest) returns(common.AbsResponse);
+  rpc AddToGroup(AddToGroupRequest) returns(common.AbsResponse);
+  rpc GetStudentById(NoteStudentByAbsRequest) returns(GetStudentByIdResponse);
+  rpc GetNoteByStudent(NoteStudentByAbsRequest) returns(GetNotesByStudent);
+  rpc CreateNoteForStudent(CreateNoteRequest) returns(common.AbsResponse);
+  rpc DeleteStudentNote(NoteStudentByAbsRequest) returns (common.AbsResponse);
+  rpc SearchStudent(SearchStudentRequest) returns(SearchStudentResponse);
+  rpc GetHistoryGroupById(NoteStudentByAbsRequest) returns(GetHistoryGroupResponse);
+  rpc GetHistoryStudentById(NoteStudentByAbsRequest) returns(GetHistoryStudentResponse);
+  rpc TransferLessonDate(TransferLessonRequest) returns(common.AbsResponse);
+  rpc ChangeConditionStudent(ChangeConditionStudentRequest) returns(common.AbsResponse);
+  rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+  rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
+  rpc ChangeUserBalanceHistoryByDebit(ChangeUserBalanceHistoryByDebitRequest) returns(common.AbsResponse);
+}
+message ChangeUserBalanceHistoryByDebitRequest{
+  string studentId = 1;
+  string oldDebit = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
+  string currentDebit = 9;
+}
+message ChangeUserBalanceHistoryRequest{
+  string studentId = 1;
+  string amount = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
+}
+message DeleteStudentRequest{
+  string studentId = 1;
+  bool returnMoney = 2;
+  string actionById = 3;
+  string actionByName = 4;
+}
+message GetStudentsByGroupIdResponse{
+  repeated AbsStudent students = 1;
+}
+message GetStudentsByGroupIdRequest{
+  string groupId = 1;
+  bool withOutdated = 2;
+}
+message ChangeConditionStudentRequest{
+  string studentId = 4;
+  string groupId = 5;
+  string status = 1;
+  bool returnTheMoney = 2;
+  string tillDate = 3;
+  string actionById = 6;
+  string actionByName = 7;
+}
+message TransferLessonRequest{
+  string from = 1;
+  string to = 2;
+  string groupId = 3;
+}
+message GetHistoryGroupResponse{
+  repeated AbsHistory groupHistory = 1;
+  repeated AbsStudentHistory studentsHistory = 2;
+}
+message GetHistoryStudentResponse{
+  repeated AbsHistory studentHistory = 1;
+  repeated AbsStudentHistory conditionsHistory = 2;
+}
+message AbsStudentHistory{
+  AbsStudent student = 1;
+  AbsGroup group = 2;
+  string oldCondition = 3;
+  string currentCondition = 6;
+  string specificDate = 4;
+  string createdAt = 5;
+}
+message AbsGroup{
+  string id = 1;
+  string name = 2;
+  string teacherName = 3;
+  string currentGroupStatus = 4;
+  string groupStartDate = 5;
+  string groupEndDate = 6;
+  string lessonStartTime = 7;
+  string dateType = 8;
+  AbsCourse course = 9;
+  bool isArchived = 10;
+}
+message AbsHistory{
+  string id = 1;
+  string editedField = 2;
+  string oldValue = 3;
+  string currentValue = 4;
+}
+message SearchStudentRequest{
+  string value = 1;
+}
+message SearchStudentResponse{
+  repeated AbsStudent students = 1;
+}
+message AbsStudent{
+  string id = 1;
+  string name = 2;
+  string phoneNumber = 3;
+}
+message GetAllStudentRequest{
+  string condition = 1;
+  string page = 2;
+  string size = 3;
+}
+message GetAllStudentResponse{
+  repeated GetGroupsAbsForStudent response = 1;
+  int32 totalCount = 2;
+}
+message GetGroupsAbsForStudent{
+  string id = 1;
+  string name = 2;
+  bool gender = 3;
+  string dateOfBirth = 4;
+  string phone = 5;
+  string address = 6;
+  string passportId = 7;
+  string additionalContact = 8;
+  double balance = 10;
+  string condition = 11;
+  string telegramUsername = 12;
+  string createdAt = 13;
+  repeated GroupGetAllStudentAbs groups = 9;
+}
+message GroupGetAllStudentAbs{
+  string id = 10;
+  string name = 1;
+  AbsCourse course = 2;
+  string teacherName = 3;
+  string type = 4;
+  repeated string days = 5;
+  int32 roomId = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+  string studentCondition = 11;
+  string studentActivatedAt = 12;
+}
+message CreateStudentRequest{
+  string phoneNumber = 1;
+  string name = 2;
+  string dateOfBirth = 3;
+  bool gender = 4;
+  string additionalContact = 5;
+  string address = 6;
+  string passportId = 7;
+  string telegramUsername = 10;
+  string groupId = 8;
+  string dateFrom = 9;
+  string createdBy = 11;
+}
+message UpdateStudentRequest{
+  string studentId = 8;
+  string phoneNumber = 1;
+  string name = 2;
+  string dateOfBirth = 3;
+  bool gender = 4;
+  string additionalContact = 5;
+  string address = 6;
+  string passportId = 7;
+}
+message AddToGroupRequest{
+  string createdDate = 1;
+  string groupId = 2;
+  repeated string student_ids = 3;
+  string createdBy = 4;
+}
+message GetStudentByIdResponse{
+  string id = 1;
+  string name = 2;
+  bool gender = 3;
+  string dateOfBirth = 4;
+  string phone = 5;
+  double balance = 6;
+  string createdAt = 7;
+  repeated GetGroupStudent groups = 8;
+  string condition = 9;
+}
+message NoteStudentByAbsRequest{
+  string id = 1;
+}
+message GetGroupStudent{
+  string id = 1;
+  string name = 2;
+  string dateType = 3;
+  repeated string days = 4;
+  AbsRoom room = 5;
+  AbsCourse course = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+  string studentCondition = 11;
+  string studentActivatedAt = 12;
+  string studentAddedAt = 14;
+  string teacherName = 15;
+  double priceForStudent = 13;
+}
+message GetNotesByStudent{
+  repeated AbsNote notes = 1;
+}
+message AbsNote{
+  string id = 1;
+  string comment = 2;
+  string createdAt = 3;
+}
+message CreateNoteRequest{
+  string note = 1;
+  string studentId = 2;
+}
+// student service end

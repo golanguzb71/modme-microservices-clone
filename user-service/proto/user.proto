@@ -1,0 +1,91 @@
+syntax = "proto3";
+package user;
+option go_package = "proto/pb";
+import "common.proto";
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns(common.AbsResponse);
+  rpc GetTeachers(GetTeachersRequest)returns(GetTeachersResponse);
+  rpc GetUserById(UserAbsRequest) returns(GetUserByIdResponse);
+  rpc UpdateUserById(UpdateUserRequest) returns(common.AbsResponse);
+  rpc DeleteUserById(UserAbsRequest) returns(common.AbsResponse);
+  rpc GetAllEmployee(GetAllEmployeeRequest) returns(GetAllEmployeeResponse);
+  rpc GetAllStuff(GetAllEmployeeRequest) returns(GetAllStuffResponse);
+  rpc GetHistoryByUserId(UserAbsRequest) returns(GetHistoryByUserIdResponse);
+}
+message GetAllStuffResponse{
+  repeated GetUserByIdResponse stuff = 1;
+}
+message GetHistoryByUserIdResponse{
+  repeated AbsGetHistoryByUserIdResponse histories = 1;
+}
+message AbsGetHistoryByUserIdResponse{
+  string updatedField = 1;
+  string oldValue = 2;
+  string currentValue = 3;
+  string createdAt = 4;
+}
+message UpdateUserRequest{
+  string id = 6;
+  string phoneNumber = 1;
+  string role = 2;
+  string name = 3;
+  string birthDate = 4;
+  bool gender = 5;
+}
+message GetAllEmployeeRequest{
+  bool isArchived = 1;
+}
+message GetAllEmployeeResponse{
+  repeated GetUserByIdResponse employees = 1;
+}
+message UserAbsRequest{
+  string userId = 1;
+}
+message GetUserByIdResponse{
+  string id = 1;
+  string phoneNumber = 2;
+  string role = 3;
+  string name = 4;
+  string birthDate = 5;
+  bool gender = 6;
+  bool is_deleted = 7;
+  string createdAt = 8;
+}
+message CreateUserRequest{
+  string fullName = 1;
+  string phoneNumber = 2;
+  string password = 3;
+  string role = 4;
+  string birthDate = 5;
+  bool gender = 6;
+}
+message GetTeachersRequest{
+  bool isDeleted = 1;
+}
+message GetTeachersResponse{
+  repeated AbsTeacher teachers = 1;
+}
+message AbsTeacher{
+  string id = 4;
+  string fullName = 1;
+  string phoneNumber = 2;
+  string activeGroups = 3;
+}
+
+service AuthService{
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns(GetUserByIdResponse);
+}
+message ValidateTokenRequest{
+  string token = 1;
+  repeated string requiredRoles = 2;
+}
+message LoginRequest{
+  string phoneNumber = 1;
+  string password = 2;
+}
+message LoginResponse{
+  GetUserByIdResponse user = 1;
+  string token = 2;
+  bool isOk = 3;
+}

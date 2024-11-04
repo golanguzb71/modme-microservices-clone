@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package education;
+
+option go_package = "proto/pb";
+
+service GroupService{
+  rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+}
+message GetGroupsByTeacherIdRequest{
+  string teacherId = 1;
+  bool isArchived = 2;
+}
+message GetGroupsByTeacherResponse{
+  repeated GetGroupByTeacherAbs groups = 1;
+}
+message GetGroupByTeacherAbs{
+  string id = 10;
+  string name = 1;
+  string courseName = 2;
+  string roomName = 3;
+  string lessonStartTime = 4;
+  string dayType = 5;
+  string groupStartAt = 6;
+  string groupEndAt = 7;
+  int32 activeStudentCount = 8;
+  repeated AbsStudent students = 9;
+}
+
+message AbsStudent{
+  string id = 1;
+  string name = 2;
+  string phoneNumber = 3;
+}

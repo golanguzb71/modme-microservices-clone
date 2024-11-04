@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"api-gateway/grpc/proto/pb"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,17 +26,17 @@ func RespondError(ctx *gin.Context, statusCode int32, message string) {
 	})
 }
 
-//func GetUserFromContext(c *gin.Context) (*pb.User, error) {
-//	var userInterface any
-//	var exists bool
-//	userInterface, exists = c.Get("user")
-//	if !exists {
-//		return nil, errors.New("user not found in Gin context")
-//	}
-//
-//	user, ok := userInterface.(*pb.User)
-//	if !ok {
-//		return nil, errors.New("error while converting user")
-//	}
-//	return user, nil
-//}
+func GetUserFromContext(c *gin.Context) (*pb.GetUserByIdResponse, error) {
+	var userInterface any
+	var exists bool
+	userInterface, exists = c.Get("user")
+	if !exists {
+		return nil, errors.New("user not found in Gin context")
+	}
+
+	user, ok := userInterface.(*pb.GetUserByIdResponse)
+	if !ok {
+		return nil, errors.New("error while converting user")
+	}
+	return user, nil
+}

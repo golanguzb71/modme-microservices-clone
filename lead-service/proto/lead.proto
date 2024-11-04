@@ -3,15 +3,34 @@ syntax = "proto3";
 package lead;
 
 option go_package = "proto/pb";
-import "proto/common.proto";
+import "common.proto";
 
+import "google/protobuf/empty.proto";
 
 // lead_service_start
 service LeadService {
   rpc CreateLead(CreateLeadRequest) returns (common.AbsResponse);
   rpc GetLeadCommon(GetLeadCommonRequest) returns(GetLeadCommonResponse);
   rpc UpdateLead(UpdateLeadRequest) returns (common.AbsResponse);
-  rpc DeleteLead(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteLead(common.DeleteAbsRequest) returns (common.AbsResponse);
+  rpc GetListSection(google.protobuf.Empty)returns(GetLeadListResponse);
+  rpc GetLeadReports(GetLeadReportsRequest) returns(GetLeadReportsResponse);
+}
+message GetLeadReportsResponse{
+  repeated LeadConversion leadConversion = 1;
+  repeated LeadConversionForSource leadConversionForSource = 2;
+}
+message LeadConversion{
+  string conversionDate = 1;
+  int32 lead_count = 2;
+}
+message LeadConversionForSource{
+  string source = 1;
+  int32 leads_count = 2;
+}
+message GetLeadReportsRequest{
+  string startYear = 1;
+  string endYear = 2;
 }
 message CreateLeadRequest{
   string title = 1;
@@ -21,7 +40,10 @@ message GetLeadCommonResponse{
   repeated Section expectations = 2;
   repeated Section sets = 3;
 }
-message GetLeadCommonRequest{
+message GetLeadCommonRequest {
+  repeated LeadCommonRequest requests = 1;
+}
+message LeadCommonRequest {
   string type = 1;
   string id = 2;
 }
@@ -34,6 +56,7 @@ message Section{
 }
 message Lead {
   string id = 1;
+  string name = 5;
   string comment = 2;
   string createdAt = 3;
   string phoneNumber = 4;
@@ -42,8 +65,12 @@ message UpdateLeadRequest{
   string id = 1;
   string title = 2;
 }
-message DeleteAbsRequest{
+message GetLeadListResponse{
+  repeated DynamicSection sections = 1;
+}
+message DynamicSection{
   string id = 1;
+  string name = 2;
 }
 // lead_service_end
 
@@ -53,7 +80,7 @@ message DeleteAbsRequest{
 service ExpectService{
   rpc CreateExpect(CreateExpectRequest) returns (common.AbsResponse);
   rpc UpdateExpect(UpdateExpectRequest) returns (common.AbsResponse);
-  rpc DeleteExpect(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteExpect(common.DeleteAbsRequest) returns (common.AbsResponse);
 }
 message CreateExpectRequest{
   string title = 1;
@@ -70,8 +97,10 @@ message UpdateExpectRequest{
 service SetService{
   rpc CreateSet(CreateSetRequest) returns (common.AbsResponse);
   rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
-  rpc DeleteSet(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteSet(common.DeleteAbsRequest) returns (common.AbsResponse);
+  rpc ChangeToSet(ChangeToSetRequest) returns(common.AbsResponse);
 }
+
 message CreateSetRequest{
   string title = 1;
   string courseId = 2;
@@ -89,6 +118,19 @@ message UpdateSetRequest{
   repeated string date = 5;
   string lessonStartTime = 6;
 }
+
+message ChangeToSetRequest{
+  string name = 1;
+  string roomId = 2;
+  string courseId = 3;
+  string teacherId = 4;
+  string dateType = 5;
+  repeated string days = 6;
+  string startTime = 7;
+  string startDate = 8;
+  string end_date = 9;
+  string setId = 10;
+}
 //set_service_end
 
 
@@ -97,7 +139,8 @@ message UpdateSetRequest{
 service LeadDataService {
   rpc CreateLeadData(CreateLeadDataRequest) returns (common.AbsResponse);
   rpc UpdateLeadData(UpdateLeadDataRequest) returns (common.AbsResponse);
-  rpc DeleteLeadData(DeleteAbsRequest) returns (common.AbsResponse);
+  rpc DeleteLeadData(common.DeleteAbsRequest) returns (common.AbsResponse);
+  rpc ChangeLeadPlace(ChangeLeadPlaceRequest) returns(common.AbsResponse);
 }
 message CreateLeadDataRequest{
   string name = 1;
@@ -112,5 +155,14 @@ message UpdateLeadDataRequest{
   string name = 1;
   string phoneNumber = 2;
   string comment = 3;
+}
+
+message ChangeLeadPlaceRequest{
+  string leadDataId = 1;
+  ChangeLeadDataRequest changedSet = 2;
+}
+message ChangeLeadDataRequest{
+  string id = 1;
+  string sectionType = 2;
 }
 // lead_service_end

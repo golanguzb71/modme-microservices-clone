@@ -7,34 +7,34 @@ import (
 )
 
 type Clients struct {
-	AuditClient    *client.AuditClient
-	UserClient     *client.UserClient
-	LidClient      *client.LidClient
-	BusinessClient *client.BusinessClient
+	UserClient      *client.UserClient
+	LidClient       *client.LidClient
+	EducationClient *client.EducationClient
+	FinanceClient   *client.FinanceClient
 }
 
 func InitializeGrpcClients(cfg *config.Config) *Clients {
-	//businessClient, err := client.NewBusinessClient(cfg.Grpc.BusinessService.Address)
-	//if err != nil {
-	//	log.Fatalf("%v", err)
-	//}
-	//auditClient, err := client.NewAuditClient(cfg.Grpc.AuditingService.Address)
-	//if err != nil {
-	//	log.Fatalf("%v", err)
-	//}
-	//userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
-	//if err != nil {
-	//	return nil
-	//}
+	educationClient, err := client.NewEducationClient(cfg.Grpc.EducationService.Address)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+	userClient, err := client.NewUserClient(cfg.Grpc.UserService.Address)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
 	lidClient, err := client.NewLidClient(cfg.Grpc.LidService.Address)
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+	financeClient, err := client.NewFinanceClient(cfg.Grpc.FinanceService.Address)
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
 
 	return &Clients{
-		AuditClient:    &client.AuditClient{},
-		UserClient:     &client.UserClient{},
-		LidClient:      lidClient,
-		BusinessClient: &client.BusinessClient{},
+		UserClient:      userClient,
+		LidClient:       lidClient,
+		EducationClient: educationClient,
+		FinanceClient:   financeClient,
 	}
 }

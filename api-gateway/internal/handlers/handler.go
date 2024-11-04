@@ -6,15 +6,15 @@ import (
 )
 
 var (
-	auditingClient *client.AuditClient
-	userClient     *client.UserClient
-	businessClient *client.BusinessClient
-	leadClient     *client.LidClient
+	userClient      *client.UserClient
+	educationClient *client.EducationClient
+	leadClient      *client.LidClient
+	financeClient   *client.FinanceClient
 )
 
 func InitClients(client *grpc.Clients) {
-	auditingClient = client.AuditClient
 	userClient = client.UserClient
-	businessClient = client.BusinessClient
+	educationClient = client.EducationClient
 	leadClient = client.LidClient
+	financeClient = client.FinanceClient
 }

@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package education;
+
+option go_package = "proto/pb";
+import "common.proto";
+
+
+message AbsRoom{
+  string id = 1;
+  int32 capacity = 2;
+  string name = 3;
+}
+
+message AbsCourse{
+  string id = 6;
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+}
+
+// student service start
+service StudentService{
+  rpc GetStudentById(NoteStudentByAbsRequest) returns(GetStudentByIdResponse);
+  rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
+  rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
+  rpc ChangeUserBalanceHistoryByDebit(ChangeUserBalanceHistoryByDebitRequest) returns(common.AbsResponse);
+}
+
+message ChangeUserBalanceHistoryByDebitRequest{
+  string studentId = 1;
+  string oldDebit = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
+  string currentDebit = 9;
+}
+
+message ChangeUserBalanceHistoryRequest{
+  string studentId = 1;
+  string amount = 2;
+  string givenDate = 3;
+  string comment = 4;
+  string payment_type = 5;
+  string createdBy = 6;
+  string createdByName = 7;
+  string groupId = 8;
+}
+message GetStudentsByGroupIdResponse{
+  repeated AbsStudent students = 1;
+}
+message GetStudentsByGroupIdRequest{
+  string groupId = 1;
+  bool withOutdated = 2;
+}
+message AbsStudent{
+  string id = 1;
+  string name = 2;
+  string phoneNumber = 3;
+}
+message GetStudentByIdResponse{
+  string id = 1;
+  string name = 2;
+  bool gender = 3;
+  string dateOfBirth = 4;
+  string phone = 5;
+  double balance = 6;
+  string createdAt = 7;
+  repeated GetGroupStudent groups = 8;
+  string condition = 9;
+}
+message NoteStudentByAbsRequest{
+  string id = 1;
+}
+message GetGroupStudent{
+  string id = 1;
+  string name = 2;
+  string dateType = 3;
+  repeated string days = 4;
+  AbsRoom room = 5;
+  AbsCourse course = 6;
+  string lessonStartTime = 7;
+  string groupStartDate = 8;
+  string groupEndDate = 9;
+  string studentCondition = 11;
+  string studentActivatedAt = 12;
+  string studentAddedAt = 14;
+  string teacherName = 15;
+  double priceForStudent = 13;
+}
+
+
+service GroupService {
+  rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+}
+message GetGroupByIdRequest{
+  string id = 1;
+}
+message GetGroupAbsResponse{
+  string id = 1;
+  string teacherName = 3;
+  string teacherId = 14;
+  string lessonStartTime = 4;
+  int32 studentCount = 6;
+  string name = 7;
+  bool isArchived = 8;
+  string createdAt = 9;
+  string startDate = 10;
+  string endDate = 11;
+  repeated string days = 12;
+  string dateType = 13;
+}

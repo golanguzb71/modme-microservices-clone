@@ -23,6 +23,12 @@ type DatabaseConfig struct {
 type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Database DatabaseConfig `yaml:"database"`
+	Grpc     GrpcConfig     `yaml:"grpc"`
+}
+type GrpcConfig struct {
+	EducationService struct {
+		Address string `yaml:"address"`
+	} `yaml:"educationService"`
 }
 
 func LoadConfig() (*Config, error) {
