@@ -1017,7 +1017,54 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment-takeoff-chart/{from}/{to}": {
+        "/api/finance/payment/get-all-payments/{studentId}/{month}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get all payment records for a student within a specified month.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Student ID",
+                        "name": "studentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Month (format: YYYY-MM)",
+                        "name": "month",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllPaymentsByMonthResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters or failed retrieval",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/payment-take-off/chart/{from}/{to}": {
             "get": {
                 "security": [
                     {
@@ -1066,53 +1113,6 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Server error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.AbsResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/finance/payment/get-all-payments/{studentId}/{month}": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "Get all payment records for a student within a specified month.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "payments"
-                ],
-                "summary": "ADMIN , CEO",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Student ID",
-                        "name": "studentId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Month (format: YYYY-MM)",
-                        "name": "month",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/pb.GetAllPaymentsByMonthResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request parameters or failed retrieval",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }

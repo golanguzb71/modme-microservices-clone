@@ -1828,43 +1828,6 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
-  /api/finance/payment-takeoff-chart/{from}/{to}:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve a chart representation of take-off payments within a specified
-        date range.
-      parameters:
-      - description: 'Start date (format: YYYY-MM-DD)'
-        in: path
-        name: from
-        required: true
-        type: string
-      - description: 'End date (format: YYYY-MM-DD)'
-        in: path
-        name: to
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Chart data of take-off payments
-          schema:
-            $ref: '#/definitions/pb.GetAllPaymentTakeOffChartResponse'
-        "409":
-          description: Error message
-          schema:
-            $ref: '#/definitions/utils.AbsResponse'
-        "500":
-          description: Server error
-          schema:
-            $ref: '#/definitions/utils.AbsResponse'
-      security:
-      - Bearer: []
-      summary: ADMIN , CEO
-      tags:
-      - payments
   /api/finance/payment/get-all-payments/{studentId}/{month}:
     get:
       description: Get all payment records for a student within a specified month.
@@ -1918,6 +1881,43 @@ paths:
           description: List of take-off payments
           schema:
             $ref: '#/definitions/pb.GetAllPaymentTakeOffResponse'
+        "409":
+          description: Error message
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - payments
+  /api/finance/payment/payment-take-off/chart/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a chart representation of take-off payments within a specified
+        date range.
+      parameters:
+      - description: 'Start date (format: YYYY-MM-DD)'
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: 'End date (format: YYYY-MM-DD)'
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Chart data of take-off payments
+          schema:
+            $ref: '#/definitions/pb.GetAllPaymentTakeOffChartResponse'
         "409":
           description: Error message
           schema:

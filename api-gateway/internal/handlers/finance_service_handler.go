@@ -601,7 +601,7 @@ func GetAllTakeOffPayment(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse "Error message"
 // @Failure 500 {object} utils.AbsResponse "Server error"
 // @Security Bearer
-// @Router /api/finance/payment-takeoff-chart/{from}/{to} [get]
+// @Router /api/finance/payment/payment-take-off/chart/{from}/{to} [get]
 func GetPaymentTakeOffChart(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
