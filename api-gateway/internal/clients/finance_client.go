@@ -135,6 +135,20 @@ func (fc *FinanceClient) GetPaymentTakeOffChart(from string, to string, ctx cont
 	})
 }
 
+func (fc *FinanceClient) GetAllStudentPayment(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsResponse, error) {
+	return fc.paymentClient.GetAllStudentPayments(ctx, &pb.GetAllStudentPaymentsRequest{
+		From: from,
+		To:   to,
+	})
+}
+
+func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsChartResponse, error) {
+	return fc.paymentClient.GetAllStudentPaymentsChart(ctx, &pb.GetAllStudentPaymentsRequest{
+		From: from,
+		To:   to,
+	})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

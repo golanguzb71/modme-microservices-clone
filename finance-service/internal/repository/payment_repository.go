@@ -437,6 +437,113 @@ func (r *PaymentRepository) GetAllPaymentTakeOffChart(from string, to string) (*
 	return response, nil
 }
 
+func (r *PaymentRepository) GetAllStudentPayments(from string, to string) (*pb.GetAllStudentPaymentsResponse, error) {
+	query := `
+SELECT 
+       student_id,
+       method,
+       amount,
+       given_date,
+       comment,
+       created_by_id,
+       created_by_name
+FROM student_payments
+where given_date between $1 and $2
+  and payment_type = 'ADD' order by given_date
+`
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	resp := pb.GetAllStudentPaymentsResponse{}
+	for rows.Next() {
+		el := pb.AbsStudentPayments{}
+		err := rows.Scan(&el.StudentId, &el.Method, &el.Amount, &el.GivenDate, &el.Comment, &el.CreatorId, &el.CreatorName)
+		if err != nil {
+			return nil, err
+		}
+		name, _, _ := r.educationClient.GetStudentById(el.StudentId)
+		el.StudentName = name
+		resp.Payments = append(resp.Payments, &el)
+	}
+	return &resp, nil
+}
+
+func (r *PaymentRepository) GetAllStudentPaymentsChart(from string, to string) (*pb.GetAllStudentPaymentsChartResponse, error) {
+	var (
+		cash  float64
+		payme float64
+		click float64
+	)
+	resp := pb.GetAllStudentPaymentsChartResponse{}
+	query := `
+SELECT coalesce((SELECT sum(amount)
+                 FROM student_payments
+                 where method = 'CASH' and payment_type != 'TAKE_OFF'
+                   and given_date between $1 and $2), 0),
+       coalesce((SELECT sum(amount)
+                 FROM student_payments
+                 where method = 'PAYME' and payment_type != 'TAKE_OFF'
+                   and given_date between $1 and $2), 0),
+       coalesce((SELECT sum(amount)
+                 FROM student_payments
+                 where method = 'CLICK' and payment_type != 'TAKE_OFF'
+                   and given_date between $1 and $2), 0)
+`
+
+	err := r.db.QueryRow(query, from, to).Scan(&cash, &payme, &click)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.TotalRevenue = strconv.FormatFloat(cash+payme+click, 'f', 2, 64)
+	resp.Cash = strconv.FormatFloat(cash, 'f', 2, 64)
+	resp.Click = strconv.FormatFloat(click, 'f', 2, 64)
+	resp.Payme = strconv.FormatFloat(payme, 'f', 2, 64)
+
+	query = `
+        SELECT 
+            given_date, 
+            SUM(amount)
+        FROM 
+            student_payments
+        WHERE 
+            payment_type = 'ADD'
+            AND given_date BETWEEN $1 AND $2
+        GROUP BY 
+            given_date
+        ORDER BY 
+            given_date;
+    `
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, fmt.Errorf("error querying payment chart data: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var chartEntry pb.AbsTakeOfChartResponse
+
+		err := rows.Scan(
+			&chartEntry.YearMonth,
+			&chartEntry.Amount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning chart data row: %w", err)
+		}
+
+		resp.PaymentsChart = append(resp.PaymentsChart, &chartEntry)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	return &resp, nil
+}
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }
