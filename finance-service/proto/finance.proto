@@ -155,6 +155,20 @@ service PaymentService{
   rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
   rpc GetAllStudentPayments(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsResponse);
   rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
+  rpc GetAllDebtsInformation(GetAllPaymentTakeOffRequest) returns(GetAllDebtsInformationResponse);
+}
+message GetAllDebtsInformationResponse{
+  repeated AbsDebtsInformation debts = 1;
+}
+message AbsDebtsInformation{
+  string userId = 1;
+  string userName = 2;
+  string phoneNumber = 3;
+  string balance = 4;
+  string totalDebOnThisMonth = 5;
+  string groupId = 6;
+  string groupName = 7;
+  string comment = 8;
 }
 message GetAllStudentPaymentsChartResponse{
   string cash = 1;

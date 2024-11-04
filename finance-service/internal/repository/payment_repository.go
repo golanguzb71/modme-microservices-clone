@@ -544,6 +544,58 @@ SELECT coalesce((SELECT sum(amount)
 	return &resp, nil
 }
 
+func (r *PaymentRepository) GetAllDebtsInformation(from string, to string) (*pb.GetAllDebtsInformationResponse, error) {
+	query := `
+        SELECT 
+            student_id,
+            amount::text AS balance,
+            group_id::text,
+            comment,
+            SUM(amount) OVER (PARTITION BY student_id) AS total_deb_on_this_month
+        FROM student_payments
+        WHERE 
+            payment_type = 'TAKE_OFF' AND 
+            created_by_id = '00000000-0000-0000-0000-000000000000' AND
+            given_date BETWEEN $1 AND $2;
+    `
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var response pb.GetAllDebtsInformationResponse
+	for rows.Next() {
+		var debt pb.AbsDebtsInformation
+		var totalDebOnThisMonth float64
+
+		err := rows.Scan(
+			&debt.UserId,
+			&debt.Balance,
+			&debt.GroupId,
+			&debt.Comment,
+			&totalDebOnThisMonth,
+		)
+		if err != nil {
+			return nil, err
+		}
+		name, phoneNumber, _ := r.educationClient.GetStudentById(debt.UserId)
+		debt.UserName = name
+		debt.PhoneNumber = phoneNumber
+		groupName := r.educationClient.GetGroupNameById(debt.GroupId)
+		debt.GroupName = groupName
+		debt.TotalDebOnThisMonth = fmt.Sprintf("%.2f", totalDebOnThisMonth)
+		response.Debts = append(response.Debts, &debt)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }

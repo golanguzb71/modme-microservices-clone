@@ -667,3 +667,30 @@ func GetAllPaymentsStudentChart(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetAllDebtsInformation godoc
+// @Summary ADMIN , CEO
+// @Description Retrieves information about debts within the specified date range.
+// @Tags Finance
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date in YYYY-MM-DD format"
+// @Param to path string true "End date in YYYY-MM-DD format"
+// @Success 200 {object} pb.GetAllDebtsInformationResponse "Success response containing debt information"
+// @Failure 409 {object} utils.AbsResponse "Conflict occurred while fetching debt information"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/finance/payment/get-all-debts/{from}/{to} [get]
+func GetAllDebtsInformation(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	resp, err := financeClient.GetAllDebtsInformation(from, to, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
