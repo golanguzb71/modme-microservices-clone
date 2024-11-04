@@ -141,6 +141,31 @@ service PaymentService{
   rpc PaymentUpdate(PaymentUpdateRequest) returns(common.AbsResponse);
   rpc GetMonthlyStatus(GetMonthlyStatusRequest) returns(GetMonthlyStatusResponse);
   rpc GetAllPaymentsByMonth(GetAllPaymentsByMonthRequest) returns(GetAllPaymentsByMonthResponse);
+  rpc GetAllPaymentTakeOff(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffResponse);
+  rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
+}
+message GetAllPaymentTakeOffChartResponse{
+  repeated AbsTakeOfChartResponse chartResponse = 1;
+}
+message AbsTakeOfChartResponse{
+  string yearMonth = 1;
+  string amount = 2;
+}
+message GetAllPaymentTakeOffRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetAllPaymentTakeOffResponse{
+  repeated AbsPaymentTakeOff pennies = 1;
+}
+message AbsPaymentTakeOff{
+  string paymentId = 1;
+  string givenDate = 2;
+  string studentName = 3;
+  string studentId = 4;
+  string comment = 5;
+  string creatorId = 6;
+  string creatorName = 7;
 }
 message GetAllPaymentsByMonthRequest{
   string userId = 1;

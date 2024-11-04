@@ -39,6 +39,29 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	if req.GroupId == "" || req.StudentId == "" || req.TeacherId == "" {
 		return nil, errors.New("group ID, student ID, and teacher ID are required")
 	}
+
+	if req.ActionByRole == "CEO" || req.ActionByRole == "ADMIN" {
+		if req.Status == -1 {
+			err := s.attendanceRepo.DeleteAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate)
+			if err != nil {
+				return nil, err
+			}
+			return &pb.AbsResponse{
+				Status:  200,
+				Message: "Attendance successfully deleted",
+			}, nil
+		} else {
+			err := s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+			if err != nil {
+				return nil, err
+			}
+			return &pb.AbsResponse{
+				Status:  200,
+				Message: "Attendance successfully created",
+			}, nil
+		}
+	}
+
 	attendDate, err := time.Parse("2006-01-02", req.AttendDate)
 	if err != nil {
 		return nil, errors.New("invalid attendance date format")
@@ -63,7 +86,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 					Message: "Attendance successfully deleted",
 				}, nil
 			} else {
-				err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
+				err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 				if err != nil {
 					return nil, err
 				}
@@ -82,6 +105,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	if !validDay {
 		return nil, errors.New("attendance cannot be created today; group is not active")
 	}
+
 	if req.Status == -1 {
 		err = s.attendanceRepo.DeleteAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate)
 		if err != nil {
@@ -92,7 +116,10 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 			Message: "Attendance successfully deleted",
 		}, nil
 	} else {
-		err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status)
+		err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+		if err != nil {
+			return nil, err
+		}
 		return &pb.AbsResponse{
 			Status:  200,
 			Message: "Attendance successfully created",

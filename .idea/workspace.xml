@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

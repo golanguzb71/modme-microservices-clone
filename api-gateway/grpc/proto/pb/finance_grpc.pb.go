@@ -642,11 +642,13 @@ var ExpenseService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	PaymentService_PaymentAdd_FullMethodName            = "/finance.PaymentService/PaymentAdd"
-	PaymentService_PaymentReturn_FullMethodName         = "/finance.PaymentService/PaymentReturn"
-	PaymentService_PaymentUpdate_FullMethodName         = "/finance.PaymentService/PaymentUpdate"
-	PaymentService_GetMonthlyStatus_FullMethodName      = "/finance.PaymentService/GetMonthlyStatus"
-	PaymentService_GetAllPaymentsByMonth_FullMethodName = "/finance.PaymentService/GetAllPaymentsByMonth"
+	PaymentService_PaymentAdd_FullMethodName                = "/finance.PaymentService/PaymentAdd"
+	PaymentService_PaymentReturn_FullMethodName             = "/finance.PaymentService/PaymentReturn"
+	PaymentService_PaymentUpdate_FullMethodName             = "/finance.PaymentService/PaymentUpdate"
+	PaymentService_GetMonthlyStatus_FullMethodName          = "/finance.PaymentService/GetMonthlyStatus"
+	PaymentService_GetAllPaymentsByMonth_FullMethodName     = "/finance.PaymentService/GetAllPaymentsByMonth"
+	PaymentService_GetAllPaymentTakeOff_FullMethodName      = "/finance.PaymentService/GetAllPaymentTakeOff"
+	PaymentService_GetAllPaymentTakeOffChart_FullMethodName = "/finance.PaymentService/GetAllPaymentTakeOffChart"
 )
 
 // PaymentServiceClient is the client API for PaymentService service.
@@ -661,6 +663,8 @@ type PaymentServiceClient interface {
 	PaymentUpdate(ctx context.Context, in *PaymentUpdateRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetMonthlyStatus(ctx context.Context, in *GetMonthlyStatusRequest, opts ...grpc.CallOption) (*GetMonthlyStatusResponse, error)
 	GetAllPaymentsByMonth(ctx context.Context, in *GetAllPaymentsByMonthRequest, opts ...grpc.CallOption) (*GetAllPaymentsByMonthResponse, error)
+	GetAllPaymentTakeOff(ctx context.Context, in *GetAllPaymentTakeOffRequest, opts ...grpc.CallOption) (*GetAllPaymentTakeOffResponse, error)
+	GetAllPaymentTakeOffChart(ctx context.Context, in *GetAllPaymentTakeOffRequest, opts ...grpc.CallOption) (*GetAllPaymentTakeOffChartResponse, error)
 }
 
 type paymentServiceClient struct {
@@ -721,6 +725,26 @@ func (c *paymentServiceClient) GetAllPaymentsByMonth(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *paymentServiceClient) GetAllPaymentTakeOff(ctx context.Context, in *GetAllPaymentTakeOffRequest, opts ...grpc.CallOption) (*GetAllPaymentTakeOffResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllPaymentTakeOffResponse)
+	err := c.cc.Invoke(ctx, PaymentService_GetAllPaymentTakeOff_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentServiceClient) GetAllPaymentTakeOffChart(ctx context.Context, in *GetAllPaymentTakeOffRequest, opts ...grpc.CallOption) (*GetAllPaymentTakeOffChartResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllPaymentTakeOffChartResponse)
+	err := c.cc.Invoke(ctx, PaymentService_GetAllPaymentTakeOffChart_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PaymentServiceServer is the server API for PaymentService service.
 // All implementations must embed UnimplementedPaymentServiceServer
 // for forward compatibility.
@@ -733,6 +757,8 @@ type PaymentServiceServer interface {
 	PaymentUpdate(context.Context, *PaymentUpdateRequest) (*AbsResponse, error)
 	GetMonthlyStatus(context.Context, *GetMonthlyStatusRequest) (*GetMonthlyStatusResponse, error)
 	GetAllPaymentsByMonth(context.Context, *GetAllPaymentsByMonthRequest) (*GetAllPaymentsByMonthResponse, error)
+	GetAllPaymentTakeOff(context.Context, *GetAllPaymentTakeOffRequest) (*GetAllPaymentTakeOffResponse, error)
+	GetAllPaymentTakeOffChart(context.Context, *GetAllPaymentTakeOffRequest) (*GetAllPaymentTakeOffChartResponse, error)
 	mustEmbedUnimplementedPaymentServiceServer()
 }
 
@@ -757,6 +783,12 @@ func (UnimplementedPaymentServiceServer) GetMonthlyStatus(context.Context, *GetM
 }
 func (UnimplementedPaymentServiceServer) GetAllPaymentsByMonth(context.Context, *GetAllPaymentsByMonthRequest) (*GetAllPaymentsByMonthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllPaymentsByMonth not implemented")
+}
+func (UnimplementedPaymentServiceServer) GetAllPaymentTakeOff(context.Context, *GetAllPaymentTakeOffRequest) (*GetAllPaymentTakeOffResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPaymentTakeOff not implemented")
+}
+func (UnimplementedPaymentServiceServer) GetAllPaymentTakeOffChart(context.Context, *GetAllPaymentTakeOffRequest) (*GetAllPaymentTakeOffChartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPaymentTakeOffChart not implemented")
 }
 func (UnimplementedPaymentServiceServer) mustEmbedUnimplementedPaymentServiceServer() {}
 func (UnimplementedPaymentServiceServer) testEmbeddedByValue()                        {}
@@ -869,6 +901,42 @@ func _PaymentService_GetAllPaymentsByMonth_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PaymentService_GetAllPaymentTakeOff_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPaymentTakeOffRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).GetAllPaymentTakeOff(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_GetAllPaymentTakeOff_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).GetAllPaymentTakeOff(ctx, req.(*GetAllPaymentTakeOffRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PaymentService_GetAllPaymentTakeOffChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllPaymentTakeOffRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PaymentServiceServer).GetAllPaymentTakeOffChart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PaymentService_GetAllPaymentTakeOffChart_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PaymentServiceServer).GetAllPaymentTakeOffChart(ctx, req.(*GetAllPaymentTakeOffRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PaymentService_ServiceDesc is the grpc.ServiceDesc for PaymentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -895,6 +963,14 @@ var PaymentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllPaymentsByMonth",
 			Handler:    _PaymentService_GetAllPaymentsByMonth_Handler,
+		},
+		{
+			MethodName: "GetAllPaymentTakeOff",
+			Handler:    _PaymentService_GetAllPaymentTakeOff_Handler,
+		},
+		{
+			MethodName: "GetAllPaymentTakeOffChart",
+			Handler:    _PaymentService_GetAllPaymentTakeOffChart_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

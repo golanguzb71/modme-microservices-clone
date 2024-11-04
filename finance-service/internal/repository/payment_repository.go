@@ -337,6 +337,106 @@ func (r *PaymentRepository) GetAllPaymentsByMonth(month string, studentId string
 	}, nil
 }
 
+func (r *PaymentRepository) GetAllPaymentTakeOff(from string, to string) (*pb.GetAllPaymentTakeOffResponse, error) {
+	query := `
+        SELECT 
+            id, 
+            given_date, 
+            student_id, 
+            comment, 
+            created_by_id, 
+            created_by_name
+        FROM 
+            student_payments
+        WHERE 
+            payment_type = 'TAKE_OFF' 
+            AND created_by_id != '00000000-0000-0000-0000-000000000000'
+            AND given_date BETWEEN $1 AND $2;
+    `
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, fmt.Errorf("error querying payments: %w", err)
+	}
+	defer rows.Close()
+
+	response := &pb.GetAllPaymentTakeOffResponse{}
+
+	for rows.Next() {
+		var payment pb.AbsPaymentTakeOff
+
+		err := rows.Scan(
+			&payment.PaymentId,
+			&payment.GivenDate,
+			&payment.StudentId,
+			&payment.Comment,
+			&payment.CreatorId,
+			&payment.CreatorName,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning row: %w", err)
+		}
+		name, _, err := r.educationClient.GetStudentById(payment.StudentId)
+		if err != nil {
+			payment.StudentName = "error while getting this student name"
+		}
+		payment.StudentName = name
+		response.Pennies = append(response.Pennies, &payment)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	return response, nil
+}
+
+func (r *PaymentRepository) GetAllPaymentTakeOffChart(from string, to string) (*pb.GetAllPaymentTakeOffChartResponse, error) {
+	query := `
+        SELECT 
+            given_date, 
+            SUM(amount)
+        FROM 
+            student_payments
+        WHERE 
+            payment_type = 'TAKE_OFF'
+            AND created_by_id != '00000000-0000-0000-0000-000000000000'
+            AND given_date BETWEEN $1 AND $2
+        GROUP BY 
+            given_date
+        ORDER BY 
+            given_date;
+    `
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, fmt.Errorf("error querying payment chart data: %w", err)
+	}
+	defer rows.Close()
+
+	response := &pb.GetAllPaymentTakeOffChartResponse{}
+
+	for rows.Next() {
+		var chartEntry pb.AbsTakeOfChartResponse
+
+		err := rows.Scan(
+			&chartEntry.YearMonth,
+			&chartEntry.Amount,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning chart data row: %w", err)
+		}
+
+		response.ChartResponse = append(response.ChartResponse, &chartEntry)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("row iteration error: %w", err)
+	}
+
+	return response, nil
+}
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }

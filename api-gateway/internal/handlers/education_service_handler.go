@@ -404,6 +404,13 @@ func SetAttendance(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	req.ActionById = user.Id
+	req.ActionByRole = user.Role
 	resp, err := educationClient.SetAttendanceByGroup(context.TODO(), &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())

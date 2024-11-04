@@ -47,6 +47,13 @@ func (ps *PaymentService) GetAllPaymentsByMonth(ctx context.Context, req *pb.Get
 	return ps.repo.GetAllPaymentsByMonth(req.Month, req.UserId)
 }
 
+func (ps *PaymentService) GetAllPaymentTakeOff(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffResponse, error) {
+	return ps.repo.GetAllPaymentTakeOff(req.From, req.To)
+}
+func (ps *PaymentService) GetAllPaymentTakeOffChart(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffChartResponse, error) {
+	return ps.repo.GetAllPaymentTakeOffChart(req.To, req.From)
+}
+
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {
 	return &PaymentService{repo: repo}
 }

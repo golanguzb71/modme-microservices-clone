@@ -37,12 +37,14 @@ CREATE TABLE IF NOT EXISTS groups
 
 CREATE TABLE IF NOT EXISTS attendance
 (
-    group_id    bigint references groups (id),
-    student_id  uuid NOT NULL,
-    teacher_id  uuid NOT NULL,
-    attend_date date NOT NULL,
-    status      int  NOT NULL,
-    created_at  timestamp DEFAULT NOW(),
+    group_id     bigint references groups (id),
+    student_id   uuid                                                         NOT NULL,
+    teacher_id   uuid                                                         NOT NULL,
+    attend_date  date                                                         NOT NULL,
+    status       int                                                          NOT NULL,
+    created_at   timestamp DEFAULT NOW(),
+    created_by   uuid                                                         NOT NULL,
+    creator_role varchar CHECK ( creator_role in ('ADMIN', 'CEO', 'TEACHER')) NOT NULL,
     PRIMARY KEY (group_id, student_id, attend_date)
 );
 

@@ -17,13 +17,13 @@ func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 	return &AttendanceRepository{db: db}
 }
 
-func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32) error {
+func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
 	query := `
-        INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status, creator_role , created_by)
+        VALUES ($1, $2, $3, $4, $5 , $6 , $7)
         ON CONFLICT DO NOTHING 
     `
-	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status)
+	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status, actionByRole, actionById)
 	return err
 }
 

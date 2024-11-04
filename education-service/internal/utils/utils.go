@@ -152,6 +152,7 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 	}
 	return false
 }
+
 func getDayName(weekday time.Weekday) string {
 	days := map[time.Weekday]string{
 		time.Monday:    "DUSHANBA",
