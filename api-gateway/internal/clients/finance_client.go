@@ -149,6 +149,13 @@ func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx conte
 	})
 }
 
+func (fc *FinanceClient) GetAllDebtsInformation(from string, to string, ctx context.Context) (*pb.GetAllDebtsInformationResponse, error) {
+	return fc.paymentClient.GetAllDebtsInformation(ctx, &pb.GetAllPaymentTakeOffRequest{
+		From: from,
+		To:   to,
+	})
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

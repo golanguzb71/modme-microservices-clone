@@ -1123,6 +1123,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/payment/get-all-debts/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves information about debts within the specified date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Finance"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date in YYYY-MM-DD format",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date in YYYY-MM-DD format",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response containing debt information",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllDebtsInformationResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict occurred while fetching debt information",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/payment/get-all-payments/{studentId}/{month}": {
             "get": {
                 "security": [
@@ -3958,6 +4014,35 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsDebtsInformation": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "totalDebOnThisMonth": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsDiscountRequest": {
             "type": "object",
             "properties": {
@@ -4735,6 +4820,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.AbsCategory"
+                    }
+                }
+            }
+        },
+        "pb.GetAllDebtsInformationResponse": {
+            "type": "object",
+            "properties": {
+                "debts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsDebtsInformation"
                     }
                 }
             }

@@ -23,6 +23,25 @@ definitions:
       price:
         type: number
     type: object
+  pb.AbsDebtsInformation:
+    properties:
+      balance:
+        type: string
+      comment:
+        type: string
+      groupId:
+        type: string
+      groupName:
+        type: string
+      phoneNumber:
+        type: string
+      totalDebOnThisMonth:
+        type: string
+      userId:
+        type: string
+      userName:
+        type: string
+    type: object
   pb.AbsDiscountRequest:
     properties:
       comment:
@@ -529,6 +548,13 @@ definitions:
       categories:
         items:
           $ref: '#/definitions/pb.AbsCategory'
+        type: array
+    type: object
+  pb.GetAllDebtsInformationResponse:
+    properties:
+      debts:
+        items:
+          $ref: '#/definitions/pb.AbsDebtsInformation'
         type: array
     type: object
   pb.GetAllEmployeeResponse:
@@ -1939,6 +1965,42 @@ paths:
       summary: ADMIN ,CEO
       tags:
       - payments
+  /api/finance/payment/get-all-debts/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves information about debts within the specified date range.
+      parameters:
+      - description: Start date in YYYY-MM-DD format
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: End date in YYYY-MM-DD format
+        in: path
+        name: to
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response containing debt information
+          schema:
+            $ref: '#/definitions/pb.GetAllDebtsInformationResponse'
+        "409":
+          description: Conflict occurred while fetching debt information
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - Finance
   /api/finance/payment/get-all-payments/{studentId}/{month}:
     get:
       description: Get all payment records for a student within a specified month.
