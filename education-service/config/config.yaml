@@ -32,5 +32,5 @@ database:
 grpc:
   userService:
     address: "sphere-user-service:8080"
-  finance_service:
+  financeService:
     address: "sphere-finance-service:8080"
