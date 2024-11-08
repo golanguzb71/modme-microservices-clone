@@ -145,9 +145,10 @@ service PaymentService{
   rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
   rpc GetAllStudentPayments(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsResponse);
   rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
-  rpc GetAllDebtsInformation(GetAllPaymentTakeOffRequest) returns(GetAllDebtsInformationResponse);
+  rpc GetAllDebtsInformation(common.PageRequest) returns(GetAllDebtsInformationResponse);
 }
 message GetAllDebtsInformationResponse{
+  int32 totalPageCount = 2;
   repeated AbsDebtsInformation debts = 1;
 }
 message AbsDebtsInformation{
@@ -155,7 +156,7 @@ message AbsDebtsInformation{
   string userName = 2;
   string phoneNumber = 3;
   string balance = 4;
-  string  totalDebOnThisMonth = 5;
+  string totalDebOnThisMonth = 5;
   string groupId = 6;
   string groupName = 7;
   string comment = 8;

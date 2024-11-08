@@ -544,24 +544,29 @@ SELECT coalesce((SELECT sum(amount)
 	return &resp, nil
 }
 
-func (r *PaymentRepository) GetAllDebtsInformation(from string, to string) (*pb.GetAllDebtsInformationResponse, error) {
+func (r *PaymentRepository) GetAllDebtsInformation(page, size int32) (*pb.GetAllDebtsInformationResponse, error) {
+	offset := (page - 1) * size
 	query := `
         SELECT 
             student_id,
-            amount::text AS balance,
-            group_id::text,
-            comment,
-            SUM(amount) OVER (PARTITION BY student_id) AS total_deb_on_this_month
+            COALESCE(MAX(group_id), '0')::text AS group_id,
+            SUM(CASE 
+                    WHEN payment_type = 'ADD' THEN amount
+                    WHEN payment_type = 'TAKE_OFF' THEN -amount
+                    ELSE 0
+                END) AS total_deb_on_this_month
         FROM student_payments
         WHERE 
-            payment_type = 'TAKE_OFF' AND 
-            created_by_id = '00000000-0000-0000-0000-000000000000' AND
-            given_date BETWEEN $1 AND $2;
+            given_date >= DATE_TRUNC('month', CURRENT_DATE) 
+            AND given_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+        GROUP BY student_id
+        ORDER BY MAX(created_at) DESC
+        LIMIT $1 OFFSET $2;
     `
 
-	rows, err := r.db.Query(query, from, to)
+	rows, err := r.db.Query(query, size, offset)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error querying debts information: %w", err)
 	}
 	defer rows.Close()
 
@@ -572,26 +577,46 @@ func (r *PaymentRepository) GetAllDebtsInformation(from string, to string) (*pb.
 
 		err := rows.Scan(
 			&debt.UserId,
-			&debt.Balance,
 			&debt.GroupId,
-			&debt.Comment,
 			&totalDebOnThisMonth,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error scanning row data: %w", err)
 		}
-		name, phoneNumber, _ := r.educationClient.GetStudentById(debt.UserId)
+
+		name, phoneNumber, err := r.educationClient.GetStudentById(debt.UserId)
+		if err != nil {
+			return nil, fmt.Errorf("error retrieving student info for user %s: %w", debt.UserId, err)
+		}
 		debt.UserName = name
 		debt.PhoneNumber = phoneNumber
+
 		groupName := r.educationClient.GetGroupNameById(debt.GroupId)
 		debt.GroupName = groupName
+
 		debt.TotalDebOnThisMonth = fmt.Sprintf("%.2f", totalDebOnThisMonth)
 		response.Debts = append(response.Debts, &debt)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("row iteration error: %w", err)
 	}
+	countQuery := `
+        SELECT COUNT(DISTINCT student_id)
+        FROM student_payments
+        WHERE 
+            payment_type = 'ADD' OR payment_type = 'TAKE_OFF'
+            AND given_date >= DATE_TRUNC('month', CURRENT_DATE) 
+            AND given_date < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
+    `
+	var totalCount int32
+	err = r.db.QueryRow(countQuery).Scan(&totalCount)
+	if err != nil {
+		return nil, fmt.Errorf("error querying total student count: %w", err)
+	}
+
+	totalPageCount := (totalCount + size - 1) / size
+	response.TotalPageCount = totalPageCount
 
 	return &response, nil
 }

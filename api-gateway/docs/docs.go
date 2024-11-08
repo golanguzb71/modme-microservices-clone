@@ -1123,7 +1123,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment/get-all-debts/{from}/{to}": {
+        "/api/finance/payment/get-all-debts/{page}/{size}": {
             "get": {
                 "security": [
                     {
@@ -1138,21 +1138,21 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Finance"
+                    "payments"
                 ],
                 "summary": "ADMIN , CEO",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Start date in YYYY-MM-DD format",
-                        "name": "from",
+                        "description": "page",
+                        "name": "page",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "End date in YYYY-MM-DD format",
-                        "name": "to",
+                        "description": "size",
+                        "name": "size",
                         "in": "path",
                         "required": true
                     }
@@ -4832,6 +4832,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsDebtsInformation"
                     }
+                },
+                "totalPageCount": {
+                    "type": "integer"
                 }
             }
         },

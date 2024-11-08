@@ -149,10 +149,18 @@ func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx conte
 	})
 }
 
-func (fc *FinanceClient) GetAllDebtsInformation(from string, to string, ctx context.Context) (*pb.GetAllDebtsInformationResponse, error) {
-	return fc.paymentClient.GetAllDebtsInformation(ctx, &pb.GetAllPaymentTakeOffRequest{
-		From: from,
-		To:   to,
+func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size string) (*pb.GetAllDebtsInformationResponse, error) {
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, err
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, err
+	}
+	return fc.paymentClient.GetAllDebtsInformation(ctx, &pb.PageRequest{
+		Page: int32(pageInt),
+		Size: int32(sizeInt),
 	})
 }
 
