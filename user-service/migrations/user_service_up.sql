@@ -12,6 +12,9 @@ CREATE TABLE IF NOT EXISTS users
     created_at    timestamp                                                                 DEFAULT NOW()
 );
 
+INSERT INTO users(id, full_name, phone_number, password, role)
+values (gen_random_uuid(), 'Shohruh', '+998950960153', '$2a$10$1gDxC.3v73V45QXt0R3cCurQE5YL5jB5HTRKrh8L1maJx68nySEtW',
+        'CEO');
 
 CREATE TABLE IF NOT EXISTS users_history
 (

@@ -62,8 +62,8 @@ func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *p
 	return ps.repo.GetAllStudentPaymentsChart(req.From, req.To)
 }
 
-func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllDebtsInformationResponse, error) {
-	return ps.repo.GetAllDebtsInformation(req.From, req.To)
+func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.PageRequest) (*pb.GetAllDebtsInformationResponse, error) {
+	return ps.repo.GetAllDebtsInformation(req.Page, req.Size)
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {

@@ -155,9 +155,10 @@ service PaymentService{
   rpc GetAllPaymentTakeOffChart(GetAllPaymentTakeOffRequest) returns(GetAllPaymentTakeOffChartResponse);
   rpc GetAllStudentPayments(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsResponse);
   rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
-  rpc GetAllDebtsInformation(GetAllPaymentTakeOffRequest) returns(GetAllDebtsInformationResponse);
+  rpc GetAllDebtsInformation(common.PageRequest) returns(GetAllDebtsInformationResponse);
 }
 message GetAllDebtsInformationResponse{
+  int32 totalPageCount = 2;
   repeated AbsDebtsInformation debts = 1;
 }
 message AbsDebtsInformation{

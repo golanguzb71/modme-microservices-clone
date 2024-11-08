@@ -556,6 +556,8 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsDebtsInformation'
         type: array
+      totalPageCount:
+        type: integer
     type: object
   pb.GetAllEmployeeResponse:
     properties:
@@ -1965,20 +1967,20 @@ paths:
       summary: ADMIN ,CEO
       tags:
       - payments
-  /api/finance/payment/get-all-debts/{from}/{to}:
+  /api/finance/payment/get-all-debts/{page}/{size}:
     get:
       consumes:
       - application/json
       description: Retrieves information about debts within the specified date range.
       parameters:
-      - description: Start date in YYYY-MM-DD format
+      - description: page
         in: path
-        name: from
+        name: page
         required: true
         type: string
-      - description: End date in YYYY-MM-DD format
+      - description: size
         in: path
-        name: to
+        name: size
         required: true
         type: string
       produces:
@@ -2000,7 +2002,7 @@ paths:
       - Bearer: []
       summary: ADMIN , CEO
       tags:
-      - Finance
+      - payments
   /api/finance/payment/get-all-payments/{studentId}/{month}:
     get:
       description: Get all payment records for a student within a specified month.
