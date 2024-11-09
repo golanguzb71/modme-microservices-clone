@@ -4144,6 +4144,9 @@ const docTemplate = `{
                 "teacherId": {
                     "type": "string"
                 },
+                "teacherName": {
+                    "type": "string"
+                },
                 "type": {
                     "type": "string"
                 }

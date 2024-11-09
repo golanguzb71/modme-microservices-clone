@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
+	"finance-service/internal/clients"
 	"finance-service/proto/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -10,7 +12,8 @@ import (
 )
 
 type TeacherSalaryRepository struct {
-	db *sql.DB
+	db         *sql.DB
+	userClient *clients.UserClient
 }
 
 func (r *TeacherSalaryRepository) CreateTeacherSalary(amount int32, teacherId string, amountType string) (*pb.AbsResponse, error) {
@@ -48,7 +51,7 @@ func (r *TeacherSalaryRepository) DeleteTeacherSalary(teacherId string) (*pb.Abs
 }
 
 func (r *TeacherSalaryRepository) GetTeacherSalary() (*pb.GetTeachersSalaryRequest, error) {
-	rows, err := r.db.Query("SELECT teacher_id, salary_type, salary_type_count FROM teacher_salary")
+	rows, err := r.db.Query("SELECT teacher_id, salary_type, salary_type_count  FROM teacher_salary")
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to retrieve salaries: %v", err)
 	}
@@ -56,17 +59,22 @@ func (r *TeacherSalaryRepository) GetTeacherSalary() (*pb.GetTeachersSalaryReque
 
 	var salaries []*pb.AbsGetTeachersSalary
 	for rows.Next() {
-		var teacherId, salaryType string
+		var teacherId, salaryType, teacherName string
 		var amount int32
 
 		if err := rows.Scan(&teacherId, &salaryType, &amount); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to scan row: %v", err)
 		}
-
+		user, err := r.userClient.GetUserById(context.TODO(), teacherId)
+		if err != nil {
+			teacherName = "Teacher Name not available"
+		}
+		teacherName = user.Name
 		salaries = append(salaries, &pb.AbsGetTeachersSalary{
-			TeacherId: teacherId,
-			Type:      salaryType,
-			Amount:    amount,
+			TeacherId:   teacherId,
+			Type:        salaryType,
+			Amount:      amount,
+			TeacherName: teacherName,
 		})
 	}
 
@@ -92,6 +100,6 @@ func (r *TeacherSalaryRepository) GetTeacherSalaryByTeacherID(teacherId string) 
 	return &salary, nil
 }
 
-func NewTeacherSalaryRepository(db *sql.DB) *TeacherSalaryRepository {
-	return &TeacherSalaryRepository{db: db}
+func NewTeacherSalaryRepository(db *sql.DB, userClient *clients.UserClient) *TeacherSalaryRepository {
+	return &TeacherSalaryRepository{db: db, userClient: userClient}
 }

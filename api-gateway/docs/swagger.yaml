@@ -108,6 +108,8 @@ definitions:
         type: integer
       teacherId:
         type: string
+      teacherName:
+        type: string
       type:
         type: string
     type: object
