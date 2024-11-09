@@ -291,6 +291,7 @@ message AbsGetTeachersSalary{
   string teacherId = 1;
   string type = 2;
   int32 amount = 3;
+  string teacherName = 4;
 }
 message DeleteTeacherSalaryRequest{
   string teacherId = 1;
