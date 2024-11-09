@@ -798,6 +798,9 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 		tx.Rollback()
 		return err
 	}
+	if groupName != "" {
+		groupName = "Group"
+	}
 
 	historyData := map[string]interface{}{
 		"comment":       comment,
