@@ -377,7 +377,12 @@ func GetGroupById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	id := ctx.Param("id")
-	resp, err := educationClient.GetGroupById(ctxR, id)
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	resp, err := educationClient.GetGroupById(ctxR, id, user.Id, user.Role)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

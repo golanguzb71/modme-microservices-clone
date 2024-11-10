@@ -95,8 +95,8 @@ func (lc *EducationClient) GetAllGroup(ctx context.Context, isArchived bool, pag
 	})
 }
 
-func (lc *EducationClient) GetGroupById(ctx context.Context, id string) (*pb.GetGroupAbsResponse, error) {
-	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: id})
+func (lc *EducationClient) GetGroupById(ctx context.Context, groupId, userId, role string) (*pb.GetGroupAbsResponse, error) {
+	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: groupId, ActionId: userId, ActionRole: role})
 }
 
 func (lc *EducationClient) GetAttendanceByGroup(ctx context.Context, req *pb.GetAttendanceRequest) (*pb.GetAttendanceResponse, error) {

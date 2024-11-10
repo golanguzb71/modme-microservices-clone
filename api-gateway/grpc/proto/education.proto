@@ -120,6 +120,8 @@ message CreateGroupRequest{
 }
 message GetGroupByIdRequest{
   string id = 1;
+  string actionRole = 2;
+  string actionId = 3;
 }
 message GetUpdateGroupAbs{
   string id = 10;

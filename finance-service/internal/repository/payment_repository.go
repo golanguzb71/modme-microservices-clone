@@ -456,7 +456,7 @@ SELECT
        created_by_name
 FROM student_payments
 where given_date between $1 and $2
-  and payment_type = 'ADD' order by given_date
+  and payment_type = 'ADD' order by created_at desc 
 `
 	rows, err := r.db.Query(query, from, to)
 	if err != nil {

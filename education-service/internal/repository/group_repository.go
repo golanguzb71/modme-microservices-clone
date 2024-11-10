@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 )
 
@@ -114,7 +116,19 @@ LIMIT $2 OFFSET $3;`
 
 	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
-func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
+func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
+	fmt.Println("kelid")
+	fmt.Println(actionRole)
+	if actionRole == "TEACHER" {
+		fmt.Println(actionRole)
+		checker := false
+		err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where id=$1 and teacher_id=$2)`, id, actionId).Scan(&checker)
+		if err != nil || !checker {
+			return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
+		}
+	} else if actionRole == "EMPLOYEE" {
+		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
+	}
 	query := `SELECT g.id, g.course_id, c.title as course_title, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
               COUNT(gs.id)  as student_count, 
