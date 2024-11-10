@@ -27,19 +27,13 @@ definitions:
     properties:
       balance:
         type: string
-      comment:
+      debtorId:
         type: string
-      groupId:
-        type: string
-      groupName:
+      debtorName:
         type: string
       phoneNumber:
         type: string
-      totalDebOnThisMonth:
-        type: string
-      userId:
-        type: string
-      userName:
+      totalOnPeriod:
         type: string
     type: object
   pb.AbsDiscountRequest:
@@ -1987,6 +1981,16 @@ paths:
       - description: size
         in: path
         name: size
+        required: true
+        type: string
+      - description: from
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: to
+        in: query
+        name: to
         required: true
         type: string
       produces:

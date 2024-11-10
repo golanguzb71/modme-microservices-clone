@@ -676,6 +676,8 @@ func GetAllPaymentsStudentChart(ctx *gin.Context) {
 // @Produce json
 // @Param page path string true "page"
 // @Param size path string true "size"
+// @Param from query string true "from"
+// @Param to query string true "to"
 // @Success 200 {object} pb.GetAllDebtsInformationResponse "Success response containing debt information"
 // @Failure 409 {object} utils.AbsResponse "Conflict occurred while fetching debt information"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
@@ -686,7 +688,9 @@ func GetAllDebtsInformation(ctx *gin.Context) {
 	defer cancel()
 	page := ctx.Param("page")
 	size := ctx.Param("size")
-	resp, err := financeClient.GetAllDebtsInformation(ctxR, page, size)
+	from := ctx.Query("from")
+	to := ctx.Query("to")
+	resp, err := financeClient.GetAllDebtsInformation(ctxR, page, size, from, to)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return
