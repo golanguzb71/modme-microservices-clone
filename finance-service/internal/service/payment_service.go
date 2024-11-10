@@ -16,7 +16,7 @@ type PaymentService struct {
 
 func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
 	if req.Type == "ADD" {
-		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
+		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, false); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
@@ -30,6 +30,14 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 		return &pb.AbsResponse{
 			Status:  http.StatusCreated,
 			Message: "payment take_off successfully",
+		}, nil
+	} else if req.Type == "REFUND" {
+		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, true); err != nil {
+			return nil, status.Errorf(codes.Canceled, err.Error())
+		}
+		return &pb.AbsResponse{
+			Status:  http.StatusCreated,
+			Message: "payment refund",
 		}, nil
 	}
 	return nil, status.Errorf(codes.Aborted, "invalid request type")

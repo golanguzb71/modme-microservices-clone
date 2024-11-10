@@ -18,7 +18,7 @@ type PaymentRepository struct {
 	educationClient *clients.EducationClient
 }
 
-func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentId, actionByName, actionById, groupId string) error {
+func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentId, actionByName, actionById, groupId string, isRefund bool) error {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
@@ -45,12 +45,16 @@ func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentI
 	paymentID := uuid.New()
 	query := `INSERT INTO student_payments 
 		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at , group_id)
-		VALUES ($1, $2, $3, $4, $5, $6, 'ADD', $7, $8 , $9 , $10)`
-	if groupId == "" {
-		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil)
-	} else {
-		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+		VALUES ($1, $2, $3, $4, $5, $6, $11, $7, $8 , $9 , $10)`
+	paymentType := "ADD"
+	if isRefund {
+		paymentType = "REFUND"
+	}
 
+	if groupId == "" {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, paymentType)
+	} else {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId, paymentType)
 	}
 	if err != nil {
 		return fmt.Errorf("failed to add payment: %v", err)
@@ -91,12 +95,15 @@ func (r *PaymentRepository) TakeOffPayment(date, sum, method, comment, studentId
 	}
 
 	paymentID := uuid.New()
-
 	query := `INSERT INTO student_payments 
 		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at, group_id)
 		VALUES ($1, $2, $3, $4, $5, $6, 'TAKE_OFF', $7, $8 , $9 , $10)`
 
-	_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+	if groupId == "" {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil)
+	} else {
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId)
+	}
 	if err != nil {
 		return fmt.Errorf("failed to take off payment: %v", err)
 	}
@@ -449,7 +456,7 @@ SELECT
        created_by_name
 FROM student_payments
 where given_date between $1 and $2
-  and payment_type = 'ADD' order by given_date
+  and payment_type = 'ADD' order by created_at desc 
 `
 	rows, err := r.db.Query(query, from, to)
 	if err != nil {

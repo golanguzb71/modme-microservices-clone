@@ -579,7 +579,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 				tx.Rollback()
 				return nil, err
 			}
-			_, err = r.financeClient.PaymentAdd("Student guruhdan muzlatildi. golanga pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "ADD", actionById, actionByName, groupId)
+			_, err = r.financeClient.PaymentAdd("Student guruhdan muzlatildi. golanga pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "REFUND", actionById, actionByName, groupId)
 			if err != nil {
 				tx.Rollback()
 				return nil, err
@@ -596,7 +596,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 				tx.Rollback()
 				return nil, err
 			}
-			_, err = r.financeClient.PaymentAdd("Student guruhdan o'chirildi . qolgan pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "ADD", actionById, actionByName, groupId)
+			_, err = r.financeClient.PaymentAdd("Student guruhdan o'chirildi . qolgan pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "REFUND", actionById, actionByName, groupId)
 			if err != nil {
 				tx.Rollback()
 				return nil, err

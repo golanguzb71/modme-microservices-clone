@@ -1155,6 +1155,20 @@ const docTemplate = `{
                         "name": "size",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "from",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "to",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -4020,25 +4034,16 @@ const docTemplate = `{
                 "balance": {
                     "type": "string"
                 },
-                "comment": {
+                "debtorId": {
                     "type": "string"
                 },
-                "groupId": {
-                    "type": "string"
-                },
-                "groupName": {
+                "debtorName": {
                     "type": "string"
                 },
                 "phoneNumber": {
                     "type": "string"
                 },
-                "totalDebOnThisMonth": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "string"
-                },
-                "userName": {
+                "totalOnPeriod": {
                     "type": "string"
                 }
             }
@@ -5028,6 +5033,12 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "actionId": {
+                    "type": "string"
+                },
+                "actionRole": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },

@@ -50,7 +50,7 @@ func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) 
 }
 
 func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupAbsResponse, error) {
-	group, err := s.repo.GetGroupById(req.Id)
+	group, err := s.repo.GetGroupById(req.Id, req.ActionRole, req.ActionId)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err

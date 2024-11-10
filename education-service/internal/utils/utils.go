@@ -165,3 +165,17 @@ func getDayName(weekday time.Weekday) string {
 	}
 	return days[weekday]
 }
+
+func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId string) bool {
+	if actionRole == "TEACHER" {
+		fmt.Println(actionRole)
+		checker := false
+		err := db.QueryRow(`SELECT exists(SELECT 1 FROM groups where id=$1 and teacher_id=$2)`, groupId, actionId).Scan(&checker)
+		if err != nil || !checker {
+			return false
+		}
+	} else if actionRole == "EMPLOYEE" {
+		return false
+	}
+	return true
+}
