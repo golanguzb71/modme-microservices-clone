@@ -184,6 +184,8 @@ message GetAttendanceRequest{
   string from = 2;
   string till = 3;
   bool withOutdated = 4;
+  string actionId = 5;
+  string actionRole = 6;
 }
 
 message GetAttendanceResponse{

@@ -3,8 +3,11 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"sort"
 	"time"
 )
@@ -18,6 +21,9 @@ func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
 }
 
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
+		return fmt.Errorf("oops this teacherid not the same for this group")
+	}
 	query := `
         INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status, creator_role , created_by)
         VALUES ($1, $2, $3, $4, $5 , $6 , $7)
@@ -28,6 +34,9 @@ func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string
 }
 
 func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string, teacherId string, attendDate string) error {
+	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
+		return fmt.Errorf("oops this teacherid not the same for this group")
+	}
 	query := `
         DELETE FROM attendance
         WHERE group_id = $1
@@ -49,7 +58,11 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	// writing teacher finance remove
 	return nil
 }
-func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool) (*pb.GetAttendanceResponse, error) {
+func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool, actionRole, actionId string) (*pb.GetAttendanceResponse, error) {
+	if !utils.CheckGroupAndTeacher(r.db, groupId, actionRole, actionId) {
+		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
+	}
+
 	response := &pb.GetAttendanceResponse{
 		Days:     make([]*pb.Day, 0),
 		Students: make([]*pb.Student, 0),
@@ -245,6 +258,7 @@ func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Cont
 	response.Students = students
 	return response, nil
 }
+
 func (r *AttendanceRepository) IsValidGroupDay(ctx context.Context, groupId string, date time.Time) (bool, error) {
 	query := `
         SELECT EXISTS (

@@ -33,7 +33,7 @@ func (s *AttendanceService) GetAttendance(ctx context.Context, req *pb.GetAttend
 	if tillDate.Before(fromDate) {
 		return nil, errors.New("'till' date must be after 'from' date")
 	}
-	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(ctx, req.GroupId, fromDate, tillDate, req.WithOutdated)
+	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(ctx, req.GroupId, fromDate, tillDate, req.WithOutdated, req.ActionRole, req.ActionId)
 }
 func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttendanceRequest) (*pb.AbsResponse, error) {
 	if req.GroupId == "" || req.StudentId == "" || req.TeacherId == "" {
@@ -61,7 +61,6 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 			}, nil
 		}
 	}
-
 	attendDate, err := time.Parse("2006-01-02", req.AttendDate)
 	if err != nil {
 		return nil, errors.New("invalid attendance date format")

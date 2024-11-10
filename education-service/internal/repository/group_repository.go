@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"education-service/internal/clients"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
@@ -117,16 +118,7 @@ LIMIT $2 OFFSET $3;`
 	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
 func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
-	fmt.Println("kelid")
-	fmt.Println(actionRole)
-	if actionRole == "TEACHER" {
-		fmt.Println(actionRole)
-		checker := false
-		err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where id=$1 and teacher_id=$2)`, id, actionId).Scan(&checker)
-		if err != nil || !checker {
-			return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
-		}
-	} else if actionRole == "EMPLOYEE" {
+	if !utils.CheckGroupAndTeacher(r.db, id, actionRole, actionId) {
 		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
 	}
 	query := `SELECT g.id, g.course_id, c.title as course_title, 

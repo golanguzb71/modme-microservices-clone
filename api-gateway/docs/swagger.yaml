@@ -682,6 +682,10 @@ definitions:
     type: object
   pb.GetAttendanceRequest:
     properties:
+      actionId:
+        type: string
+      actionRole:
+        type: string
       from:
         type: string
       groupId:

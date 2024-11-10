@@ -5028,6 +5028,12 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "actionId": {
+                    "type": "string"
+                },
+                "actionRole": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },
