@@ -117,7 +117,7 @@ func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscou
 		); err != nil {
 			return nil, err
 		}
-		name, _, _ := r.studentClient.GetStudentById(discount.StudentId)
+		name, _, _, _ := r.studentClient.GetStudentById(discount.StudentId)
 		discount.StudentName = name
 		discount.StartDate = startAt.Format("2006-01-02")
 		discount.EndDate = endAt.Format("2006-01-02")
