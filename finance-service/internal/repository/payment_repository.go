@@ -591,7 +591,7 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 			phoneNumber = "unknown phoneNumber"
 			balance = 0
 		}
-		if balance <= 0 {
+		if balance >= 0 {
 			continue
 		}
 		debt.DebtorName = name
