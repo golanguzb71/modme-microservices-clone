@@ -233,7 +233,7 @@ func (r *PaymentRepository) GetMonthlyStatus(studentId string) (*pb.GetMonthlySt
 	query := `
 		SELECT 
 			TO_CHAR(given_date, 'YYYY-MM') AS month, 
-			SUM(CASE WHEN payment_type = 'ADD' THEN amount ELSE 0 END) AS total_add,
+			SUM(CASE WHEN payment_type = 'ADD' OR payment_type='REFUND' THEN amount ELSE 0 END) AS total_add,
 			SUM(CASE WHEN payment_type = 'TAKE_OFF' THEN amount ELSE 0 END) AS total_take_off
 		FROM 
 			student_payments 
