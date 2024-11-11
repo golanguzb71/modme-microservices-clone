@@ -958,7 +958,7 @@ func GetChartIncome(ctx *gin.Context) {
 // @Tags education
 // @Produce json
 // @Param dateType query string true "dateType"
-// @Success 200 {object} map[string]int
+// @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} utils.AbsResponse
 // @Security Bearer
 // @Router /api/get-table-groups [get]

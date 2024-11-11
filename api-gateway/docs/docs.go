@@ -1748,6 +1748,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/get-table-groups": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get common information about company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "ADMIN , CEO, TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "dateType",
+                        "name": "dateType",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [

@@ -2371,6 +2371,32 @@ paths:
       summary: CEO
       tags:
       - education
+  /api/get-table-groups:
+    get:
+      description: Get common information about company
+      parameters:
+      - description: dateType
+        in: query
+        name: dateType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO, TEACHER
+      tags:
+      - education
   /api/group/create:
     post:
       consumes:
