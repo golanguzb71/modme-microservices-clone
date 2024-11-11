@@ -176,6 +176,21 @@ func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, 
 	return int(response.DebtorsCount), int(response.PayInCurrentMonth)
 }
 
+func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to string) (*pb.GetCommonInformationResponse, error) {
+	_, err := fc.paymentClient.GetIncomeChart(ctx, &pb.GetIncomeChartRequest{
+		From: from,
+		To:   to,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (fc *FinanceClient) GetTableGroups(ctx context.Context) (interface{}, error) {
+	return nil, nil
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

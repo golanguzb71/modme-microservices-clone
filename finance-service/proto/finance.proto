@@ -157,6 +157,18 @@ service PaymentService{
   rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
   rpc GetAllDebtsInformation(GetAllDebtsRequest) returns(GetAllDebtsInformationResponse);
   rpc GetCommonFinanceInformation(google.protobuf.Empty) returns(GetCommonInformationResponse);
+  rpc GetIncomeChart(GetIncomeChartRequest) returns(GetIncomeChartResponse);
+}
+message GetIncomeChartRequest{
+  string from = 1;
+  string to = 2;
+}
+message GetIncomeChartResponse{
+  repeated AbsIncomeChart response = 1;
+}
+message AbsIncomeChart{
+  string specificMonth = 1;
+  string balance = 2;
 }
 message GetCommonInformationResponse{
   int32 debtorsCount = 1;

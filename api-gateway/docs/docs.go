@@ -1701,6 +1701,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/get-chart-income": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get information about a income",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "from",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "to",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetCommonInformationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/create": {
             "post": {
                 "security": [
@@ -5101,6 +5148,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.Student"
                     }
+                }
+            }
+        },
+        "pb.GetCommonInformationResponse": {
+            "type": "object",
+            "properties": {
+                "debtorsCount": {
+                    "type": "integer"
+                },
+                "payInCurrentMonth": {
+                    "type": "integer"
                 }
             }
         },

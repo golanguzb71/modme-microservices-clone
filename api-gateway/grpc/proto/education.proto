@@ -89,6 +89,7 @@ service GroupService{
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
   rpc GetCommonInformationEducation(google.protobuf.Empty) returns(GetCommonInformationEducationResponse);
 }
+
 message GetCommonInformationEducationResponse{
   int32 activeStudentCount = 1;
   int32 activeGroupCount = 2;

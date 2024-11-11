@@ -700,6 +700,13 @@ definitions:
           $ref: '#/definitions/pb.Student'
         type: array
     type: object
+  pb.GetCommonInformationResponse:
+    properties:
+      debtorsCount:
+        type: integer
+      payInCurrentMonth:
+        type: integer
+    type: object
   pb.GetGroupAbsResponse:
     properties:
       course:
@@ -2334,6 +2341,36 @@ paths:
       summary: CEO
       tags:
       - salary
+  /api/get-chart-income:
+    get:
+      description: Get information about a income
+      parameters:
+      - description: from
+        in: query
+        name: from
+        required: true
+        type: string
+      - description: to
+        in: query
+        name: to
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetCommonInformationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - education
   /api/group/create:
     post:
       consumes:

@@ -928,3 +928,66 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 	return
 }
+
+// GetChartIncome godoc
+// @Summary CEO
+// @Description Get information about a income
+// @Tags education
+// @Param from query string true "from"
+// @Param to query bool true "to"
+// @Produce json
+// @Success 200 {object} pb.GetCommonInformationResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/get-chart-income [get]
+func GetChartIncome(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := financeClient.GetChartIncome(ctxR, ctx.Query("from"), ctx.Query("to"))
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetTableGroups godoc
+// @Summary ADMIN , CEO, TEACHER
+// @Description Get common information about company
+// @Tags education
+// @Produce json
+// @Param dateType query string true "dateType"
+// @Success 200 {object} map[string]int
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/get-table-groups [get]
+func GetTableGroups(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	// Get dateType from query
+	queryDateType := ctx.Query("dateType")
+
+	// Fetch groups
+	response, err := educationClient.GetAllGroup(ctxR, false, 1, 10000)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Filter groups by dateType
+	var filteredGroups []*pb.GetGroupAbsResponse
+	for _, group := range response.Groups {
+		if group.DateType == queryDateType {
+			filteredGroups = append(filteredGroups, group)
+		}
+	}
+
+	// Prepare final response
+	finalResponse := map[string]interface{}{
+		"groups": filteredGroups,
+	}
+
+	ctx.JSON(http.StatusOK, finalResponse)
+}
