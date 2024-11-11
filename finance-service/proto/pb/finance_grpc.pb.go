@@ -707,7 +707,7 @@ type PaymentServiceClient interface {
 	GetAllPaymentTakeOffChart(ctx context.Context, in *GetAllPaymentTakeOffRequest, opts ...grpc.CallOption) (*GetAllPaymentTakeOffChartResponse, error)
 	GetAllStudentPayments(ctx context.Context, in *GetAllStudentPaymentsRequest, opts ...grpc.CallOption) (*GetAllStudentPaymentsResponse, error)
 	GetAllStudentPaymentsChart(ctx context.Context, in *GetAllStudentPaymentsRequest, opts ...grpc.CallOption) (*GetAllStudentPaymentsChartResponse, error)
-	GetAllDebtsInformation(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*GetAllDebtsInformationResponse, error)
+	GetAllDebtsInformation(ctx context.Context, in *GetAllDebtsRequest, opts ...grpc.CallOption) (*GetAllDebtsInformationResponse, error)
 }
 
 type paymentServiceClient struct {
@@ -808,7 +808,7 @@ func (c *paymentServiceClient) GetAllStudentPaymentsChart(ctx context.Context, i
 	return out, nil
 }
 
-func (c *paymentServiceClient) GetAllDebtsInformation(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*GetAllDebtsInformationResponse, error) {
+func (c *paymentServiceClient) GetAllDebtsInformation(ctx context.Context, in *GetAllDebtsRequest, opts ...grpc.CallOption) (*GetAllDebtsInformationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetAllDebtsInformationResponse)
 	err := c.cc.Invoke(ctx, PaymentService_GetAllDebtsInformation_FullMethodName, in, out, cOpts...)
@@ -833,7 +833,7 @@ type PaymentServiceServer interface {
 	GetAllPaymentTakeOffChart(context.Context, *GetAllPaymentTakeOffRequest) (*GetAllPaymentTakeOffChartResponse, error)
 	GetAllStudentPayments(context.Context, *GetAllStudentPaymentsRequest) (*GetAllStudentPaymentsResponse, error)
 	GetAllStudentPaymentsChart(context.Context, *GetAllStudentPaymentsRequest) (*GetAllStudentPaymentsChartResponse, error)
-	GetAllDebtsInformation(context.Context, *PageRequest) (*GetAllDebtsInformationResponse, error)
+	GetAllDebtsInformation(context.Context, *GetAllDebtsRequest) (*GetAllDebtsInformationResponse, error)
 	mustEmbedUnimplementedPaymentServiceServer()
 }
 
@@ -871,7 +871,7 @@ func (UnimplementedPaymentServiceServer) GetAllStudentPayments(context.Context, 
 func (UnimplementedPaymentServiceServer) GetAllStudentPaymentsChart(context.Context, *GetAllStudentPaymentsRequest) (*GetAllStudentPaymentsChartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllStudentPaymentsChart not implemented")
 }
-func (UnimplementedPaymentServiceServer) GetAllDebtsInformation(context.Context, *PageRequest) (*GetAllDebtsInformationResponse, error) {
+func (UnimplementedPaymentServiceServer) GetAllDebtsInformation(context.Context, *GetAllDebtsRequest) (*GetAllDebtsInformationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllDebtsInformation not implemented")
 }
 func (UnimplementedPaymentServiceServer) mustEmbedUnimplementedPaymentServiceServer() {}
@@ -1058,7 +1058,7 @@ func _PaymentService_GetAllStudentPaymentsChart_Handler(srv interface{}, ctx con
 }
 
 func _PaymentService_GetAllDebtsInformation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PageRequest)
+	in := new(GetAllDebtsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1070,7 +1070,7 @@ func _PaymentService_GetAllDebtsInformation_Handler(srv interface{}, ctx context
 		FullMethod: PaymentService_GetAllDebtsInformation_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PaymentServiceServer).GetAllDebtsInformation(ctx, req.(*PageRequest))
+		return srv.(PaymentServiceServer).GetAllDebtsInformation(ctx, req.(*GetAllDebtsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
