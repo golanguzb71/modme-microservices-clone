@@ -3,6 +3,7 @@ package client
 import (
 	"api-gateway/grpc/proto/pb"
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -188,6 +189,7 @@ func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherI
 
 func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int) {
 	response, err := lc.groupClient.GetCommonInformationEducation(ctx, &emptypb.Empty{})
+	fmt.Println(response)
 	if err != nil {
 		return 0, 0, 0, 0
 	}
