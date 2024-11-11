@@ -285,3 +285,9 @@ func (r *LeadRepository) GetLeadReports(endYear string, startYear string) (*pb.G
 
 	return response, nil
 }
+
+func (r *LeadRepository) GetActiveLeadCount() (*pb.GetActiveLeadCountResponse, error) {
+	activeLeadCount := 0
+	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user`).Scan(&activeLeadCount)
+	return &pb.GetActiveLeadCountResponse{ActiveLeadCount: int32(activeLeadCount)}, nil
+}

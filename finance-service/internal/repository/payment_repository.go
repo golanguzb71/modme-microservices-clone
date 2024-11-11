@@ -615,22 +615,28 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 		Debts:          debts,
 	}, nil
 }
-
 func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformationResponse, error) {
-	var response *pb.GetCommonInformationResponse
+	// Initialize the response to avoid nil pointer dereference
+	response := new(pb.GetCommonInformationResponse)
+
 	var payInCurrentMonth int32
 
-	err := r.db.QueryRow(`SELECT COUNT(id) 
-FROM student_payments 
-WHERE payment_type = 'ADD' 
-  AND EXTRACT(MONTH FROM given_date) = EXTRACT(MONTH FROM CURRENT_DATE) 
-  AND EXTRACT(YEAR FROM given_date) = EXTRACT(YEAR FROM CURRENT_DATE);
-`).Scan(&payInCurrentMonth)
+	// Query to get payInCurrentMonth
+	err := r.db.QueryRow(`
+        SELECT COUNT(id)
+        FROM student_payments
+        WHERE payment_type = 'ADD' 
+        AND EXTRACT(MONTH FROM given_date) = EXTRACT(MONTH FROM CURRENT_DATE) 
+        AND EXTRACT(YEAR FROM given_date) = EXTRACT(YEAR FROM CURRENT_DATE);
+    `).Scan(&payInCurrentMonth)
 	if err != nil {
 		payInCurrentMonth = 0
 	}
-	response.DebtorsCount = 0
+
+	// Set values on the response object
+	response.DebtorsCount = 0 // Set DebtorsCount to 0 (if required, otherwise remove this line)
 	response.PayInCurrentMonth = payInCurrentMonth
+
 	return response, nil
 }
 

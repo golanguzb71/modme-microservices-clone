@@ -51,3 +51,7 @@ func (s *LeadService) GetListSection(ctx context.Context, req *emptypb.Empty) (*
 func (s *LeadService) GetLeadReports(ctx context.Context, req *pb.GetLeadReportsRequest) (*pb.GetLeadReportsResponse, error) {
 	return s.repo.GetLeadReports(req.EndYear, req.StartYear)
 }
+
+func (s *LeadService) GetActiveLeadCount(ctx context.Context, req *emptypb.Empty) (*pb.GetActiveLeadCountResponse, error) {
+	return s.repo.GetActiveLeadCount()
+}
