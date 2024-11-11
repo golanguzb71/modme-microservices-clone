@@ -913,7 +913,7 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 	activeLeadCount := leadClient.GetActiveLeadCount(ctxR)
 	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount := educationClient.GetCommonEducationInformation(ctxR)
 	_, payInCurrentMonth := financeClient.GetCommonFinanceInformation(ctxR)
-	var response map[string]int
+	response := make(map[string]int)
 	response["activeLeadCount"] = activeLeadCount
 	response["activeStudentsCount"] = activeStudentCount
 	response["activeGroupCount"] = activeGroupCount
