@@ -176,15 +176,15 @@ func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, 
 	return int(response.DebtorsCount), int(response.PayInCurrentMonth)
 }
 
-func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to string) (*pb.GetCommonInformationResponse, error) {
-	_, err := fc.paymentClient.GetIncomeChart(ctx, &pb.GetIncomeChartRequest{
+func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to string) (*pb.GetIncomeChartResponse, error) {
+	resp, err := fc.paymentClient.GetIncomeChart(ctx, &pb.GetIncomeChartRequest{
 		From: from,
 		To:   to,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return nil, nil
+	return resp, err
 }
 
 func (fc *FinanceClient) GetTableGroups(ctx context.Context) (interface{}, error) {
