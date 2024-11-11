@@ -652,32 +652,29 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 
 	// SQL query to get actual data
 	query := `
-		SELECT 
-			TO_CHAR(given_date, 'YYYYMM') AS specific_month,
-			SUM(
-				CASE 
-					WHEN payment_type IN ('ADD', 'TAKE_OFF') THEN amount
-					WHEN payment_type = 'REFUND' THEN -amount
-					ELSE 0
-				END
-			) AS balance
-		FROM student_payments
-		WHERE given_date BETWEEN $1 AND $2
-		GROUP BY TO_CHAR(given_date, 'YYYYMM')
-		ORDER BY specific_month;
-	`
+        SELECT 
+            TO_CHAR(given_date, 'YYYYMM') AS specific_month,
+            SUM(
+                CASE 
+                    WHEN payment_type IN ('ADD', 'TAKE_OFF') THEN amount
+                    WHEN payment_type = 'REFUND' THEN -amount
+                    ELSE 0
+                END
+            ) AS balance
+        FROM student_payments
+        WHERE given_date BETWEEN $1 AND $2
+        GROUP BY TO_CHAR(given_date, 'YYYYMM')
+        ORDER BY specific_month;
+    `
 
-	// Execute the query
 	rows, err := r.db.Query(query, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	// Map to store query results
 	monthlyBalances := make(map[string]float64)
 
-	// Process the query results
 	for rows.Next() {
 		var month string
 		var balance float64
@@ -691,7 +688,6 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 		return nil, err
 	}
 
-	// Prepare response and fill in missing months
 	var response pb.GetIncomeChartResponse
 	for d := startDate; !d.After(endDate); d = d.AddDate(0, 1, 0) {
 		month := d.Format("200601")
