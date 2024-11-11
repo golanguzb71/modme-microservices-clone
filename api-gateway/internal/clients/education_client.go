@@ -190,6 +190,7 @@ func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherI
 func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int) {
 	response, err := lc.groupClient.GetCommonInformationEducation(ctx, &emptypb.Empty{})
 	fmt.Println(response)
+	fmt.Println(err)
 	if err != nil {
 		return 0, 0, 0, 0
 	}
