@@ -591,6 +591,9 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 			phoneNumber = "unknown phoneNumber"
 			balance = 0
 		}
+		if balance <= 0 {
+			continue
+		}
 		debt.DebtorName = name
 		debt.PhoneNumber = phoneNumber
 		debt.Balance = strconv.FormatFloat(balance, 'f', 2, 64)
