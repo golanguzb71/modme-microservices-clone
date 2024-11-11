@@ -640,6 +640,43 @@ func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformat
 	return response, nil
 }
 
+func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncomeChartResponse, error) {
+	query := `
+		SELECT 
+			TO_CHAR(given_date, 'YYYYMM') AS specific_month,
+			SUM(amount) AS balance
+		FROM student_payments
+		WHERE payment_type = 'ADD' 
+		AND given_date BETWEEN $1 AND $2
+		GROUP BY TO_CHAR(given_date, 'YYYYMM')
+		ORDER BY specific_month;
+	`
+
+	rows, err := r.db.Query(query, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var response pb.GetIncomeChartResponse
+
+	for rows.Next() {
+		var month string
+		var balance float64
+		if err := rows.Scan(&month, &balance); err != nil {
+			return nil, err
+		}
+
+		response.Response = append(response.Response, &pb.AbsIncomeChart{
+			SpecificMonth: month,
+			Balance:       fmt.Sprintf("%.2f", balance), // Format as string to match the expected output
+		})
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }

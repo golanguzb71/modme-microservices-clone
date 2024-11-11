@@ -78,6 +78,10 @@ func (ps *PaymentService) GetCommonFinanceInformation(ctx context.Context, req *
 	return ps.repo.GetCommonFinanceInformation()
 }
 
+func (ps *PaymentService) GetIncomeChart(ctx context.Context, req *pb.GetIncomeChartRequest) (*pb.GetIncomeChartResponse, error) {
+	return ps.repo.GetIncomeChart(req.From, req.To)
+}
+
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {
 	return &PaymentService{repo: repo}
 }

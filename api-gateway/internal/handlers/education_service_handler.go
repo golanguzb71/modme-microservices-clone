@@ -934,7 +934,7 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 // @Description Get information about a income
 // @Tags education
 // @Param from query string true "from"
-// @Param to query bool true "to"
+// @Param to query string true "to"
 // @Produce json
 // @Success 200 {object} pb.GetCommonInformationResponse
 // @Failure 400 {object} utils.AbsResponse
