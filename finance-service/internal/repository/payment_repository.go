@@ -383,7 +383,7 @@ func (r *PaymentRepository) GetAllPaymentTakeOff(from string, to string) (*pb.Ge
 		if err != nil {
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
-		name, _, err := r.educationClient.GetStudentById(payment.StudentId)
+		name, _, _, err := r.educationClient.GetStudentById(payment.StudentId)
 		if err != nil {
 			payment.StudentName = "error while getting this student name"
 		}
@@ -470,7 +470,7 @@ where given_date between $1 and $2
 		if err != nil {
 			return nil, err
 		}
-		name, _, _ := r.educationClient.GetStudentById(el.StudentId)
+		name, _, _, _ := r.educationClient.GetStudentById(el.StudentId)
 		el.StudentName = name
 		resp.Payments = append(resp.Payments, &el)
 	}
@@ -559,9 +559,6 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 	query := `
 		SELECT 
 			student_id AS debtor_id,
-			(SELECT name FROM students WHERE id = student_id) AS debtor_name,
-			(SELECT phone FROM students WHERE id = student_id) AS phone_number,
-			(SELECT balance FROM students where id=student_id) as balance,
 			COALESCE(SUM(CASE WHEN payment_type = 'ADD' OR payment_type = 'REFUND' THEN amount ELSE 0 END), 0) -
 			COALESCE(SUM(CASE WHEN payment_type = 'TAKE_OFF' THEN amount ELSE 0 END), 0) AS total_on_period
 		FROM 
@@ -585,9 +582,18 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 
 	for rows.Next() {
 		var debt pb.AbsDebtsInformation
-		if err := rows.Scan(&debt.DebtorId, &debt.DebtorName, &debt.PhoneNumber, &debt.Balance, &debt.TotalOnPeriod); err != nil {
+		if err := rows.Scan(&debt.DebtorId, &debt.TotalOnPeriod); err != nil {
 			return nil, err
 		}
+		name, phoneNumber, balance, err := r.educationClient.GetStudentById(debt.DebtorId)
+		if err != nil {
+			name = "unknown name"
+			phoneNumber = "unknown phoneNumber"
+			balance = 0
+		}
+		debt.DebtorName = name
+		debt.PhoneNumber = phoneNumber
+		debt.Balance = strconv.FormatFloat(balance, 'f', 2, 64)
 		debts = append(debts, &debt)
 	}
 
