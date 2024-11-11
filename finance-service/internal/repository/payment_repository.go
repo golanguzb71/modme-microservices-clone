@@ -552,6 +552,10 @@ SELECT coalesce((SELECT sum(amount)
 }
 
 func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size int32) (*pb.GetAllDebtsInformationResponse, error) {
+	if size <= 0 {
+		return nil, fmt.Errorf("invalid page size: must be greater than zero")
+	}
+
 	query := `
 		SELECT 
 			student_id AS debtor_id,
@@ -592,6 +596,9 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 		return nil, err
 	}
 
+	if totalRecords == 0 {
+		totalRecords = 1
+	}
 	totalPageCount := (totalRecords + size - 1) / size
 
 	return &pb.GetAllDebtsInformationResponse{
