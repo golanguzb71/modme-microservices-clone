@@ -20,12 +20,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LeadService_CreateLead_FullMethodName     = "/lead.LeadService/CreateLead"
-	LeadService_GetLeadCommon_FullMethodName  = "/lead.LeadService/GetLeadCommon"
-	LeadService_UpdateLead_FullMethodName     = "/lead.LeadService/UpdateLead"
-	LeadService_DeleteLead_FullMethodName     = "/lead.LeadService/DeleteLead"
-	LeadService_GetListSection_FullMethodName = "/lead.LeadService/GetListSection"
-	LeadService_GetLeadReports_FullMethodName = "/lead.LeadService/GetLeadReports"
+	LeadService_CreateLead_FullMethodName         = "/lead.LeadService/CreateLead"
+	LeadService_GetLeadCommon_FullMethodName      = "/lead.LeadService/GetLeadCommon"
+	LeadService_UpdateLead_FullMethodName         = "/lead.LeadService/UpdateLead"
+	LeadService_DeleteLead_FullMethodName         = "/lead.LeadService/DeleteLead"
+	LeadService_GetListSection_FullMethodName     = "/lead.LeadService/GetListSection"
+	LeadService_GetLeadReports_FullMethodName     = "/lead.LeadService/GetLeadReports"
+	LeadService_GetActiveLeadCount_FullMethodName = "/lead.LeadService/GetActiveLeadCount"
 )
 
 // LeadServiceClient is the client API for LeadService service.
@@ -40,6 +41,7 @@ type LeadServiceClient interface {
 	DeleteLead(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetListSection(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetLeadListResponse, error)
 	GetLeadReports(ctx context.Context, in *GetLeadReportsRequest, opts ...grpc.CallOption) (*GetLeadReportsResponse, error)
+	GetActiveLeadCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveLeadCountResponse, error)
 }
 
 type leadServiceClient struct {
@@ -110,6 +112,16 @@ func (c *leadServiceClient) GetLeadReports(ctx context.Context, in *GetLeadRepor
 	return out, nil
 }
 
+func (c *leadServiceClient) GetActiveLeadCount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetActiveLeadCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetActiveLeadCountResponse)
+	err := c.cc.Invoke(ctx, LeadService_GetActiveLeadCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LeadServiceServer is the server API for LeadService service.
 // All implementations must embed UnimplementedLeadServiceServer
 // for forward compatibility.
@@ -122,6 +134,7 @@ type LeadServiceServer interface {
 	DeleteLead(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	GetListSection(context.Context, *emptypb.Empty) (*GetLeadListResponse, error)
 	GetLeadReports(context.Context, *GetLeadReportsRequest) (*GetLeadReportsResponse, error)
+	GetActiveLeadCount(context.Context, *emptypb.Empty) (*GetActiveLeadCountResponse, error)
 	mustEmbedUnimplementedLeadServiceServer()
 }
 
@@ -149,6 +162,9 @@ func (UnimplementedLeadServiceServer) GetListSection(context.Context, *emptypb.E
 }
 func (UnimplementedLeadServiceServer) GetLeadReports(context.Context, *GetLeadReportsRequest) (*GetLeadReportsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLeadReports not implemented")
+}
+func (UnimplementedLeadServiceServer) GetActiveLeadCount(context.Context, *emptypb.Empty) (*GetActiveLeadCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetActiveLeadCount not implemented")
 }
 func (UnimplementedLeadServiceServer) mustEmbedUnimplementedLeadServiceServer() {}
 func (UnimplementedLeadServiceServer) testEmbeddedByValue()                     {}
@@ -279,6 +295,24 @@ func _LeadService_GetLeadReports_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LeadService_GetActiveLeadCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LeadServiceServer).GetActiveLeadCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LeadService_GetActiveLeadCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LeadServiceServer).GetActiveLeadCount(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LeadService_ServiceDesc is the grpc.ServiceDesc for LeadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -309,6 +343,10 @@ var LeadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLeadReports",
 			Handler:    _LeadService_GetLeadReports_Handler,
+		},
+		{
+			MethodName: "GetActiveLeadCount",
+			Handler:    _LeadService_GetActiveLeadCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

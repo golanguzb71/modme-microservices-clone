@@ -87,6 +87,13 @@ service GroupService{
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+  rpc GetCommonInformationEducation(google.protobuf.Empty) returns(GetCommonInformationEducationResponse);
+}
+message GetCommonInformationEducationResponse{
+  int32 activeStudentCount = 1;
+  int32 activeGroupCount = 2;
+  int32 leaveGroupCount = 3;
+  int32 debtorsCount = 4;
 }
 message GetGroupsByTeacherIdRequest{
   string teacherId = 1;

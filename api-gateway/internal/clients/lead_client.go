@@ -209,3 +209,11 @@ func (lc *LidClient) GetLeadReports(from string, till string, ctx context.Contex
 		EndYear:   till,
 	})
 }
+
+func (lc *LidClient) GetActiveLeadCount(ctx context.Context) int {
+	count, err := lc.leadClient.GetActiveLeadCount(ctx, &emptypb.Empty{})
+	if err != nil {
+		return 0
+	}
+	return int(count.ActiveLeadCount)
+}

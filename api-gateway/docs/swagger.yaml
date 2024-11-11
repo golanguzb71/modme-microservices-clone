@@ -1323,6 +1323,27 @@ paths:
       summary: TEACHER
       tags:
       - attendance
+  /api/common-information-company:
+    get:
+      description: Get common information about company
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - education
   /api/course/create:
     post:
       consumes:

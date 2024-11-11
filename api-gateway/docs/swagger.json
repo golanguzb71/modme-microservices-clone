@@ -105,6 +105,40 @@
                 }
             }
         },
+        "/api/common-information-company": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get common information about company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "ADMIN , CEO",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/course/create": {
             "post": {
                 "security": [

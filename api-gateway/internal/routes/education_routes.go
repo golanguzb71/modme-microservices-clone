@@ -8,6 +8,7 @@ import (
 )
 
 func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
+	api.GET("/common-information-company", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetCommonInformationCompany)
 	room := api.Group("/room")
 	{
 		room.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateRoom)

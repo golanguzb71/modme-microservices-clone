@@ -168,6 +168,14 @@ func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size,
 	})
 }
 
+func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, int) {
+	response, err := fc.paymentClient.GetCommonFinanceInformation(ctx, &emptypb.Empty{})
+	if err != nil {
+		return 0, 0
+	}
+	return int(response.DebtorsCount), int(response.PayInCurrentMonth)
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

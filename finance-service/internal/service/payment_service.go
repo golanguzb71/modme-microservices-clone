@@ -6,6 +6,7 @@ import (
 	"finance-service/proto/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"net/http"
 )
 
@@ -72,6 +73,9 @@ func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *p
 
 func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.GetAllDebtsRequest) (*pb.GetAllDebtsInformationResponse, error) {
 	return ps.repo.GetAllDebtsInformation(req.From, req.To, req.PageParam.Page, req.PageParam.Size)
+}
+func (ps *PaymentService) GetCommonFinanceInformation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationResponse, error) {
+	return ps.repo.GetCommonFinanceInformation()
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {

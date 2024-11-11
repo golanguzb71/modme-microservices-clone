@@ -156,6 +156,11 @@ service PaymentService{
   rpc GetAllStudentPayments(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsResponse);
   rpc GetAllStudentPaymentsChart(GetAllStudentPaymentsRequest) returns(GetAllStudentPaymentsChartResponse);
   rpc GetAllDebtsInformation(GetAllDebtsRequest) returns(GetAllDebtsInformationResponse);
+  rpc GetCommonFinanceInformation(google.protobuf.Empty) returns(GetCommonInformationResponse);
+}
+message GetCommonInformationResponse{
+  int32 debtorsCount = 1;
+  int32 payInCurrentMonth = 2;
 }
 message GetAllDebtsRequest{
   common.PageRequest pageParam = 1;

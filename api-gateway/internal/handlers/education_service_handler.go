@@ -897,3 +897,29 @@ func GetInformationByTeacher(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetCommonInformationCompany godoc
+// @Summary ADMIN , CEO
+// @Description Get common information about company
+// @Tags education
+// @Produce json
+// @Success 200 {object} map[string]int
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/common-information-company [get]
+func GetCommonInformationCompany(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	activeLeadCount := leadClient.GetActiveLeadCount(ctxR)
+	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount := educationClient.GetCommonEducationInformation(ctxR)
+	_, payInCurrentMonth := financeClient.GetCommonFinanceInformation(ctxR)
+	var response map[string]int
+	response["activeLeadCount"] = activeLeadCount
+	response["activeStudentsCount"] = activeStudentCount
+	response["activeGroupCount"] = activeGroupCount
+	response["debtorsCount"] = commonDebtorsCount
+	response["payInCurrentMonth"] = payInCurrentMonth
+	response["leaveGroupCount"] = leaveGroupCount
+	ctx.JSON(http.StatusOK, response)
+	return
+}

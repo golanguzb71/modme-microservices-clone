@@ -616,6 +616,24 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 	}, nil
 }
 
+func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformationResponse, error) {
+	var response *pb.GetCommonInformationResponse
+	var payInCurrentMonth int32
+
+	err := r.db.QueryRow(`SELECT COUNT(id) 
+FROM student_payments 
+WHERE payment_type = 'ADD' 
+  AND EXTRACT(MONTH FROM given_date) = EXTRACT(MONTH FROM CURRENT_DATE) 
+  AND EXTRACT(YEAR FROM given_date) = EXTRACT(YEAR FROM CURRENT_DATE);
+`).Scan(&payInCurrentMonth)
+	if err != nil {
+		payInCurrentMonth = 0
+	}
+	response.DebtorsCount = 0
+	response.PayInCurrentMonth = payInCurrentMonth
+	return response, nil
+}
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }

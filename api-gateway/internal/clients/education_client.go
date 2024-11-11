@@ -185,3 +185,11 @@ func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherI
 		IsArchived: isArchived,
 	})
 }
+
+func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int) {
+	response, err := lc.groupClient.GetCommonInformationEducation(ctx, &emptypb.Empty{})
+	if err != nil {
+		return 0, 0, 0, 0
+	}
+	return int(response.ActiveStudentCount), int(response.ActiveGroupCount), int(response.LeaveGroupCount), int(response.DebtorsCount)
+}
