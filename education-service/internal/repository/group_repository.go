@@ -289,31 +289,41 @@ func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent
 
 	return students, nil
 }
-
 func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformationEducationResponse, error) {
-	var response *pb.GetCommonInformationEducationResponse
+	// Initialize the response to avoid nil pointer dereference
+	response := new(pb.GetCommonInformationEducationResponse)
+
 	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount int32
-	//activeGroupCount
-	// activeStudentCount
+
+	// Query to get leaveGroupCount
 	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE'`).Scan(&leaveGroupCount)
 	if err != nil {
 		leaveGroupCount = 0
 	}
+
+	// Query to get activeGroupCount
 	err = r.db.QueryRow(`SELECT COUNT(id) FROM groups where is_archived=false`).Scan(&activeGroupCount)
 	if err != nil {
 		activeGroupCount = 0
 	}
+
+	// Query to get activeStudentCount
 	err = r.db.QueryRow(`SELECT count(id) FROM students where condition='ACTIVE'`).Scan(&activeStudentCount)
 	if err != nil {
 		activeStudentCount = 0
 	}
+
+	// Query to get debtorsCount
 	err = r.db.QueryRow(`SELECT COUNT(id) FROM students where balance < 0`).Scan(&debtorsCount)
 	if err != nil {
 		debtorsCount = 0
 	}
+
+	// Assign the values to the response fields
 	response.DebtorsCount = debtorsCount
 	response.LeaveGroupCount = leaveGroupCount
 	response.ActiveGroupCount = activeGroupCount
 	response.ActiveStudentCount = activeStudentCount
+
 	return response, nil
 }
