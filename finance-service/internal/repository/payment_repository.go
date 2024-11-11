@@ -640,7 +640,6 @@ func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformat
 	return response, nil
 }
 func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncomeChartResponse, error) {
-	// Parse the from and to dates
 	startDate, err := time.Parse("200601", from)
 	if err != nil {
 		return nil, fmt.Errorf("invalid from date format: %v", err)
@@ -650,7 +649,6 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 		return nil, fmt.Errorf("invalid to date format: %v", err)
 	}
 
-	// SQL query to get actual data
 	query := `
         SELECT 
             TO_CHAR(given_date, 'YYYYMM') AS specific_month,
@@ -698,7 +696,7 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 			Balance:       fmt.Sprintf("%.2f", balance),
 		})
 	}
-
+	fmt.Println(&response)
 	return &response, nil
 }
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
