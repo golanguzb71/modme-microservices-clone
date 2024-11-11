@@ -641,6 +641,17 @@ func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformat
 }
 
 func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncomeChartResponse, error) {
+	// Parse the from and to dates
+	startDate, err := time.Parse("200601", from)
+	if err != nil {
+		return nil, fmt.Errorf("invalid from date format: %v", err)
+	}
+	endDate, err := time.Parse("200601", to)
+	if err != nil {
+		return nil, fmt.Errorf("invalid to date format: %v", err)
+	}
+
+	// Prepare the SQL query
 	query := `
 		SELECT 
 			TO_CHAR(given_date, 'YYYYMM') AS specific_month,
@@ -657,29 +668,40 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 		ORDER BY specific_month;
 	`
 
-	rows, err := r.db.Query(query, from, to)
+	// Execute the query
+	rows, err := r.db.Query(query, startDate, endDate)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var response pb.GetIncomeChartResponse
+	// Map to store query results
+	monthlyBalances := make(map[string]float64)
 
+	// Process the query results
 	for rows.Next() {
 		var month string
 		var balance float64
 		if err := rows.Scan(&month, &balance); err != nil {
 			return nil, err
 		}
+		monthlyBalances[month] = balance
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Prepare response and fill in missing months
+	var response pb.GetIncomeChartResponse
+	for d := startDate; !d.After(endDate); d = d.AddDate(0, 1, 0) {
+		month := d.Format("200601")
+		balance := monthlyBalances[month] // zero if not found
 
 		response.Response = append(response.Response, &pb.AbsIncomeChart{
 			SpecificMonth: month,
 			Balance:       fmt.Sprintf("%.2f", balance),
 		})
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return &response, nil
