@@ -1725,7 +1725,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "boolean",
+                        "type": "string",
                         "description": "to",
                         "name": "to",
                         "in": "query",
