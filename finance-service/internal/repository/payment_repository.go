@@ -644,10 +644,15 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 	query := `
 		SELECT 
 			TO_CHAR(given_date, 'YYYYMM') AS specific_month,
-			SUM(amount) AS balance
+			SUM(
+				CASE 
+					WHEN payment_type IN ('ADD', 'TAKE_OFF') THEN amount
+					WHEN payment_type = 'REFUND' THEN -amount
+					ELSE 0
+				END
+			) AS balance
 		FROM student_payments
-		WHERE payment_type = 'ADD' 
-		AND given_date BETWEEN $1 AND $2
+		WHERE given_date BETWEEN $1 AND $2
 		GROUP BY TO_CHAR(given_date, 'YYYYMM')
 		ORDER BY specific_month;
 	`
@@ -657,6 +662,7 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 		return nil, err
 	}
 	defer rows.Close()
+
 	var response pb.GetIncomeChartResponse
 
 	for rows.Next() {
@@ -668,12 +674,14 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 
 		response.Response = append(response.Response, &pb.AbsIncomeChart{
 			SpecificMonth: month,
-			Balance:       fmt.Sprintf("%.2f", balance), // Format as string to match the expected output
+			Balance:       fmt.Sprintf("%.2f", balance),
 		})
 	}
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
 	return &response, nil
 }
 
