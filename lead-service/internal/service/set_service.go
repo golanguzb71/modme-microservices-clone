@@ -46,9 +46,9 @@ func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*
 }
 
 func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest) (*pb.AbsResponse, error) {
-	if s.groupClient == nil {
-		return nil, fmt.Errorf("uninitialized group detected")
-	}
+	//if s.groupClient == nil {
+	//	return nil, fmt.Errorf("uninitialized group detected")
+	//}
 
 	if s.studentClient == nil {
 		return nil, fmt.Errorf("uninitialized studentClient detected")
