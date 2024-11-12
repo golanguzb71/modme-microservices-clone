@@ -13,6 +13,7 @@ type StudentClient struct {
 
 func NewStudentClient(addr string) *StudentClient {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
+	fmt.Println(addr)
 	if err != nil {
 		fmt.Println(err)
 		return nil
