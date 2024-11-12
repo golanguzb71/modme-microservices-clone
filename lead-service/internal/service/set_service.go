@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
 	"lid-service/proto/pb"
@@ -46,16 +45,6 @@ func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*
 }
 
 func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest) (*pb.AbsResponse, error) {
-	//if s.groupClient == nil {
-	//	return nil, fmt.Errorf("uninitialized group detected")
-	//}
-
-	if s.studentClient == nil {
-		return nil, fmt.Errorf("uninitialized studentClient detected")
-	}
-	if s.repo == nil {
-		return nil, fmt.Errorf("uninitialized repo detected")
-	}
 	courseId, err := strconv.ParseInt(req.CourseId, 10, 32)
 	if err != nil {
 		return nil, err

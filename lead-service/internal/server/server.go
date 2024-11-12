@@ -13,6 +13,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"time"
 )
 
 func RunServer() {
@@ -26,6 +27,7 @@ func RunServer() {
 	}
 	defer db.Close()
 	migrations.SetUpMigrating(cfg.Database.Action, db)
+	time.Sleep(5 * time.Second)
 
 	// lead_service_clients_start
 	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
