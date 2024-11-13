@@ -23,15 +23,15 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 	return &FinanceClient{discountClient: discountClient, paymentClient: paymentClient}, nil
 }
 
-func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) (*string, *string) {
+func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) (*string, string) {
 	resp, err := fc.discountClient.GetDiscountByStudentId(ctx, &pb.GetDiscountByStudentIdRequest{StudentId: studentId, GroupId: groupId})
 	if err != nil {
-		return nil, nil
+		return nil, "CENTER"
 	}
 	if !resp.IsHave {
-		return nil, nil
+		return nil, "CENTER"
 	}
-	return &resp.Amount, &resp.DiscountOwner
+	return &resp.Amount, resp.DiscountOwner
 }
 
 func (fc *FinanceClient) PaymentAdd(comment, date, method, sum, userId, paymentType, actionById, actionByName, groupId string) (*pb.AbsResponse, error) {

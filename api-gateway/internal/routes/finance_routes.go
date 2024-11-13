@@ -48,6 +48,7 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			salary.GET("/teacher-all", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.GetSalaryAllTeacher)
 			salary.POST("/teacher-add", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.AddSalaryTeacher)
 			salary.DELETE("/delete/:teacherID", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.DeleteTeacherSalary)
+			salary.GET("/calculate/:from/:to", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.CalculateSalary)
 		}
 	}
 }

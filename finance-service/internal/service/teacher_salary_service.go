@@ -31,3 +31,6 @@ func (ts *TeacherSalaryService) GetTeacherSalary(ctx context.Context, req *empty
 func (ts *TeacherSalaryService) GetTeacherSalaryByTeacherID(ctx context.Context, req *pb.DeleteTeacherSalaryRequest) (*pb.AbsGetTeachersSalary, error) {
 	return ts.repo.GetTeacherSalaryByTeacherID(req.TeacherId)
 }
+func (ts *TeacherSalaryService) CalculateTeacherSalary(ctx context.Context, req *pb.CalculateTeacherSalaryRequest) (*pb.CalculateTeacherSalaryResponse, error) {
+	return ts.repo.CalculateTeacherSalary(req.TeacherId, req.From, req.To)
+}

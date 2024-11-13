@@ -309,6 +309,8 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.CalculateTeacherSalaryResponse:
+    type: object
   pb.ChangeConditionStudentRequest:
     properties:
       actionById:
@@ -2265,6 +2267,43 @@ paths:
       summary: ADMIN , CEO
       tags:
       - payments
+  /api/finance/salary/calculate/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Calculates the salary for a specified teacher within a given date
+        range.
+      parameters:
+      - description: Start date for the salary calculation period in YYYY-MM-DD format
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: End date for the salary calculation period in YYYY-MM-DD format
+        in: path
+        name: to
+        required: true
+        type: string
+      - description: Teacher ID for whom the salary is calculated
+        in: query
+        name: teacherId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Calculated salary information
+          schema:
+            $ref: '#/definitions/pb.CalculateTeacherSalaryResponse'
+        "409":
+          description: Conflict or calculation error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: CEO
+      tags:
+      - salary
   /api/finance/salary/delete/{teacherID}:
     delete:
       description: Deletes a salary entry for a specific teacher by ID

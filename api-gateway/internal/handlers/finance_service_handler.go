@@ -698,3 +698,31 @@ func GetAllDebtsInformation(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// CalculateSalary godoc
+// @Summary CEO
+// @Description Calculates the salary for a specified teacher within a given date range.
+// @Tags salary
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date for the salary calculation period in YYYY-MM-DD format"
+// @Param to path string true "End date for the salary calculation period in YYYY-MM-DD format"
+// @Param teacherId query string false "Teacher ID for whom the salary is calculated"
+// @Success 200 {object} pb.CalculateTeacherSalaryResponse "Calculated salary information"
+// @Failure 409 {object} utils.AbsResponse "Conflict or calculation error"
+// @Security Bearer
+// @Router /api/finance/salary/calculate/{from}/{to} [get]
+func CalculateSalary(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	teacherId := ctx.Query("teacherId")
+	resp, err := financeClient.CalculateSalaryByTeacher(ctxR, from, to, teacherId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}

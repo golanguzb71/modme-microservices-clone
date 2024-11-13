@@ -100,6 +100,10 @@ func (r *TeacherSalaryRepository) GetTeacherSalaryByTeacherID(teacherId string) 
 	return &salary, nil
 }
 
+func (r *TeacherSalaryRepository) CalculateTeacherSalary(teacherId string, from string, to string) (*pb.CalculateTeacherSalaryResponse, error) {
+	return nil, nil
+}
+
 func NewTeacherSalaryRepository(db *sql.DB, userClient *clients.UserClient) *TeacherSalaryRepository {
 	return &TeacherSalaryRepository{db: db, userClient: userClient}
 }

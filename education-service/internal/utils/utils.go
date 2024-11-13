@@ -242,6 +242,6 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 		return fmt.Errorf("no lessons found in the month")
 	}
 
-	*price = coursePrice / float64(lessonCount)
+	*price = math.Round(coursePrice / float64(lessonCount))
 	return nil
 }

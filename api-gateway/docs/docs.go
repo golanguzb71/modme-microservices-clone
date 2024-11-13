@@ -1579,6 +1579,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/salary/calculate/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Calculates the salary for a specified teacher within a given date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "salary"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date for the salary calculation period in YYYY-MM-DD format",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date for the salary calculation period in YYYY-MM-DD format",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Teacher ID for whom the salary is calculated",
+                        "name": "teacherId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Calculated salary information",
+                        "schema": {
+                            "$ref": "#/definitions/pb.CalculateTeacherSalaryResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or calculation error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/salary/delete/{teacherID}": {
             "delete": {
                 "security": [
@@ -4588,6 +4644,9 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "pb.CalculateTeacherSalaryResponse": {
+            "type": "object"
         },
         "pb.ChangeConditionStudentRequest": {
             "type": "object",

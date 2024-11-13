@@ -34,7 +34,9 @@ func RunServer() {
 		log.Fatalf("error %v", err)
 	}
 
-	financeClientChan := make(chan *clients.FinanceClient)
+	financeClientChanForAttendance := make(chan *clients.FinanceClient)
+	financeClientChanForStudent := make(chan *clients.FinanceClient)
+
 	go func() {
 		time.Sleep(2 * time.Second)
 		var client *clients.FinanceClient
@@ -43,8 +45,24 @@ func RunServer() {
 			client, err = clients.NewFinanceClient(cfg.Grpc.FinanceService.Address)
 			if err == nil {
 				log.Println("Connected to Finance Service successfully.")
-				financeClientChan <- client
-				close(financeClientChan)
+				financeClientChanForAttendance <- client
+				close(financeClientChanForAttendance)
+				break
+			}
+			log.Printf("Waiting for Finance Service...")
+			time.Sleep(2 * time.Second)
+		}
+	}()
+	go func() {
+		time.Sleep(2 * time.Second)
+		var client *clients.FinanceClient
+		for {
+			fmt.Println(cfg.Grpc.FinanceService.Address)
+			client, err = clients.NewFinanceClient(cfg.Grpc.FinanceService.Address)
+			if err == nil {
+				log.Println("Connected to Finance Service successfully.")
+				financeClientChanForStudent <- client
+				close(financeClientChanForStudent)
 				break
 			}
 			log.Printf("Waiting for Finance Service...")
@@ -58,9 +76,9 @@ func RunServer() {
 	courseService := service.NewCourseService(courseRepo)
 	groupRepo := repository.NewGroupRepository(db, userClient)
 	groupService := service.NewGroupService(groupRepo)
-	attendanceRepo := repository.NewAttendanceRepository(db, financeClientChan)
+	attendanceRepo := repository.NewAttendanceRepository(db, financeClientChanForAttendance)
 	attendanceService := service.NewAttendanceService(attendanceRepo)
-	studentRepo := repository.NewStudentRepository(db, userClient, financeClientChan)
+	studentRepo := repository.NewStudentRepository(db, userClient, financeClientChanForStudent)
 	studentService := service.NewStudentService(studentRepo)
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
