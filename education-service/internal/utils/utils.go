@@ -179,3 +179,69 @@ func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId strin
 	}
 	return true
 }
+
+func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount *string) error {
+	var coursePrice float64
+	err := db.QueryRow(`SELECT price FROM courses c join groups g on c.id=g.course_id where g.id=$1`, groupId).Scan(&coursePrice)
+	if err != nil {
+		return err
+	}
+	if discountAmount != nil {
+		discountAmou, err := strconv.ParseFloat(*discountAmount, 64)
+		if err != nil {
+			return err
+		}
+		coursePrice = discountAmou
+	}
+	parsedDate, err := time.Parse("2006-01-02", attendDate)
+	if err != nil {
+		return err
+	}
+	firstOfMonth := time.Date(parsedDate.Year(), parsedDate.Month(), 1, 0, 0, 0, 0, parsedDate.Location())
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+	var lessonCount int
+	err = db.QueryRow(`
+        WITH RECURSIVE dates AS (
+            SELECT $1::date AS date
+            UNION ALL
+            SELECT date + 1
+            FROM dates
+            WHERE date < $2
+        ),
+        valid_days AS (
+            SELECT d.date
+            FROM dates d
+            CROSS JOIN (
+                SELECT unnest(days) AS day_name,
+                       start_date,
+                       end_date
+                FROM groups
+                WHERE id = $3
+            ) g
+            WHERE 
+                CASE 
+                    WHEN EXTRACT(DOW FROM d.date) = 1 THEN 'DUSHANBA'
+                    WHEN EXTRACT(DOW FROM d.date) = 2 THEN 'SESHANBA'
+                    WHEN EXTRACT(DOW FROM d.date) = 3 THEN 'CHORSHANBA'
+                    WHEN EXTRACT(DOW FROM d.date) = 4 THEN 'PAYSHANBA'
+                    WHEN EXTRACT(DOW FROM d.date) = 5 THEN 'JUMA'
+                    WHEN EXTRACT(DOW FROM d.date) = 6 THEN 'SHANBA'
+                    WHEN EXTRACT(DOW FROM d.date) = 0 THEN 'YAKSHANBA'
+                END = g.day_name
+                AND d.date >= g.start_date
+                AND d.date <= g.end_date
+        )
+        SELECT COUNT(*) 
+        FROM valid_days
+    `, firstOfMonth, lastOfMonth, groupId).Scan(&lessonCount)
+	if err != nil {
+		return err
+	}
+
+	if lessonCount == 0 {
+		return fmt.Errorf("no lessons found in the month")
+	}
+
+	*price = coursePrice / float64(lessonCount)
+	return nil
+}

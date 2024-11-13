@@ -271,7 +271,7 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 			return nil, err
 		}
 
-		discount := r.financeClient.GetDiscountByStudentId(context.TODO(), result.Id, groupStudent.Id)
+		discount, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), result.Id, groupStudent.Id)
 		groupStudent.PriceForStudent = course.Price
 		if discount != nil {
 			parsedDiscount, err := strconv.ParseFloat(*discount, 64)
@@ -570,7 +570,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
-	manaulPriceForCourse := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+	manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
 	if returnTheMoney {
 		switch status {
 		case "FREEZE":

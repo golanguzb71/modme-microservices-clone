@@ -134,8 +134,9 @@ func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscou
 func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (*pb.GetDiscountByStudentIdResponse, error) {
 	var discount float64
 	var startAt, endAt string
+	var withTeacher bool
 
-	err := r.db.QueryRow(`SELECT discount, start_at, end_at FROM student_discount WHERE student_id=$1 AND group_id=$2`, studentId, groupId).Scan(&discount, &startAt, &endAt)
+	err := r.db.QueryRow(`SELECT discount, start_at, end_at , withteacher FROM student_discount WHERE student_id=$1 AND group_id=$2`, studentId, groupId).Scan(&discount, &startAt, &endAt, &withTeacher)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("no discount found for the given student and group")
@@ -153,12 +154,18 @@ func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse end_at: %v", err)
 	}
-	fmt.Println(discount)
+
 	now := time.Now()
 	if now.After(startTime) && now.Before(endTime) {
-		response := &pb.GetDiscountByStudentIdResponse{
-			Amount: fmt.Sprintf("%.2f", discount),
-			IsHave: true,
+		response := &pb.GetDiscountByStudentIdResponse{}
+		if withTeacher {
+			response.Amount = fmt.Sprintf("%.2f", discount)
+			response.IsHave = true
+			response.DiscountOwner = "TEACHER"
+		} else {
+			response.Amount = fmt.Sprintf("%.2f", discount)
+			response.IsHave = true
+			response.DiscountOwner = "CENTER"
 		}
 		return response, nil
 	}

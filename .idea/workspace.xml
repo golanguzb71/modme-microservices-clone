@@ -6,6 +6,30 @@
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/attendance_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/attendance_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/finance.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/finance.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/pb/finance.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/cmd/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/config/config.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/internal/clients/client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/internal/repository/repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/internal/server/server.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/internal/service/service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/internal/utils/utils.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy-service/proto/service.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/config/config.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +60,10 @@
     &quot;accountId&quot;: &quot;55d1bcae-72d2-473c-aaeb-9352fac21b24&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
@@ -51,7 +79,7 @@
   &quot;keyToString&quot;: {
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
     &quot;Go Build.go build api-gateway/cmd.executor&quot;: &quot;Debug&quot;,
-    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Debug&quot;,
     &quot;Go Build.go build finance-service/cmd.executor&quot;: &quot;Debug&quot;,
     &quot;Go Build.go build lid-service/cmd.executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Run&quot;,
@@ -71,7 +99,8 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+      &quot;postgresql&quot;,
+      &quot;mongo&quot;
     ]
   }
 }</component>
@@ -93,7 +122,7 @@
       <command value="go run cmd/main.go" />
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build finance-service/cmd">
+  <component name="RunManager" selected="Go Build.go build education-service/cmd">
     <configuration name="go build education-service/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="modme" />
       <working_directory value="$PROJECT_DIR$/education-service" />
@@ -138,10 +167,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build education-service/cmd" />
         <item itemvalue="Go Build.go build finance-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
         <item itemvalue="Makefile Target.runner" />
-        <item itemvalue="Go Build.go build education-service/cmd" />
         <item itemvalue="Go Build.go build lid-service/cmd" />
       </list>
     </recent_temporary>

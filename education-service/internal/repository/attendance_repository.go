@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"education-service/internal/clients"
 	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"fmt"
@@ -13,23 +14,57 @@ import (
 )
 
 type AttendanceRepository struct {
-	db *sql.DB
+	db                *sql.DB
+	financeClient     *clients.FinanceClient
+	financeClientChan chan *clients.FinanceClient
 }
 
-func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
-	return &AttendanceRepository{db: db}
+func (r *AttendanceRepository) ensureFinanceClient() error {
+	if r.financeClient == nil {
+		select {
+		case client := <-r.financeClientChan:
+			r.financeClient = client
+		case <-time.After(5 * time.Second):
+			return fmt.Errorf("failed to initialize GroupClient within timeout")
+		}
+	}
+	return nil
+}
+
+func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.FinanceClient) *AttendanceRepository {
+	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
 }
 
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+	if err := r.ensureFinanceClient(); err != nil {
+		return fmt.Errorf("error while ensuring finance client %v", err)
+	}
+
 	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
 		return fmt.Errorf("oops this teacherid not the same for this group")
 	}
+	isDiscounted := false
+	var price float64
+	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+	if discountAmount != nil {
+		isDiscounted = true
+		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount); err != nil {
+			return fmt.Errorf("error while calculating money for lesson %v", err)
+		}
+	} else {
+		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil); err != nil {
+			return fmt.Errorf("error while calculating money for lesson %v", err)
+		}
+	}
 	query := `
-        INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status, creator_role , created_by)
-        VALUES ($1, $2, $3, $4, $5 , $6 , $7)
+        INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role)
+        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11)
         ON CONFLICT DO NOTHING 
     `
-	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status, actionByRole, actionById)
+	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole)
+	if err != nil {
+		return fmt.Errorf("error while creating attendance %v", err)
+	}
 	return err
 }
 

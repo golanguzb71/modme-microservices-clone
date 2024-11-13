@@ -12,6 +12,7 @@ service DiscountService{
 message GetDiscountByStudentIdResponse{
   string amount = 1;
   bool isHave = 2;
+  string discountOwner = 3;
 }
 message GetDiscountByStudentIdRequest{
   string studentId = 1;

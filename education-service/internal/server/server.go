@@ -58,7 +58,7 @@ func RunServer() {
 	courseService := service.NewCourseService(courseRepo)
 	groupRepo := repository.NewGroupRepository(db, userClient)
 	groupService := service.NewGroupService(groupRepo)
-	attendanceRepo := repository.NewAttendanceRepository(db)
+	attendanceRepo := repository.NewAttendanceRepository(db, financeClientChan)
 	attendanceService := service.NewAttendanceService(attendanceRepo)
 	studentRepo := repository.NewStudentRepository(db, userClient, financeClientChan)
 	studentService := service.NewStudentService(studentRepo)
