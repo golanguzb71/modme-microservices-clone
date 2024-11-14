@@ -4172,9 +4172,6 @@ const docTemplate = `{
         "pb.AbsCalculateSalary": {
             "type": "object",
             "properties": {
-                "calculatedSalaryInPeriod": {
-                    "type": "integer"
-                },
                 "commonLessonCountInPeriod": {
                     "type": "integer"
                 },
@@ -4184,14 +4181,11 @@ const docTemplate = `{
                 "groupName": {
                     "type": "string"
                 },
-                "passedLessonCountInPeriod": {
-                    "type": "integer"
-                },
-                "studentId": {
-                    "type": "string"
-                },
-                "studentName": {
-                    "type": "string"
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.StudentSalary"
+                    }
                 }
             }
         },
@@ -6016,6 +6010,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.StudentSalary": {
+            "type": "object",
+            "properties": {
+                "calculatedSalaryInPeriod": {
+                    "type": "integer"
+                },
+                "passedLessonCount": {
+                    "type": "integer"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
                     "type": "string"
                 }
             }

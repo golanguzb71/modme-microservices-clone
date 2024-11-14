@@ -1,20 +1,16 @@
 definitions:
   pb.AbsCalculateSalary:
     properties:
-      calculatedSalaryInPeriod:
-        type: integer
       commonLessonCountInPeriod:
         type: integer
       groupId:
         type: string
       groupName:
         type: string
-      passedLessonCountInPeriod:
-        type: integer
-      studentId:
-        type: string
-      studentName:
-        type: string
+      salaries:
+        items:
+          $ref: '#/definitions/pb.StudentSalary'
+        type: array
     type: object
   pb.AbsCategory:
     properties:
@@ -1200,6 +1196,17 @@ definitions:
       name:
         type: string
       phone:
+        type: string
+    type: object
+  pb.StudentSalary:
+    properties:
+      calculatedSalaryInPeriod:
+        type: integer
+      passedLessonCount:
+        type: integer
+      studentId:
+        type: string
+      studentName:
         type: string
     type: object
   pb.TransferLessonRequest:

@@ -193,18 +193,22 @@ message CalculateTeacherSalaryRequest{
   string to = 2;
   string teacherId = 3;
 }
-message CalculateTeacherSalaryResponse{
+message CalculateTeacherSalaryResponse {
   repeated AbsCalculateSalary salaries = 1;
 }
 
-message AbsCalculateSalary{
+message AbsCalculateSalary {
   string groupId = 1;
   string groupName = 2;
-  string studentId = 3;
-  string studentName = 4;
-  int32 commonLessonCountInPeriod = 5;
-  int32 passedLessonCountInPeriod = 6;
-  int32 calculatedSalaryInPeriod = 7;
+  int32 commonLessonCountInPeriod = 3;
+  repeated StudentSalary salaries = 4;
+}
+
+message StudentSalary {
+  string studentId = 1;
+  string studentName = 2;
+  int32 passedLessonCount = 3;
+  int32 calculatedSalaryInPeriod = 4;
 }
 
 message GetAttendanceRequest{
