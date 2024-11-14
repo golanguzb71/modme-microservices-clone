@@ -718,7 +718,7 @@ func CalculateSalary(ctx *gin.Context) {
 	from := ctx.Param("from")
 	to := ctx.Param("to")
 	teacherId := ctx.Query("teacherId")
-	resp, err := financeClient.CalculateSalaryByTeacher(ctxR, from, to, teacherId)
+	resp, err := educationClient.CalculateSalaryByTeacher(ctxR, from, to, teacherId)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return

@@ -196,3 +196,11 @@ func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (i
 	}
 	return int(response.ActiveStudentCount), int(response.ActiveGroupCount), int(response.LeaveGroupCount), int(response.DebtorsCount)
 }
+
+func (lc *EducationClient) CalculateSalaryByTeacher(ctx context.Context, from string, to string, teacherId string) (*pb.CalculateTeacherSalaryResponse, error) {
+	return lc.attendanceClient.CalculateTeacherSalaryByAttendance(ctx, &pb.CalculateTeacherSalaryRequest{
+		From:      from,
+		To:        to,
+		TeacherId: teacherId,
+	})
+}

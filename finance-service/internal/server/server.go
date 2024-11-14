@@ -39,7 +39,7 @@ func RunServer() {
 	expenseService := service.NewExpenseService(expenseRepo)
 	paymentRepo := repository.NewPaymentRepository(db, educationClient)
 	paymentService := service.NewPaymentService(paymentRepo)
-	salaryRepo := repository.NewTeacherSalaryRepository(db, userClient, educationClient)
+	salaryRepo := repository.NewTeacherSalaryRepository(db, userClient)
 	salaryService := service.NewTeacherSalaryService(salaryRepo)
 	list, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {

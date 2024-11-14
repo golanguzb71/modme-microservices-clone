@@ -191,14 +191,6 @@ func (fc *FinanceClient) GetTableGroups(ctx context.Context) (interface{}, error
 	return nil, nil
 }
 
-func (fc *FinanceClient) CalculateSalaryByTeacher(ctx context.Context, from string, to string, teacherId string) (*pb.CalculateTeacherSalaryResponse, error) {
-	return fc.teacherSalaryClient.CalculateTeacherSalary(ctx, &pb.CalculateTeacherSalaryRequest{
-		From:      from,
-		To:        to,
-		TeacherId: teacherId,
-	})
-}
-
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

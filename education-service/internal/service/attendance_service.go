@@ -5,6 +5,7 @@ import (
 	"education-service/internal/repository"
 	"education-service/proto/pb"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -124,4 +125,40 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 			Message: "Attendance successfully created",
 		}, nil
 	}
+}
+func (s *AttendanceService) CalculateTeacherSalaryByAttendance(ctx context.Context, req *pb.CalculateTeacherSalaryRequest) (*pb.CalculateTeacherSalaryResponse, error) {
+	var response []*pb.AbsCalculateSalary
+	groups := s.attendanceRepo.GetAllGroupsByTeacherId(req.TeacherId, req.From, req.To)
+	for _, group := range groups {
+		var absCalculate pb.AbsCalculateSalary
+		absCalculate.GroupId = group.Id
+		absCalculate.GroupName = group.Name
+		absCalculate.CommonLessonCountInPeriod = group.LessonCountOnPeriod
+
+		attendancesMap, err := s.attendanceRepo.GetAttendanceByTeacherAndGroup(req.TeacherId, group.Id, req.From, req.To)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("error while getting attendance by teacher and group on calculating %v", err.Error()))
+		}
+
+		for studentId, attendances := range attendancesMap {
+			var passedLessonCount int32
+			var totalSalary float32
+			var studentName string
+			for _, attendance := range attendances {
+				passedLessonCount++
+				totalSalary += attendance.Price
+				studentName = attendance.StudentName
+			}
+			absCalculate.Salaries = append(absCalculate.Salaries, &pb.StudentSalary{
+				StudentId:                studentId,
+				StudentName:              studentName,
+				PassedLessonCount:        passedLessonCount,
+				CalculatedSalaryInPeriod: int32(totalSalary),
+			})
+		}
+
+		response = append(response, &absCalculate)
+	}
+
+	return &pb.CalculateTeacherSalaryResponse{Salaries: response}, nil
 }
