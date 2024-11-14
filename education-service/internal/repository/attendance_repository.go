@@ -39,27 +39,29 @@ func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string
 	if err := r.ensureFinanceClient(); err != nil {
 		return fmt.Errorf("error while ensuring finance client %v", err)
 	}
-
 	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
 		return fmt.Errorf("oops this teacherid not the same for this group")
 	}
 	isDiscounted := false
 	var price float64
 	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
-	if discountAmount != nil {
+	if discountAmount != nil && discountOwner == "TEACHER" {
 		isDiscounted = true
 		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount); err != nil {
 			return fmt.Errorf("error while calculating money for lesson %v", err)
 		}
 	} else {
+		if discountAmount != nil {
+			isDiscounted = true
+		}
 		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil); err != nil {
 			return fmt.Errorf("error while calculating money for lesson %v", err)
 		}
 	}
 	query := `
-        INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role)
+     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role)
         VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11)
-        ON CONFLICT DO NOTHING 
+        ON CONFLICT DO NOTHING
     `
 	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole)
 	if err != nil {

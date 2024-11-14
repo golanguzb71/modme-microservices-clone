@@ -292,16 +292,8 @@ service TeacherSalaryService{
   rpc DeleteTeacherSalary(DeleteTeacherSalaryRequest) returns(common.AbsResponse);
   rpc GetTeacherSalary(google.protobuf.Empty) returns(GetTeachersSalaryRequest);
   rpc GetTeacherSalaryByTeacherID(DeleteTeacherSalaryRequest) returns(AbsGetTeachersSalary);
-  rpc CalculateTeacherSalary(CalculateTeacherSalaryRequest) returns(CalculateTeacherSalaryResponse);
 }
-message CalculateTeacherSalaryRequest{
-  string from = 1;
-  string to = 2;
-  string teacherId = 3;
-}
-message CalculateTeacherSalaryResponse{
 
-}
 message GetTeachersSalaryRequest{
   repeated AbsGetTeachersSalary salaries = 1;
 }

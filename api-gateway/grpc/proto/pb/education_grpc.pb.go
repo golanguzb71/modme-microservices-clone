@@ -870,8 +870,9 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	AttendanceService_GetAttendance_FullMethodName = "/education.AttendanceService/GetAttendance"
-	AttendanceService_SetAttendance_FullMethodName = "/education.AttendanceService/SetAttendance"
+	AttendanceService_GetAttendance_FullMethodName                      = "/education.AttendanceService/GetAttendance"
+	AttendanceService_SetAttendance_FullMethodName                      = "/education.AttendanceService/SetAttendance"
+	AttendanceService_CalculateTeacherSalaryByAttendance_FullMethodName = "/education.AttendanceService/CalculateTeacherSalaryByAttendance"
 )
 
 // AttendanceServiceClient is the client API for AttendanceService service.
@@ -882,6 +883,7 @@ const (
 type AttendanceServiceClient interface {
 	GetAttendance(ctx context.Context, in *GetAttendanceRequest, opts ...grpc.CallOption) (*GetAttendanceResponse, error)
 	SetAttendance(ctx context.Context, in *SetAttendanceRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	CalculateTeacherSalaryByAttendance(ctx context.Context, in *CalculateTeacherSalaryRequest, opts ...grpc.CallOption) (*CalculateTeacherSalaryResponse, error)
 }
 
 type attendanceServiceClient struct {
@@ -912,6 +914,16 @@ func (c *attendanceServiceClient) SetAttendance(ctx context.Context, in *SetAtte
 	return out, nil
 }
 
+func (c *attendanceServiceClient) CalculateTeacherSalaryByAttendance(ctx context.Context, in *CalculateTeacherSalaryRequest, opts ...grpc.CallOption) (*CalculateTeacherSalaryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CalculateTeacherSalaryResponse)
+	err := c.cc.Invoke(ctx, AttendanceService_CalculateTeacherSalaryByAttendance_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AttendanceServiceServer is the server API for AttendanceService service.
 // All implementations must embed UnimplementedAttendanceServiceServer
 // for forward compatibility.
@@ -920,6 +932,7 @@ func (c *attendanceServiceClient) SetAttendance(ctx context.Context, in *SetAtte
 type AttendanceServiceServer interface {
 	GetAttendance(context.Context, *GetAttendanceRequest) (*GetAttendanceResponse, error)
 	SetAttendance(context.Context, *SetAttendanceRequest) (*AbsResponse, error)
+	CalculateTeacherSalaryByAttendance(context.Context, *CalculateTeacherSalaryRequest) (*CalculateTeacherSalaryResponse, error)
 	mustEmbedUnimplementedAttendanceServiceServer()
 }
 
@@ -935,6 +948,9 @@ func (UnimplementedAttendanceServiceServer) GetAttendance(context.Context, *GetA
 }
 func (UnimplementedAttendanceServiceServer) SetAttendance(context.Context, *SetAttendanceRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetAttendance not implemented")
+}
+func (UnimplementedAttendanceServiceServer) CalculateTeacherSalaryByAttendance(context.Context, *CalculateTeacherSalaryRequest) (*CalculateTeacherSalaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateTeacherSalaryByAttendance not implemented")
 }
 func (UnimplementedAttendanceServiceServer) mustEmbedUnimplementedAttendanceServiceServer() {}
 func (UnimplementedAttendanceServiceServer) testEmbeddedByValue()                           {}
@@ -993,6 +1009,24 @@ func _AttendanceService_SetAttendance_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AttendanceService_CalculateTeacherSalaryByAttendance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateTeacherSalaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AttendanceServiceServer).CalculateTeacherSalaryByAttendance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AttendanceService_CalculateTeacherSalaryByAttendance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AttendanceServiceServer).CalculateTeacherSalaryByAttendance(ctx, req.(*CalculateTeacherSalaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AttendanceService_ServiceDesc is the grpc.ServiceDesc for AttendanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1007,6 +1041,10 @@ var AttendanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetAttendance",
 			Handler:    _AttendanceService_SetAttendance_Handler,
+		},
+		{
+			MethodName: "CalculateTeacherSalaryByAttendance",
+			Handler:    _AttendanceService_CalculateTeacherSalaryByAttendance_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

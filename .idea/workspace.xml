@@ -4,33 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/attendance_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/attendance_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/migrations/education_service_up.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/finance.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/proto/pb/finance.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/discount_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/proto/finance.proto" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/finance.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/proto/pb/finance.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/proto/pb/finance.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/cmd/main.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/config/config.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/internal/clients/client.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/internal/repository/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/internal/server/server.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/internal/service/service.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/internal/utils/utils.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/proxy-service/proto/service.proto" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/config/config.yaml" afterDir="false" />
-    </list>
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -200,5 +174,16 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/education-service/internal/utils/utils.go</url>
+          <line>183</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

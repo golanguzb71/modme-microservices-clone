@@ -4169,6 +4169,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "pb.AbsCalculateSalary": {
+            "type": "object",
+            "properties": {
+                "calculatedSalaryInPeriod": {
+                    "type": "integer"
+                },
+                "commonLessonCountInPeriod": {
+                    "type": "integer"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "passedLessonCountInPeriod": {
+                    "type": "integer"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsCategory": {
             "type": "object",
             "properties": {
@@ -4646,7 +4672,15 @@ const docTemplate = `{
             }
         },
         "pb.CalculateTeacherSalaryResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsCalculateSalary"
+                    }
+                }
+            }
         },
         "pb.ChangeConditionStudentRequest": {
             "type": "object",

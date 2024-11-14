@@ -615,6 +615,7 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 		Debts:          debts,
 	}, nil
 }
+
 func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformationResponse, error) {
 	// Initialize the response to avoid nil pointer dereference
 	response := new(pb.GetCommonInformationResponse)
@@ -639,6 +640,7 @@ func (r *PaymentRepository) GetCommonFinanceInformation() (*pb.GetCommonInformat
 
 	return response, nil
 }
+
 func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncomeChartResponse, error) {
 	startDate, err := time.Parse("200601", from)
 	if err != nil {

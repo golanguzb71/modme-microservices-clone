@@ -184,6 +184,25 @@ message GetGroupsRequest{
 service AttendanceService{
   rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
   rpc SetAttendance(SetAttendanceRequest) returns(common.AbsResponse);
+  rpc CalculateTeacherSalaryByAttendance(CalculateTeacherSalaryRequest) returns(CalculateTeacherSalaryResponse);
+}
+message CalculateTeacherSalaryRequest{
+  string from = 1;
+  string to = 2;
+  string teacherId = 3;
+}
+message CalculateTeacherSalaryResponse{
+  repeated AbsCalculateSalary salaries = 1;
+}
+
+message AbsCalculateSalary{
+  string groupId = 1;
+  string groupName = 2;
+  string studentId = 3;
+  string studentName = 4;
+  int32 commonLessonCountInPeriod = 5;
+  int32 passedLessonCountInPeriod = 6;
+  int32 calculatedSalaryInPeriod = 7;
 }
 message GetAttendanceRequest{
   string groupId = 1;
