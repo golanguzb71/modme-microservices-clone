@@ -95,9 +95,8 @@ func RunServer() {
 	pb.RegisterAttendanceServiceServer(grpcServer, attendanceService)
 	pb.RegisterStudentServiceServer(grpcServer, studentService)
 
-	// Correct cron expression to run every minute
 	c := cron.New()
-	_, err = c.AddFunc("* * * * *", func() {
+	_, err = c.AddFunc("10 1 1 * *", func() {
 		fmt.Println("Running student balance taker ....")
 		studentRepo.StudentBalanceTaker()
 		fmt.Println("Completed student balance taker")

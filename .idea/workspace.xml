@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/repository/student_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/server/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/server/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lead-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/lead-service/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/config/config.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
