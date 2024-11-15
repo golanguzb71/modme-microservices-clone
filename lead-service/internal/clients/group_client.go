@@ -2,6 +2,7 @@ package clients
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"lid-service/proto/pb"
 )
@@ -13,6 +14,7 @@ type GroupClient struct {
 func NewGroupClient(addr string) *GroupClient {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
+		fmt.Println(err)
 		return nil
 	}
 	client := pb.NewGroupServiceClient(conn)

@@ -6,6 +6,7 @@ import (
 	"finance-service/proto/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"net/http"
 )
 
@@ -16,7 +17,7 @@ type PaymentService struct {
 
 func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
 	if req.Type == "ADD" {
-		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
+		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, false); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
@@ -30,6 +31,14 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 		return &pb.AbsResponse{
 			Status:  http.StatusCreated,
 			Message: "payment take_off successfully",
+		}, nil
+	} else if req.Type == "REFUND" {
+		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, true); err != nil {
+			return nil, status.Errorf(codes.Canceled, err.Error())
+		}
+		return &pb.AbsResponse{
+			Status:  http.StatusCreated,
+			Message: "payment refund",
 		}, nil
 	}
 	return nil, status.Errorf(codes.Aborted, "invalid request type")
@@ -51,7 +60,26 @@ func (ps *PaymentService) GetAllPaymentTakeOff(ctx context.Context, req *pb.GetA
 	return ps.repo.GetAllPaymentTakeOff(req.From, req.To)
 }
 func (ps *PaymentService) GetAllPaymentTakeOffChart(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffChartResponse, error) {
-	return ps.repo.GetAllPaymentTakeOffChart(req.To, req.From)
+	return ps.repo.GetAllPaymentTakeOffChart(req.From, req.To)
+}
+
+func (ps *PaymentService) GetAllStudentPayments(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsResponse, error) {
+	return ps.repo.GetAllStudentPayments(req.From, req.To)
+}
+
+func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsChartResponse, error) {
+	return ps.repo.GetAllStudentPaymentsChart(req.From, req.To)
+}
+
+func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.GetAllDebtsRequest) (*pb.GetAllDebtsInformationResponse, error) {
+	return ps.repo.GetAllDebtsInformation(req.From, req.To, req.PageParam.Page, req.PageParam.Size)
+}
+func (ps *PaymentService) GetCommonFinanceInformation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationResponse, error) {
+	return ps.repo.GetCommonFinanceInformation()
+}
+
+func (ps *PaymentService) GetIncomeChart(ctx context.Context, req *pb.GetIncomeChartRequest) (*pb.GetIncomeChartResponse, error) {
+	return ps.repo.GetIncomeChart(req.From, req.To)
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {

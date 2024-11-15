@@ -15,6 +15,10 @@ service LeadService {
   rpc DeleteLead(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc GetListSection(google.protobuf.Empty)returns(GetLeadListResponse);
   rpc GetLeadReports(GetLeadReportsRequest) returns(GetLeadReportsResponse);
+  rpc GetActiveLeadCount(google.protobuf.Empty) returns(GetActiveLeadCountResponse);
+}
+message GetActiveLeadCountResponse{
+  int32 activeLeadCount = 1;
 }
 message GetLeadReportsResponse{
   repeated LeadConversion leadConversion = 1;

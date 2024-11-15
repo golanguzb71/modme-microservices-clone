@@ -115,6 +115,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/common-information-company": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get common information about company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "ADMIN , CEO",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/course/create": {
             "post": {
                 "security": [
@@ -1017,6 +1051,182 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/payment/all-student-payments/chart/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN ,CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chart data of payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsChartResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error with an explanation",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/all-student-payments/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves a list of student payments between the provided 'from' and 'to' date parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: YYYY-MM-DD)",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: YYYY-MM-DD)",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of payments",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error with an explanation",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/finance/payment/get-all-debts/{page}/{size}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves information about debts within the specified date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "size",
+                        "name": "size",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "from",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "to",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success response containing debt information",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllDebtsInformationResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict occurred while fetching debt information",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/payment/get-all-payments/{studentId}/{month}": {
             "get": {
                 "security": [
@@ -1369,6 +1579,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/finance/salary/calculate/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Calculates the salary for a specified teacher within a given date range.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "salary"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date for the salary calculation period in YYYY-MM-DD format",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date for the salary calculation period in YYYY-MM-DD format",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Teacher ID for whom the salary is calculated",
+                        "name": "teacherId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Calculated salary information",
+                        "schema": {
+                            "$ref": "#/definitions/pb.CalculateTeacherSalaryResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict or calculation error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/finance/salary/delete/{teacherID}": {
             "delete": {
                 "security": [
@@ -1484,6 +1750,94 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-chart-income": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get information about a income",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "from",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "to",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetCommonInformationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-table-groups": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get common information about company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "ADMIN , CEO, TEACHER",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "dateType",
+                        "name": "dateType",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/utils.AbsResponse"
                         }
@@ -3815,6 +4169,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "pb.AbsCalculateSalary": {
+            "type": "object",
+            "properties": {
+                "commonLessonCountInPeriod": {
+                    "type": "integer"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.StudentSalary"
+                    }
+                }
+            }
+        },
         "pb.AbsCategory": {
             "type": "object",
             "properties": {
@@ -3849,6 +4223,26 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "number"
+                }
+            }
+        },
+        "pb.AbsDebtsInformation": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "debtorId": {
+                    "type": "string"
+                },
+                "debtorName": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "totalOnPeriod": {
+                    "type": "string"
                 }
             }
         },
@@ -3951,6 +4345,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "teacherId": {
+                    "type": "string"
+                },
+                "teacherName": {
                     "type": "string"
                 },
                 "type": {
@@ -4171,6 +4568,35 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsStudentPayments": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "string"
+                },
+                "creatorName": {
+                    "type": "string"
+                },
+                "givenDate": {
+                    "type": "string"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsTakeOfChartResponse": {
             "type": "object",
             "properties": {
@@ -4236,6 +4662,17 @@ const docTemplate = `{
                 },
                 "teacherId": {
                     "type": "string"
+                }
+            }
+        },
+        "pb.CalculateTeacherSalaryResponse": {
+            "type": "object",
+            "properties": {
+                "salaries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsCalculateSalary"
+                    }
                 }
             }
         },
@@ -4604,6 +5041,20 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetAllDebtsInformationResponse": {
+            "type": "object",
+            "properties": {
+                "debts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsDebtsInformation"
+                    }
+                },
+                "totalPageCount": {
+                    "type": "integer"
+                }
+            }
+        },
         "pb.GetAllEmployeeResponse": {
             "type": "object",
             "properties": {
@@ -4729,6 +5180,40 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetAllStudentPaymentsChartResponse": {
+            "type": "object",
+            "properties": {
+                "cash": {
+                    "type": "string"
+                },
+                "click": {
+                    "type": "string"
+                },
+                "payme": {
+                    "type": "string"
+                },
+                "paymentsChart": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsTakeOfChartResponse"
+                    }
+                },
+                "totalRevenue": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetAllStudentPaymentsResponse": {
+            "type": "object",
+            "properties": {
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsStudentPayments"
+                    }
+                }
+            }
+        },
         "pb.GetAllStudentResponse": {
             "type": "object",
             "properties": {
@@ -4757,6 +5242,12 @@ const docTemplate = `{
         "pb.GetAttendanceRequest": {
             "type": "object",
             "properties": {
+                "actionId": {
+                    "type": "string"
+                },
+                "actionRole": {
+                    "type": "string"
+                },
                 "from": {
                     "type": "string"
                 },
@@ -4785,6 +5276,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.Student"
                     }
+                }
+            }
+        },
+        "pb.GetCommonInformationResponse": {
+            "type": "object",
+            "properties": {
+                "debtorsCount": {
+                    "type": "integer"
+                },
+                "payInCurrentMonth": {
+                    "type": "integer"
                 }
             }
         },
@@ -5508,6 +6010,23 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.StudentSalary": {
+            "type": "object",
+            "properties": {
+                "calculatedSalaryInPeriod": {
+                    "type": "integer"
+                },
+                "passedLessonCount": {
+                    "type": "integer"
+                },
+                "studentId": {
+                    "type": "string"
+                },
+                "studentName": {
                     "type": "string"
                 }
             }

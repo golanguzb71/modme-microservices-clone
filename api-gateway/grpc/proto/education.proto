@@ -87,6 +87,14 @@ service GroupService{
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
+  rpc GetCommonInformationEducation(google.protobuf.Empty) returns(GetCommonInformationEducationResponse);
+}
+
+message GetCommonInformationEducationResponse{
+  int32 activeStudentCount = 1;
+  int32 activeGroupCount = 2;
+  int32 leaveGroupCount = 3;
+  int32 debtorsCount = 4;
 }
 message GetGroupsByTeacherIdRequest{
   string teacherId = 1;
@@ -120,6 +128,8 @@ message CreateGroupRequest{
 }
 message GetGroupByIdRequest{
   string id = 1;
+  string actionRole = 2;
+  string actionId = 3;
 }
 message GetUpdateGroupAbs{
   string id = 10;
@@ -176,12 +186,38 @@ message GetGroupsRequest{
 service AttendanceService{
   rpc GetAttendance(GetAttendanceRequest) returns(GetAttendanceResponse);
   rpc SetAttendance(SetAttendanceRequest) returns(common.AbsResponse);
+  rpc CalculateTeacherSalaryByAttendance(CalculateTeacherSalaryRequest) returns(CalculateTeacherSalaryResponse);
 }
+message CalculateTeacherSalaryRequest{
+  string from = 1;
+  string to = 2;
+  string teacherId = 3;
+}
+message CalculateTeacherSalaryResponse {
+  repeated AbsCalculateSalary salaries = 1;
+}
+
+message AbsCalculateSalary {
+  string groupId = 1;
+  string groupName = 2;
+  int32 commonLessonCountInPeriod = 3;
+  repeated StudentSalary salaries = 4;
+}
+
+message StudentSalary {
+  string studentId = 1;
+  string studentName = 2;
+  int32 passedLessonCount = 3;
+  int32 calculatedSalaryInPeriod = 4;
+}
+
 message GetAttendanceRequest{
   string groupId = 1;
   string from = 2;
   string till = 3;
   bool withOutdated = 4;
+  string actionId = 5;
+  string actionRole = 6;
 }
 
 message GetAttendanceResponse{

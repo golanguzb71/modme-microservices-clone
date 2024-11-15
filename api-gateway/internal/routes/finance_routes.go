@@ -39,12 +39,16 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			payment.GET("/get-all-payments/:studentId/:month", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
 			payment.GET("/payment-take-off/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllTakeOffPayment)
 			payment.GET("/payment-take-off/chart/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetPaymentTakeOffChart)
+			payment.GET("/all-student-payments/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudentPayment)
+			payment.GET("/all-student-payments/chart/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPaymentsStudentChart)
+			payment.GET("/get-all-debts/:page/:size", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDebtsInformation)
 		}
 		salary := finance.Group("/salary")
 		{
 			salary.GET("/teacher-all", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.GetSalaryAllTeacher)
 			salary.POST("/teacher-add", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.AddSalaryTeacher)
 			salary.DELETE("/delete/:teacherID", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.DeleteTeacherSalary)
+			salary.GET("/calculate/:from/:to", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.CalculateSalary)
 		}
 	}
 }

@@ -3,6 +3,7 @@ package client
 import (
 	"api-gateway/grpc/proto/pb"
 	"context"
+	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -95,8 +96,8 @@ func (lc *EducationClient) GetAllGroup(ctx context.Context, isArchived bool, pag
 	})
 }
 
-func (lc *EducationClient) GetGroupById(ctx context.Context, id string) (*pb.GetGroupAbsResponse, error) {
-	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: id})
+func (lc *EducationClient) GetGroupById(ctx context.Context, groupId, userId, role string) (*pb.GetGroupAbsResponse, error) {
+	return lc.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: groupId, ActionId: userId, ActionRole: role})
 }
 
 func (lc *EducationClient) GetAttendanceByGroup(ctx context.Context, req *pb.GetAttendanceRequest) (*pb.GetAttendanceResponse, error) {
@@ -183,5 +184,23 @@ func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherI
 	return lc.groupClient.GetGroupsByTeacherId(ctx, &pb.GetGroupsByTeacherIdRequest{
 		TeacherId:  teacherId,
 		IsArchived: isArchived,
+	})
+}
+
+func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int) {
+	response, err := lc.groupClient.GetCommonInformationEducation(ctx, &emptypb.Empty{})
+	fmt.Println(response)
+	fmt.Println(err)
+	if err != nil {
+		return 0, 0, 0, 0
+	}
+	return int(response.ActiveStudentCount), int(response.ActiveGroupCount), int(response.LeaveGroupCount), int(response.DebtorsCount)
+}
+
+func (lc *EducationClient) CalculateSalaryByTeacher(ctx context.Context, from string, to string, teacherId string) (*pb.CalculateTeacherSalaryResponse, error) {
+	return lc.attendanceClient.CalculateTeacherSalaryByAttendance(ctx, &pb.CalculateTeacherSalaryRequest{
+		From:      from,
+		To:        to,
+		TeacherId: teacherId,
 	})
 }

@@ -135,6 +135,62 @@ func (fc *FinanceClient) GetPaymentTakeOffChart(from string, to string, ctx cont
 	})
 }
 
+func (fc *FinanceClient) GetAllStudentPayment(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsResponse, error) {
+	return fc.paymentClient.GetAllStudentPayments(ctx, &pb.GetAllStudentPaymentsRequest{
+		From: from,
+		To:   to,
+	})
+}
+
+func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsChartResponse, error) {
+	return fc.paymentClient.GetAllStudentPaymentsChart(ctx, &pb.GetAllStudentPaymentsRequest{
+		From: from,
+		To:   to,
+	})
+}
+
+func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size, from, to string) (*pb.GetAllDebtsInformationResponse, error) {
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, err
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, err
+	}
+	return fc.paymentClient.GetAllDebtsInformation(ctx, &pb.GetAllDebtsRequest{
+		PageParam: &pb.PageRequest{
+			Page: int32(pageInt),
+			Size: int32(sizeInt),
+		},
+		From: from,
+		To:   to,
+	})
+}
+
+func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, int) {
+	response, err := fc.paymentClient.GetCommonFinanceInformation(ctx, &emptypb.Empty{})
+	if err != nil {
+		return 0, 0
+	}
+	return int(response.DebtorsCount), int(response.PayInCurrentMonth)
+}
+
+func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to string) (*pb.GetIncomeChartResponse, error) {
+	resp, err := fc.paymentClient.GetIncomeChart(ctx, &pb.GetIncomeChartRequest{
+		From: from,
+		To:   to,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+func (fc *FinanceClient) GetTableGroups(ctx context.Context) (interface{}, error) {
+	return nil, nil
+}
+
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

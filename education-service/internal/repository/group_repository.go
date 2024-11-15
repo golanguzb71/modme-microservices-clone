@@ -3,10 +3,13 @@ package repository
 import (
 	"database/sql"
 	"education-service/internal/clients"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
 	"github.com/lib/pq"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 )
 
@@ -114,7 +117,10 @@ LIMIT $2 OFFSET $3;`
 
 	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
-func (r *GroupRepository) GetGroupById(id string) (*pb.GetGroupAbsResponse, error) {
+func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
+	if !utils.CheckGroupAndTeacher(r.db, id, actionRole, actionId) {
+		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
+	}
 	query := `SELECT g.id, g.course_id, c.title as course_title, 
               g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, g.name,
               COUNT(gs.id)  as student_count, 
@@ -282,4 +288,42 @@ func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent
 	}
 
 	return students, nil
+}
+func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformationEducationResponse, error) {
+	// Initialize the response to avoid nil pointer dereference
+	response := new(pb.GetCommonInformationEducationResponse)
+
+	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount int32
+
+	// Query to get leaveGroupCount
+	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE'`).Scan(&leaveGroupCount)
+	if err != nil {
+		leaveGroupCount = 0
+	}
+
+	// Query to get activeGroupCount
+	err = r.db.QueryRow(`SELECT COUNT(id) FROM groups where is_archived=false`).Scan(&activeGroupCount)
+	if err != nil {
+		activeGroupCount = 0
+	}
+
+	// Query to get activeStudentCount
+	err = r.db.QueryRow(`SELECT count(id) FROM students where condition='ACTIVE'`).Scan(&activeStudentCount)
+	if err != nil {
+		activeStudentCount = 0
+	}
+
+	// Query to get debtorsCount
+	err = r.db.QueryRow(`SELECT COUNT(id) FROM students where balance < 0`).Scan(&debtorsCount)
+	if err != nil {
+		debtorsCount = 0
+	}
+
+	// Assign the values to the response fields
+	response.DebtorsCount = debtorsCount
+	response.LeaveGroupCount = leaveGroupCount
+	response.ActiveGroupCount = activeGroupCount
+	response.ActiveStudentCount = activeStudentCount
+
+	return response, nil
 }

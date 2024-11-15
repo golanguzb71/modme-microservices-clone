@@ -17,6 +17,7 @@ func NewStudentService(repo *repository.StudentRepository) *StudentService {
 
 func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStudentRequest) (*pb.GetAllStudentResponse, error) {
 	return s.repo.GetAllStudent(req.Condition, req.Page, req.Size)
+	
 }
 
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {

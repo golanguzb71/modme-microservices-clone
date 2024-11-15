@@ -377,7 +377,12 @@ func GetGroupById(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	id := ctx.Param("id")
-	resp, err := educationClient.GetGroupById(ctxR, id)
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	resp, err := educationClient.GetGroupById(ctxR, id, user.Id, user.Role)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -440,6 +445,13 @@ func GetAttendance(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	user, err := utils.GetUserFromContext(ctx)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
+		return
+	}
+	req.ActionRole = user.Role
+	req.ActionId = user.Id
 	resp, err := educationClient.GetAttendanceByGroup(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
@@ -884,4 +896,98 @@ func GetInformationByTeacher(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 	return
+}
+
+// GetCommonInformationCompany godoc
+// @Summary ADMIN , CEO
+// @Description Get common information about company
+// @Tags education
+// @Produce json
+// @Success 200 {object} map[string]int
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/common-information-company [get]
+func GetCommonInformationCompany(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	activeLeadCount := leadClient.GetActiveLeadCount(ctxR)
+	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount := educationClient.GetCommonEducationInformation(ctxR)
+	_, payInCurrentMonth := financeClient.GetCommonFinanceInformation(ctxR)
+	fmt.Println(activeLeadCount)
+	fmt.Println(activeGroupCount)
+	fmt.Println(activeStudentCount)
+	fmt.Println(leaveGroupCount)
+	fmt.Println(activeLeadCount)
+	response := make(map[string]int)
+	response["activeLeadCount"] = activeLeadCount
+	response["activeStudentsCount"] = activeStudentCount
+	response["activeGroupCount"] = activeGroupCount
+	response["debtorsCount"] = commonDebtorsCount
+	response["payInCurrentMonth"] = payInCurrentMonth
+	response["leaveGroupCount"] = leaveGroupCount
+	ctx.JSON(http.StatusOK, response)
+	return
+}
+
+// GetChartIncome godoc
+// @Summary CEO
+// @Description Get information about a income
+// @Tags education
+// @Param from query string true "from"
+// @Param to query string true "to"
+// @Produce json
+// @Success 200 {object} pb.GetCommonInformationResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/get-chart-income [get]
+func GetChartIncome(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	resp, err := financeClient.GetChartIncome(ctxR, ctx.Query("from"), ctx.Query("to"))
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
+
+// GetTableGroups godoc
+// @Summary ADMIN , CEO, TEACHER
+// @Description Get common information about company
+// @Tags education
+// @Produce json
+// @Param dateType query string true "dateType"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} utils.AbsResponse
+// @Security Bearer
+// @Router /api/get-table-groups [get]
+func GetTableGroups(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	// Get dateType from query
+	queryDateType := ctx.Query("dateType")
+
+	// Fetch groups
+	response, err := educationClient.GetAllGroup(ctxR, false, 1, 10000)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Filter groups by dateType
+	var filteredGroups []*pb.GetGroupAbsResponse
+	for _, group := range response.Groups {
+		if group.DateType == queryDateType {
+			filteredGroups = append(filteredGroups, group)
+		}
+	}
+
+	// Prepare final response
+	finalResponse := map[string]interface{}{
+		"groups": filteredGroups,
+	}
+
+	ctx.JSON(http.StatusOK, finalResponse)
 }

@@ -3,31 +3,104 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"education-service/internal/clients"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"fmt"
+	"github.com/lib/pq"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"sort"
 	"time"
 )
 
 type AttendanceRepository struct {
-	db *sql.DB
+	db                *sql.DB
+	financeClient     *clients.FinanceClient
+	financeClientChan chan *clients.FinanceClient
 }
 
-func NewAttendanceRepository(db *sql.DB) *AttendanceRepository {
-	return &AttendanceRepository{db: db}
+type Groups struct {
+	Id                  string
+	Name                string
+	CourseId            int
+	DateType            string
+	Days                []string
+	StartTime           string
+	StartDate           string
+	EndDate             string
+	IsArchived          bool
+	LessonCountOnPeriod int32
+	CreatedAt           string
+}
+type Attendance struct {
+	IsDiscounted  bool
+	DiscountOwner string
+	Price         float32
+	GroupId       int64
+	StudentId     string
+	StudentName   string
+	TeacherId     string
+	AttendDate    string
+	Status        int
+	CreatedAt     time.Time
+	CreatedBy     string
+	CreatorRole   string
 }
 
+func (r *AttendanceRepository) ensureFinanceClient() error {
+	if r.financeClient == nil {
+		select {
+		case client := <-r.financeClientChan:
+			r.financeClient = client
+		case <-time.After(5 * time.Second):
+			return fmt.Errorf("failed to initialize GroupClient within timeout")
+		}
+	}
+	return nil
+}
+
+func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.FinanceClient) *AttendanceRepository {
+	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
+}
 func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+	if err := r.ensureFinanceClient(); err != nil {
+		return fmt.Errorf("error while ensuring finance client %v", err)
+	}
+	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
+		return fmt.Errorf("oops this teacherid not the same for this group")
+	}
+	isDiscounted := false
+	var price float64
+	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+	if discountAmount != nil && discountOwner == "TEACHER" {
+		isDiscounted = true
+		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount); err != nil {
+			return fmt.Errorf("error while calculating money for lesson %v", err)
+		}
+	} else {
+		if discountAmount != nil {
+			isDiscounted = true
+		}
+		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil); err != nil {
+			return fmt.Errorf("error while calculating money for lesson %v", err)
+		}
+	}
 	query := `
-        INSERT INTO attendance (group_id, student_id, teacher_id, attend_date, status, creator_role , created_by)
-        VALUES ($1, $2, $3, $4, $5 , $6 , $7)
-        ON CONFLICT DO NOTHING 
+     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role)
+        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11)
+        ON CONFLICT DO NOTHING
     `
-	_, err := r.db.Exec(query, groupId, studentId, teacherId, attendDate, status, actionByRole, actionById)
+	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole)
+	if err != nil {
+		return fmt.Errorf("error while creating attendance %v", err)
+	}
 	return err
 }
-
 func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string, teacherId string, attendDate string) error {
+	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
+		return fmt.Errorf("oops this teacherid not the same for this group")
+	}
 	query := `
         DELETE FROM attendance
         WHERE group_id = $1
@@ -49,7 +122,11 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	// writing teacher finance remove
 	return nil
 }
-func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool) (*pb.GetAttendanceResponse, error) {
+func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool, actionRole, actionId string) (*pb.GetAttendanceResponse, error) {
+	if !utils.CheckGroupAndTeacher(r.db, groupId, actionRole, actionId) {
+		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
+	}
+
 	response := &pb.GetAttendanceResponse{
 		Days:     make([]*pb.Day, 0),
 		Students: make([]*pb.Student, 0),
@@ -285,4 +362,136 @@ func (r *AttendanceRepository) IsHaveTransferredLesson(groupID string) bool {
 		return false
 	}
 	return count > 0
+}
+func (r *AttendanceRepository) GetAllGroupsByTeacherId(teacherId, from, to string) []Groups {
+	var response []Groups
+	rows, err := r.db.Query(`SELECT id,
+       name,
+       course_id,
+       date_type,
+       days,
+       start_time,
+       start_date,
+       end_date,
+       is_archived,
+       created_at FROM groups where teacher_id=$1`, teacherId)
+	if err != nil {
+		return nil
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var group Groups
+		err := rows.Scan(&group.Id, &group.Name, &group.CourseId, &group.DateType, pq.Array(&group.Days), &group.StartTime, &group.StartDate, &group.EndDate, &group.IsArchived, &group.CreatedAt)
+		if err != nil {
+			return nil
+		}
+		group.LessonCountOnPeriod = r.lessonCounter(from, to, group.Id)
+		response = append(response, group)
+	}
+
+	return response
+}
+
+func (r *AttendanceRepository) lessonCounter(from, to, groupId string) int32 {
+	query := `
+        WITH RECURSIVE dates AS (
+            SELECT $1::date AS date
+            UNION ALL
+            SELECT date + 1
+            FROM dates
+            WHERE date < $2::date
+        ),
+        group_dates AS (
+            SELECT DISTINCT d.date
+            FROM dates d
+            JOIN groups g ON g.id = $3::bigint
+            WHERE
+                (d.date >= g.start_date AND d.date <= LEAST(g.end_date, $2::date))
+                AND EXTRACT(DOW FROM d.date) = ANY(
+                    SELECT CASE day
+                        WHEN 'DUSHANBA' THEN 1
+                        WHEN 'SESHANBA' THEN 2
+                        WHEN 'CHORSHANBA' THEN 3
+                        WHEN 'PAYSHANBA' THEN 4
+                        WHEN 'JUMA' THEN 5
+                        WHEN 'SHANBA' THEN 6
+                        WHEN 'YAKSHANBA' THEN 0
+                    END
+                    FROM unnest(g.days) AS day
+                )
+        )
+        SELECT COUNT(*)
+        FROM group_dates;
+    `
+
+	var lessonCount int32
+	err := r.db.QueryRow(query, from, to, groupId).Scan(&lessonCount)
+	if err != nil {
+		return 0
+	}
+
+	return lessonCount
+}
+
+func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(teacherId string, groupId string, from string, to string) (map[string][]Attendance, error) {
+	query := `
+		SELECT 
+			is_discounted,
+			discount_owner,
+			price,
+			group_id,
+			student_id,
+			s.name,
+			teacher_id,
+			attend_date,
+			status,
+			a.created_at,
+			created_by,
+			creator_role
+		FROM 
+			attendance a
+		JOIN students s
+		ON a.student_id=s.id
+		WHERE 
+			teacher_id = $1 AND 
+			group_id = $2 AND 
+			attend_date BETWEEN $3 AND $4
+	`
+
+	rows, err := r.db.Query(query, teacherId, groupId, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	attendanceMap := make(map[string][]Attendance)
+
+	for rows.Next() {
+		var attendance Attendance
+		err := rows.Scan(
+			&attendance.IsDiscounted,
+			&attendance.DiscountOwner,
+			&attendance.Price,
+			&attendance.GroupId,
+			&attendance.StudentId,
+			&attendance.StudentName,
+			&attendance.TeacherId,
+			&attendance.AttendDate,
+			&attendance.Status,
+			&attendance.CreatedAt,
+			&attendance.CreatedBy,
+			&attendance.CreatorRole,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		attendanceMap[attendance.StudentId] = append(attendanceMap[attendance.StudentId], attendance)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return attendanceMap, nil
 }

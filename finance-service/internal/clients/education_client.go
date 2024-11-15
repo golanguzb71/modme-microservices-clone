@@ -22,12 +22,12 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	return &EducationClient{studentClient: studentClient, groupClient: groupClient}, nil
 }
 
-func (ec *EducationClient) GetStudentById(studentId string) (string, string, error) {
+func (ec *EducationClient) GetStudentById(studentId string) (string, string, float64, error) {
 	student, err := ec.studentClient.GetStudentById(context.TODO(), &pb.NoteStudentByAbsRequest{Id: studentId})
 	if err != nil {
-		return "", "", err
+		return "", "", 0, err
 	}
-	return student.Name, student.Phone, nil
+	return student.Name, student.Phone, student.Balance, nil
 }
 
 func (ec *EducationClient) GetStudentsByGroupId(groupId string) (*pb.GetStudentsByGroupIdResponse, error) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"education-service/internal/repository"
 	"education-service/proto/pb"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
 )
 
@@ -50,7 +51,7 @@ func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) 
 }
 
 func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdRequest) (*pb.GetGroupAbsResponse, error) {
-	group, err := s.repo.GetGroupById(req.Id)
+	group, err := s.repo.GetGroupById(req.Id, req.ActionRole, req.ActionId)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err
@@ -69,4 +70,8 @@ func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroup
 
 func (s *GroupService) GetGroupsByTeacherId(ctx context.Context, req *pb.GetGroupsByTeacherIdRequest) (*pb.GetGroupsByTeacherResponse, error) {
 	return s.repo.GetGroupByTeacherId(req.TeacherId, req.IsArchived)
+}
+
+func (s *GroupService) GetCommonInformationEducation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationEducationResponse, error) {
+	return s.repo.GetCommonInformationEducation()
 }

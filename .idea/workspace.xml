@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/docs.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/docs/swagger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/internal/handlers/finance_service_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/education-service/internal/utils/utils.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/utils/utils.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/service/payment_service.go" afterDir="false" />
-    </list>
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +34,13 @@
     &quot;accountId&quot;: &quot;55d1bcae-72d2-473c-aaeb-9352fac21b24&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -58,12 +56,13 @@
     &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build finance-service/cmd.executor&quot;: &quot;Debug&quot;,
     &quot;Go Build.go build lid-service/cmd.executor&quot;: &quot;Run&quot;,
-    &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.runner.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;finance__service__branc&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/abdulaziz/GolandProjects/modme-microservices-clone/finance-service&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -74,7 +73,8 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+      &quot;postgresql&quot;,
+      &quot;mongo&quot;
     ]
   }
 }</component>
@@ -97,15 +97,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Go Build.go build education-service/cmd">
-    <configuration name="go build api-gateway/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="modme" />
-      <working_directory value="$PROJECT_DIR$/api-gateway" />
-      <kind value="PACKAGE" />
-      <package value="api-gateway/cmd" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/api-gateway/cmd/main.go" />
-      <method v="2" />
-    </configuration>
     <configuration name="go build education-service/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="modme" />
       <working_directory value="$PROJECT_DIR$/education-service" />
@@ -142,13 +133,19 @@
       <filePath value="$PROJECT_DIR$/user-service/cmd/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="runner" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="runner" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build education-service/cmd" />
         <item itemvalue="Go Build.go build finance-service/cmd" />
-        <item itemvalue="Go Build.go build lid-service/cmd" />
         <item itemvalue="Go Build.go build user-service/cmd" />
-        <item itemvalue="Go Build.go build api-gateway/cmd" />
+        <item itemvalue="Makefile Target.runner" />
+        <item itemvalue="Go Build.go build lid-service/cmd" />
       </list>
     </recent_temporary>
   </component>
@@ -163,6 +160,17 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
