@@ -3,7 +3,6 @@ package clients
 import (
 	"context"
 	"education-service/proto/pb"
-	"fmt"
 	"google.golang.org/grpc"
 )
 
@@ -35,7 +34,6 @@ func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, 
 }
 
 func (fc *FinanceClient) PaymentAdd(comment, date, method, sum, userId, paymentType, actionById, actionByName, groupId string) (*pb.AbsResponse, error) {
-	fmt.Println(groupId)
 	return fc.paymentClient.PaymentAdd(context.TODO(), &pb.PaymentAddRequest{
 		Comment:      comment,
 		Date:         date,

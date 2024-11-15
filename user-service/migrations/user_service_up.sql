@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS users
     birth_date    date                                                                      DEFAULT '2000-12-12',
     gender        boolean                                                          NOT NULL DEFAULT TRUE,
     is_deleted    boolean                                                          NOT NULL DEFAULT FALSE,
-    self_discount boolean                                                                   DEFAULT FALSE,
     created_at    timestamp                                                                 DEFAULT NOW()
 );
 

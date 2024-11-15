@@ -701,6 +701,7 @@ func (r *PaymentRepository) GetIncomeChart(from string, to string) (*pb.GetIncom
 	fmt.Println(&response)
 	return &response, nil
 }
+
 func NewPaymentRepository(db *sql.DB, client *clients.EducationClient) *PaymentRepository {
 	return &PaymentRepository{db: db, educationClient: client}
 }

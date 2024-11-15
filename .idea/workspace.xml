@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="" />
+    <list default="true" id="2c43e222-640a-413d-9cc1-6491973c3604" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/education-service/internal/clients/finance_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/finance-service/internal/repository/payment_repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/migrations/user_service_up.sql" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/migrations/user_service_up.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -59,6 +64,7 @@
     &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Run&quot;,
     &quot;Makefile Target.runner.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
@@ -69,6 +75,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;onboarding.tips.debug.path&quot;: &quot;/home/elon/GolandProjects/modme/main.go&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -152,8 +159,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-gosdk-5df93f7ad4aa-df9ad98b711f-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-242.23339.24" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-GO-242.23339.24" />
+        <option value="bundled-gosdk-d297c17c1fbd-b87a2f8923ed-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-243.21565.208" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-GO-243.21565.208" />
       </set>
     </attachedChunks>
   </component>
