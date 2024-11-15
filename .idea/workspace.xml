@@ -39,7 +39,7 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -53,7 +53,7 @@
   &quot;keyToString&quot;: {
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
     &quot;Go Build.go build api-gateway/cmd.executor&quot;: &quot;Debug&quot;,
-    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build education-service/cmd.executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build finance-service/cmd.executor&quot;: &quot;Debug&quot;,
     &quot;Go Build.go build lid-service/cmd.executor&quot;: &quot;Run&quot;,
     &quot;Go Build.go build user-service/cmd.executor&quot;: &quot;Run&quot;,
@@ -174,16 +174,5 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/education-service/internal/utils/utils.go</url>
-          <line>183</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
