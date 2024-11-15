@@ -798,7 +798,9 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 		tx.Rollback()
 		return err
 	}
-
+	if groupId != "" && groupName == "" {
+		groupName = "Group"
+	}
 	historyData := map[string]interface{}{
 		"comment":       comment,
 		"groupId":       groupId,
@@ -847,4 +849,64 @@ func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bo
 	}
 
 	return checker
+}
+
+func (r *StudentRepository) StudentBalanceTaker() {
+	if err := r.ensureFinanceClient(); err != nil {
+		return
+	}
+	rows, err := r.db.Query(`SELECT id FROM students where condition='ACTIVE'`)
+	if err != nil {
+		fmt.Printf("error get active student %v", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var studentId string
+		err = rows.Scan(&studentId)
+		if err != nil {
+			fmt.Printf("error scanning active student %v", err)
+			continue
+		}
+		extraRow, err := r.db.Query(`SELECT group_id FROM group_students where student_id=$1 and condition='ACTIVE'`, studentId)
+		fmt.Println(studentId)
+		if err != nil {
+			fmt.Printf("error getting  active groupid %v", err)
+			continue
+		}
+		for extraRow.Next() {
+			var (
+				groupId     string
+				takingPrice string
+				comment     string
+			)
+			err = extraRow.Scan(&groupId)
+			if err != nil {
+				fmt.Printf("error scanning groupid student %v", err)
+				continue
+			}
+			discountAmount, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+			if discountAmount == nil {
+				err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1`, groupId).Scan(&takingPrice)
+				if err != nil {
+					fmt.Printf("error getting course price active student %v", err)
+					continue
+				}
+				comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi."
+			} else {
+				takingPrice = *discountAmount
+				comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi chegirma narxida"
+			}
+			fmt.Println(groupId)
+			//_, err := r.ChangeUserBalanceHistory("ushbu oy uchun oylik tolov student balansidan yechib olindi.", groupId, "00000000-0000-0000-0000-000000000000", "TIZIM", time.Now().Format("2006-01-02"), takingPrice, "TAKE_OFF", studentId)
+			_, err := r.financeClient.PaymentAdd(comment, time.Now().Format("2006-01-02"), "CASH", takingPrice, studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
+			if err != nil {
+				fmt.Printf("error changing balance history active student %v", err)
+				continue
+			}
+		}
+		extraRow.Close()
+	}
+
 }

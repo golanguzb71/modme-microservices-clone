@@ -10,6 +10,7 @@ import (
 	"education-service/proto/pb"
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/robfig/cron/v3"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -93,6 +94,23 @@ func RunServer() {
 	pb.RegisterGroupServiceServer(grpcServer, groupService)
 	pb.RegisterAttendanceServiceServer(grpcServer, attendanceService)
 	pb.RegisterStudentServiceServer(grpcServer, studentService)
+
+	// Correct cron expression to run every minute
+	c := cron.New()
+	_, err = c.AddFunc("* * * * *", func() {
+		fmt.Println("Running student balance taker ....")
+		studentRepo.StudentBalanceTaker()
+		fmt.Println("Completed student balance taker")
+	})
+	if err != nil {
+		log.Fatalf("Failed to schedule cron job: %v", err)
+	}
+	c.Start()
+
+	go func() {
+		select {}
+	}()
+
 	log.Printf("Server listening on port %v", cfg.Server.Port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
