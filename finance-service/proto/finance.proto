@@ -238,6 +238,7 @@ message AbsPaymentTakeOff{
   string comment = 5;
   string creatorId = 6;
   string creatorName = 7;
+  string sum = 8;
 }
 message GetAllPaymentsByMonthRequest{
   string userId = 1;

@@ -204,6 +204,8 @@ definitions:
         type: string
       studentName:
         type: string
+      sum:
+        type: string
     type: object
   pb.AbsRoom:
     properties:

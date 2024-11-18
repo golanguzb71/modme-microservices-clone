@@ -4482,6 +4482,9 @@ const docTemplate = `{
                 },
                 "studentName": {
                     "type": "string"
+                },
+                "sum": {
+                    "type": "string"
                 }
             }
         },

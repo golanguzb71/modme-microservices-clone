@@ -348,6 +348,7 @@ func (r *PaymentRepository) GetAllPaymentTakeOff(from string, to string) (*pb.Ge
 	query := `
         SELECT 
             id, 
+            amount,
             given_date, 
             student_id, 
             comment, 
@@ -374,6 +375,7 @@ func (r *PaymentRepository) GetAllPaymentTakeOff(from string, to string) (*pb.Ge
 
 		err := rows.Scan(
 			&payment.PaymentId,
+			&payment.Sum,
 			&payment.GivenDate,
 			&payment.StudentId,
 			&payment.Comment,
