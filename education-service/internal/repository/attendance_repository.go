@@ -456,6 +456,8 @@ func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(teacherId string, 
 			teacher_id = $1 AND 
 			group_id = $2 AND 
 			attend_date BETWEEN $3 AND $4
+			AND
+		    creator_role='TEACHER'
 	`
 
 	rows, err := r.db.Query(query, teacherId, groupId, from, to)
