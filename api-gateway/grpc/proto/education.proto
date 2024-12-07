@@ -448,6 +448,7 @@ message GetStudentByIdResponse{
   string createdAt = 7;
   repeated GetGroupStudent groups = 8;
   string condition = 9;
+  string additionalContact = 10;
 }
 message NoteStudentByAbsRequest{
   string id = 1;
