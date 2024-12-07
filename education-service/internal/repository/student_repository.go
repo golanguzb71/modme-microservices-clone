@@ -228,6 +228,7 @@ func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, crea
 	}
 	return nil
 }
+
 func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdResponse, error) {
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
@@ -235,9 +236,9 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 
 	var result pb.GetStudentByIdResponse
 
-	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at , condition
+	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at , condition , additional_contact
                           FROM students WHERE id = $1`, id).
-		Scan(&result.Id, &result.Name, &result.Gender, &result.DateOfBirth, &result.Phone, &result.Balance, &result.CreatedAt, &result.Condition)
+		Scan(&result.Id, &result.Name, &result.Gender, &result.DateOfBirth, &result.Phone, &result.Balance, &result.CreatedAt, &result.Condition, &result.AdditionalContact)
 	if err != nil {
 		return nil, err
 	}

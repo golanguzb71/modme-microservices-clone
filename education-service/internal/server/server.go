@@ -54,6 +54,7 @@ func RunServer() {
 			time.Sleep(2 * time.Second)
 		}
 	}()
+
 	go func() {
 		time.Sleep(2 * time.Second)
 		var client *clients.FinanceClient
