@@ -3938,6 +3938,36 @@ paths:
       summary: ADMIN , CEO , TEACHER
       tags:
       - user
+  /api/user/update-password/{userId}/{password}:
+    put:
+      consumes:
+      - application/json
+      description: Updates the password of a user specified by the userId.
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: New Password
+        in: path
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      summary: CEO
+      tags:
+      - user
 securityDefinitions:
   Bearer:
     in: header

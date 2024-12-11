@@ -257,3 +257,26 @@ func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdRe
 		Histories: historyItems,
 	}, nil
 }
+
+func (r *UserRepository) UpdateUserPassword(userId string, password string) (*pb.AbsResponse, error) {
+	var userExists bool
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM users where id=$1)`, userId).Scan(&userExists)
+	if err != nil {
+		return nil, err
+	}
+	if !userExists {
+		return nil, status.Errorf(codes.AlreadyExists, "user not found")
+	}
+	newEncodedPass, err := utils.EncodePassword(password)
+	if err != nil {
+		return nil, err
+	}
+	_, err = r.db.Exec(`UPDATE users set password=$1 where id=$2`, newEncodedPass, userId)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AbsResponse{
+		Status:  200,
+		Message: "password updated",
+	}, nil
+}

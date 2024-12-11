@@ -73,3 +73,10 @@ func (c *UserClient) GetAllStuff(ctx context.Context, isArchived bool) (*pb.GetA
 func (c *UserClient) GetHistoryByUserId(ctx context.Context, userId string) (*pb.GetHistoryByUserIdResponse, error) {
 	return c.client.GetHistoryByUserId(ctx, &pb.UserAbsRequest{UserId: userId})
 }
+
+func (c *UserClient) UpdateUserPassword(ctx context.Context, userId, password string) (*pb.AbsResponse, error) {
+	return c.client.UpdateUserPassword(ctx, &pb.UpdateUserPasswordRequest{
+		UserId:      userId,
+		NewPassword: password,
+	})
+}

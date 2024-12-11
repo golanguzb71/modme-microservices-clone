@@ -48,3 +48,7 @@ func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeReq
 func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetHistoryByUserIdResponse, error) {
 	return u.userRepo.GetHistoryByUserId(req.UserId)
 }
+
+func (u *UserService) UpdateUserPassword(ctx context.Context, req *pb.UpdateUserPasswordRequest) (*pb.AbsResponse, error) {
+	return u.userRepo.UpdateUserPassword(req.UserId, req.NewPassword)
+}

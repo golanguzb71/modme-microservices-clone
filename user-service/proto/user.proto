@@ -11,6 +11,11 @@ service UserService {
   rpc GetAllEmployee(GetAllEmployeeRequest) returns(GetAllEmployeeResponse);
   rpc GetAllStuff(GetAllEmployeeRequest) returns(GetAllStuffResponse);
   rpc GetHistoryByUserId(UserAbsRequest) returns(GetHistoryByUserIdResponse);
+  rpc UpdateUserPassword(UpdateUserPasswordRequest)returns(common.AbsResponse);
+}
+message UpdateUserPasswordRequest{
+  string userId = 1;
+  string newPassword = 2;
 }
 message GetAllStuffResponse{
   repeated GetUserByIdResponse stuff = 1;

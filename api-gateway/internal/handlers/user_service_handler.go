@@ -297,3 +297,28 @@ func GetUserHistoryById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// UpdateUserPassword updates a user's password.
+// @Summary CEO
+// @Description Updates the password of a user specified by the userId.
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param userId path string true "User ID"
+// @Param password path string true "New Password"
+// @Success 200 {object} utils.AbsResponse "Password updated successfully"
+// @Failure 400 {object} utils.AbsResponse "Bad Request"
+// @Router /api/user/update-password/{userId}/{password} [put]
+func UpdateUserPassword(ctx *gin.Context) {
+	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	userId := ctx.Param("userId")
+	password := ctx.Param("password")
+	resp, err := userClient.UpdateUserPassword(ctxR, userId, password)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+	return
+}
