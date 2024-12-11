@@ -308,6 +308,7 @@ func GetUserHistoryById(ctx *gin.Context) {
 // @Param password path string true "New Password"
 // @Success 200 {object} utils.AbsResponse "Password updated successfully"
 // @Failure 400 {object} utils.AbsResponse "Bad Request"
+// @Security Bearer
 // @Router /api/user/update-password/{userId}/{password} [put]
 func UpdateUserPassword(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)

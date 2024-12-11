@@ -3965,6 +3965,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
       summary: CEO
       tags:
       - user

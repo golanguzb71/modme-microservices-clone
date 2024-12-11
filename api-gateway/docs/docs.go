@@ -4169,6 +4169,11 @@ const docTemplate = `{
         },
         "/api/user/update-password/{userId}/{password}": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "Updates the password of a user specified by the userId.",
                 "consumes": [
                     "application/json"
