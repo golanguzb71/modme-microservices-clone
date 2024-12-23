@@ -323,4 +323,4 @@ message CreateTeacherSalaryRequest{
   string type = 2;
   int32 amount = 3;
 }
-// teacher salary service end
+// teacher salary end
