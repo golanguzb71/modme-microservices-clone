@@ -335,7 +335,7 @@ func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsB
 	)
 
 	commentQuery := `
-		SELECT id, comment, created_at 
+		SELECT id, comment
 		FROM student_note 
 		WHERE student_id = $1
 	`
