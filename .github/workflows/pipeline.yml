@@ -1,9 +1,11 @@
 name: CI/CD Pipeline
 
+
 on:
   push:
     branches:
       - master
+
 
 jobs:
   deploy:
