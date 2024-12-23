@@ -598,6 +598,9 @@ func (r *PaymentRepository) GetAllDebtsInformation(from, to string, page, size i
 		}
 		debt.DebtorName = name
 		debt.PhoneNumber = phoneNumber
+		resp, _ := r.educationClient.GetGroupsAndCommentsByStudentId(context.TODO(), debt.DebtorId)
+		debt.Comments = resp.Comments
+		debt.Groups = resp.Groups
 		debt.Balance = strconv.FormatFloat(balance, 'f', 2, 64)
 		debts = append(debts, &debt)
 	}

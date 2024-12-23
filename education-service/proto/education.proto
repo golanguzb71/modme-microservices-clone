@@ -83,11 +83,30 @@ service GroupService{
   rpc GetGroups(GetGroupsRequest)returns(GetGroupsResponse);
   rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
   rpc GetGroupsByCourseId(GetGroupByIdRequest) returns(GetGroupsByCourseResponse);
+  rpc GetGroupsByStudentId(StudentIdRequest) returns(GetGroupsByStudentResponse);
   rpc UpdateGroup(GetUpdateGroupAbs)returns(common.AbsResponse);
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
   rpc GetCommonInformationEducation(google.protobuf.Empty) returns(GetCommonInformationEducationResponse);
 }
+message StudentIdRequest{
+  string studentId = 1;
+}
+
+message GetGroupsByStudentResponse{
+  repeated DebtorComment comments = 1;
+  repeated DebtorGroup groups = 2;
+}
+
+message DebtorGroup{
+  string groupId = 1;
+  string groupName = 2;
+}
+message DebtorComment{
+  string commentId = 1;
+  string comment = 2;
+}
+
 message GetCommonInformationEducationResponse{
   int32 activeStudentCount = 1;
   int32 activeGroupCount = 2;

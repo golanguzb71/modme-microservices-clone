@@ -179,7 +179,18 @@ message AbsDebtsInformation{
   string phoneNumber = 3;
   string balance = 4;
   string totalOnPeriod = 5;
+  repeated DebtorGroup groups = 6;
+  repeated DebtorComment comments = 7;
 }
+message DebtorGroup{
+  string groupId = 1;
+  string groupName = 2;
+}
+message DebtorComment{
+  string commentId = 1;
+  string comment = 2;
+}
+
 message GetAllStudentPaymentsChartResponse{
   string cash = 1;
   string payme = 2;

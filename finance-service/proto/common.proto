@@ -18,3 +18,12 @@ message PageRequest{
   int32 page = 1;
   int32 size = 2;
 }
+
+message DebtorGroup{
+  string groupId = 1;
+  string groupName = 2;
+}
+message DebtorComment{
+  string commentId = 1;
+  string comment = 2;
+}

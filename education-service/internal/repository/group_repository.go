@@ -327,3 +327,54 @@ func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformat
 
 	return response, nil
 }
+
+func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsByStudentResponse, error) {
+	var (
+		comments []*pb.DebtorComment
+		groups   []*pb.DebtorGroup
+	)
+
+	commentQuery := `
+		SELECT id, comment, created_at 
+		FROM student_note 
+		WHERE student_id = $1
+	`
+	commentRows, err := r.db.Query(commentQuery, studentId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch comments: %v", err)
+	}
+	defer commentRows.Close()
+
+	for commentRows.Next() {
+		var comment pb.DebtorComment
+		if err := commentRows.Scan(&comment.CommentId, &comment.Comment); err != nil {
+			return nil, fmt.Errorf("failed to scan comment row: %v", err)
+		}
+		comments = append(comments, &comment)
+	}
+
+	groupQuery := `
+		SELECT g.id, g.name AS course_title
+		FROM group_students gs
+		JOIN groups g ON gs.group_id = g.id
+		WHERE gs.student_id = $1
+	`
+	groupRows, err := r.db.Query(groupQuery, studentId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch groups: %v", err)
+	}
+	defer groupRows.Close()
+
+	for groupRows.Next() {
+		var group pb.DebtorGroup
+		if err := groupRows.Scan(&group.GroupId, &group.GroupName); err != nil {
+			return nil, fmt.Errorf("failed to scan group row: %v", err)
+		}
+		groups = append(groups, &group)
+	}
+
+	return &pb.GetGroupsByStudentResponse{
+		Comments: comments,
+		Groups:   groups,
+	}, nil
+}

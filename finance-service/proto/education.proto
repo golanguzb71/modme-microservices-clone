@@ -97,7 +97,19 @@ message GetGroupStudent{
 
 service GroupService {
   rpc GetGroupById(GetGroupByIdRequest)returns(GetGroupAbsResponse);
+  rpc GetGroupsByStudentId(StudentIdRequest) returns(GetGroupsByStudentResponse);
 }
+
+message StudentIdRequest{
+  string studentId = 1;
+}
+
+message GetGroupsByStudentResponse{
+  repeated common.DebtorComment comments = 1;
+  repeated common.DebtorGroup groups = 2;
+}
+
+
 message GetGroupByIdRequest{
   string id = 1;
 }

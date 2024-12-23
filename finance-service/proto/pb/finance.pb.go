@@ -1602,11 +1602,13 @@ type AbsDebtsInformation struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	DebtorId      string `protobuf:"bytes,1,opt,name=debtorId,proto3" json:"debtorId,omitempty"`
-	DebtorName    string `protobuf:"bytes,2,opt,name=debtorName,proto3" json:"debtorName,omitempty"`
-	PhoneNumber   string `protobuf:"bytes,3,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
-	Balance       string `protobuf:"bytes,4,opt,name=balance,proto3" json:"balance,omitempty"`
-	TotalOnPeriod string `protobuf:"bytes,5,opt,name=totalOnPeriod,proto3" json:"totalOnPeriod,omitempty"`
+	DebtorId      string           `protobuf:"bytes,1,opt,name=debtorId,proto3" json:"debtorId,omitempty"`
+	DebtorName    string           `protobuf:"bytes,2,opt,name=debtorName,proto3" json:"debtorName,omitempty"`
+	PhoneNumber   string           `protobuf:"bytes,3,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Balance       string           `protobuf:"bytes,4,opt,name=balance,proto3" json:"balance,omitempty"`
+	TotalOnPeriod string           `protobuf:"bytes,5,opt,name=totalOnPeriod,proto3" json:"totalOnPeriod,omitempty"`
+	Groups        []*DebtorGroup   `protobuf:"bytes,6,rep,name=groups,proto3" json:"groups,omitempty"`
+	Comments      []*DebtorComment `protobuf:"bytes,7,rep,name=comments,proto3" json:"comments,omitempty"`
 }
 
 func (x *AbsDebtsInformation) Reset() {
@@ -1672,6 +1674,20 @@ func (x *AbsDebtsInformation) GetTotalOnPeriod() string {
 		return x.TotalOnPeriod
 	}
 	return ""
+}
+
+func (x *AbsDebtsInformation) GetGroups() []*DebtorGroup {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
+func (x *AbsDebtsInformation) GetComments() []*DebtorComment {
+	if x != nil {
+		return x.Comments
+	}
+	return nil
 }
 
 type GetAllStudentPaymentsChartResponse struct {
@@ -3330,7 +3346,7 @@ var file_finance_proto_rawDesc = []byte{
 	0x65, 0x62, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x66, 0x69, 0x6e,
 	0x61, 0x6e, 0x63, 0x65, 0x2e, 0x41, 0x62, 0x73, 0x44, 0x65, 0x62, 0x74, 0x73, 0x49, 0x6e, 0x66,
 	0x6f, 0x72, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x05, 0x64, 0x65, 0x62, 0x74, 0x73, 0x22,
-	0xb3, 0x01, 0x0a, 0x13, 0x41, 0x62, 0x73, 0x44, 0x65, 0x62, 0x74, 0x73, 0x49, 0x6e, 0x66, 0x6f,
+	0x93, 0x02, 0x0a, 0x13, 0x41, 0x62, 0x73, 0x44, 0x65, 0x62, 0x74, 0x73, 0x49, 0x6e, 0x66, 0x6f,
 	0x72, 0x6d, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x62, 0x74, 0x6f,
 	0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x62, 0x74, 0x6f,
 	0x72, 0x49, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x64, 0x65, 0x62, 0x74, 0x6f, 0x72, 0x4e, 0x61, 0x6d,
@@ -3341,7 +3357,13 @@ var file_finance_proto_rawDesc = []byte{
 	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12,
 	0x24, 0x0a, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4f, 0x6e, 0x50, 0x65, 0x72, 0x69, 0x6f, 0x64,
 	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4f, 0x6e, 0x50,
-	0x65, 0x72, 0x69, 0x6f, 0x64, 0x22, 0xcf, 0x01, 0x0a, 0x22, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
+	0x65, 0x72, 0x69, 0x6f, 0x64, 0x12, 0x2b, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18,
+	0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44,
+	0x65, 0x62, 0x74, 0x6f, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x06, 0x67, 0x72, 0x6f, 0x75,
+	0x70, 0x73, 0x12, 0x31, 0x0a, 0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x07,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65,
+	0x62, 0x74, 0x6f, 0x72, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x08, 0x63, 0x6f, 0x6d,
+	0x6d, 0x65, 0x6e, 0x74, 0x73, 0x22, 0xcf, 0x01, 0x0a, 0x22, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c,
 	0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x50, 0x61, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x43,
 	0x68, 0x61, 0x72, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04,
 	0x63, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x61, 0x73, 0x68,
@@ -3754,9 +3776,11 @@ var file_finance_proto_goTypes = []any{
 	(*CreateTeacherSalaryRequest)(nil),         // 46: finance.CreateTeacherSalaryRequest
 	(*PageRequest)(nil),                        // 47: common.PageRequest
 	(*GetUserByIdResponse)(nil),                // 48: user.GetUserByIdResponse
-	(*DeleteAbsRequest)(nil),                   // 49: common.DeleteAbsRequest
-	(*emptypb.Empty)(nil),                      // 50: google.protobuf.Empty
-	(*AbsResponse)(nil),                        // 51: common.AbsResponse
+	(*DebtorGroup)(nil),                        // 49: common.DebtorGroup
+	(*DebtorComment)(nil),                      // 50: common.DebtorComment
+	(*DeleteAbsRequest)(nil),                   // 51: common.DeleteAbsRequest
+	(*emptypb.Empty)(nil),                      // 52: google.protobuf.Empty
+	(*AbsResponse)(nil),                        // 53: common.AbsResponse
 }
 var file_finance_proto_depIdxs = []int32{
 	4,  // 0: finance.GetHistoryDiscountResponse.discounts:type_name -> finance.AbsHistoryDiscount
@@ -3770,74 +3794,76 @@ var file_finance_proto_depIdxs = []int32{
 	20, // 8: finance.GetIncomeChartResponse.response:type_name -> finance.AbsIncomeChart
 	47, // 9: finance.GetAllDebtsRequest.pageParam:type_name -> common.PageRequest
 	24, // 10: finance.GetAllDebtsInformationResponse.debts:type_name -> finance.AbsDebtsInformation
-	30, // 11: finance.GetAllStudentPaymentsChartResponse.paymentsChart:type_name -> finance.AbsTakeOfChartResponse
-	28, // 12: finance.GetAllStudentPaymentsResponse.payments:type_name -> finance.AbsStudentPayments
-	30, // 13: finance.GetAllPaymentTakeOffChartResponse.chartResponse:type_name -> finance.AbsTakeOfChartResponse
-	33, // 14: finance.GetAllPaymentTakeOffResponse.pennies:type_name -> finance.AbsPaymentTakeOff
-	36, // 15: finance.GetAllPaymentsByMonthResponse.payments:type_name -> finance.AbsGetAllPaymentsByMonthResponse
-	38, // 16: finance.GetMonthlyStatusResponse.monthStatus:type_name -> finance.AbsGetMonthlyStatusResponse
-	44, // 17: finance.GetTeachersSalaryRequest.salaries:type_name -> finance.AbsGetTeachersSalary
-	6,  // 18: finance.DiscountService.GetAllInformationDiscount:input_type -> finance.GetInformationDiscountRequest
-	5,  // 19: finance.DiscountService.CreateDiscount:input_type -> finance.AbsDiscountRequest
-	5,  // 20: finance.DiscountService.DeleteDiscount:input_type -> finance.AbsDiscountRequest
-	2,  // 21: finance.DiscountService.GetHistoryDiscount:input_type -> finance.GetHistoryDiscountRequest
-	1,  // 22: finance.DiscountService.GetDiscountByStudentId:input_type -> finance.GetDiscountByStudentIdRequest
-	9,  // 23: finance.CategoryService.CreateCategory:input_type -> finance.CreateCategoryRequest
-	49, // 24: finance.CategoryService.DeleteCategory:input_type -> common.DeleteAbsRequest
-	50, // 25: finance.CategoryService.GetAllCategory:input_type -> google.protobuf.Empty
-	17, // 26: finance.ExpenseService.CreateExpense:input_type -> finance.CreateExpenseRequest
-	49, // 27: finance.ExpenseService.DeleteExpense:input_type -> common.DeleteAbsRequest
-	14, // 28: finance.ExpenseService.GetAllExpense:input_type -> finance.GetAllExpenseRequest
-	13, // 29: finance.ExpenseService.GetAllExpenseDiagram:input_type -> finance.GetAllExpenseDiagramRequest
-	40, // 30: finance.PaymentService.PaymentAdd:input_type -> finance.PaymentAddRequest
-	42, // 31: finance.PaymentService.PaymentReturn:input_type -> finance.PaymentReturnRequest
-	41, // 32: finance.PaymentService.PaymentUpdate:input_type -> finance.PaymentUpdateRequest
-	39, // 33: finance.PaymentService.GetMonthlyStatus:input_type -> finance.GetMonthlyStatusRequest
-	34, // 34: finance.PaymentService.GetAllPaymentsByMonth:input_type -> finance.GetAllPaymentsByMonthRequest
-	31, // 35: finance.PaymentService.GetAllPaymentTakeOff:input_type -> finance.GetAllPaymentTakeOffRequest
-	31, // 36: finance.PaymentService.GetAllPaymentTakeOffChart:input_type -> finance.GetAllPaymentTakeOffRequest
-	26, // 37: finance.PaymentService.GetAllStudentPayments:input_type -> finance.GetAllStudentPaymentsRequest
-	26, // 38: finance.PaymentService.GetAllStudentPaymentsChart:input_type -> finance.GetAllStudentPaymentsRequest
-	22, // 39: finance.PaymentService.GetAllDebtsInformation:input_type -> finance.GetAllDebtsRequest
-	50, // 40: finance.PaymentService.GetCommonFinanceInformation:input_type -> google.protobuf.Empty
-	18, // 41: finance.PaymentService.GetIncomeChart:input_type -> finance.GetIncomeChartRequest
-	46, // 42: finance.TeacherSalaryService.CreateTeacherSalary:input_type -> finance.CreateTeacherSalaryRequest
-	45, // 43: finance.TeacherSalaryService.DeleteTeacherSalary:input_type -> finance.DeleteTeacherSalaryRequest
-	50, // 44: finance.TeacherSalaryService.GetTeacherSalary:input_type -> google.protobuf.Empty
-	45, // 45: finance.TeacherSalaryService.GetTeacherSalaryByTeacherID:input_type -> finance.DeleteTeacherSalaryRequest
-	7,  // 46: finance.DiscountService.GetAllInformationDiscount:output_type -> finance.GetInformationDiscountResponse
-	51, // 47: finance.DiscountService.CreateDiscount:output_type -> common.AbsResponse
-	51, // 48: finance.DiscountService.DeleteDiscount:output_type -> common.AbsResponse
-	3,  // 49: finance.DiscountService.GetHistoryDiscount:output_type -> finance.GetHistoryDiscountResponse
-	0,  // 50: finance.DiscountService.GetDiscountByStudentId:output_type -> finance.GetDiscountByStudentIdResponse
-	51, // 51: finance.CategoryService.CreateCategory:output_type -> common.AbsResponse
-	51, // 52: finance.CategoryService.DeleteCategory:output_type -> common.AbsResponse
-	10, // 53: finance.CategoryService.GetAllCategory:output_type -> finance.GetAllCategoryRequest
-	51, // 54: finance.ExpenseService.CreateExpense:output_type -> common.AbsResponse
-	51, // 55: finance.ExpenseService.DeleteExpense:output_type -> common.AbsResponse
-	15, // 56: finance.ExpenseService.GetAllExpense:output_type -> finance.GetAllExpenseResponse
-	12, // 57: finance.ExpenseService.GetAllExpenseDiagram:output_type -> finance.GetAllExpenseDiagramResponse
-	51, // 58: finance.PaymentService.PaymentAdd:output_type -> common.AbsResponse
-	51, // 59: finance.PaymentService.PaymentReturn:output_type -> common.AbsResponse
-	51, // 60: finance.PaymentService.PaymentUpdate:output_type -> common.AbsResponse
-	37, // 61: finance.PaymentService.GetMonthlyStatus:output_type -> finance.GetMonthlyStatusResponse
-	35, // 62: finance.PaymentService.GetAllPaymentsByMonth:output_type -> finance.GetAllPaymentsByMonthResponse
-	32, // 63: finance.PaymentService.GetAllPaymentTakeOff:output_type -> finance.GetAllPaymentTakeOffResponse
-	29, // 64: finance.PaymentService.GetAllPaymentTakeOffChart:output_type -> finance.GetAllPaymentTakeOffChartResponse
-	27, // 65: finance.PaymentService.GetAllStudentPayments:output_type -> finance.GetAllStudentPaymentsResponse
-	25, // 66: finance.PaymentService.GetAllStudentPaymentsChart:output_type -> finance.GetAllStudentPaymentsChartResponse
-	23, // 67: finance.PaymentService.GetAllDebtsInformation:output_type -> finance.GetAllDebtsInformationResponse
-	21, // 68: finance.PaymentService.GetCommonFinanceInformation:output_type -> finance.GetCommonInformationResponse
-	19, // 69: finance.PaymentService.GetIncomeChart:output_type -> finance.GetIncomeChartResponse
-	51, // 70: finance.TeacherSalaryService.CreateTeacherSalary:output_type -> common.AbsResponse
-	51, // 71: finance.TeacherSalaryService.DeleteTeacherSalary:output_type -> common.AbsResponse
-	43, // 72: finance.TeacherSalaryService.GetTeacherSalary:output_type -> finance.GetTeachersSalaryRequest
-	44, // 73: finance.TeacherSalaryService.GetTeacherSalaryByTeacherID:output_type -> finance.AbsGetTeachersSalary
-	46, // [46:74] is the sub-list for method output_type
-	18, // [18:46] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	49, // 11: finance.AbsDebtsInformation.groups:type_name -> common.DebtorGroup
+	50, // 12: finance.AbsDebtsInformation.comments:type_name -> common.DebtorComment
+	30, // 13: finance.GetAllStudentPaymentsChartResponse.paymentsChart:type_name -> finance.AbsTakeOfChartResponse
+	28, // 14: finance.GetAllStudentPaymentsResponse.payments:type_name -> finance.AbsStudentPayments
+	30, // 15: finance.GetAllPaymentTakeOffChartResponse.chartResponse:type_name -> finance.AbsTakeOfChartResponse
+	33, // 16: finance.GetAllPaymentTakeOffResponse.pennies:type_name -> finance.AbsPaymentTakeOff
+	36, // 17: finance.GetAllPaymentsByMonthResponse.payments:type_name -> finance.AbsGetAllPaymentsByMonthResponse
+	38, // 18: finance.GetMonthlyStatusResponse.monthStatus:type_name -> finance.AbsGetMonthlyStatusResponse
+	44, // 19: finance.GetTeachersSalaryRequest.salaries:type_name -> finance.AbsGetTeachersSalary
+	6,  // 20: finance.DiscountService.GetAllInformationDiscount:input_type -> finance.GetInformationDiscountRequest
+	5,  // 21: finance.DiscountService.CreateDiscount:input_type -> finance.AbsDiscountRequest
+	5,  // 22: finance.DiscountService.DeleteDiscount:input_type -> finance.AbsDiscountRequest
+	2,  // 23: finance.DiscountService.GetHistoryDiscount:input_type -> finance.GetHistoryDiscountRequest
+	1,  // 24: finance.DiscountService.GetDiscountByStudentId:input_type -> finance.GetDiscountByStudentIdRequest
+	9,  // 25: finance.CategoryService.CreateCategory:input_type -> finance.CreateCategoryRequest
+	51, // 26: finance.CategoryService.DeleteCategory:input_type -> common.DeleteAbsRequest
+	52, // 27: finance.CategoryService.GetAllCategory:input_type -> google.protobuf.Empty
+	17, // 28: finance.ExpenseService.CreateExpense:input_type -> finance.CreateExpenseRequest
+	51, // 29: finance.ExpenseService.DeleteExpense:input_type -> common.DeleteAbsRequest
+	14, // 30: finance.ExpenseService.GetAllExpense:input_type -> finance.GetAllExpenseRequest
+	13, // 31: finance.ExpenseService.GetAllExpenseDiagram:input_type -> finance.GetAllExpenseDiagramRequest
+	40, // 32: finance.PaymentService.PaymentAdd:input_type -> finance.PaymentAddRequest
+	42, // 33: finance.PaymentService.PaymentReturn:input_type -> finance.PaymentReturnRequest
+	41, // 34: finance.PaymentService.PaymentUpdate:input_type -> finance.PaymentUpdateRequest
+	39, // 35: finance.PaymentService.GetMonthlyStatus:input_type -> finance.GetMonthlyStatusRequest
+	34, // 36: finance.PaymentService.GetAllPaymentsByMonth:input_type -> finance.GetAllPaymentsByMonthRequest
+	31, // 37: finance.PaymentService.GetAllPaymentTakeOff:input_type -> finance.GetAllPaymentTakeOffRequest
+	31, // 38: finance.PaymentService.GetAllPaymentTakeOffChart:input_type -> finance.GetAllPaymentTakeOffRequest
+	26, // 39: finance.PaymentService.GetAllStudentPayments:input_type -> finance.GetAllStudentPaymentsRequest
+	26, // 40: finance.PaymentService.GetAllStudentPaymentsChart:input_type -> finance.GetAllStudentPaymentsRequest
+	22, // 41: finance.PaymentService.GetAllDebtsInformation:input_type -> finance.GetAllDebtsRequest
+	52, // 42: finance.PaymentService.GetCommonFinanceInformation:input_type -> google.protobuf.Empty
+	18, // 43: finance.PaymentService.GetIncomeChart:input_type -> finance.GetIncomeChartRequest
+	46, // 44: finance.TeacherSalaryService.CreateTeacherSalary:input_type -> finance.CreateTeacherSalaryRequest
+	45, // 45: finance.TeacherSalaryService.DeleteTeacherSalary:input_type -> finance.DeleteTeacherSalaryRequest
+	52, // 46: finance.TeacherSalaryService.GetTeacherSalary:input_type -> google.protobuf.Empty
+	45, // 47: finance.TeacherSalaryService.GetTeacherSalaryByTeacherID:input_type -> finance.DeleteTeacherSalaryRequest
+	7,  // 48: finance.DiscountService.GetAllInformationDiscount:output_type -> finance.GetInformationDiscountResponse
+	53, // 49: finance.DiscountService.CreateDiscount:output_type -> common.AbsResponse
+	53, // 50: finance.DiscountService.DeleteDiscount:output_type -> common.AbsResponse
+	3,  // 51: finance.DiscountService.GetHistoryDiscount:output_type -> finance.GetHistoryDiscountResponse
+	0,  // 52: finance.DiscountService.GetDiscountByStudentId:output_type -> finance.GetDiscountByStudentIdResponse
+	53, // 53: finance.CategoryService.CreateCategory:output_type -> common.AbsResponse
+	53, // 54: finance.CategoryService.DeleteCategory:output_type -> common.AbsResponse
+	10, // 55: finance.CategoryService.GetAllCategory:output_type -> finance.GetAllCategoryRequest
+	53, // 56: finance.ExpenseService.CreateExpense:output_type -> common.AbsResponse
+	53, // 57: finance.ExpenseService.DeleteExpense:output_type -> common.AbsResponse
+	15, // 58: finance.ExpenseService.GetAllExpense:output_type -> finance.GetAllExpenseResponse
+	12, // 59: finance.ExpenseService.GetAllExpenseDiagram:output_type -> finance.GetAllExpenseDiagramResponse
+	53, // 60: finance.PaymentService.PaymentAdd:output_type -> common.AbsResponse
+	53, // 61: finance.PaymentService.PaymentReturn:output_type -> common.AbsResponse
+	53, // 62: finance.PaymentService.PaymentUpdate:output_type -> common.AbsResponse
+	37, // 63: finance.PaymentService.GetMonthlyStatus:output_type -> finance.GetMonthlyStatusResponse
+	35, // 64: finance.PaymentService.GetAllPaymentsByMonth:output_type -> finance.GetAllPaymentsByMonthResponse
+	32, // 65: finance.PaymentService.GetAllPaymentTakeOff:output_type -> finance.GetAllPaymentTakeOffResponse
+	29, // 66: finance.PaymentService.GetAllPaymentTakeOffChart:output_type -> finance.GetAllPaymentTakeOffChartResponse
+	27, // 67: finance.PaymentService.GetAllStudentPayments:output_type -> finance.GetAllStudentPaymentsResponse
+	25, // 68: finance.PaymentService.GetAllStudentPaymentsChart:output_type -> finance.GetAllStudentPaymentsChartResponse
+	23, // 69: finance.PaymentService.GetAllDebtsInformation:output_type -> finance.GetAllDebtsInformationResponse
+	21, // 70: finance.PaymentService.GetCommonFinanceInformation:output_type -> finance.GetCommonInformationResponse
+	19, // 71: finance.PaymentService.GetIncomeChart:output_type -> finance.GetIncomeChartResponse
+	53, // 72: finance.TeacherSalaryService.CreateTeacherSalary:output_type -> common.AbsResponse
+	53, // 73: finance.TeacherSalaryService.DeleteTeacherSalary:output_type -> common.AbsResponse
+	43, // 74: finance.TeacherSalaryService.GetTeacherSalary:output_type -> finance.GetTeachersSalaryRequest
+	44, // 75: finance.TeacherSalaryService.GetTeacherSalaryByTeacherID:output_type -> finance.AbsGetTeachersSalary
+	48, // [48:76] is the sub-list for method output_type
+	20, // [20:48] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_finance_proto_init() }

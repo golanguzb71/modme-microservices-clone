@@ -75,3 +75,7 @@ func (s *GroupService) GetGroupsByTeacherId(ctx context.Context, req *pb.GetGrou
 func (s *GroupService) GetCommonInformationEducation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationEducationResponse, error) {
 	return s.repo.GetCommonInformationEducation()
 }
+
+func (s *GroupService) GetGroupsByStudentId(ctx context.Context, req *pb.StudentIdRequest) (*pb.GetGroupsByStudentResponse, error) {
+	return s.repo.GetGroupsByStudentId(req.StudentId)
+}

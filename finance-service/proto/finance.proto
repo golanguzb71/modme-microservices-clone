@@ -190,7 +190,11 @@ message AbsDebtsInformation{
   string phoneNumber = 3;
   string balance = 4;
   string totalOnPeriod = 5;
+  repeated common.DebtorGroup groups = 6;
+  repeated common.DebtorComment comments = 7;
 }
+
+
 
 message GetAllStudentPaymentsChartResponse{
   string cash = 1;

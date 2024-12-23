@@ -72,3 +72,7 @@ func (ec *EducationClient) ChangeUserBalanceHistoryByDebit(ctx context.Context, 
 		CurrentDebit:  currentDebit,
 	})
 }
+
+func (ec *EducationClient) GetGroupsAndCommentsByStudentId(ctx context.Context, studentId string) (*pb.GetGroupsByStudentResponse, error) {
+	return ec.groupClient.GetGroupsByStudentId(ctx, &pb.StudentIdRequest{StudentId: studentId})
+}

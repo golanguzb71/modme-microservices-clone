@@ -40,10 +40,18 @@ definitions:
     properties:
       balance:
         type: string
+      comments:
+        items:
+          $ref: '#/definitions/pb.DebtorComment'
+        type: array
       debtorId:
         type: string
       debtorName:
         type: string
+      groups:
+        items:
+          $ref: '#/definitions/pb.DebtorGroup'
+        type: array
       phoneNumber:
         type: string
       totalOnPeriod:
@@ -545,6 +553,20 @@ definitions:
       date:
         type: string
       transferDate:
+        type: string
+    type: object
+  pb.DebtorComment:
+    properties:
+      comment:
+        type: string
+      commentId:
+        type: string
+    type: object
+  pb.DebtorGroup:
+    properties:
+      groupId:
+        type: string
+      groupName:
         type: string
     type: object
   pb.DynamicSection:

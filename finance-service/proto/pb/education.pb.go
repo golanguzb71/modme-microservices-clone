@@ -838,6 +838,104 @@ func (x *GetGroupStudent) GetPriceForStudent() float64 {
 	return 0
 }
 
+type StudentIdRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	StudentId string `protobuf:"bytes,1,opt,name=studentId,proto3" json:"studentId,omitempty"`
+}
+
+func (x *StudentIdRequest) Reset() {
+	*x = StudentIdRequest{}
+	mi := &file_education_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StudentIdRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StudentIdRequest) ProtoMessage() {}
+
+func (x *StudentIdRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StudentIdRequest.ProtoReflect.Descriptor instead.
+func (*StudentIdRequest) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *StudentIdRequest) GetStudentId() string {
+	if x != nil {
+		return x.StudentId
+	}
+	return ""
+}
+
+type GetGroupsByStudentResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Comments []*DebtorComment `protobuf:"bytes,1,rep,name=comments,proto3" json:"comments,omitempty"`
+	Groups   []*DebtorGroup   `protobuf:"bytes,2,rep,name=groups,proto3" json:"groups,omitempty"`
+}
+
+func (x *GetGroupsByStudentResponse) Reset() {
+	*x = GetGroupsByStudentResponse{}
+	mi := &file_education_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGroupsByStudentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGroupsByStudentResponse) ProtoMessage() {}
+
+func (x *GetGroupsByStudentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGroupsByStudentResponse.ProtoReflect.Descriptor instead.
+func (*GetGroupsByStudentResponse) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetGroupsByStudentResponse) GetComments() []*DebtorComment {
+	if x != nil {
+		return x.Comments
+	}
+	return nil
+}
+
+func (x *GetGroupsByStudentResponse) GetGroups() []*DebtorGroup {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
 type GetGroupByIdRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -848,7 +946,7 @@ type GetGroupByIdRequest struct {
 
 func (x *GetGroupByIdRequest) Reset() {
 	*x = GetGroupByIdRequest{}
-	mi := &file_education_proto_msgTypes[10]
+	mi := &file_education_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -860,7 +958,7 @@ func (x *GetGroupByIdRequest) String() string {
 func (*GetGroupByIdRequest) ProtoMessage() {}
 
 func (x *GetGroupByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[10]
+	mi := &file_education_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -873,7 +971,7 @@ func (x *GetGroupByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupByIdRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupByIdRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{10}
+	return file_education_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetGroupByIdRequest) GetId() string {
@@ -904,7 +1002,7 @@ type GetGroupAbsResponse struct {
 
 func (x *GetGroupAbsResponse) Reset() {
 	*x = GetGroupAbsResponse{}
-	mi := &file_education_proto_msgTypes[11]
+	mi := &file_education_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -916,7 +1014,7 @@ func (x *GetGroupAbsResponse) String() string {
 func (*GetGroupAbsResponse) ProtoMessage() {}
 
 func (x *GetGroupAbsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[11]
+	mi := &file_education_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -929,7 +1027,7 @@ func (x *GetGroupAbsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupAbsResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupAbsResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{11}
+	return file_education_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetGroupAbsResponse) GetId() string {
@@ -1144,6 +1242,17 @@ var file_education_proto_rawDesc = []byte{
 	0x65, 0x72, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x28, 0x0a, 0x0f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x46,
 	0x6f, 0x72, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x01, 0x52,
 	0x0f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x46, 0x6f, 0x72, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74,
+	0x22, 0x30, 0x0a, 0x10, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x49,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74,
+	0x49, 0x64, 0x22, 0x7c, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x42,
+	0x79, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x31, 0x0a, 0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x62, 0x74,
+	0x6f, 0x72, 0x43, 0x6f, 0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x08, 0x63, 0x6f, 0x6d, 0x6d, 0x65,
+	0x6e, 0x74, 0x73, 0x12, 0x2b, 0x0a, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73, 0x18, 0x02, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x44, 0x65, 0x62,
+	0x74, 0x6f, 0x72, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x52, 0x06, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x73,
 	0x22, 0x25, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x42, 0x79, 0x49, 0x64,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0xed, 0x02, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x47,
@@ -1195,14 +1304,20 @@ var file_education_proto_rawDesc = []byte{
 	0x73, 0x65, 0x72, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x48, 0x69, 0x73, 0x74, 0x6f, 0x72,
 	0x79, 0x42, 0x79, 0x44, 0x65, 0x62, 0x69, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
 	0x13, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x32, 0x5e, 0x0a, 0x0c, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x12, 0x4e, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70,
-	0x42, 0x79, 0x49, 0x64, 0x12, 0x1e, 0x2e, 0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x42, 0x79, 0x49, 0x64, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x62,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6e, 0x73, 0x65, 0x32, 0xba, 0x01, 0x0a, 0x0c, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4e, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75,
+	0x70, 0x42, 0x79, 0x49, 0x64, 0x12, 0x1e, 0x2e, 0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x42, 0x79, 0x49, 0x64, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x41, 0x62, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5a, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75,
+	0x70, 0x73, 0x42, 0x79, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x1b, 0x2e,
+	0x65, 0x64, 0x75, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e,
+	0x74, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x65, 0x64, 0x75,
+	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x47, 0x65, 0x74, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x73,
+	0x42, 0x79, 0x53, 0x74, 0x75, 0x64, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1217,7 +1332,7 @@ func file_education_proto_rawDescGZIP() []byte {
 	return file_education_proto_rawDescData
 }
 
-var file_education_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_education_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_education_proto_goTypes = []any{
 	(*AbsRoom)(nil),   // 0: education.AbsRoom
 	(*AbsCourse)(nil), // 1: education.AbsCourse
@@ -1229,30 +1344,38 @@ var file_education_proto_goTypes = []any{
 	(*GetStudentByIdResponse)(nil),                 // 7: education.GetStudentByIdResponse
 	(*NoteStudentByAbsRequest)(nil),                // 8: education.NoteStudentByAbsRequest
 	(*GetGroupStudent)(nil),                        // 9: education.GetGroupStudent
-	(*GetGroupByIdRequest)(nil),                    // 10: education.GetGroupByIdRequest
-	(*GetGroupAbsResponse)(nil),                    // 11: education.GetGroupAbsResponse
-	(*AbsResponse)(nil),                            // 12: common.AbsResponse
+	(*StudentIdRequest)(nil),                       // 10: education.StudentIdRequest
+	(*GetGroupsByStudentResponse)(nil),             // 11: education.GetGroupsByStudentResponse
+	(*GetGroupByIdRequest)(nil),                    // 12: education.GetGroupByIdRequest
+	(*GetGroupAbsResponse)(nil),                    // 13: education.GetGroupAbsResponse
+	(*DebtorComment)(nil),                          // 14: common.DebtorComment
+	(*DebtorGroup)(nil),                            // 15: common.DebtorGroup
+	(*AbsResponse)(nil),                            // 16: common.AbsResponse
 }
 var file_education_proto_depIdxs = []int32{
 	6,  // 0: education.GetStudentsByGroupIdResponse.students:type_name -> education.AbsStudent
 	9,  // 1: education.GetStudentByIdResponse.groups:type_name -> education.GetGroupStudent
 	0,  // 2: education.GetGroupStudent.room:type_name -> education.AbsRoom
 	1,  // 3: education.GetGroupStudent.course:type_name -> education.AbsCourse
-	8,  // 4: education.StudentService.GetStudentById:input_type -> education.NoteStudentByAbsRequest
-	5,  // 5: education.StudentService.GetStudentsByGroupId:input_type -> education.GetStudentsByGroupIdRequest
-	3,  // 6: education.StudentService.ChangeUserBalanceHistory:input_type -> education.ChangeUserBalanceHistoryRequest
-	2,  // 7: education.StudentService.ChangeUserBalanceHistoryByDebit:input_type -> education.ChangeUserBalanceHistoryByDebitRequest
-	10, // 8: education.GroupService.GetGroupById:input_type -> education.GetGroupByIdRequest
-	7,  // 9: education.StudentService.GetStudentById:output_type -> education.GetStudentByIdResponse
-	4,  // 10: education.StudentService.GetStudentsByGroupId:output_type -> education.GetStudentsByGroupIdResponse
-	12, // 11: education.StudentService.ChangeUserBalanceHistory:output_type -> common.AbsResponse
-	12, // 12: education.StudentService.ChangeUserBalanceHistoryByDebit:output_type -> common.AbsResponse
-	11, // 13: education.GroupService.GetGroupById:output_type -> education.GetGroupAbsResponse
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	14, // 4: education.GetGroupsByStudentResponse.comments:type_name -> common.DebtorComment
+	15, // 5: education.GetGroupsByStudentResponse.groups:type_name -> common.DebtorGroup
+	8,  // 6: education.StudentService.GetStudentById:input_type -> education.NoteStudentByAbsRequest
+	5,  // 7: education.StudentService.GetStudentsByGroupId:input_type -> education.GetStudentsByGroupIdRequest
+	3,  // 8: education.StudentService.ChangeUserBalanceHistory:input_type -> education.ChangeUserBalanceHistoryRequest
+	2,  // 9: education.StudentService.ChangeUserBalanceHistoryByDebit:input_type -> education.ChangeUserBalanceHistoryByDebitRequest
+	12, // 10: education.GroupService.GetGroupById:input_type -> education.GetGroupByIdRequest
+	10, // 11: education.GroupService.GetGroupsByStudentId:input_type -> education.StudentIdRequest
+	7,  // 12: education.StudentService.GetStudentById:output_type -> education.GetStudentByIdResponse
+	4,  // 13: education.StudentService.GetStudentsByGroupId:output_type -> education.GetStudentsByGroupIdResponse
+	16, // 14: education.StudentService.ChangeUserBalanceHistory:output_type -> common.AbsResponse
+	16, // 15: education.StudentService.ChangeUserBalanceHistoryByDebit:output_type -> common.AbsResponse
+	13, // 16: education.GroupService.GetGroupById:output_type -> education.GetGroupAbsResponse
+	11, // 17: education.GroupService.GetGroupsByStudentId:output_type -> education.GetGroupsByStudentResponse
+	12, // [12:18] is the sub-list for method output_type
+	6,  // [6:12] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_education_proto_init() }
@@ -1267,7 +1390,7 @@ func file_education_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_education_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

@@ -4282,11 +4282,23 @@ const docTemplate = `{
                 "balance": {
                     "type": "string"
                 },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.DebtorComment"
+                    }
+                },
                 "debtorId": {
                     "type": "string"
                 },
                 "debtorName": {
                     "type": "string"
+                },
+                "groups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.DebtorGroup"
+                    }
                 },
                 "phoneNumber": {
                     "type": "string"
@@ -5057,6 +5069,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "transferDate": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.DebtorComment": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "commentId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.DebtorGroup": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
                     "type": "string"
                 }
             }
