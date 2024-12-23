@@ -24,7 +24,7 @@ database:
   password: "password"
   name: "sphere_user_db"
   sslmode: "disable"
-  action: "up"
+  action: "no"
 grpc:
   educationService:
     address: "sphere-education-service:8080"

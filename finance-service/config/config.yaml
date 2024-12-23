@@ -28,7 +28,7 @@ database:
   password: "password"
   dbname: "sphere_finance_db"
   sslmode: "disable"
-  action: "up"
+  action: "no"
 
 
 grpc:
