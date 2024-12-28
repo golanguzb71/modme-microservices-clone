@@ -564,7 +564,6 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	if oldCondition == "FREEZE" && status == "DELETE" {
 		r.db.Query(`SELECT EXISTS(SELECT 1 FROM )`)
 	}
-
 	insertHistoryStmt := `
         INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at , is_eliminated_trial)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW() , $9)
