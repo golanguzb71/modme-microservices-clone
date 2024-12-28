@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS groups
 
 CREATE TABLE IF NOT EXISTS attendance
 (
-    is_discounted  boolean   DEFAULT FALSE,
+    is_discounted  boolean                                                  DEFAULT FALSE,
     discount_owner varchar CHECK ( discount_owner in ('TEACHER', 'CENTER')) DEFAULT 'TEACHER',
     price          float                                                        NOT NULL,
     group_id       bigint references groups (id),
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS attendance
     teacher_id     uuid                                                         NOT NULL,
     attend_date    date                                                         NOT NULL,
     status         int                                                          NOT NULL,
-    created_at     timestamp DEFAULT NOW(),
+    created_at     timestamp                                                DEFAULT NOW(),
     created_by     uuid                                                         NOT NULL,
     creator_role   varchar CHECK ( creator_role in ('ADMIN', 'CEO', 'TEACHER')) NOT NULL,
     PRIMARY KEY (group_id, student_id, attend_date)
@@ -119,15 +119,16 @@ CREATE TABLE IF NOT EXISTS group_students
 
 CREATE TABLE IF NOT EXISTS group_student_condition_history
 (
-    id                uuid primary key,
-    group_student_id  uuid references group_students (id)                                  NOT NULL,
-    student_id        uuid references students (id)                                        NOT NULL,
-    group_id          bigint references groups (id)                                        NOT NULL,
-    old_condition     varchar check ( old_condition in ('FREEZE', 'ACTIVE', 'DELETE'))     NOT NULL,
-    current_condition varchar check ( current_condition in ('FREEZE', 'ACTIVE', 'DELETE')) NOT NULL,
-    specific_date     date                                                                 NOT NULL DEFAULT NOW(),
-    return_the_money  boolean                                                              NOT NULL DEFAULT FALSE,
-    created_at        timestamp                                                                     DEFAULT NOW()
+    id                  uuid primary key,
+    group_student_id    uuid references group_students (id)                                  NOT NULL,
+    student_id          uuid references students (id)                                        NOT NULL,
+    group_id            bigint references groups (id)                                        NOT NULL,
+    old_condition       varchar check ( old_condition in ('FREEZE', 'ACTIVE', 'DELETE'))     NOT NULL,
+    current_condition   varchar check ( current_condition in ('FREEZE', 'ACTIVE', 'DELETE')) NOT NULL,
+    is_eliminated_trial bool                                                                          DEFAULT FALSE,
+    specific_date       date                                                                 NOT NULL DEFAULT NOW(),
+    return_the_money    boolean                                                              NOT NULL DEFAULT FALSE,
+    created_at          timestamp                                                                     DEFAULT NOW()
 );
 
 

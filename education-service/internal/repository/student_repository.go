@@ -511,6 +511,7 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 	}, nil
 }
 func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
+	isEleminatedInTrail := false
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
 	}
@@ -560,12 +561,14 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
-
+	if oldCondition == "FREEZE" && status == "DELETE" {
+		r.db.Query(`SELECT EXISTS(SELECT 1 FROM )`)
+	}
 	insertHistoryStmt := `
-        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at , is_eliminated_trial)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW() , $9)
     `
-	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney)
+	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEleminatedInTrail)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
