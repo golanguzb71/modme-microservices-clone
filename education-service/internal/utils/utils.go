@@ -9,7 +9,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"math"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -62,7 +61,7 @@ func RecoveryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryS
 	return handler(ctx, req)
 }
 
-func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *string, groupId string, tillDate string) (float64, error) {
+func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId string, tillDate string) (float64, error) {
 	var coursePrice float64
 	var courseDurationLesson int
 	var groupStartTime string
@@ -82,11 +81,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *string, groupId s
 	}
 
 	if manualPriceForCourse != nil {
-		manualPrice, err := strconv.ParseFloat(*manualPriceForCourse, 64)
-		if err != nil {
-			return 0, fmt.Errorf("error parsing manual price: %v", err)
-		}
-		coursePrice = manualPrice
+		coursePrice = coursePrice - *manualPriceForCourse
 	}
 
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
@@ -180,18 +175,14 @@ func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId strin
 	return true
 }
 
-func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount *string) error {
+func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount *float64) error {
 	var coursePrice float64
 	err := db.QueryRow(`SELECT price FROM courses c join groups g on c.id=g.course_id where g.id=$1`, groupId).Scan(&coursePrice)
 	if err != nil {
 		return err
 	}
 	if discountAmount != nil {
-		discountAmou, err := strconv.ParseFloat(*discountAmount, 64)
-		if err != nil {
-			return err
-		}
-		coursePrice = discountAmou
+		coursePrice = coursePrice - *discountAmount
 	}
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
 	if err != nil {
