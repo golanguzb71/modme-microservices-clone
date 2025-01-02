@@ -99,7 +99,7 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 
 	for _, payment := range payments {
 		payment.Amount = payment.Amount - discountPri
-		err := r.paymentRepo.AddPayment(payment.GivenDate, fmt.Sprintf("%.2f", payment.Amount), "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
+		err := r.paymentRepo.AddPayment(payment.GivenDate, discountPrice, "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
 		if err != nil {
 			tx.Rollback()
 			return err
