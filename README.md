@@ -1,4 +1,4 @@
-# ModMe Clone - Learning Center Management System
+# LiveSphere - Learning Center Management System
 Overview
 ModMe Clone is a gRPC-based microservice architecture designed for managing learning centers' operations. This system provides a comprehensive solution for handling educational institution management tasks including student enrollment, course management, instructor scheduling, and inter-service communication.
 
