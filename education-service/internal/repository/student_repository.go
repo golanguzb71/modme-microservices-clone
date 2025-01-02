@@ -865,7 +865,6 @@ func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bo
 
 	return checker
 }
-
 func (r *StudentRepository) StudentBalanceTaker() {
 	if err := r.ensureFinanceClient(); err != nil {
 		return
