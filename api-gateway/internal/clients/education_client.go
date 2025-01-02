@@ -202,3 +202,12 @@ func (lc *EducationClient) CalculateSalaryByTeacher(ctx context.Context, from st
 		TeacherId: teacherId,
 	})
 }
+
+func (lc *EducationClient) GetLeftAfterTrialPeriod(from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
+	return lc.groupClient.GetLeftAfterTrialPeriod(context.TODO(), &pb.GetLeftAfterTrialPeriodRequest{
+		From: from,
+		To:   to,
+		Page: page,
+		Size: size,
+	})
+}

@@ -110,6 +110,27 @@ definitions:
       updatedField:
         type: string
     type: object
+  pb.AbsGetLeftAfter:
+    properties:
+      createdAt:
+        type: string
+      groupId:
+        type: string
+      groupName:
+        type: string
+      id:
+        type: string
+      returnMoney:
+        type: boolean
+      specificDate:
+        type: string
+      studentBalance:
+        type: string
+      studentName:
+        type: string
+      studentPhone:
+        type: string
+    type: object
   pb.AbsGetMonthlyStatusResponse:
     properties:
       balance:
@@ -950,6 +971,13 @@ definitions:
       sections:
         items:
           $ref: '#/definitions/pb.DynamicSection'
+        type: array
+    type: object
+  pb.GetLeftAfterTrialPeriodResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/pb.AbsGetLeftAfter'
         type: array
     type: object
   pb.GetMonthlyStatusResponse:
@@ -2669,6 +2697,50 @@ paths:
       summary: ADMIN , TEACHER , CEO
       tags:
       - groups
+  /api/group/left-after-trial/{from}/{to}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the data left after the trial period based on the provided
+        from date, to date, page, and page size
+      parameters:
+      - description: Start date of the period
+        in: path
+        name: from
+        required: true
+        type: string
+      - description: End date of the period
+        in: path
+        name: to
+        required: true
+        type: string
+      - default: "1"
+        description: Page number
+        in: query
+        name: page
+        type: string
+      - default: "10"
+        description: Page size
+        in: query
+        name: page_size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetLeftAfterTrialPeriodResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
+      tags:
+      - Education
   /api/group/transfer-date:
     post:
       consumes:

@@ -2127,6 +2127,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/group/left-after-trial/{from}/{to}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve the data left after the trial period based on the provided from date, to date, page, and page size",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date of the period",
+                        "name": "from",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date of the period",
+                        "name": "to",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "1",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "10",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetLeftAfterTrialPeriodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/group/transfer-date": {
             "post": {
                 "description": "Transfers the lesson date for a course",
@@ -4389,6 +4454,38 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.AbsGetLeftAfter": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "groupId": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "returnMoney": {
+                    "type": "boolean"
+                },
+                "specificDate": {
+                    "type": "string"
+                },
+                "studentBalance": {
+                    "type": "string"
+                },
+                "studentName": {
+                    "type": "string"
+                },
+                "studentPhone": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.AbsGetMonthlyStatusResponse": {
             "type": "object",
             "properties": {
@@ -5682,6 +5779,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/pb.DynamicSection"
+                    }
+                }
+            }
+        },
+        "pb.GetLeftAfterTrialPeriodResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.AbsGetLeftAfter"
                     }
                 }
             }

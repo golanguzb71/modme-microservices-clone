@@ -962,17 +962,14 @@ func GetTableGroups(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Get dateType from query
 	queryDateType := ctx.Query("dateType")
 
-	// Fetch groups
 	response, err := educationClient.GetAllGroup(ctxR, false, 1, 10000)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	// Filter groups by dateType
 	var filteredGroups []*pb.GetGroupAbsResponse
 	for _, group := range response.Groups {
 		if group.DateType == queryDateType {
@@ -980,10 +977,36 @@ func GetTableGroups(ctx *gin.Context) {
 		}
 	}
 
-	// Prepare final response
 	finalResponse := map[string]interface{}{
 		"groups": filteredGroups,
 	}
 
 	ctx.JSON(http.StatusOK, finalResponse)
+}
+
+// LeftAfterTrial
+// @Summary ADMIN , CEO
+// @Description Retrieve the data left after the trial period based on the provided from date, to date, page, and page size
+// @Tags Education
+// @Accept json
+// @Produce json
+// @Param from path string true "Start date of the period"
+// @Param to path string true "End date of the period"
+// @Param page query string false "Page number" default(1)
+// @Param page_size query string false "Page size" default(10)
+// @Success 200 {object} pb.GetLeftAfterTrialPeriodResponse
+// @Failure 400 {object} map[string]interface{}
+// @Security Bearer
+// @Router /api/group/left-after-trial/{from}/{to} [get]
+func LeftAfterTrial(ctx *gin.Context) {
+	from := ctx.Param("from")
+	to := ctx.Param("to")
+	page := ctx.DefaultQuery("page", "1")
+	pageSize := ctx.DefaultQuery("page_size", "10")
+	resp, err := educationClient.GetLeftAfterTrialPeriod(from, to, page, pageSize)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err})
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
 }

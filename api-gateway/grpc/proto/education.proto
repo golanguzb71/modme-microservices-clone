@@ -88,8 +88,29 @@ service GroupService{
   rpc DeleteGroup(common.DeleteAbsRequest)returns(common.AbsResponse);
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
   rpc GetCommonInformationEducation(google.protobuf.Empty) returns(GetCommonInformationEducationResponse);
+  rpc GetLeftAfterTrialPeriod(GetLeftAfterTrialPeriodRequest) returns(GetLeftAfterTrialPeriodResponse);
 }
 
+message GetLeftAfterTrialPeriodRequest {
+  string from = 1;
+  string to = 2;
+  string page = 3;
+  string size = 4;
+}
+message GetLeftAfterTrialPeriodResponse{
+  repeated AbsGetLeftAfter items = 1;
+}
+message AbsGetLeftAfter{
+  string id = 1;
+  string studentName = 2;
+  string studentPhone = 3;
+  string studentBalance = 4;
+  string groupId = 5;
+  string groupName = 6;
+  bool returnMoney = 7;
+  string createdAt = 8;
+  string specificDate = 9;
+}
 message GetCommonInformationEducationResponse{
   int32 activeStudentCount = 1;
   int32 activeGroupCount = 2;
