@@ -507,6 +507,7 @@ const (
 	GroupService_DeleteGroup_FullMethodName                   = "/education.GroupService/DeleteGroup"
 	GroupService_GetGroupsByTeacherId_FullMethodName          = "/education.GroupService/GetGroupsByTeacherId"
 	GroupService_GetCommonInformationEducation_FullMethodName = "/education.GroupService/GetCommonInformationEducation"
+	GroupService_GetLeftAfterTrialPeriod_FullMethodName       = "/education.GroupService/GetLeftAfterTrialPeriod"
 )
 
 // GroupServiceClient is the client API for GroupService service.
@@ -524,6 +525,7 @@ type GroupServiceClient interface {
 	DeleteGroup(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetGroupsByTeacherId(ctx context.Context, in *GetGroupsByTeacherIdRequest, opts ...grpc.CallOption) (*GetGroupsByTeacherResponse, error)
 	GetCommonInformationEducation(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetCommonInformationEducationResponse, error)
+	GetLeftAfterTrialPeriod(ctx context.Context, in *GetLeftAfterTrialPeriodRequest, opts ...grpc.CallOption) (*GetLeftAfterTrialPeriodResponse, error)
 }
 
 type groupServiceClient struct {
@@ -624,6 +626,16 @@ func (c *groupServiceClient) GetCommonInformationEducation(ctx context.Context, 
 	return out, nil
 }
 
+func (c *groupServiceClient) GetLeftAfterTrialPeriod(ctx context.Context, in *GetLeftAfterTrialPeriodRequest, opts ...grpc.CallOption) (*GetLeftAfterTrialPeriodResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLeftAfterTrialPeriodResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetLeftAfterTrialPeriod_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupServiceServer is the server API for GroupService service.
 // All implementations must embed UnimplementedGroupServiceServer
 // for forward compatibility.
@@ -639,6 +651,7 @@ type GroupServiceServer interface {
 	DeleteGroup(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	GetGroupsByTeacherId(context.Context, *GetGroupsByTeacherIdRequest) (*GetGroupsByTeacherResponse, error)
 	GetCommonInformationEducation(context.Context, *emptypb.Empty) (*GetCommonInformationEducationResponse, error)
+	GetLeftAfterTrialPeriod(context.Context, *GetLeftAfterTrialPeriodRequest) (*GetLeftAfterTrialPeriodResponse, error)
 	mustEmbedUnimplementedGroupServiceServer()
 }
 
@@ -675,6 +688,9 @@ func (UnimplementedGroupServiceServer) GetGroupsByTeacherId(context.Context, *Ge
 }
 func (UnimplementedGroupServiceServer) GetCommonInformationEducation(context.Context, *emptypb.Empty) (*GetCommonInformationEducationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommonInformationEducation not implemented")
+}
+func (UnimplementedGroupServiceServer) GetLeftAfterTrialPeriod(context.Context, *GetLeftAfterTrialPeriodRequest) (*GetLeftAfterTrialPeriodResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLeftAfterTrialPeriod not implemented")
 }
 func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
 func (UnimplementedGroupServiceServer) testEmbeddedByValue()                      {}
@@ -859,6 +875,24 @@ func _GroupService_GetCommonInformationEducation_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_GetLeftAfterTrialPeriod_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLeftAfterTrialPeriodRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetLeftAfterTrialPeriod(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetLeftAfterTrialPeriod_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetLeftAfterTrialPeriod(ctx, req.(*GetLeftAfterTrialPeriodRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupService_ServiceDesc is the grpc.ServiceDesc for GroupService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -901,6 +935,10 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCommonInformationEducation",
 			Handler:    _GroupService_GetCommonInformationEducation_Handler,
+		},
+		{
+			MethodName: "GetLeftAfterTrialPeriod",
+			Handler:    _GroupService_GetLeftAfterTrialPeriod_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
