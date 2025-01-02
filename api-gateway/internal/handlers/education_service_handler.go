@@ -1005,7 +1005,7 @@ func LeftAfterTrial(ctx *gin.Context) {
 	pageSize := ctx.DefaultQuery("page_size", "10")
 	resp, err := educationClient.GetLeftAfterTrialPeriod(from, to, page, pageSize)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": err})
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
