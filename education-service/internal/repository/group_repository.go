@@ -293,7 +293,7 @@ func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformat
 	// Initialize the response to avoid nil pointer dereference
 	response := new(pb.GetCommonInformationEducationResponse)
 
-	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount int32
+	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount, eleminatedInTrial int32
 
 	// Query to get leaveGroupCount
 	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE'`).Scan(&leaveGroupCount)
@@ -319,12 +319,16 @@ func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformat
 		debtorsCount = 0
 	}
 
+	err = r.db.QueryRow(`SELECT count(id) FROM group_student_condition_history where is_eliminated_trial`).Scan(&eleminatedInTrial)
+	if err != nil {
+		eleminatedInTrial = 0
+	}
 	// Assign the values to the response fields
 	response.DebtorsCount = debtorsCount
 	response.LeaveGroupCount = leaveGroupCount
 	response.ActiveGroupCount = activeGroupCount
 	response.ActiveStudentCount = activeStudentCount
-
+	response.EleminatedInTrial = eleminatedInTrial
 	return response, nil
 }
 
