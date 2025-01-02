@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
+	"strconv"
 )
 
 type GroupRepository struct {
@@ -381,4 +382,98 @@ func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsB
 		Comments: comments,
 		Groups:   groups,
 	}, nil
+}
+
+func (r *GroupRepository) GetLeftAfterTrial(from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
+	countQuery := `
+		SELECT COUNT(*)
+		FROM group_student_condition_history gsch
+		JOIN students ss ON gsch.student_id = ss.id
+		JOIN groups g ON gsch.group_id = g.id
+		WHERE gsch.is_eliminated_trial = TRUE
+		AND gsch.specific_date BETWEEN $1 AND $2;
+	`
+
+	var totalItemCount int
+	err := r.db.QueryRow(countQuery, from, to).Scan(&totalItemCount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get total item count: %v", err)
+	}
+
+	query := `
+		SELECT
+			ss.id AS student_id,
+			ss.name,
+			ss.phone,
+			ss.balance,
+			g.id AS group_id,
+			g.name AS group_name,
+			gsch.return_the_money,
+			gsch.created_at,
+			gsch.specific_date
+		FROM group_student_condition_history gsch
+		JOIN students ss ON gsch.student_id = ss.id
+		JOIN groups g ON gsch.group_id = g.id
+		WHERE gsch.is_eliminated_trial = TRUE
+		AND gsch.specific_date BETWEEN $1 AND $2
+		LIMIT $3 OFFSET $4;
+	`
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return nil, fmt.Errorf("invalid page parameter: %v", err)
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		return nil, fmt.Errorf("invalid size parameter: %v", err)
+	}
+
+	offset := (pageInt - 1) * sizeInt
+
+	rows, err := r.db.Query(query, from, to, sizeInt, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query group_student_condition_history: %v", err)
+	}
+	defer rows.Close()
+
+	var items []*pb.AbsGetLeftAfter
+
+	for rows.Next() {
+		var item pb.AbsGetLeftAfter
+		var returnMoney bool
+		var specificDate string
+		var createdAt string
+
+		err := rows.Scan(
+			&item.StudentId,
+			&item.StudentName,
+			&item.StudentPhone,
+			&item.StudentBalance,
+			&item.GroupId,
+			&item.GroupName,
+			&returnMoney,
+			&createdAt,
+			&specificDate,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan row: %v", err)
+		}
+
+		item.ReturnMoney = returnMoney
+		item.CreatedAt = createdAt
+		item.SpecificDate = specificDate
+
+		items = append(items, &item)
+	}
+
+	if len(items) == 0 {
+		return nil, fmt.Errorf("no records found")
+	}
+
+	resp := &pb.GetLeftAfterTrialPeriodResponse{
+		Items:          items,
+		TotalItemCount: int32(totalItemCount),
+	}
+
+	return resp, nil
 }

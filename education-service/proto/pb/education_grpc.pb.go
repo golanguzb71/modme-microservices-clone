@@ -689,9 +689,6 @@ func (UnimplementedGroupServiceServer) GetGroupsByTeacherId(context.Context, *Ge
 func (UnimplementedGroupServiceServer) GetCommonInformationEducation(context.Context, *emptypb.Empty) (*GetCommonInformationEducationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCommonInformationEducation not implemented")
 }
-func (UnimplementedGroupServiceServer) GetLeftAfterTrialPeriod(context.Context, *GetLeftAfterTrialPeriodRequest) (*GetLeftAfterTrialPeriodResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLeftAfterTrialPeriod not implemented")
-}
 func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
 func (UnimplementedGroupServiceServer) testEmbeddedByValue()                      {}
 

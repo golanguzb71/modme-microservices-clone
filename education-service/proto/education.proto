@@ -98,7 +98,11 @@ message GetLeftAfterTrialPeriodRequest {
   string size = 4;
 }
 message GetLeftAfterTrialPeriodResponse{
-  string id = 1;
+  repeated AbsGetLeftAfter items = 1;
+  int32 totalItemCount = 2;
+}
+message AbsGetLeftAfter{
+  string studentId = 1;
   string studentName = 2;
   string studentPhone = 3;
   string studentBalance = 4;

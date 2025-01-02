@@ -79,3 +79,7 @@ func (s *GroupService) GetCommonInformationEducation(ctx context.Context, req *e
 func (s *GroupService) GetGroupsByStudentId(ctx context.Context, req *pb.StudentIdRequest) (*pb.GetGroupsByStudentResponse, error) {
 	return s.repo.GetGroupsByStudentId(req.StudentId)
 }
+
+func (s *GroupService) GetLeftAfterTrialPeriod(ctx context.Context, req *pb.GetLeftAfterTrialPeriodRequest) (*pb.GetLeftAfterTrialPeriodResponse, error) {
+	return s.repo.GetLeftAfterTrial(req.From, req.To, req.Page, req.Size)
+}
