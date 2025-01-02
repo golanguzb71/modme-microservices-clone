@@ -98,7 +98,7 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 
 	for _, payment := range payments {
 		payment.Amount = payment.Amount - discountPri
-		err := r.studentClient.ChangeUserBalanceHistory(studentId, discountPrice, payment.GivenDate, "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", "ADD", payment.CreatedByID, payment.CreatedByName, groupId)
+		err := r.studentClient.ChangeUserBalanceHistory(studentId, discountPrice, payment.GivenDate, "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", "REFUND", payment.CreatedByID, payment.CreatedByName, groupId)
 		if err != nil {
 			tx.Rollback()
 			return status.Errorf(codes.Aborted, "error while editing user balance")
