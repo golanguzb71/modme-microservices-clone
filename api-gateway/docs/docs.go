@@ -4466,9 +4466,6 @@ const docTemplate = `{
                 "groupName": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "string"
-                },
                 "returnMoney": {
                     "type": "boolean"
                 },
@@ -4476,6 +4473,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "studentBalance": {
+                    "type": "string"
+                },
+                "studentId": {
                     "type": "string"
                 },
                 "studentName": {
@@ -5791,6 +5791,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsGetLeftAfter"
                     }
+                },
+                "totalItemCount": {
+                    "type": "integer"
                 }
             }
         },

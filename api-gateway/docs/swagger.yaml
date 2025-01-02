@@ -118,13 +118,13 @@ definitions:
         type: string
       groupName:
         type: string
-      id:
-        type: string
       returnMoney:
         type: boolean
       specificDate:
         type: string
       studentBalance:
+        type: string
+      studentId:
         type: string
       studentName:
         type: string
@@ -979,6 +979,8 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsGetLeftAfter'
         type: array
+      totalItemCount:
+        type: integer
     type: object
   pb.GetMonthlyStatusResponse:
     properties:

@@ -4456,9 +4456,6 @@
                 "groupName": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "string"
-                },
                 "returnMoney": {
                     "type": "boolean"
                 },
@@ -4466,6 +4463,9 @@
                     "type": "string"
                 },
                 "studentBalance": {
+                    "type": "string"
+                },
+                "studentId": {
                     "type": "string"
                 },
                 "studentName": {
@@ -5781,6 +5781,9 @@
                     "items": {
                         "$ref": "#/definitions/pb.AbsGetLeftAfter"
                     }
+                },
+                "totalItemCount": {
+                    "type": "integer"
                 }
             }
         },
