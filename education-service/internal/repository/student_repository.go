@@ -562,9 +562,19 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
 	if oldCondition == "FREEZE" && status == "DELETE" {
-		r.db.Query(`SELECT EXISTS(SELECT 1 FROM )`)
+		var exists bool
+		err = tx.QueryRow(`
+    SELECT EXISTS(
+        SELECT 1
+        FROM group_student_condition_history
+        WHERE student_id = $1 AND group_id = $2 AND group_student_id = $3
+    )`, studentId, groupId, groupStudentId).Scan(&exists)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to check existence in history: %v", err)
+		}
+		isEleminatedInTrail = !exists
 	}
-
 	insertHistoryStmt := `
         INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at , is_eliminated_trial)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW() , $9)
@@ -855,7 +865,6 @@ func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bo
 
 	return checker
 }
-
 func (r *StudentRepository) StudentBalanceTaker() {
 	if err := r.ensureFinanceClient(); err != nil {
 		return

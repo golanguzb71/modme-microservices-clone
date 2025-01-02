@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strconv"
 	"time"
 )
 
@@ -19,27 +20,98 @@ type DiscountRepository struct {
 
 func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
 	var checker bool
-	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM student_discount WHERE group_id=$1 AND student_id=$2)`, groupId, studentId).Scan(&checker)
+	tx, err := r.db.Begin()
+	if err != nil {
+		return status.Errorf(codes.Aborted, "error while creating transaction %v", err)
+	}
+
+	err = tx.QueryRow(`SELECT EXISTS(SELECT 1 FROM student_discount WHERE group_id=$1 AND student_id=$2)`, groupId, studentId).Scan(&checker)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error checking existing discount: %v", err)
 	}
-
 	if checker {
 		return status.Errorf(codes.AlreadyExists, "Discount already exists")
 	}
-	_, err = r.db.Exec(`INSERT INTO student_discount (student_id, discount, group_id, comment, start_at, end_at, withteacher) 
+
+	_, err = tx.Exec(`INSERT INTO student_discount (student_id, discount, group_id, comment, start_at, end_at, withteacher) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7)`, studentId, discountPrice, groupId, comment, startDate, endDate, withTeacher)
 	if err != nil {
+		tx.Rollback()
 		return status.Errorf(codes.Internal, "Status discount insert error: %v", err)
 	}
-	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
+
+	_, err = tx.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
 		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8, $9)`, uuid.New(), studentId, groupId, startDate, endDate, withTeacher, comment, "CREATE", discountPrice)
 	if err != nil {
+		tx.Rollback()
 		return status.Errorf(codes.Internal, "Error inserting into student history: %v", err)
+	}
+
+	rows, err := tx.Query(`
+        SELECT id, student_id, method, amount, given_date, comment, created_at, payment_type, created_by_id, created_by_name, group_id
+        FROM student_payments
+        WHERE student_id = $1 AND group_id = $2 AND given_date BETWEEN $3 AND $4 AND payment_type = 'TAKE_OFF'`,
+		studentId, groupId, startDate, endDate)
+	if err != nil {
+		tx.Rollback()
+		return status.Errorf(codes.Internal, "Error fetching student payments: %v", err)
+	}
+	defer rows.Close()
+
+	var payments []struct {
+		ID            string
+		StudentID     string
+		Method        string
+		Amount        float64
+		GivenDate     string
+		Comment       string
+		CreatedAt     string
+		PaymentType   string
+		CreatedByID   string
+		CreatedByName string
+		GroupID       int64
+	}
+	discountPri, err := strconv.ParseFloat(discountPrice, 64)
+	if err != nil {
+		return status.Errorf(codes.Aborted, "%v", err)
+	}
+	for rows.Next() {
+		var payment struct {
+			ID            string
+			StudentID     string
+			Method        string
+			Amount        float64
+			GivenDate     string
+			Comment       string
+			CreatedAt     string
+			PaymentType   string
+			CreatedByID   string
+			CreatedByName string
+			GroupID       int64
+		}
+		if err := rows.Scan(&payment.ID, &payment.StudentID, &payment.Method, &payment.Amount, &payment.GivenDate, &payment.Comment, &payment.CreatedAt, &payment.PaymentType, &payment.CreatedByID, &payment.CreatedByName, &payment.GroupID); err != nil {
+			tx.Rollback()
+			return status.Errorf(codes.Internal, "Error scanning student payments: %v", err)
+		}
+		payments = append(payments, payment)
+	}
+
+	for _, payment := range payments {
+		payment.Amount = payment.Amount - discountPri
+		err := r.studentClient.ChangeUserBalanceHistory(studentId, discountPrice, payment.GivenDate, "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", "ADD", payment.CreatedByID, payment.CreatedByName, groupId)
+		if err != nil {
+			tx.Rollback()
+			return status.Errorf(codes.Aborted, "error while editing user balance")
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return status.Errorf(codes.Aborted, "Transaction commit failed: %v", err)
 	}
 
 	return nil
 }
+
 func (r *DiscountRepository) DeleteDiscount(groupId string, studentId string) error {
 	var discount pb.AbsDiscountRequest
 	var createdAt string
