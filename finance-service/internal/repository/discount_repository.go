@@ -16,6 +16,7 @@ import (
 type DiscountRepository struct {
 	db            *sql.DB
 	studentClient *clients.EducationClient
+	paymentRepo   *PaymentRepository
 }
 
 func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
@@ -98,10 +99,10 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 
 	for _, payment := range payments {
 		payment.Amount = payment.Amount - discountPri
-		err := r.studentClient.ChangeUserBalanceHistory(studentId, discountPrice, payment.GivenDate, "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", "ADD", payment.CreatedByID, payment.CreatedByName, groupId)
+		err := r.paymentRepo.AddPayment(payment.GivenDate, fmt.Sprintf("%.2f", payment.Amount), "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
 		if err != nil {
 			tx.Rollback()
-			return status.Errorf(codes.Aborted, "error while editing user balance")
+			return err
 		}
 	}
 
@@ -245,6 +246,6 @@ func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (
 	return nil, fmt.Errorf("current time is not within the discount period")
 }
 
-func NewDiscountRepository(db *sql.DB, studentClient *clients.EducationClient) *DiscountRepository {
-	return &DiscountRepository{db: db, studentClient: studentClient}
+func NewDiscountRepository(db *sql.DB, studentClient *clients.EducationClient, paymentRepo *PaymentRepository) *DiscountRepository {
+	return &DiscountRepository{db: db, studentClient: studentClient, paymentRepo: paymentRepo}
 }

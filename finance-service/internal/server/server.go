@@ -31,14 +31,14 @@ func RunServer() {
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	discountRepo := repository.NewDiscountRepository(db, educationClient)
-	discountService := service.NewDiscountService(discountRepo)
 	categoryRepo := repository.NewCategoryRepository(db)
 	categoryService := service.NewCategoryService(categoryRepo)
 	expenseRepo := repository.NewExpenseRepository(db, userClient)
 	expenseService := service.NewExpenseService(expenseRepo)
 	paymentRepo := repository.NewPaymentRepository(db, educationClient)
 	paymentService := service.NewPaymentService(paymentRepo)
+	discountRepo := repository.NewDiscountRepository(db, educationClient, paymentRepo)
+	discountService := service.NewDiscountService(discountRepo)
 	salaryRepo := repository.NewTeacherSalaryRepository(db, userClient)
 	salaryService := service.NewTeacherSalaryService(salaryRepo)
 	list, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
