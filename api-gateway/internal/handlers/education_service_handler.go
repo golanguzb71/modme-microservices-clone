@@ -911,13 +911,8 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	activeLeadCount := leadClient.GetActiveLeadCount(ctxR)
-	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount := educationClient.GetCommonEducationInformation(ctxR)
+	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount, eleminatedInTrial := educationClient.GetCommonEducationInformation(ctxR)
 	_, payInCurrentMonth := financeClient.GetCommonFinanceInformation(ctxR)
-	fmt.Println(activeLeadCount)
-	fmt.Println(activeGroupCount)
-	fmt.Println(activeStudentCount)
-	fmt.Println(leaveGroupCount)
-	fmt.Println(activeLeadCount)
 	response := make(map[string]int)
 	response["activeLeadCount"] = activeLeadCount
 	response["activeStudentsCount"] = activeStudentCount
@@ -925,6 +920,7 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 	response["debtorsCount"] = commonDebtorsCount
 	response["payInCurrentMonth"] = payInCurrentMonth
 	response["leaveGroupCount"] = leaveGroupCount
+	response["eleminatedInTrial"] = eleminatedInTrial
 	ctx.JSON(http.StatusOK, response)
 	return
 }

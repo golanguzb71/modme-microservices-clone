@@ -112,6 +112,7 @@ message GetCommonInformationEducationResponse{
   int32 activeGroupCount = 2;
   int32 leaveGroupCount = 3;
   int32 debtorsCount = 4;
+  int32 eleminatedInTrial = 5;
 }
 message GetGroupsByTeacherIdRequest{
   string teacherId = 1;

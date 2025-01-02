@@ -3,7 +3,6 @@ package client
 import (
 	"api-gateway/grpc/proto/pb"
 	"context"
-	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -187,14 +186,13 @@ func (lc *EducationClient) GetInformationByTeacher(ctx context.Context, teacherI
 	})
 }
 
-func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int) {
+func (lc *EducationClient) GetCommonEducationInformation(ctx context.Context) (int, int, int, int, int) {
 	response, err := lc.groupClient.GetCommonInformationEducation(ctx, &emptypb.Empty{})
-	fmt.Println(response)
-	fmt.Println(err)
+
 	if err != nil {
-		return 0, 0, 0, 0
+		return 0, 0, 0, 0, 0
 	}
-	return int(response.ActiveStudentCount), int(response.ActiveGroupCount), int(response.LeaveGroupCount), int(response.DebtorsCount)
+	return int(response.ActiveStudentCount), int(response.ActiveGroupCount), int(response.LeaveGroupCount), int(response.DebtorsCount), int(response.EleminatedInTrial)
 }
 
 func (lc *EducationClient) CalculateSalaryByTeacher(ctx context.Context, from string, to string, teacherId string) (*pb.CalculateTeacherSalaryResponse, error) {
