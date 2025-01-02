@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -37,6 +38,9 @@ func (r *PaymentRepository) AddPayment(givenDate, sum, method, comment, studentI
 	amount, err := strconv.ParseFloat(sum, 64)
 	if err != nil {
 		return fmt.Errorf("invalid sum amount: %v", err)
+	}
+	if strings.Contains(givenDate, "T") {
+		givenDate = givenDate[:10]
 	}
 	parsedDate, err := time.Parse("2006-01-02", givenDate)
 	if err != nil {
