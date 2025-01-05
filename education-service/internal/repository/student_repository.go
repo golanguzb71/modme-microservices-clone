@@ -507,13 +507,20 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 	}, nil
 }
 func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
-	isEleminatedInTrail := false
+	isEliminatedInTrial := false
+
+	// Ensure finance client is initialized
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
 	}
-	if status != "FREEZE" && status != "ACTIVE" && status != "DELETE" {
+
+	// Validate status
+	validStatuses := map[string]bool{"FREEZE": true, "ACTIVE": true, "DELETE": true}
+	if !validStatuses[status] {
 		return nil, fmt.Errorf("invalid status: %s", status)
 	}
+
+	// Parse tillDate
 	var tillDateParsed sql.NullTime
 	if tillDate != "" {
 		parsedDate, err := time.Parse("2006-01-02", tillDate)
@@ -524,28 +531,42 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	} else {
 		tillDateParsed = sql.NullTime{Valid: false}
 	}
+
+	// Ensure tillDateParsed is valid and in the past
+	if !tillDateParsed.Valid || tillDateParsed.Time.After(time.Now()) {
+		return nil, fmt.Errorf("invalid tillDate: it must be in the past and valid")
+	}
+
+	// Check if group and student are active
 	if !r.checkArgumentsIsActive(groupId, studentId) {
 		return nil, fmt.Errorf("group or student is not active")
 	}
 
+	// Begin transaction
 	tx, err := r.db.Begin()
 	if err != nil {
 		return nil, fmt.Errorf("failed to begin transaction: %v", err)
 	}
 
-	var oldCondition string
-	var groupStudentId string
+	// Retrieve old condition and group_student_id
+	var oldCondition, groupStudentId string
 	err = tx.QueryRow(`
-        SELECT condition  , id
-        FROM group_students 
-        WHERE student_id = $1 AND group_id = $2`, studentId, groupId).Scan(&oldCondition, &groupStudentId)
+        SELECT condition, id
+        FROM group_students
+        WHERE student_id = $1 AND group_id = $2`, studentId, groupId).
+		Scan(&oldCondition, &groupStudentId)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to retrieve old condition: %v", err)
 	}
+
+	// Prevent redundant updates
 	if oldCondition == status {
+		tx.Rollback()
 		return nil, fmt.Errorf("condition is the same as you give")
 	}
+
+	// Update group_students condition
 	updateStmt := `
         UPDATE group_students
         SET condition = $1,
@@ -557,86 +578,79 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
+
+	// Handle condition transition from FREEZE to DELETE
 	if oldCondition == "FREEZE" && status == "DELETE" {
 		var exists bool
 		err = tx.QueryRow(`
-    SELECT EXISTS(
-        SELECT 1
-        FROM group_student_condition_history
-        WHERE student_id = $1 AND group_id = $2 AND group_student_id = $3
-    )`, studentId, groupId, groupStudentId).Scan(&exists)
+            SELECT EXISTS(
+                SELECT 1
+                FROM group_student_condition_history
+                WHERE student_id = $1 AND group_id = $2 AND group_student_id = $3
+            )`, studentId, groupId, groupStudentId).
+			Scan(&exists)
 		if err != nil {
 			tx.Rollback()
 			return nil, fmt.Errorf("failed to check existence in history: %v", err)
 		}
-		isEleminatedInTrail = !exists
+		isEliminatedInTrial = !exists
 	}
+
+	// Insert history
 	insertHistoryStmt := `
-        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at , is_eliminated_trial)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW() , $9)
+        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9)
     `
-	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEleminatedInTrail)
+	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEliminatedInTrial)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
-	manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
-	if returnTheMoney {
+	// Handle payments
+	fromDate := tillDateParsed.Time
+	currentDate := time.Now()
+
+	// Iterate through each month and calculate payments
+	for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
+		monthYear := d.Format("2006-01") // Format as YYYY-MM for clarity
+
+		// Calculate the amount for the given status and month
+		manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYear)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to calculate money for %s: %v", monthYear, err)
+		}
+
+		// Determine payment description and transaction type
+		var description, transactionType string
 		switch status {
 		case "FREEZE":
-			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, tillDate)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			_, err = r.financeClient.PaymentAdd("Student guruhdan muzlatildi. golanga pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "REFUND", actionById, actionByName, groupId)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			//_, err = r.ChangeUserBalanceHistory("student guruhdan muzlatildi. qolgan pul qaytarib berildi.", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "ADD", studentId)
-			//if err != nil {
-			//	tx.Rollback()
-			//	return nil, err
-			//}
+			description = fmt.Sprintf("Student guruhdan muzlatildi. %s oyi uchun pul qaytarib berildi.", monthYear)
+			transactionType = "REFUND"
 		case "DELETE":
-			date := time.Now().Format("2006-01-02")
-			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, date)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			_, err = r.financeClient.PaymentAdd("Student guruhdan o'chirildi . qolgan pul qaytarib berildi.", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "REFUND", actionById, actionByName, groupId)
-			if err != nil {
-				tx.Rollback()
-				return nil, err
-			}
-			//_, err = r.ChangeUserBalanceHistory("student guruhdan o'chirildi . qolgan pul qaytarib berildi.", groupId, actionById, actionByName, date, fmt.Sprintf("%v", amount), "ADD", studentId)
-			//if err != nil {
-			//	tx.Rollback()
-			//	return nil, err
-			//}
+			description = fmt.Sprintf("Student guruhdan o'chirildi. %s oyi uchun pul qaytarib berildi.", monthYear)
+			transactionType = "REFUND"
+		case "ACTIVE":
+			description = fmt.Sprintf("Student guruhga qo'shildi. %s oyi uchun pul hisoblandi va yechib olindi.", monthYear)
+			transactionType = "TAKE_OFF"
+		default:
+			tx.Rollback()
+			return nil, fmt.Errorf("unknown status: %s", status)
+		}
+
+		// Add payment to the finance client
+		_, err = r.financeClient.PaymentAdd(
+			description, monthYear, "CASH", fmt.Sprintf("%v", amount),
+			studentId, transactionType, actionById, actionByName, groupId)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to add payment for %s: %v", monthYear, err)
 		}
 	}
 
-	if status == "ACTIVE" {
-		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, tillDate)
-		if err != nil {
-			tx.Rollback()
-			return nil, err
-		}
-		_, err = r.financeClient.PaymentAdd("Student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", tillDate, "CASH", fmt.Sprintf("%v", amount), studentId, "TAKE_OFF", actionById, actionByName, groupId)
-		if err != nil {
-			tx.Rollback()
-			return nil, err
-		}
-		//_, err = r.ChangeUserBalanceHistory("Student guruhga qo'shildi. qolgan darslar uchun pul hisoblandi va yechib olindi", groupId, actionById, actionByName, tillDate, fmt.Sprintf("%v", amount), "TAKE_OFF", studentId)
-		//if err != nil {
-		//	tx.Rollback()
-		//	return nil, err
-		//}
-	}
+	// Commit transaction
 	if err := tx.Commit(); err != nil {
 		return nil, fmt.Errorf("failed to commit transaction: %v", err)
 	}
