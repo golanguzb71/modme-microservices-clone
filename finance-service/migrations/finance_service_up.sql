@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS student_discount
     end_at      date             NOT NULL,
     withTeacher boolean          NOT NULL,
     created_at  timestamp DEFAULT NOW(),
+    company_id  int,
     PRIMARY KEY (student_id, group_id)
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE student_discount_history
     withTeacher boolean          NOT NULL,
     comment     varchar          NOT NULL,
     action      varchar          NOT NULL,
+    company_id  int,
     created_at  timestamp default now()
 );
 
@@ -29,7 +31,8 @@ CREATE TABLE IF NOT EXISTS category
 (
     id          serial primary key,
     name        varchar NOT NULL,
-    description varchar not null
+    description varchar not null,
+    company_id  int
 );
 
 CREATE TABLE IF NOT EXISTS expense
@@ -43,7 +46,8 @@ CREATE TABLE IF NOT EXISTS expense
     given_date     date                                                          NOT NULL,
     created_at     timestamp default NOW(),
     created_by     uuid                                                          NOT NULL,
-    payment_method varchar check ( payment_method in ('CASH', 'CLICK', 'PAYME')) NOT NULL
+    payment_method varchar check ( payment_method in ('CASH', 'CLICK', 'PAYME')) NOT NULL,
+    company_id     int
 );
 
 CREATE TABLE IF NOT EXISTS student_payments
@@ -58,7 +62,8 @@ CREATE TABLE IF NOT EXISTS student_payments
     payment_type    varchar check ( payment_type in ('ADD', 'TAKE_OFF', 'REFUND') )        NOT NULL,
     created_by_id   uuid                                                                   NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
     created_by_name varchar                                                                NOT NULL,
-    group_id        bigint
+    group_id        bigint,
+    company_id      int
 );
 
 CREATE TABLE IF NOT EXISTS teacher_salary
@@ -71,6 +76,7 @@ CREATE TABLE IF NOT EXISTS teacher_salary
             ELSE TRUE
             END
         ),
-    created_at        timestamp DEFAULT NOW()
+    created_at        timestamp DEFAULT NOW(),
+    company_id        int
 );
 

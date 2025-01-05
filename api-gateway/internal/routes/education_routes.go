@@ -13,6 +13,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	api.GET("/get-table-groups", middleware.AuthMiddleware([]string{"CEO", "ADMIN", "TEACHER"}, userClient), handlers.GetTableGroups)
 	company := api.Group("/company")
 	{
+		company.GET("/subdomain/:domain", handlers.GetCompanyBySubdomain)
 		company.POST("/create", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.CompanyCreate)
 		company.GET("/get-all", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.GetAllCompanies)
 		company.GET("/get-one/:id", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.GetOneCompany)

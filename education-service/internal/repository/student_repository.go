@@ -646,6 +646,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		Status:  200,
 	}, nil
 }
+
 func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bool) (*pb.GetStudentsByGroupIdResponse, error) {
 	var students []*pb.AbsStudent
 	query := `

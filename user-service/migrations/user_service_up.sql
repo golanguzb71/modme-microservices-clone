@@ -8,12 +8,13 @@ CREATE TABLE IF NOT EXISTS users
     birth_date   date                                                                                   DEFAULT '2000-12-12',
     gender       boolean                                                                       NOT NULL DEFAULT TRUE,
     is_deleted   boolean                                                                       NOT NULL DEFAULT FALSE,
-    created_at   timestamp                                                                              DEFAULT NOW()
+    created_at   timestamp                                                                              DEFAULT NOW(),
+    company_id   int
 );
 
 INSERT INTO users(id, full_name, phone_number, password, role)
 values (gen_random_uuid(), 'Shohruh', '+998950960153', '$2a$10$1gDxC.3v73V45QXt0R3cCurQE5YL5jB5HTRKrh8L1maJx68nySEtW',
-        'CEO');
+        'SUPER_CEO');
 
 CREATE TABLE IF NOT EXISTS users_history
 (

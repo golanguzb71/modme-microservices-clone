@@ -2,14 +2,16 @@ CREATE TABLE IF NOT EXISTS lead_section
 (
     id         serial PRIMARY KEY,
     title      varchar NOT NULL UNIQUE,
-    created_at timestamp DEFAULT NOW()
+    created_at timestamp DEFAULT NOW(),
+    company_id int
 );
 
 CREATE TABLE IF NOT EXISTS expect_section
 (
     id         serial UNIQUE,
     title      varchar NOT NULL UNIQUE,
-    created_at timestamp DEFAULT NOW()
+    created_at timestamp DEFAULT NOW(),
+    company_id int
 );
 
 CREATE TABLE IF NOT EXISTS set_section
@@ -23,7 +25,8 @@ CREATE TABLE IF NOT EXISTS set_section
     start_time varchar                                               NOT NULL,
     created_at timestamp DEFAULT NOW(),
     CONSTRAINT valid_days CHECK (array_length(days, 1) > 0 AND days <@
-                                                               ARRAY ['DUSHANBA', 'SESHANBA', 'CHORSHANBA', 'PAYSHANBA', 'JUMA', 'SHANBA', 'YAKSHANBA'])
+                                                               ARRAY ['DUSHANBA', 'SESHANBA', 'CHORSHANBA', 'PAYSHANBA', 'JUMA', 'SHANBA', 'YAKSHANBA']),
+    company_id int
 );
 
 CREATE TABLE IF NOT EXISTS lead_user
@@ -35,7 +38,8 @@ CREATE TABLE IF NOT EXISTS lead_user
     expect_id    int REFERENCES expect_section (id),
     set_id       int REFERENCES set_section (id) ON DELETE CASCADE,
     comment      varchar,
-    created_at   timestamp DEFAULT now()
+    created_at   timestamp DEFAULT now(),
+    company_id   int
 );
 
 CREATE TABLE IF NOT EXISTS lead_source_reports
@@ -43,7 +47,8 @@ CREATE TABLE IF NOT EXISTS lead_source_reports
     id         uuid primary key,
     lead_count int,
     source     varchar,
-    created_at timestamp DEFAULT NOW()
+    created_at timestamp DEFAULT NOW(),
+    company_id int
 );
 
 CREATE TABLE IF NOT EXISTS lead_conversion_reports
@@ -51,5 +56,6 @@ CREATE TABLE IF NOT EXISTS lead_conversion_reports
     id              uuid primary key,
     lead_count      int,
     conversion_date varchar,
-    created_at      timestamp DEFAULT NOW()
+    created_at      timestamp DEFAULT NOW(),
+    company_id      int
 );

@@ -1026,3 +1026,7 @@ func GetOneCompany(ctx *gin.Context) {
 func CompanyUpdate(ctx *gin.Context) {
 
 }
+
+func GetCompanyBySubdomain(ctx *gin.Context) {
+
+}
