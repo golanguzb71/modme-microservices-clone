@@ -1010,3 +1010,19 @@ func LeftAfterTrial(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func CompanyCreate(ctx *gin.Context) {
+
+}
+
+func GetAllCompanies(ctx *gin.Context) {
+
+}
+
+func GetOneCompany(ctx *gin.Context) {
+
+}
+
+func CompanyUpdate(ctx *gin.Context) {
+
+}

@@ -726,3 +726,15 @@ func CalculateSalary(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+func CompanyPayAdd(ctx *gin.Context) {
+
+}
+
+func CancelPay(ctx *gin.Context) {
+
+}
+
+func GetAllPay(ctx *gin.Context) {
+
+}

@@ -1,3 +1,14 @@
+CREATE TABLE company
+(
+    id            serial primary key,
+    title         varchar NOT NULL,
+    avatar        varchar NOT NULL,
+    start_time    varchar NOT NULL,
+    end_time      varchar NOT NULL,
+    company_phone varchar NOT NULL,
+    subdomain     varchar NOT NULL
+);
+
 CREATE table IF NOT EXISTS rooms
 (
     id       serial primary key,
@@ -126,7 +137,7 @@ CREATE TABLE IF NOT EXISTS group_student_condition_history
     old_condition       varchar check ( old_condition in ('FREEZE', 'ACTIVE', 'DELETE'))     NOT NULL,
     current_condition   varchar check ( current_condition in ('FREEZE', 'ACTIVE', 'DELETE')) NOT NULL,
     is_eliminated_trial bool                                                                          DEFAULT FALSE,
-    specific_date          date                                                                 NOT NULL DEFAULT NOW(),
+    specific_date       date                                                                 NOT NULL DEFAULT NOW(),
     return_the_money    boolean                                                              NOT NULL DEFAULT FALSE,
     created_at          timestamp                                                                     DEFAULT NOW()
 );
