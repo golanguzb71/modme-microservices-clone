@@ -509,18 +509,15 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
 	isEliminatedInTrial := false
 
-	// Ensure finance client is initialized
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
 	}
 
-	// Validate status
 	validStatuses := map[string]bool{"FREEZE": true, "ACTIVE": true, "DELETE": true}
 	if !validStatuses[status] {
 		return nil, fmt.Errorf("invalid status: %s", status)
 	}
 
-	// Parse tillDate
 	var tillDateParsed sql.NullTime
 	if tillDate != "" {
 		parsedDate, err := time.Parse("2006-01-02", tillDate)
@@ -532,23 +529,19 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		tillDateParsed = sql.NullTime{Valid: false}
 	}
 
-	// Ensure tillDateParsed is valid and in the past
 	if !tillDateParsed.Valid || tillDateParsed.Time.After(time.Now()) {
 		return nil, fmt.Errorf("invalid tillDate: it must be in the past and valid")
 	}
 
-	// Check if group and student are active
 	if !r.checkArgumentsIsActive(groupId, studentId) {
 		return nil, fmt.Errorf("group or student is not active")
 	}
 
-	// Begin transaction
 	tx, err := r.db.Begin()
 	if err != nil {
 		return nil, fmt.Errorf("failed to begin transaction: %v", err)
 	}
 
-	// Retrieve old condition and group_student_id
 	var oldCondition, groupStudentId string
 	err = tx.QueryRow(`
         SELECT condition, id
@@ -560,13 +553,11 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to retrieve old condition: %v", err)
 	}
 
-	// Prevent redundant updates
 	if oldCondition == status {
 		tx.Rollback()
 		return nil, fmt.Errorf("condition is the same as you give")
 	}
 
-	// Update group_students condition
 	updateStmt := `
         UPDATE group_students
         SET condition = $1,
@@ -579,7 +570,6 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
 
-	// Handle condition transition from FREEZE to DELETE
 	if oldCondition == "FREEZE" && status == "DELETE" {
 		var exists bool
 		err = tx.QueryRow(`
@@ -596,7 +586,6 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		isEliminatedInTrial = !exists
 	}
 
-	// Insert history
 	insertHistoryStmt := `
         INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9)
@@ -607,50 +596,44 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
 	}
 
-	// Handle payments
 	fromDate := tillDateParsed.Time
 	currentDate := time.Now()
 
-	// Iterate through each month and calculate payments
 	for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
-		monthYear := d.Format("2006-01") // Format as YYYY-MM for clarity
+		monthYearDate := d.Format("2006-01-02") // Format as YYYY-MM for clarity
 
-		// Calculate the amount for the given status and month
 		manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
-		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYear)
+		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYearDate)
 		if err != nil {
 			tx.Rollback()
-			return nil, fmt.Errorf("failed to calculate money for %s: %v", monthYear, err)
+			return nil, fmt.Errorf("failed to calculate money for %s: %v", monthYearDate, err)
 		}
 
-		// Determine payment description and transaction type
 		var description, transactionType string
 		switch status {
 		case "FREEZE":
-			description = fmt.Sprintf("Student guruhdan muzlatildi. %s oyi uchun pul qaytarib berildi.", monthYear)
+			description = fmt.Sprintf("Student guruhdan muzlatildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
 			transactionType = "REFUND"
 		case "DELETE":
-			description = fmt.Sprintf("Student guruhdan o'chirildi. %s oyi uchun pul qaytarib berildi.", monthYear)
+			description = fmt.Sprintf("Student guruhdan o'chirildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
 			transactionType = "REFUND"
 		case "ACTIVE":
-			description = fmt.Sprintf("Student guruhga qo'shildi. %s oyi uchun pul hisoblandi va yechib olindi.", monthYear)
+			description = fmt.Sprintf("Student guruhga qo'shildi. %s oyi uchun pul hisoblandi va yechib olindi.", monthYearDate)
 			transactionType = "TAKE_OFF"
 		default:
 			tx.Rollback()
 			return nil, fmt.Errorf("unknown status: %s", status)
 		}
 
-		// Add payment to the finance client
 		_, err = r.financeClient.PaymentAdd(
-			description, monthYear, "CASH", fmt.Sprintf("%v", amount),
+			description, monthYearDate, "CASH", fmt.Sprintf("%v", amount),
 			studentId, transactionType, actionById, actionByName, groupId)
 		if err != nil {
 			tx.Rollback()
-			return nil, fmt.Errorf("failed to add payment for %s: %v", monthYear, err)
+			return nil, fmt.Errorf("failed to add payment for %s: %v", monthYearDate, err)
 		}
 	}
 
-	// Commit transaction
 	if err := tx.Commit(); err != nil {
 		return nil, fmt.Errorf("failed to commit transaction: %v", err)
 	}
