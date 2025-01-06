@@ -13,6 +13,7 @@ type EducationClient struct {
 	groupClient      pb.GroupServiceClient
 	attendanceClient pb.AttendanceServiceClient
 	studentClient    pb.StudentServiceClient
+	companyClient    pb.CompanyServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -26,7 +27,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	groupClient := pb.NewGroupServiceClient(conn)
 	attendanceClient := pb.NewAttendanceServiceClient(conn)
 	studentClient := pb.NewStudentServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient}, nil
+	companyClient := pb.NewCompanyServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient, companyClient: companyClient}, nil
 }
 
 // Education Service method client
@@ -210,4 +212,8 @@ func (lc *EducationClient) GetLeftAfterTrialPeriod(from string, to string, page 
 		Page: page,
 		Size: size,
 	})
+}
+
+func (lc *EducationClient) GetCompanyBySubdomain(domain string) (*pb.GetCompanyResponse, error) {
+	return lc.companyClient.GetCompanyBySubdomain(context.TODO(), &pb.GetCompanyRequest{Domain: domain})
 }

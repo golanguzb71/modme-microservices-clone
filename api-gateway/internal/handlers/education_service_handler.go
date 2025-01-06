@@ -1028,5 +1028,11 @@ func CompanyUpdate(ctx *gin.Context) {
 }
 
 func GetCompanyBySubdomain(ctx *gin.Context) {
-
+	domain := ctx.Param("domain")
+	resp, err := educationClient.GetCompanyBySubdomain(domain)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
 }

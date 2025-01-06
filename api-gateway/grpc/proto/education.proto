@@ -8,6 +8,26 @@ import "common.proto";
 
 import "google/protobuf/empty.proto";
 
+
+service CompanyService{
+  rpc GetCompanyBySubdomain(GetCompanyRequest) returns(GetCompanyResponse);
+}
+
+message GetCompanyRequest{
+  string domain = 1;
+}
+
+message GetCompanyResponse{
+  string id = 1;
+  string title = 2;
+  string avatarUrl = 3;
+  string startTime = 4;
+  string endTime = 5;
+  string companyPhone = 6;
+  string subdomain = 7;
+}
+
+
 // room service start
 service RoomService{
   rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
