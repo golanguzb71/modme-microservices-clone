@@ -987,7 +987,7 @@ func GetTableGroups(ctx *gin.Context) {
 // LeftAfterTrial
 // @Summary ADMIN , CEO
 // @Description Retrieve the data left after the trial period based on the provided from date, to date, page, and page size
-// @Tags Education
+// @Tags education
 // @Accept json
 // @Produce json
 // @Param from path string true "Start date of the period"
@@ -1027,6 +1027,16 @@ func CompanyUpdate(ctx *gin.Context) {
 
 }
 
+// GetCompanyBySubdomain
+// @Summary ALL
+// @Description Retrieve the data company by domain
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param domain path string true "Start date of the period"
+// @Success 200 {object} pb.GetCompanyResponse
+// @Failure 400 {object} map[string]interface{}
+// @Router /api/company/subdomain/{domain} [get]
 func GetCompanyBySubdomain(ctx *gin.Context) {
 	domain := ctx.Param("domain")
 	resp, err := educationClient.GetCompanyBySubdomain(domain)

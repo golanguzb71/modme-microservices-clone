@@ -772,6 +772,23 @@ definitions:
       payInCurrentMonth:
         type: integer
     type: object
+  pb.GetCompanyResponse:
+    properties:
+      avatarUrl:
+        type: string
+      companyPhone:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: string
+      startTime:
+        type: string
+      subdomain:
+        type: string
+      title:
+        type: string
+    type: object
   pb.GetGroupAbsResponse:
     properties:
       course:
@@ -1436,6 +1453,32 @@ paths:
       summary: ADMIN , CEO
       tags:
       - education
+  /api/company/subdomain/{domain}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the data company by domain
+      parameters:
+      - description: Start date of the period
+        in: path
+        name: domain
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetCompanyResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: ALL
+      tags:
+      - company
   /api/course/create:
     post:
       consumes:
@@ -2742,7 +2785,7 @@ paths:
       - Bearer: []
       summary: ADMIN , CEO
       tags:
-      - Education
+      - education
   /api/group/transfer-date:
     post:
       consumes:

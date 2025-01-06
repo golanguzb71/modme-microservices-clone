@@ -149,6 +149,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/company/subdomain/{domain}": {
+            "get": {
+                "description": "Retrieve the data company by domain",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "ALL",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date of the period",
+                        "name": "domain",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetCompanyResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/course/create": {
             "post": {
                 "security": [
@@ -2142,7 +2181,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Education"
+                    "education"
                 ],
                 "summary": "ADMIN , CEO",
                 "parameters": [
@@ -5471,6 +5510,32 @@ const docTemplate = `{
                 },
                 "payInCurrentMonth": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.GetCompanyResponse": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "companyPhone": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "subdomain": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         },
