@@ -15,6 +15,7 @@ service CompanyService{
   rpc GetAll(common.PageRequest)returns(GetAllResponse);
   rpc UpdateCompany(UpdateCompanyRequest) returns(common.AbsResponse);
 }
+
 message UpdateCompanyRequest{
   string id = 1;
   string title = 2;

@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -1105,4 +1107,95 @@ func GetCompanyBySubdomain(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, resp)
+}
+
+// UploadImage
+// @Summary Upload an image
+// @Description Upload an image file and save it to the server
+// @Tags image
+// @Accept multipart/form-data
+// @Produce json
+// @Param image formData file true "Image file to upload"
+// @Success 200 {object} map[string]string "Success response with file URL"
+// @Failure 400 {object} map[string]string "Bad request or file error"
+// @Failure 500 {object} map[string]string "Internal server error"
+// @Router /api/image/upload [post]
+func UploadImage(ctx *gin.Context) {
+	file, header, err := ctx.Request.FormFile("image")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read image file: " + err.Error()})
+		return
+	}
+	defer file.Close()
+	const maxFileSize = 5 << 20
+	if header.Size > maxFileSize {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "File is too large. Maximum size is 5MB"})
+		return
+	}
+	ext := filepath.Ext(header.Filename)
+	if ext == "" {
+		ext = ".jpg"
+	}
+	filename := fmt.Sprintf("image_%d%s", time.Now().UnixNano(), ext)
+
+	uploadDir := "./uploads"
+	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory: " + err.Error()})
+		return
+	}
+
+	filePath := filepath.Join(uploadDir, filename)
+	out, err := os.Create(filePath)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save image: " + err.Error()})
+		return
+	}
+	defer out.Close()
+
+	if _, err := file.Seek(0, 0); err == nil {
+		if _, err := out.ReadFrom(file); err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write image: " + err.Error()})
+			return
+		}
+	} else {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset file pointer: " + err.Error()})
+		return
+	}
+	utils.RespondSuccess(ctx, http.StatusOK, fmt.Sprintf("https://backend.livesphere.uz/api/image/get-image?filename=%v", filename))
+}
+
+// GetImage
+// @Summary Get an uploaded image
+// @Description Retrieve an uploaded image by filename
+// @Tags image
+// @Accept json
+// @Produce image/jpeg
+// @Produce image/png
+// @Produce image/gif
+// @Param filename query string true "Filename of the image to retrieve"
+// @Success 200 "Image file"
+// @Failure 400 {object} map[string]string "Bad request, filename missing"
+// @Failure 404 {object} map[string]string "Image not found"
+// @Router /api/image/get-image [get]
+func GetImage(ctx *gin.Context) {
+	filename := ctx.Query("filename")
+	if filename == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Filename is required"})
+		return
+	}
+
+	uploadDir := "./uploads"
+	filePath := filepath.Join(uploadDir, filename)
+
+	if !fileExists(filePath) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
+		return
+	}
+
+	ctx.File(filePath)
+}
+
+func fileExists(path string) bool {
+	stat, err := os.Stat(path)
+	return err == nil && !stat.IsDir()
 }

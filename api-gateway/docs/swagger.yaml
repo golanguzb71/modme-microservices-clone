@@ -3034,6 +3034,74 @@ paths:
       summary: ADMIN
       tags:
       - students
+  /api/image/get-image:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve an uploaded image by filename
+      parameters:
+      - description: Filename of the image to retrieve
+        in: query
+        name: filename
+        required: true
+        type: string
+      produces:
+      - image/jpeg
+      - image/png
+      - image/gif
+      responses:
+        "200":
+          description: Image file
+        "400":
+          description: Bad request, filename missing
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Image not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get an uploaded image
+      tags:
+      - image
+  /api/image/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload an image file and save it to the server
+      parameters:
+      - description: Image file to upload
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success response with file URL
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request or file error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload an image
+      tags:
+      - image
   /api/lead/create:
     post:
       consumes:
