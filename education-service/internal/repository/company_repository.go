@@ -5,6 +5,9 @@ import (
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"net/http"
 )
 
 type CompanyRepository struct {
@@ -39,4 +42,27 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 		return nil, err
 	}
 	return &company, nil
+}
+
+func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.AbsResponse, error) {
+	var exists bool
+	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil {
+		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
+	}
+	_, err := r.db.Exec(`INSERT INTO company(title, avatar, start_time, end_time, company_phone, subdomain) VALUES ($1,$2, $3, $4, $5, $6)`, req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AbsResponse{
+		Status:  http.StatusOK,
+		Message: "company create",
+	}, nil
+}
+
+func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, error) {
+	return nil, nil
+}
+
+func (r *CompanyRepository) UpdateCompany(req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
+	return nil, nil
 }

@@ -21,6 +21,9 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	CompanyService_GetCompanyBySubdomain_FullMethodName = "/education.CompanyService/GetCompanyBySubdomain"
+	CompanyService_CreateCompany_FullMethodName         = "/education.CompanyService/CreateCompany"
+	CompanyService_GetAll_FullMethodName                = "/education.CompanyService/GetAll"
+	CompanyService_UpdateCompany_FullMethodName         = "/education.CompanyService/UpdateCompany"
 )
 
 // CompanyServiceClient is the client API for CompanyService service.
@@ -28,6 +31,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CompanyServiceClient interface {
 	GetCompanyBySubdomain(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
+	CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*GetAllResponse, error)
+	UpdateCompany(ctx context.Context, in *UpdateCompanyRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 }
 
 type companyServiceClient struct {
@@ -48,11 +54,44 @@ func (c *companyServiceClient) GetCompanyBySubdomain(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *companyServiceClient) CreateCompany(ctx context.Context, in *CreateCompanyRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, CompanyService_CreateCompany_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *companyServiceClient) GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*GetAllResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllResponse)
+	err := c.cc.Invoke(ctx, CompanyService_GetAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *companyServiceClient) UpdateCompany(ctx context.Context, in *UpdateCompanyRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, CompanyService_UpdateCompany_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CompanyServiceServer is the server API for CompanyService service.
 // All implementations must embed UnimplementedCompanyServiceServer
 // for forward compatibility.
 type CompanyServiceServer interface {
 	GetCompanyBySubdomain(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
+	CreateCompany(context.Context, *CreateCompanyRequest) (*AbsResponse, error)
+	GetAll(context.Context, *PageRequest) (*GetAllResponse, error)
+	UpdateCompany(context.Context, *UpdateCompanyRequest) (*AbsResponse, error)
 	mustEmbedUnimplementedCompanyServiceServer()
 }
 
@@ -65,6 +104,15 @@ type UnimplementedCompanyServiceServer struct{}
 
 func (UnimplementedCompanyServiceServer) GetCompanyBySubdomain(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCompanyBySubdomain not implemented")
+}
+func (UnimplementedCompanyServiceServer) CreateCompany(context.Context, *CreateCompanyRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCompany not implemented")
+}
+func (UnimplementedCompanyServiceServer) GetAll(context.Context, *PageRequest) (*GetAllResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedCompanyServiceServer) UpdateCompany(context.Context, *UpdateCompanyRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCompany not implemented")
 }
 func (UnimplementedCompanyServiceServer) mustEmbedUnimplementedCompanyServiceServer() {}
 func (UnimplementedCompanyServiceServer) testEmbeddedByValue()                        {}
@@ -105,6 +153,60 @@ func _CompanyService_GetCompanyBySubdomain_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CompanyService_CreateCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCompanyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyServiceServer).CreateCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyService_CreateCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyServiceServer).CreateCompany(ctx, req.(*CreateCompanyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CompanyService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyServiceServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyService_GetAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyServiceServer).GetAll(ctx, req.(*PageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CompanyService_UpdateCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCompanyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyServiceServer).UpdateCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyService_UpdateCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyServiceServer).UpdateCompany(ctx, req.(*UpdateCompanyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CompanyService_ServiceDesc is the grpc.ServiceDesc for CompanyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -115,6 +217,18 @@ var CompanyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCompanyBySubdomain",
 			Handler:    _CompanyService_GetCompanyBySubdomain_Handler,
+		},
+		{
+			MethodName: "CreateCompany",
+			Handler:    _CompanyService_CreateCompany_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _CompanyService_GetAll_Handler,
+		},
+		{
+			MethodName: "UpdateCompany",
+			Handler:    _CompanyService_UpdateCompany_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
