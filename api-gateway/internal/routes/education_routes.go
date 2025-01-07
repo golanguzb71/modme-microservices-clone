@@ -19,10 +19,10 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	company := api.Group("/company")
 	{
 		company.GET("/subdomain/:domain", handlers.GetCompanyBySubdomain)
-		company.POST("/create", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.CompanyCreate)
-		company.GET("/get-all", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.GetAllCompanies)
-		//company.GET("/get-one/:id", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.GetOneCompany)
-		company.PUT("/update", middleware.AuthMiddleware([]string{"SUPER_CEO", "CEO"}, userClient), handlers.CompanyUpdate)
+		company.POST("/create", handlers.CompanyCreate)
+		company.GET("/get-all", handlers.GetAllCompanies)
+		//company.GET("/get-one/:id",  userClient), handlers.GetOneCompany)
+		company.PUT("/update", handlers.CompanyUpdate)
 	}
 	room := api.Group("/room")
 	{
