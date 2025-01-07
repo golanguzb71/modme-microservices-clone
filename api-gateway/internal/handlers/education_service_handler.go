@@ -1011,20 +1011,80 @@ func LeftAfterTrial(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+// CompanyCreate
+// @Summary SUPER_CEO
+// @Description Create a new company
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param request body pb.CreateCompanyRequest true "Company creation request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Router /api/company/create [post]
+// @Security Bearer
 func CompanyCreate(ctx *gin.Context) {
-
+	var req pb.CreateCompanyRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.CreateCompanyRequest(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
 }
 
+// GetAllCompanies
+// @Summary SUPER_CEO
+// @Description Retrieve a paginated list of all companies
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param size query int false "Page size"
+// @Success 200 {object} pb.GetAllResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Router /api/company/get-all [get]
+// @Security Bearer
 func GetAllCompanies(ctx *gin.Context) {
-
+	resp, err := educationClient.GetAllCompanies(ctx.Query("page"), ctx.Query("size"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
 }
 
-func GetOneCompany(ctx *gin.Context) {
+//func GetOneCompany(ctx *gin.Context) {
+//
+//}
 
-}
-
+// CompanyUpdate
+// @Summary SUPER_CEO
+// @Description Update an existing company by ID
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param id path string true "Company ID"
+// @Param request body pb.UpdateCompanyRequest true "Company update request"
+// @Success 200 {object} utils.AbsResponse
+// @Failure 400 {object} utils.AbsResponse
+// @Router /api/company/update [put]
+// @Security Bearer
 func CompanyUpdate(ctx *gin.Context) {
-
+	var req pb.UpdateCompanyRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.UpdateCompany(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
 }
 
 // GetCompanyBySubdomain

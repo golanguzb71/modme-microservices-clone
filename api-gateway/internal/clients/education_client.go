@@ -5,6 +5,7 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"strconv"
 )
 
 type EducationClient struct {
@@ -216,4 +217,27 @@ func (lc *EducationClient) GetLeftAfterTrialPeriod(from string, to string, page 
 
 func (lc *EducationClient) GetCompanyBySubdomain(domain string) (*pb.GetCompanyResponse, error) {
 	return lc.companyClient.GetCompanyBySubdomain(context.TODO(), &pb.GetCompanyRequest{Domain: domain})
+}
+
+func (lc *EducationClient) CreateCompanyRequest(req *pb.CreateCompanyRequest) (*pb.AbsResponse, error) {
+	return lc.companyClient.CreateCompany(context.TODO(), req)
+}
+
+func (lc *EducationClient) GetAllCompanies(page string, size string) (*pb.GetAllResponse, error) {
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		pageInt = 1
+	}
+	sizeInt, err := strconv.Atoi(size)
+	if err != nil {
+		sizeInt = 20
+	}
+	return lc.companyClient.GetAll(context.TODO(), &pb.PageRequest{
+		Page: int32(pageInt),
+		Size: int32(sizeInt),
+	})
+}
+
+func (lc *EducationClient) UpdateCompany(p *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
+	return lc.companyClient.UpdateCompany(context.TODO(), p)
 }

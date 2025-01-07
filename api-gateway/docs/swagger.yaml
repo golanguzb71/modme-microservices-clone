@@ -423,6 +423,21 @@ definitions:
       name:
         type: string
     type: object
+  pb.CreateCompanyRequest:
+    properties:
+      avatarUrl:
+        type: string
+      companyPhone:
+        type: string
+      endTime:
+        type: string
+      startTime:
+        type: string
+      subdomain:
+        type: string
+      title:
+        type: string
+    type: object
   pb.CreateCourseRequest:
     properties:
       courseDuration:
@@ -700,6 +715,15 @@ definitions:
         items:
           $ref: '#/definitions/pb.AbsGetAllPaymentsByMonthResponse'
         type: array
+    type: object
+  pb.GetAllResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/pb.GetCompanyResponse'
+        type: array
+      totalCount:
+        type: integer
     type: object
   pb.GetAllStudentPaymentsChartResponse:
     properties:
@@ -1289,6 +1313,23 @@ definitions:
       to:
         type: string
     type: object
+  pb.UpdateCompanyRequest:
+    properties:
+      avatarUrl:
+        type: string
+      companyPhone:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: string
+      startTime:
+        type: string
+      subdomain:
+        type: string
+      title:
+        type: string
+    type: object
   pb.UpdateLeadDataRequest:
     properties:
       comment:
@@ -1453,6 +1494,64 @@ paths:
       summary: ADMIN , CEO
       tags:
       - education
+  /api/company/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new company
+      parameters:
+      - description: Company creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - company
+  /api/company/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of all companies
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - company
   /api/company/subdomain/{domain}:
     get:
       consumes:
@@ -1477,6 +1576,39 @@ paths:
             additionalProperties: true
             type: object
       summary: ALL
+      tags:
+      - company
+  /api/company/update:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing company by ID
+      parameters:
+      - description: Company ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Company update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateCompanyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
       tags:
       - company
   /api/course/create:
