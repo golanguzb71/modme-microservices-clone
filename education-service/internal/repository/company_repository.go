@@ -60,7 +60,47 @@ func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.Abs
 }
 
 func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, error) {
-	return nil, nil
+	offset := (page - 1) * size
+
+	query := `
+		SELECT id, title, avatar, start_time, end_time, company_phone, subdomain
+		FROM company
+		ORDER BY id
+		LIMIT $1 OFFSET $2
+	`
+
+	countQuery := `SELECT COUNT(*) FROM company`
+
+	var totalCount int32
+	err := r.db.QueryRow(countQuery).Scan(&totalCount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get total count: %v", err)
+	}
+
+	rows, err := r.db.Query(query, size, offset)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch companies: %v", err)
+	}
+	defer rows.Close()
+
+	var items []*pb.GetCompanyResponse
+	for rows.Next() {
+		var company pb.GetCompanyResponse
+		err := rows.Scan(&company.Id, &company.Title, &company.AvatarUrl, &company.StartTime, &company.EndTime, &company.CompanyPhone, &company.Subdomain)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan row: %v", err)
+		}
+		items = append(items, &company)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %v", err)
+	}
+
+	return &pb.GetAllResponse{
+		Items:      items,
+		TotalCount: totalCount,
+	}, nil
 }
 
 func (r *CompanyRepository) UpdateCompany(req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
