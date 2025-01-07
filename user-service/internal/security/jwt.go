@@ -4,19 +4,24 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
+	"user-service/proto/pb"
 )
 
 var jwtKey = []byte("qp_TGOFe56TIehvKUOzQAuMVEqelvKgWR9sznKmPrxBLRLZfdgsngdgzEIfdyQuzQeMhysnScNVBB5qwAuPbt29_IUbEx1V5r5eybrbkoDJdLpvQFUubvzULjqZUTKmlZ")
 
 type Claims struct {
-	Username string `json:"username"`
+	Username  string `json:"username"`
+	Role      string `json:"role"`
+	CompanyId string `json:"company_id"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username string) (string, error) {
+func GenerateToken(user *pb.GetUserByIdResponse) (string, error) {
 	expirationTime := time.Now().Add(24 * 10 * time.Hour)
 	claims := &Claims{
-		Username: username,
+		Username:  user.PhoneNumber,
+		Role:      user.Role,
+		CompanyId: "1",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

@@ -29,7 +29,7 @@ func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb
 	if err != nil {
 		return nil, errors.New("notog'ri login yoki parol")
 	}
-	token, err := security.GenerateToken(user.PhoneNumber)
+	token, err := security.GenerateToken(user)
 	if err != nil {
 		return nil, err
 	}
