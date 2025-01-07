@@ -46,7 +46,7 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 
 func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.AbsResponse, error) {
 	var exists bool
-	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil {
+	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil || exists {
 		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
 	}
 	_, err := r.db.Exec(`INSERT INTO company(title, avatar, start_time, end_time, company_phone, subdomain) VALUES ($1,$2, $3, $4, $5, $6)`, req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain)
@@ -104,5 +104,16 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 }
 
 func (r *CompanyRepository) UpdateCompany(req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
-	return nil, nil
+	var exists bool
+	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil || exists {
+		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
+	}
+	_, err := r.db.Exec(`UPDATE company SET title=$1, avatar=$2, start_time=$3, end_time=$4, company_phone=$5, subdomain=$6 where id=$7`, req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AbsResponse{
+		Status:  http.StatusOK,
+		Message: "company update",
+	}, nil
 }
