@@ -4,8 +4,6 @@ import (
 	"context"
 	"education-service/internal/repository"
 	"education-service/proto/pb"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type CompanyService struct {
