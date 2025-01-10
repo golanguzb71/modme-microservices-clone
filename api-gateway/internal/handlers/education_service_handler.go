@@ -1059,9 +1059,10 @@ func GetAllCompanies(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-//func GetOneCompany(ctx *gin.Context) {
-//
-//}
+// GetOneCompany
+func GetOneCompany(ctx *gin.Context) {
+
+}
 
 // CompanyUpdate
 // @Summary SUPER_CEO
@@ -1116,9 +1117,9 @@ func GetCompanyBySubdomain(ctx *gin.Context) {
 // @Accept multipart/form-data
 // @Produce json
 // @Param image formData file true "Image file to upload"
-// @Success 200 {object} map[string]string "Success response with file URL"
-// @Failure 400 {object} map[string]string "Bad request or file error"
-// @Failure 500 {object} map[string]string "Internal server error"
+// @Success 200 {object} utils.AbsResponse "Success response with file URL"
+// @Failure 400 {object} utils.AbsResponse "Bad request or file error"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/image/upload [post]
 func UploadImage(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("image")
@@ -1174,8 +1175,8 @@ func UploadImage(ctx *gin.Context) {
 // @Produce image/gif
 // @Param filename query string true "Filename of the image to retrieve"
 // @Success 200 "Image file"
-// @Failure 400 {object} map[string]string "Bad request, filename missing"
-// @Failure 404 {object} map[string]string "Image not found"
+// @Failure 400 {object} utils.AbsResponse "Bad request, filename missing"
+// @Failure 404 {object} utils.AbsResponse "Image not found"
 // @Router /api/image/get-image [get]
 func GetImage(ctx *gin.Context) {
 	filename := ctx.Query("filename")
@@ -1198,4 +1199,112 @@ func GetImage(ctx *gin.Context) {
 func fileExists(path string) bool {
 	stat, err := os.Stat(path)
 	return err == nil && !stat.IsDir()
+}
+
+// TariffCreate
+// @Summary SUPER_CEO
+// @Description Create a new tariff with the provided details
+// @Tags tariff
+// @Accept json
+// @Produce json
+// @Param tariff body pb.Tariff true "Tariff data"
+// @Success 200 {object} utils.AbsResponse "created"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/tariff/create [post]
+// @Security Bearer
+func TariffCreate(ctx *gin.Context) {
+	var tariff pb.Tariff
+	if err := ctx.ShouldBindJSON(&tariff); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+	_, err := educationClient.CreateTariff(&tariff)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, 200, "created")
+}
+
+// TariffGetAll
+// @Summary SUPER_CEO
+// @Description Retrieve a list of all tariffs
+// @Tags tariff
+// @Accept json
+// @Produce json
+// @Success 200 {object} pb.TariffList "List of tariffs"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Router /api/company/tariff/get-all [get]
+// @Security Bearer
+func TariffGetAll(ctx *gin.Context) {
+	resp := educationClient.GetAllTariff()
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// TariffUpdate
+// @Summary SUPER_CEO
+// @Description Update the details of an existing tariff
+// @Tags tariff
+// @Accept json
+// @Produce json
+// @Param tariff body pb.Tariff true "Updated tariff data"
+// @Success 200 {object} utils.AbsResponse "updated"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/tariff/update [put]
+// @Security Bearer
+func TariffUpdate(ctx *gin.Context) {
+	var tariff pb.Tariff
+	if err := ctx.ShouldBindJSON(&tariff); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+	_, err := educationClient.UpdateTariff(&tariff)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, 200, "updated")
+}
+
+// TariffDelete
+// @Summary Delete a tariff
+// @Description Delete a tariff by its ID
+// @Tags tariff
+// @Accept json
+// @Produce json
+// @Param id path int true "ID of the tariff to delete"
+// @Success 200 {object} utils.AbsResponse "deleted"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 404 {object} utils.AbsResponse "Tariff not found"
+// @Router /api/company/tariff/delete/{id} [delete]
+// @Security Bearer
+func TariffDelete(ctx *gin.Context) {
+	id := ctx.Param("id")
+	idn, err := strconv.Atoi(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	_, err = educationClient.DeleteTariff(int32(idn))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, 200, "deleted")
+}
+
+func FinanceCreate(ctx *gin.Context) {
+
+}
+
+func FinanceDelete(ctx *gin.Context) {
+
+}
+
+func FinanceGetAll(ctx *gin.Context) {
+
+}
+
+func FinanceGetByCompany(ctx *gin.Context) {
+
 }

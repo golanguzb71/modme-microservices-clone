@@ -15,6 +15,7 @@ type EducationClient struct {
 	attendanceClient pb.AttendanceServiceClient
 	studentClient    pb.StudentServiceClient
 	companyClient    pb.CompanyServiceClient
+	tariffClient     pb.TariffServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -240,4 +241,24 @@ func (lc *EducationClient) GetAllCompanies(page string, size string) (*pb.GetAll
 
 func (lc *EducationClient) UpdateCompany(p *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
 	return lc.companyClient.UpdateCompany(context.TODO(), p)
+}
+
+func (lc *EducationClient) CreateTariff(req *pb.Tariff) (*pb.Tariff, error) {
+	return lc.tariffClient.Create(context.TODO(), req)
+}
+
+func (lc *EducationClient) UpdateTariff(req *pb.Tariff) (*pb.Tariff, error) {
+	return lc.tariffClient.Update(context.TODO(), req)
+}
+
+func (lc *EducationClient) DeleteTariff(id int32) (*pb.Tariff, error) {
+	return lc.tariffClient.Delete(context.TODO(), &pb.Tariff{Id: id})
+}
+
+func (lc *EducationClient) GetAllTariff() *pb.TariffList {
+	resp, err := lc.tariffClient.Get(context.TODO(), &emptypb.Empty{})
+	if err != nil {
+		return nil
+	}
+	return resp
 }

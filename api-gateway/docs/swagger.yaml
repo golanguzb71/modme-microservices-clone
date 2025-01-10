@@ -1304,6 +1304,32 @@ definitions:
       studentName:
         type: string
     type: object
+  pb.Tariff:
+    properties:
+      created_at:
+        type: string
+      discounts:
+        type: string
+      id:
+        type: integer
+      is_deleted:
+        type: boolean
+      name:
+        type: string
+      student_count:
+        type: integer
+      sum:
+        type: number
+    type: object
+  pb.TariffList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/pb.Tariff'
+        type: array
+    type: object
   pb.TransferLessonRequest:
     properties:
       from:
@@ -1578,6 +1604,114 @@ paths:
       summary: ALL
       tags:
       - company
+  /api/company/tariff/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new tariff with the provided details
+      parameters:
+      - description: Tariff data
+        in: body
+        name: tariff
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Tariff'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - tariff
+  /api/company/tariff/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a tariff by its ID
+      parameters:
+      - description: ID of the tariff to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: deleted
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "404":
+          description: Tariff not found
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Delete a tariff
+      tags:
+      - tariff
+  /api/company/tariff/get-all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all tariffs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tariffs
+          schema:
+            $ref: '#/definitions/pb.TariffList'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - tariff
+  /api/company/tariff/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing tariff
+      parameters:
+      - description: Updated tariff data
+        in: body
+        name: tariff
+        required: true
+        schema:
+          $ref: '#/definitions/pb.Tariff'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: updated
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - tariff
   /api/company/update:
     put:
       consumes:
@@ -3055,15 +3189,11 @@ paths:
         "400":
           description: Bad request, filename missing
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.AbsResponse'
         "404":
           description: Image not found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.AbsResponse'
       summary: Get an uploaded image
       tags:
       - image
@@ -3084,21 +3214,15 @@ paths:
         "200":
           description: Success response with file URL
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.AbsResponse'
         "400":
           description: Bad request or file error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.AbsResponse'
         "500":
           description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/utils.AbsResponse'
       summary: Upload an image
       tags:
       - image

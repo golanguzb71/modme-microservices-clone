@@ -1,13 +1,40 @@
-CREATE TABLE company
+CREATE TABLE IF NOT EXISTS tariff
 (
     id            serial primary key,
-    title         varchar NOT NULL,
-    avatar        varchar NOT NULL,
-    start_time    varchar NOT NULL,
-    end_time      varchar NOT NULL,
-    company_phone varchar NOT NULL,
-    subdomain     varchar NOT NULL
+    name          varchar NOT NULL,
+    student_count int     NOT NULL,
+    sum           float   NOT NULL,
+    discounts     jsonb,
+    is_deleted    bool      DEFAULT FALSE,
+    created_at    timestamp DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS company
+(
+    id            serial primary key,
+    title         varchar                    NOT NULL,
+    avatar        varchar                    NOT NULL,
+    start_time    varchar                    NOT NULL,
+    end_time      varchar                    NOT NULL,
+    company_phone varchar                    NOT NULL,
+    subdomain     varchar                    NOT NULL,
+    valid_date    DATE                       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tariff_id     int references tariff (id) NOT NULL,
+    discount_id   int,
+    created_at    timestamp                           DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS company_payments
+(
+    id                serial primary key,
+    company_id        int references company (id) NOT NULL,
+    tariff_id         int references tariff (id)  NOT NULL,
+    comment           varchar,
+    sum               float                       NOT NULL,
+    edited_valid_date date                        NOT NULL,
+    created_at        timestamp DEFAULT CURRENT_TIMESTAMP
+);
+
 
 CREATE table IF NOT EXISTS rooms
 (
