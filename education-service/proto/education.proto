@@ -62,6 +62,7 @@ message GetCompanyResponse{
   int64 discount_id = 10;
   string created_at = 11;
   bool is_demo = 12;
+  int32 active_student_count = 13;
 }
 service TariffService{
   rpc Create(Tariff) returns(Tariff);

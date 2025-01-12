@@ -24,7 +24,7 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
 			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
-			coalesce(c.discount_id , 0), c.is_demo, c.created_at
+			coalesce(c.discount_id , 0), c.is_demo, c.created_at , (SELECT count(*) FROM students where condition = 'ACTIVE' and company_id=c.id) as studentcount
 		FROM 
 			company c
 		LEFT JOIN 
@@ -42,7 +42,7 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 		&company.StartTime, &company.EndTime, &company.CompanyPhone,
 		&company.Subdomain, &company.ValidDate,
 		&tariff.Id, &tariff.Name, &tariff.Sum,
-		&company.DiscountId, &company.IsDemo, &company.CreatedAt,
+		&company.DiscountId, &company.IsDemo, &company.CreatedAt, &company.ActiveStudentCount,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -89,7 +89,7 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
 			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
-			coalesce(c.discount_id , 0), c.is_demo, c.created_at
+			coalesce(c.discount_id , 0), c.is_demo, c.created_at , (SELECT count(*) FROM students where condition = 'ACTIVE' and company_id=c.id) as studentcount
 		FROM 
 			company c
 		LEFT JOIN 
@@ -123,7 +123,7 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 			&company.StartTime, &company.EndTime, &company.CompanyPhone,
 			&company.Subdomain, &company.ValidDate,
 			&tariff.Id, &tariff.Name, &tariff.Sum,
-			&company.DiscountId, &company.IsDemo, &company.CreatedAt,
+			&company.DiscountId, &company.IsDemo, &company.CreatedAt, &company.ActiveStudentCount,
 		)
 		if err != nil {
 			continue

@@ -5970,6 +5970,9 @@ const docTemplate = `{
         "pb.GetCompanyResponse": {
             "type": "object",
             "properties": {
+                "active_student_count": {
+                    "type": "integer"
+                },
                 "avatarUrl": {
                     "type": "string"
                 },

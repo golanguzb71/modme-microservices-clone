@@ -806,6 +806,8 @@ definitions:
     type: object
   pb.GetCompanyResponse:
     properties:
+      active_student_count:
+        type: integer
       avatarUrl:
         type: string
       companyPhone:
