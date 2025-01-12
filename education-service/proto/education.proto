@@ -15,7 +15,6 @@ service CompanyService{
   rpc UpdateCompany(UpdateCompanyRequest) returns(common.AbsResponse);
 }
 
-
 message UpdateCompanyRequest{
   string id = 1;
   string title = 2;
@@ -36,11 +35,11 @@ message CreateCompanyRequest{
   string endTime = 5;
   string companyPhone = 6;
   string subdomain = 7;
+
 }
 message GetCompanyRequest{
   string domain = 1;
 }
-
 message GetCompanyResponse{
   string id = 1;
   string title = 2;
@@ -50,6 +49,26 @@ message GetCompanyResponse{
   string companyPhone = 6;
   string subdomain = 7;
 }
+service TariffService{
+  rpc Create(Tariff) returns(Tariff);
+  rpc Update(Tariff) returns(Tariff);
+  rpc Delete(Tariff) returns(Tariff);
+  rpc Get(google.protobuf.Empty) returns(TariffList);
+}
+message Tariff {
+  int32 id = 1;
+  string name = 2;
+  int32 student_count = 3;
+  float sum = 4;
+  string discounts = 5;
+  bool is_deleted = 6;
+  string created_at = 7;
+}
+message TariffList{
+  int32 count = 1;
+  repeated Tariff items = 2;
+}
+
 
 // room service start
 service RoomService{

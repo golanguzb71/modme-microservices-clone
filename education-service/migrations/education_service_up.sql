@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS company
     valid_date    DATE                       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tariff_id     int references tariff (id) NOT NULL,
     discount_id   int,
+    is_demo       bool                                DEFAULT FALSE,
     created_at    timestamp                           DEFAULT CURRENT_TIMESTAMP
 );
 

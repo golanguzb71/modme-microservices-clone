@@ -30,11 +30,11 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	attendanceClient := pb.NewAttendanceServiceClient(conn)
 	studentClient := pb.NewStudentServiceClient(conn)
 	companyClient := pb.NewCompanyServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient, companyClient: companyClient}, nil
+	tariffClient := pb.NewTariffServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient, companyClient: companyClient, tariffClient: tariffClient}, nil
 }
 
 // Education Service method client
-
 func (lc *EducationClient) CreateRoom(ctx context.Context, req *pb.CreateRoomRequest) (*pb.AbsResponse, error) {
 	return lc.roomClient.CreateRoom(ctx, req)
 }
