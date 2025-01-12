@@ -24,7 +24,7 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
 			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
-			c.discount_id, c.is_demo, c.created_at
+			coalesce(c.discount_id , 0), c.is_demo, c.created_at
 		FROM 
 			company c
 		LEFT JOIN 
@@ -48,7 +48,6 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("company with domain %s not found", domain)
 		}
-		return nil, fmt.Errorf("failed to fetch company: %v", err)
 	}
 
 	company.Tariff = &tariff
