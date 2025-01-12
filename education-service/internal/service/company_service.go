@@ -26,7 +26,7 @@ func (cs *CompanyService) CreateCompany(ctx context.Context, req *pb.CreateCompa
 }
 
 func (cs *CompanyService) GetAll(ctx context.Context, req *pb.PageRequest) (*pb.GetAllResponse, error) {
-	return cs.companyRepo.GetAll(req.Page, req.Size)
+	return cs.companyRepo.GetAll(req.Page, req.Size, req.Filter)
 }
 func (cs *CompanyService) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
 	return cs.companyRepo.UpdateCompany(req)

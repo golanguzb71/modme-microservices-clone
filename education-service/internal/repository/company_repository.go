@@ -81,25 +81,38 @@ func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.Abs
 	}, nil
 }
 
-func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, error) {
+func (r *CompanyRepository) GetAll(page int32, size int32, filter string) (*pb.GetAllResponse, error) {
 	offset := (page - 1) * size
+	var filterCondition string
+	switch filter {
+	case "demo":
+		filterCondition = "WHERE c.is_demo = true"
+	case "active":
+		filterCondition = "WHERE c.valid_date > NOW()"
+	case "no_active":
+		filterCondition = "WHERE c.valid_date <= NOW()"
+	default:
+		filterCondition = ""
+	}
 
-	query := `
+	query := fmt.Sprintf(`
 		SELECT 
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
 			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
-			coalesce(c.discount_id , 0), c.is_demo, c.created_at , (SELECT count(*) FROM students where condition = 'ACTIVE' and company_id=c.id) as studentcount
+			COALESCE(c.discount_id, 0), c.is_demo, c.created_at, 
+			(SELECT COUNT(*) FROM students WHERE condition = 'ACTIVE' AND company_id = c.id) AS student_count
 		FROM 
 			company c
 		LEFT JOIN 
 			tariff t ON c.tariff_id = t.id
+		%s
 		ORDER BY 
 			c.id
 		LIMIT $1 OFFSET $2
-	`
+	`, filterCondition)
 
-	countQuery := `SELECT COUNT(*) FROM company`
+	countQuery := fmt.Sprintf(`SELECT COUNT(*) FROM company c %s`, filterCondition)
 
 	var totalCount int32
 	err := r.db.QueryRow(countQuery).Scan(&totalCount)

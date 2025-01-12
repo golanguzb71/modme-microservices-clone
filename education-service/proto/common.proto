@@ -17,4 +17,5 @@ message DeleteAbsRequest{
 message PageRequest{
   int32 page = 1;
   int32 size = 2;
+  string filter = 3;
 }

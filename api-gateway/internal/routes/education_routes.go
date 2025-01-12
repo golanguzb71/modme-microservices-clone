@@ -21,7 +21,6 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		company.GET("/subdomain/:domain", handlers.GetCompanyBySubdomain)
 		company.POST("/create", handlers.CompanyCreate)
 		company.GET("/get-all", handlers.GetAllCompanies)
-		company.GET("/get-one/:id", handlers.GetOneCompany)
 		company.PUT("/update", handlers.CompanyUpdate)
 		tariff := company.Group("/tariff")
 		tariff.POST("/create", handlers.TariffCreate)

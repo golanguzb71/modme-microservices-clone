@@ -1051,7 +1051,7 @@ func CompanyCreate(ctx *gin.Context) {
 // @Router /api/company/get-all [get]
 // @Security Bearer
 func GetAllCompanies(ctx *gin.Context) {
-	resp, err := educationClient.GetAllCompanies(ctx.Query("page"), ctx.Query("size"))
+	resp, err := educationClient.GetAllCompanies(ctx.Query("page"), ctx.Query("size"), ctx.Query("filter"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

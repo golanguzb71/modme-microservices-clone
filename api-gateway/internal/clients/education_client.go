@@ -224,7 +224,7 @@ func (lc *EducationClient) CreateCompanyRequest(req *pb.CreateCompanyRequest) (*
 	return lc.companyClient.CreateCompany(context.TODO(), req)
 }
 
-func (lc *EducationClient) GetAllCompanies(page string, size string) (*pb.GetAllResponse, error) {
+func (lc *EducationClient) GetAllCompanies(page string, size string, filter string) (*pb.GetAllResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		pageInt = 1
@@ -234,8 +234,9 @@ func (lc *EducationClient) GetAllCompanies(page string, size string) (*pb.GetAll
 		sizeInt = 20
 	}
 	return lc.companyClient.GetAll(context.TODO(), &pb.PageRequest{
-		Page: int32(pageInt),
-		Size: int32(sizeInt),
+		Page:   int32(pageInt),
+		Size:   int32(sizeInt),
+		Filter: filter,
 	})
 }
 
