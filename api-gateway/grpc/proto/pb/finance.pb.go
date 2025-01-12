@@ -26,8 +26,8 @@ type GetHistoryDiscountRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StudentId string `protobuf:"bytes,1,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	GroupId   string `protobuf:"bytes,2,opt,name=groupId,proto3" json:"groupId,omitempty"`
+	StudentId string `protobuf:"bytes,1,opt,name=studentId,proto3" json:"studentId"`
+	GroupId   string `protobuf:"bytes,2,opt,name=groupId,proto3" json:"groupId"`
 }
 
 func (x *GetHistoryDiscountRequest) Reset() {
@@ -79,7 +79,7 @@ type GetHistoryDiscountResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Discounts []*AbsHistoryDiscount `protobuf:"bytes,1,rep,name=discounts,proto3" json:"discounts,omitempty"`
+	Discounts []*AbsHistoryDiscount `protobuf:"bytes,1,rep,name=discounts,proto3" json:"discounts"`
 }
 
 func (x *GetHistoryDiscountResponse) Reset() {
@@ -124,17 +124,17 @@ type AbsHistoryDiscount struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupId       string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId,omitempty"`
-	GroupName     string `protobuf:"bytes,10,opt,name=groupName,proto3" json:"groupName,omitempty"`
-	StudentId     string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	StudentName   string `protobuf:"bytes,11,opt,name=studentName,proto3" json:"studentName,omitempty"`
-	DiscountPrice string `protobuf:"bytes,3,opt,name=discountPrice,proto3" json:"discountPrice,omitempty"`
-	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
-	StartDate     string `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate,omitempty"`
-	EndDate       string `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate,omitempty"`
-	WithTeacher   bool   `protobuf:"varint,7,opt,name=withTeacher,proto3" json:"withTeacher,omitempty"`
-	Action        string `protobuf:"bytes,8,opt,name=action,proto3" json:"action,omitempty"`
-	CreatedAt     string `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	GroupId       string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId"`
+	GroupName     string `protobuf:"bytes,10,opt,name=groupName,proto3" json:"groupName"`
+	StudentId     string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId"`
+	StudentName   string `protobuf:"bytes,11,opt,name=studentName,proto3" json:"studentName"`
+	DiscountPrice string `protobuf:"bytes,3,opt,name=discountPrice,proto3" json:"discountPrice"`
+	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment"`
+	StartDate     string `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate"`
+	EndDate       string `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate"`
+	WithTeacher   bool   `protobuf:"varint,7,opt,name=withTeacher,proto3" json:"withTeacher"`
+	Action        string `protobuf:"bytes,8,opt,name=action,proto3" json:"action"`
+	CreatedAt     string `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt"`
 }
 
 func (x *AbsHistoryDiscount) Reset() {
@@ -249,13 +249,13 @@ type AbsDiscountRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupId       string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId,omitempty"`
-	StudentId     string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	DiscountPrice string `protobuf:"bytes,3,opt,name=discountPrice,proto3" json:"discountPrice,omitempty"`
-	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
-	StartDate     string `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate,omitempty"`
-	EndDate       string `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate,omitempty"`
-	WithTeacher   bool   `protobuf:"varint,7,opt,name=withTeacher,proto3" json:"withTeacher,omitempty"`
+	GroupId       string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId"`
+	StudentId     string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId"`
+	DiscountPrice string `protobuf:"bytes,3,opt,name=discountPrice,proto3" json:"discountPrice"`
+	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment"`
+	StartDate     string `protobuf:"bytes,5,opt,name=startDate,proto3" json:"startDate"`
+	EndDate       string `protobuf:"bytes,6,opt,name=endDate,proto3" json:"endDate"`
+	WithTeacher   bool   `protobuf:"varint,7,opt,name=withTeacher,proto3" json:"withTeacher"`
 }
 
 func (x *AbsDiscountRequest) Reset() {
@@ -342,7 +342,7 @@ type GetInformationDiscountRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupId string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId,omitempty"`
+	GroupId string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId"`
 }
 
 func (x *GetInformationDiscountRequest) Reset() {
@@ -387,7 +387,7 @@ type GetInformationDiscountResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Discounts []*AbsStudentDiscount `protobuf:"bytes,1,rep,name=discounts,proto3" json:"discounts,omitempty"`
+	Discounts []*AbsStudentDiscount `protobuf:"bytes,1,rep,name=discounts,proto3" json:"discounts"`
 }
 
 func (x *GetInformationDiscountResponse) Reset() {
@@ -432,15 +432,15 @@ type AbsStudentDiscount struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StudentId          string `protobuf:"bytes,1,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	StudentName        string `protobuf:"bytes,2,opt,name=studentName,proto3" json:"studentName,omitempty"`
-	StudentPhoneNumber string `protobuf:"bytes,3,opt,name=studentPhoneNumber,proto3" json:"studentPhoneNumber,omitempty"`
-	Discount           string `protobuf:"bytes,4,opt,name=discount,proto3" json:"discount,omitempty"`
-	Cause              string `protobuf:"bytes,5,opt,name=cause,proto3" json:"cause,omitempty"`
-	CreatedAt          string `protobuf:"bytes,6,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
-	StartAt            string `protobuf:"bytes,7,opt,name=startAt,proto3" json:"startAt,omitempty"`
-	EndAt              string `protobuf:"bytes,8,opt,name=endAt,proto3" json:"endAt,omitempty"`
-	WithTeacher        bool   `protobuf:"varint,9,opt,name=withTeacher,proto3" json:"withTeacher,omitempty"`
+	StudentId          string `protobuf:"bytes,1,opt,name=studentId,proto3" json:"studentId"`
+	StudentName        string `protobuf:"bytes,2,opt,name=studentName,proto3" json:"studentName"`
+	StudentPhoneNumber string `protobuf:"bytes,3,opt,name=studentPhoneNumber,proto3" json:"studentPhoneNumber"`
+	Discount           string `protobuf:"bytes,4,opt,name=discount,proto3" json:"discount"`
+	Cause              string `protobuf:"bytes,5,opt,name=cause,proto3" json:"cause"`
+	CreatedAt          string `protobuf:"bytes,6,opt,name=createdAt,proto3" json:"createdAt"`
+	StartAt            string `protobuf:"bytes,7,opt,name=startAt,proto3" json:"startAt"`
+	EndAt              string `protobuf:"bytes,8,opt,name=endAt,proto3" json:"endAt"`
+	WithTeacher        bool   `protobuf:"varint,9,opt,name=withTeacher,proto3" json:"withTeacher"`
 }
 
 func (x *AbsStudentDiscount) Reset() {
@@ -541,8 +541,8 @@ type CreateCategoryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Desc string `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name"`
+	Desc string `protobuf:"bytes,2,opt,name=desc,proto3" json:"desc"`
 }
 
 func (x *CreateCategoryRequest) Reset() {
@@ -594,7 +594,7 @@ type GetAllCategoryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Categories []*AbsCategory `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories,omitempty"`
+	Categories []*AbsCategory `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories"`
 }
 
 func (x *GetAllCategoryRequest) Reset() {
@@ -639,9 +639,9 @@ type AbsCategory struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Desc string `protobuf:"bytes,3,opt,name=desc,proto3" json:"desc,omitempty"`
+	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name"`
+	Desc string `protobuf:"bytes,3,opt,name=desc,proto3" json:"desc"`
 }
 
 func (x *AbsCategory) Reset() {
@@ -700,11 +700,11 @@ type GetAllExpenseDiagramResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserOrCategories       []string `protobuf:"bytes,1,rep,name=userOrCategories,proto3" json:"userOrCategories,omitempty"`
-	UserOrCategoriesAmount []string `protobuf:"bytes,2,rep,name=userOrCategoriesAmount,proto3" json:"userOrCategoriesAmount,omitempty"`
-	MonthAmount            []string `protobuf:"bytes,3,rep,name=monthAmount,proto3" json:"monthAmount,omitempty"`
-	Months                 []string `protobuf:"bytes,4,rep,name=months,proto3" json:"months,omitempty"`
-	AmountCommonExpense    string   `protobuf:"bytes,5,opt,name=amountCommonExpense,proto3" json:"amountCommonExpense,omitempty"`
+	UserOrCategories       []string `protobuf:"bytes,1,rep,name=userOrCategories,proto3" json:"userOrCategories"`
+	UserOrCategoriesAmount []string `protobuf:"bytes,2,rep,name=userOrCategoriesAmount,proto3" json:"userOrCategoriesAmount"`
+	MonthAmount            []string `protobuf:"bytes,3,rep,name=monthAmount,proto3" json:"monthAmount"`
+	Months                 []string `protobuf:"bytes,4,rep,name=months,proto3" json:"months"`
+	AmountCommonExpense    string   `protobuf:"bytes,5,opt,name=amountCommonExpense,proto3" json:"amountCommonExpense"`
 }
 
 func (x *GetAllExpenseDiagramResponse) Reset() {
@@ -777,8 +777,8 @@ type GetAllExpenseDiagramRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
 }
 
 func (x *GetAllExpenseDiagramRequest) Reset() {
@@ -830,11 +830,11 @@ type GetAllExpenseRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	From    string       `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To      string       `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
-	Type    string       `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Id      string       `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
-	PageReq *PageRequest `protobuf:"bytes,4,opt,name=pageReq,proto3" json:"pageReq,omitempty"`
+	From    string       `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To      string       `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
+	Type    string       `protobuf:"bytes,3,opt,name=type,proto3" json:"type"`
+	Id      string       `protobuf:"bytes,5,opt,name=id,proto3" json:"id"`
+	PageReq *PageRequest `protobuf:"bytes,4,opt,name=pageReq,proto3" json:"pageReq"`
 }
 
 func (x *GetAllExpenseRequest) Reset() {
@@ -907,8 +907,8 @@ type GetAllExpenseResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TotalPageCount int32               `protobuf:"varint,1,opt,name=totalPageCount,proto3" json:"totalPageCount,omitempty"`
-	Expenses       []*GetAllExpenseAbs `protobuf:"bytes,2,rep,name=expenses,proto3" json:"expenses,omitempty"`
+	TotalPageCount int32               `protobuf:"varint,1,opt,name=totalPageCount,proto3" json:"totalPageCount"`
+	Expenses       []*GetAllExpenseAbs `protobuf:"bytes,2,rep,name=expenses,proto3" json:"expenses"`
 }
 
 func (x *GetAllExpenseResponse) Reset() {
@@ -960,16 +960,16 @@ type GetAllExpenseAbs struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	GivenDate   string               `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate,omitempty"`
-	Category    *AbsCategory         `protobuf:"bytes,3,opt,name=category,proto3" json:"category,omitempty"`
-	User        *GetUserByIdResponse `protobuf:"bytes,4,opt,name=user,proto3" json:"user,omitempty"`
-	ExpenseType string               `protobuf:"bytes,5,opt,name=expenseType,proto3" json:"expenseType,omitempty"`
-	Sum         string               `protobuf:"bytes,6,opt,name=sum,proto3" json:"sum,omitempty"`
-	Creator     *GetUserByIdResponse `protobuf:"bytes,7,opt,name=creator,proto3" json:"creator,omitempty"`
-	PaymentType string               `protobuf:"bytes,8,opt,name=paymentType,proto3" json:"paymentType,omitempty"`
-	CreatedAt   string               `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
-	Title       string               `protobuf:"bytes,10,opt,name=title,proto3" json:"title,omitempty"`
+	Id          string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	GivenDate   string               `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate"`
+	Category    *AbsCategory         `protobuf:"bytes,3,opt,name=category,proto3" json:"category"`
+	User        *GetUserByIdResponse `protobuf:"bytes,4,opt,name=user,proto3" json:"user"`
+	ExpenseType string               `protobuf:"bytes,5,opt,name=expenseType,proto3" json:"expenseType"`
+	Sum         string               `protobuf:"bytes,6,opt,name=sum,proto3" json:"sum"`
+	Creator     *GetUserByIdResponse `protobuf:"bytes,7,opt,name=creator,proto3" json:"creator"`
+	PaymentType string               `protobuf:"bytes,8,opt,name=paymentType,proto3" json:"paymentType"`
+	CreatedAt   string               `protobuf:"bytes,9,opt,name=createdAt,proto3" json:"createdAt"`
+	Title       string               `protobuf:"bytes,10,opt,name=title,proto3" json:"title"`
 }
 
 func (x *GetAllExpenseAbs) Reset() {
@@ -1077,14 +1077,14 @@ type CreateExpenseRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title         string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	GivenDate     string `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate,omitempty"`
-	ExpenseType   string `protobuf:"bytes,3,opt,name=expenseType,proto3" json:"expenseType,omitempty"`
-	CategoryId    string `protobuf:"bytes,4,opt,name=categoryId,proto3" json:"categoryId,omitempty"`
-	UserId        string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId,omitempty"`
-	Sum           string `protobuf:"bytes,6,opt,name=sum,proto3" json:"sum,omitempty"`
-	CreatedById   string `protobuf:"bytes,7,opt,name=createdById,proto3" json:"createdById,omitempty"`
-	PaymentMethod string `protobuf:"bytes,8,opt,name=paymentMethod,proto3" json:"paymentMethod,omitempty"`
+	Title         string `protobuf:"bytes,1,opt,name=title,proto3" json:"title"`
+	GivenDate     string `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate"`
+	ExpenseType   string `protobuf:"bytes,3,opt,name=expenseType,proto3" json:"expenseType"`
+	CategoryId    string `protobuf:"bytes,4,opt,name=categoryId,proto3" json:"categoryId"`
+	UserId        string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId"`
+	Sum           string `protobuf:"bytes,6,opt,name=sum,proto3" json:"sum"`
+	CreatedById   string `protobuf:"bytes,7,opt,name=createdById,proto3" json:"createdById"`
+	PaymentMethod string `protobuf:"bytes,8,opt,name=paymentMethod,proto3" json:"paymentMethod"`
 }
 
 func (x *CreateExpenseRequest) Reset() {
@@ -1178,8 +1178,8 @@ type GetIncomeChartRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
 }
 
 func (x *GetIncomeChartRequest) Reset() {
@@ -1231,7 +1231,7 @@ type GetIncomeChartResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Response []*AbsIncomeChart `protobuf:"bytes,1,rep,name=response,proto3" json:"response,omitempty"`
+	Response []*AbsIncomeChart `protobuf:"bytes,1,rep,name=response,proto3" json:"response"`
 }
 
 func (x *GetIncomeChartResponse) Reset() {
@@ -1276,8 +1276,8 @@ type AbsIncomeChart struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SpecificMonth string `protobuf:"bytes,1,opt,name=specificMonth,proto3" json:"specificMonth,omitempty"`
-	Balance       string `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance,omitempty"`
+	SpecificMonth string `protobuf:"bytes,1,opt,name=specificMonth,proto3" json:"specificMonth"`
+	Balance       string `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance"`
 }
 
 func (x *AbsIncomeChart) Reset() {
@@ -1329,8 +1329,8 @@ type GetCommonInformationResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	DebtorsCount      int32 `protobuf:"varint,1,opt,name=debtorsCount,proto3" json:"debtorsCount,omitempty"`
-	PayInCurrentMonth int32 `protobuf:"varint,2,opt,name=payInCurrentMonth,proto3" json:"payInCurrentMonth,omitempty"`
+	DebtorsCount      int32 `protobuf:"varint,1,opt,name=debtorsCount,proto3" json:"debtorsCount"`
+	PayInCurrentMonth int32 `protobuf:"varint,2,opt,name=payInCurrentMonth,proto3" json:"payInCurrentMonth"`
 }
 
 func (x *GetCommonInformationResponse) Reset() {
@@ -1382,9 +1382,9 @@ type GetAllDebtsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PageParam *PageRequest `protobuf:"bytes,1,opt,name=pageParam,proto3" json:"pageParam,omitempty"`
-	From      string       `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To        string       `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	PageParam *PageRequest `protobuf:"bytes,1,opt,name=pageParam,proto3" json:"pageParam"`
+	From      string       `protobuf:"bytes,2,opt,name=from,proto3" json:"from"`
+	To        string       `protobuf:"bytes,3,opt,name=to,proto3" json:"to"`
 }
 
 func (x *GetAllDebtsRequest) Reset() {
@@ -1443,8 +1443,8 @@ type GetAllDebtsInformationResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TotalPageCount int32                  `protobuf:"varint,2,opt,name=totalPageCount,proto3" json:"totalPageCount,omitempty"`
-	Debts          []*AbsDebtsInformation `protobuf:"bytes,1,rep,name=debts,proto3" json:"debts,omitempty"`
+	TotalPageCount int32                  `protobuf:"varint,2,opt,name=totalPageCount,proto3" json:"totalPageCount"`
+	Debts          []*AbsDebtsInformation `protobuf:"bytes,1,rep,name=debts,proto3" json:"debts"`
 }
 
 func (x *GetAllDebtsInformationResponse) Reset() {
@@ -1496,13 +1496,13 @@ type AbsDebtsInformation struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	DebtorId      string           `protobuf:"bytes,1,opt,name=debtorId,proto3" json:"debtorId,omitempty"`
-	DebtorName    string           `protobuf:"bytes,2,opt,name=debtorName,proto3" json:"debtorName,omitempty"`
-	PhoneNumber   string           `protobuf:"bytes,3,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
-	Balance       string           `protobuf:"bytes,4,opt,name=balance,proto3" json:"balance,omitempty"`
-	TotalOnPeriod string           `protobuf:"bytes,5,opt,name=totalOnPeriod,proto3" json:"totalOnPeriod,omitempty"`
-	Groups        []*DebtorGroup   `protobuf:"bytes,6,rep,name=groups,proto3" json:"groups,omitempty"`
-	Comments      []*DebtorComment `protobuf:"bytes,7,rep,name=comments,proto3" json:"comments,omitempty"`
+	DebtorId      string           `protobuf:"bytes,1,opt,name=debtorId,proto3" json:"debtorId"`
+	DebtorName    string           `protobuf:"bytes,2,opt,name=debtorName,proto3" json:"debtorName"`
+	PhoneNumber   string           `protobuf:"bytes,3,opt,name=phoneNumber,proto3" json:"phoneNumber"`
+	Balance       string           `protobuf:"bytes,4,opt,name=balance,proto3" json:"balance"`
+	TotalOnPeriod string           `protobuf:"bytes,5,opt,name=totalOnPeriod,proto3" json:"totalOnPeriod"`
+	Groups        []*DebtorGroup   `protobuf:"bytes,6,rep,name=groups,proto3" json:"groups"`
+	Comments      []*DebtorComment `protobuf:"bytes,7,rep,name=comments,proto3" json:"comments"`
 }
 
 func (x *AbsDebtsInformation) Reset() {
@@ -1589,8 +1589,8 @@ type DebtorGroup struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GroupId   string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId,omitempty"`
-	GroupName string `protobuf:"bytes,2,opt,name=groupName,proto3" json:"groupName,omitempty"`
+	GroupId   string `protobuf:"bytes,1,opt,name=groupId,proto3" json:"groupId"`
+	GroupName string `protobuf:"bytes,2,opt,name=groupName,proto3" json:"groupName"`
 }
 
 func (x *DebtorGroup) Reset() {
@@ -1642,8 +1642,8 @@ type DebtorComment struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CommentId string `protobuf:"bytes,1,opt,name=commentId,proto3" json:"commentId,omitempty"`
-	Comment   string `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
+	CommentId string `protobuf:"bytes,1,opt,name=commentId,proto3" json:"commentId"`
+	Comment   string `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment"`
 }
 
 func (x *DebtorComment) Reset() {
@@ -1695,11 +1695,11 @@ type GetAllStudentPaymentsChartResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Cash          string                    `protobuf:"bytes,1,opt,name=cash,proto3" json:"cash,omitempty"`
-	Payme         string                    `protobuf:"bytes,2,opt,name=payme,proto3" json:"payme,omitempty"`
-	Click         string                    `protobuf:"bytes,3,opt,name=click,proto3" json:"click,omitempty"`
-	TotalRevenue  string                    `protobuf:"bytes,4,opt,name=totalRevenue,proto3" json:"totalRevenue,omitempty"`
-	PaymentsChart []*AbsTakeOfChartResponse `protobuf:"bytes,5,rep,name=paymentsChart,proto3" json:"paymentsChart,omitempty"`
+	Cash          string                    `protobuf:"bytes,1,opt,name=cash,proto3" json:"cash"`
+	Payme         string                    `protobuf:"bytes,2,opt,name=payme,proto3" json:"payme"`
+	Click         string                    `protobuf:"bytes,3,opt,name=click,proto3" json:"click"`
+	TotalRevenue  string                    `protobuf:"bytes,4,opt,name=totalRevenue,proto3" json:"totalRevenue"`
+	PaymentsChart []*AbsTakeOfChartResponse `protobuf:"bytes,5,rep,name=paymentsChart,proto3" json:"paymentsChart"`
 }
 
 func (x *GetAllStudentPaymentsChartResponse) Reset() {
@@ -1772,8 +1772,8 @@ type GetAllStudentPaymentsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
 }
 
 func (x *GetAllStudentPaymentsRequest) Reset() {
@@ -1825,7 +1825,7 @@ type GetAllStudentPaymentsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Payments []*AbsStudentPayments `protobuf:"bytes,1,rep,name=payments,proto3" json:"payments,omitempty"`
+	Payments []*AbsStudentPayments `protobuf:"bytes,1,rep,name=payments,proto3" json:"payments"`
 }
 
 func (x *GetAllStudentPaymentsResponse) Reset() {
@@ -1870,14 +1870,14 @@ type AbsStudentPayments struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GivenDate   string `protobuf:"bytes,1,opt,name=givenDate,proto3" json:"givenDate,omitempty"`
-	StudentId   string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	StudentName string `protobuf:"bytes,3,opt,name=studentName,proto3" json:"studentName,omitempty"`
-	Amount      string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount,omitempty"`
-	Method      string `protobuf:"bytes,5,opt,name=method,proto3" json:"method,omitempty"`
-	Comment     string `protobuf:"bytes,6,opt,name=comment,proto3" json:"comment,omitempty"`
-	CreatorName string `protobuf:"bytes,7,opt,name=creatorName,proto3" json:"creatorName,omitempty"`
-	CreatorId   string `protobuf:"bytes,8,opt,name=creatorId,proto3" json:"creatorId,omitempty"`
+	GivenDate   string `protobuf:"bytes,1,opt,name=givenDate,proto3" json:"givenDate"`
+	StudentId   string `protobuf:"bytes,2,opt,name=studentId,proto3" json:"studentId"`
+	StudentName string `protobuf:"bytes,3,opt,name=studentName,proto3" json:"studentName"`
+	Amount      string `protobuf:"bytes,4,opt,name=amount,proto3" json:"amount"`
+	Method      string `protobuf:"bytes,5,opt,name=method,proto3" json:"method"`
+	Comment     string `protobuf:"bytes,6,opt,name=comment,proto3" json:"comment"`
+	CreatorName string `protobuf:"bytes,7,opt,name=creatorName,proto3" json:"creatorName"`
+	CreatorId   string `protobuf:"bytes,8,opt,name=creatorId,proto3" json:"creatorId"`
 }
 
 func (x *AbsStudentPayments) Reset() {
@@ -1971,7 +1971,7 @@ type GetAllPaymentTakeOffChartResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChartResponse []*AbsTakeOfChartResponse `protobuf:"bytes,1,rep,name=chartResponse,proto3" json:"chartResponse,omitempty"`
+	ChartResponse []*AbsTakeOfChartResponse `protobuf:"bytes,1,rep,name=chartResponse,proto3" json:"chartResponse"`
 }
 
 func (x *GetAllPaymentTakeOffChartResponse) Reset() {
@@ -2016,8 +2016,8 @@ type AbsTakeOfChartResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	YearMonth string `protobuf:"bytes,1,opt,name=yearMonth,proto3" json:"yearMonth,omitempty"`
-	Amount    string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	YearMonth string `protobuf:"bytes,1,opt,name=yearMonth,proto3" json:"yearMonth"`
+	Amount    string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount"`
 }
 
 func (x *AbsTakeOfChartResponse) Reset() {
@@ -2069,8 +2069,8 @@ type GetAllPaymentTakeOffRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
-	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	From string `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To   string `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
 }
 
 func (x *GetAllPaymentTakeOffRequest) Reset() {
@@ -2122,7 +2122,7 @@ type GetAllPaymentTakeOffResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pennies []*AbsPaymentTakeOff `protobuf:"bytes,1,rep,name=pennies,proto3" json:"pennies,omitempty"`
+	Pennies []*AbsPaymentTakeOff `protobuf:"bytes,1,rep,name=pennies,proto3" json:"pennies"`
 }
 
 func (x *GetAllPaymentTakeOffResponse) Reset() {
@@ -2167,14 +2167,14 @@ type AbsPaymentTakeOff struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PaymentId   string `protobuf:"bytes,1,opt,name=paymentId,proto3" json:"paymentId,omitempty"`
-	GivenDate   string `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate,omitempty"`
-	StudentName string `protobuf:"bytes,3,opt,name=studentName,proto3" json:"studentName,omitempty"`
-	StudentId   string `protobuf:"bytes,4,opt,name=studentId,proto3" json:"studentId,omitempty"`
-	Comment     string `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty"`
-	CreatorId   string `protobuf:"bytes,6,opt,name=creatorId,proto3" json:"creatorId,omitempty"`
-	CreatorName string `protobuf:"bytes,7,opt,name=creatorName,proto3" json:"creatorName,omitempty"`
-	Sum         string `protobuf:"bytes,8,opt,name=sum,proto3" json:"sum,omitempty"`
+	PaymentId   string `protobuf:"bytes,1,opt,name=paymentId,proto3" json:"paymentId"`
+	GivenDate   string `protobuf:"bytes,2,opt,name=givenDate,proto3" json:"givenDate"`
+	StudentName string `protobuf:"bytes,3,opt,name=studentName,proto3" json:"studentName"`
+	StudentId   string `protobuf:"bytes,4,opt,name=studentId,proto3" json:"studentId"`
+	Comment     string `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment"`
+	CreatorId   string `protobuf:"bytes,6,opt,name=creatorId,proto3" json:"creatorId"`
+	CreatorName string `protobuf:"bytes,7,opt,name=creatorName,proto3" json:"creatorName"`
+	Sum         string `protobuf:"bytes,8,opt,name=sum,proto3" json:"sum"`
 }
 
 func (x *AbsPaymentTakeOff) Reset() {
@@ -2268,8 +2268,8 @@ type GetAllPaymentsByMonthRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
-	Month  string `protobuf:"bytes,2,opt,name=month,proto3" json:"month,omitempty"`
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId"`
+	Month  string `protobuf:"bytes,2,opt,name=month,proto3" json:"month"`
 }
 
 func (x *GetAllPaymentsByMonthRequest) Reset() {
@@ -2321,7 +2321,7 @@ type GetAllPaymentsByMonthResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Payments []*AbsGetAllPaymentsByMonthResponse `protobuf:"bytes,1,rep,name=payments,proto3" json:"payments,omitempty"`
+	Payments []*AbsGetAllPaymentsByMonthResponse `protobuf:"bytes,1,rep,name=payments,proto3" json:"payments"`
 }
 
 func (x *GetAllPaymentsByMonthResponse) Reset() {
@@ -2366,17 +2366,17 @@ type AbsGetAllPaymentsByMonthResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GivenDate     string `protobuf:"bytes,1,opt,name=givenDate,proto3" json:"givenDate,omitempty"`
-	PaymentType   string `protobuf:"bytes,2,opt,name=payment_type,json=paymentType,proto3" json:"payment_type,omitempty"`
-	Amount        string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
-	CreatedById   string `protobuf:"bytes,5,opt,name=created_by_id,json=createdById,proto3" json:"created_by_id,omitempty"`
-	CreatedByName string `protobuf:"bytes,6,opt,name=created_by_name,json=createdByName,proto3" json:"created_by_name,omitempty"`
-	CreatedAt     string `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	PaymentId     string `protobuf:"bytes,8,opt,name=paymentId,proto3" json:"paymentId,omitempty"`
-	GroupId       string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId,omitempty"`
-	GroupName     string `protobuf:"bytes,10,opt,name=groupName,proto3" json:"groupName,omitempty"`
-	Method        string `protobuf:"bytes,11,opt,name=method,proto3" json:"method,omitempty"`
+	GivenDate     string `protobuf:"bytes,1,opt,name=givenDate,proto3" json:"givenDate"`
+	PaymentType   string `protobuf:"bytes,2,opt,name=payment_type,json=paymentType,proto3" json:"payment_type"`
+	Amount        string `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount"`
+	Comment       string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment"`
+	CreatedById   string `protobuf:"bytes,5,opt,name=created_by_id,json=createdById,proto3" json:"created_by_id"`
+	CreatedByName string `protobuf:"bytes,6,opt,name=created_by_name,json=createdByName,proto3" json:"created_by_name"`
+	CreatedAt     string `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at"`
+	PaymentId     string `protobuf:"bytes,8,opt,name=paymentId,proto3" json:"paymentId"`
+	GroupId       string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId"`
+	GroupName     string `protobuf:"bytes,10,opt,name=groupName,proto3" json:"groupName"`
+	Method        string `protobuf:"bytes,11,opt,name=method,proto3" json:"method"`
 }
 
 func (x *AbsGetAllPaymentsByMonthResponse) Reset() {
@@ -2491,7 +2491,7 @@ type GetMonthlyStatusResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	MonthStatus []*AbsGetMonthlyStatusResponse `protobuf:"bytes,1,rep,name=monthStatus,proto3" json:"monthStatus,omitempty"`
+	MonthStatus []*AbsGetMonthlyStatusResponse `protobuf:"bytes,1,rep,name=monthStatus,proto3" json:"monthStatus"`
 }
 
 func (x *GetMonthlyStatusResponse) Reset() {
@@ -2536,8 +2536,8 @@ type AbsGetMonthlyStatusResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Month   string `protobuf:"bytes,1,opt,name=month,proto3" json:"month,omitempty"`
-	Balance string `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance,omitempty"`
+	Month   string `protobuf:"bytes,1,opt,name=month,proto3" json:"month"`
+	Balance string `protobuf:"bytes,2,opt,name=balance,proto3" json:"balance"`
 }
 
 func (x *AbsGetMonthlyStatusResponse) Reset() {
@@ -2589,7 +2589,7 @@ type GetMonthlyStatusRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId"`
 }
 
 func (x *GetMonthlyStatusRequest) Reset() {
@@ -2634,15 +2634,15 @@ type PaymentAddRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Comment      string `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment,omitempty"`
-	Date         string `protobuf:"bytes,2,opt,name=date,proto3" json:"date,omitempty"`
-	Method       string `protobuf:"bytes,3,opt,name=method,proto3" json:"method,omitempty"`
-	Sum          string `protobuf:"bytes,4,opt,name=sum,proto3" json:"sum,omitempty"`
-	UserId       string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId,omitempty"`
-	Type         string `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
-	ActionById   string `protobuf:"bytes,7,opt,name=actionById,proto3" json:"actionById,omitempty"`
-	ActionByName string `protobuf:"bytes,8,opt,name=actionByName,proto3" json:"actionByName,omitempty"`
-	GroupId      string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId,omitempty"`
+	Comment      string `protobuf:"bytes,1,opt,name=comment,proto3" json:"comment"`
+	Date         string `protobuf:"bytes,2,opt,name=date,proto3" json:"date"`
+	Method       string `protobuf:"bytes,3,opt,name=method,proto3" json:"method"`
+	Sum          string `protobuf:"bytes,4,opt,name=sum,proto3" json:"sum"`
+	UserId       string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId"`
+	Type         string `protobuf:"bytes,6,opt,name=type,proto3" json:"type"`
+	ActionById   string `protobuf:"bytes,7,opt,name=actionById,proto3" json:"actionById"`
+	ActionByName string `protobuf:"bytes,8,opt,name=actionByName,proto3" json:"actionByName"`
+	GroupId      string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId"`
 }
 
 func (x *PaymentAddRequest) Reset() {
@@ -2743,15 +2743,15 @@ type PaymentUpdateRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Debit        string `protobuf:"bytes,1,opt,name=debit,proto3" json:"debit,omitempty"`
-	Method       string `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`
-	Date         string `protobuf:"bytes,3,opt,name=date,proto3" json:"date,omitempty"`
-	Comment      string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment,omitempty"`
-	UserId       string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId,omitempty"`
-	PaymentId    string `protobuf:"bytes,6,opt,name=paymentId,proto3" json:"paymentId,omitempty"`
-	ActionById   string `protobuf:"bytes,7,opt,name=actionById,proto3" json:"actionById,omitempty"`
-	ActionByName string `protobuf:"bytes,8,opt,name=actionByName,proto3" json:"actionByName,omitempty"`
-	GroupId      string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId,omitempty"`
+	Debit        string `protobuf:"bytes,1,opt,name=debit,proto3" json:"debit"`
+	Method       string `protobuf:"bytes,2,opt,name=method,proto3" json:"method"`
+	Date         string `protobuf:"bytes,3,opt,name=date,proto3" json:"date"`
+	Comment      string `protobuf:"bytes,4,opt,name=comment,proto3" json:"comment"`
+	UserId       string `protobuf:"bytes,5,opt,name=userId,proto3" json:"userId"`
+	PaymentId    string `protobuf:"bytes,6,opt,name=paymentId,proto3" json:"paymentId"`
+	ActionById   string `protobuf:"bytes,7,opt,name=actionById,proto3" json:"actionById"`
+	ActionByName string `protobuf:"bytes,8,opt,name=actionByName,proto3" json:"actionByName"`
+	GroupId      string `protobuf:"bytes,9,opt,name=groupId,proto3" json:"groupId"`
 }
 
 func (x *PaymentUpdateRequest) Reset() {
@@ -2852,9 +2852,9 @@ type PaymentReturnRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PaymentId    string `protobuf:"bytes,1,opt,name=paymentId,proto3" json:"paymentId,omitempty"`
-	ActionById   string `protobuf:"bytes,2,opt,name=actionById,proto3" json:"actionById,omitempty"`
-	ActionByName string `protobuf:"bytes,3,opt,name=actionByName,proto3" json:"actionByName,omitempty"`
+	PaymentId    string `protobuf:"bytes,1,opt,name=paymentId,proto3" json:"paymentId"`
+	ActionById   string `protobuf:"bytes,2,opt,name=actionById,proto3" json:"actionById"`
+	ActionByName string `protobuf:"bytes,3,opt,name=actionByName,proto3" json:"actionByName"`
 }
 
 func (x *PaymentReturnRequest) Reset() {
@@ -2913,7 +2913,7 @@ type GetTeachersSalaryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Salaries []*AbsGetTeachersSalary `protobuf:"bytes,1,rep,name=salaries,proto3" json:"salaries,omitempty"`
+	Salaries []*AbsGetTeachersSalary `protobuf:"bytes,1,rep,name=salaries,proto3" json:"salaries"`
 }
 
 func (x *GetTeachersSalaryRequest) Reset() {
@@ -2958,10 +2958,10 @@ type AbsGetTeachersSalary struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TeacherId   string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
-	Type        string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	Amount      int32  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	TeacherName string `protobuf:"bytes,4,opt,name=teacherName,proto3" json:"teacherName,omitempty"`
+	TeacherId   string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId"`
+	Type        string `protobuf:"bytes,2,opt,name=type,proto3" json:"type"`
+	Amount      int32  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount"`
+	TeacherName string `protobuf:"bytes,4,opt,name=teacherName,proto3" json:"teacherName"`
 }
 
 func (x *AbsGetTeachersSalary) Reset() {
@@ -3027,7 +3027,7 @@ type DeleteTeacherSalaryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TeacherId string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
+	TeacherId string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId"`
 }
 
 func (x *DeleteTeacherSalaryRequest) Reset() {
@@ -3072,9 +3072,9 @@ type CreateTeacherSalaryRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TeacherId string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId,omitempty"`
-	Type      string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	Amount    int32  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	TeacherId string `protobuf:"bytes,1,opt,name=teacherId,proto3" json:"teacherId"`
+	Type      string `protobuf:"bytes,2,opt,name=type,proto3" json:"type"`
+	Amount    int32  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount"`
 }
 
 func (x *CreateTeacherSalaryRequest) Reset() {
