@@ -25,8 +25,8 @@ type UpdateUserPasswordRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId      string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId"`
-	NewPassword string `protobuf:"bytes,2,opt,name=newPassword,proto3" json:"newPassword"`
+	UserId      string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	NewPassword string `protobuf:"bytes,2,opt,name=newPassword,proto3" json:"newPassword,omitempty"`
 }
 
 func (x *UpdateUserPasswordRequest) Reset() {
@@ -78,7 +78,7 @@ type GetHistoryByUserIdResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Histories []*AbsGetHistoryByUserIdResponse `protobuf:"bytes,1,rep,name=histories,proto3" json:"histories"`
+	Histories []*AbsGetHistoryByUserIdResponse `protobuf:"bytes,1,rep,name=histories,proto3" json:"histories,omitempty"`
 }
 
 func (x *GetHistoryByUserIdResponse) Reset() {
@@ -123,10 +123,10 @@ type AbsGetHistoryByUserIdResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UpdatedField string `protobuf:"bytes,1,opt,name=updatedField,proto3" json:"updatedField"`
-	OldValue     string `protobuf:"bytes,2,opt,name=oldValue,proto3" json:"oldValue"`
-	CurrentValue string `protobuf:"bytes,3,opt,name=currentValue,proto3" json:"currentValue"`
-	CreatedAt    string `protobuf:"bytes,4,opt,name=createdAt,proto3" json:"createdAt"`
+	UpdatedField string `protobuf:"bytes,1,opt,name=updatedField,proto3" json:"updatedField,omitempty"`
+	OldValue     string `protobuf:"bytes,2,opt,name=oldValue,proto3" json:"oldValue,omitempty"`
+	CurrentValue string `protobuf:"bytes,3,opt,name=currentValue,proto3" json:"currentValue,omitempty"`
+	CreatedAt    string `protobuf:"bytes,4,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
 }
 
 func (x *AbsGetHistoryByUserIdResponse) Reset() {
@@ -192,7 +192,7 @@ type GetAllStuffResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Stuff []*GetUserByIdResponse `protobuf:"bytes,1,rep,name=stuff,proto3" json:"stuff"`
+	Stuff []*GetUserByIdResponse `protobuf:"bytes,1,rep,name=stuff,proto3" json:"stuff,omitempty"`
 }
 
 func (x *GetAllStuffResponse) Reset() {
@@ -237,12 +237,12 @@ type UpdateUserRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"bytes,6,opt,name=id,proto3" json:"id"`
-	PhoneNumber string `protobuf:"bytes,1,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Role        string `protobuf:"bytes,2,opt,name=role,proto3" json:"role"`
-	Name        string `protobuf:"bytes,3,opt,name=name,proto3" json:"name"`
-	BirthDate   string `protobuf:"bytes,4,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender      bool   `protobuf:"varint,5,opt,name=gender,proto3" json:"gender"`
+	Id          string `protobuf:"bytes,6,opt,name=id,proto3" json:"id,omitempty"`
+	PhoneNumber string `protobuf:"bytes,1,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Role        string `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
+	Name        string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	BirthDate   string `protobuf:"bytes,4,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
+	Gender      bool   `protobuf:"varint,5,opt,name=gender,proto3" json:"gender,omitempty"`
 }
 
 func (x *UpdateUserRequest) Reset() {
@@ -322,7 +322,7 @@ type GetAllEmployeeRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IsArchived bool `protobuf:"varint,1,opt,name=isArchived,proto3" json:"isArchived"`
+	IsArchived bool `protobuf:"varint,1,opt,name=isArchived,proto3" json:"isArchived,omitempty"`
 }
 
 func (x *GetAllEmployeeRequest) Reset() {
@@ -367,7 +367,7 @@ type GetAllEmployeeResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Employees []*GetUserByIdResponse `protobuf:"bytes,1,rep,name=employees,proto3" json:"employees"`
+	Employees []*GetUserByIdResponse `protobuf:"bytes,1,rep,name=employees,proto3" json:"employees,omitempty"`
 }
 
 func (x *GetAllEmployeeResponse) Reset() {
@@ -412,7 +412,7 @@ type UserAbsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId"`
+	UserId string `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
 }
 
 func (x *UserAbsRequest) Reset() {
@@ -457,14 +457,14 @@ type GetUserByIdResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
-	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Role        string `protobuf:"bytes,3,opt,name=role,proto3" json:"role"`
-	Name        string `protobuf:"bytes,4,opt,name=name,proto3" json:"name"`
-	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
-	IsDeleted   bool   `protobuf:"varint,7,opt,name=is_deleted,json=isDeleted,proto3" json:"is_deleted"`
-	CreatedAt   string `protobuf:"bytes,8,opt,name=createdAt,proto3" json:"createdAt"`
+	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Role        string `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	Name        string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
+	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender,omitempty"`
+	IsDeleted   bool   `protobuf:"varint,7,opt,name=is_deleted,json=isDeleted,proto3" json:"is_deleted,omitempty"`
+	CreatedAt   string `protobuf:"bytes,8,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
 }
 
 func (x *GetUserByIdResponse) Reset() {
@@ -558,12 +558,12 @@ type CreateUserRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName"`
-	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password"`
-	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role"`
-	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
+	FullName    string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	PhoneNumber string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Password    string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Role        string `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	BirthDate   string `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
+	Gender      bool   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender,omitempty"`
 }
 
 func (x *CreateUserRequest) Reset() {
@@ -643,7 +643,7 @@ type GetTeachersRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	IsDeleted bool `protobuf:"varint,1,opt,name=isDeleted,proto3" json:"isDeleted"`
+	IsDeleted bool `protobuf:"varint,1,opt,name=isDeleted,proto3" json:"isDeleted,omitempty"`
 }
 
 func (x *GetTeachersRequest) Reset() {
@@ -688,7 +688,7 @@ type GetTeachersResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Teachers []*AbsTeacher `protobuf:"bytes,1,rep,name=teachers,proto3" json:"teachers"`
+	Teachers []*AbsTeacher `protobuf:"bytes,1,rep,name=teachers,proto3" json:"teachers,omitempty"`
 }
 
 func (x *GetTeachersResponse) Reset() {
@@ -733,10 +733,10 @@ type AbsTeacher struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string `protobuf:"bytes,4,opt,name=id,proto3" json:"id"`
-	FullName     string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName"`
-	PhoneNumber  string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	ActiveGroups string `protobuf:"bytes,3,opt,name=activeGroups,proto3" json:"activeGroups"`
+	Id           string `protobuf:"bytes,4,opt,name=id,proto3" json:"id,omitempty"`
+	FullName     string `protobuf:"bytes,1,opt,name=fullName,proto3" json:"fullName,omitempty"`
+	PhoneNumber  string `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	ActiveGroups string `protobuf:"bytes,3,opt,name=activeGroups,proto3" json:"activeGroups,omitempty"`
 }
 
 func (x *AbsTeacher) Reset() {
@@ -802,8 +802,8 @@ type ValidateTokenRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Token         string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token"`
-	RequiredRoles []string `protobuf:"bytes,2,rep,name=requiredRoles,proto3" json:"requiredRoles"`
+	Token         string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	RequiredRoles []string `protobuf:"bytes,2,rep,name=requiredRoles,proto3" json:"requiredRoles,omitempty"`
 }
 
 func (x *ValidateTokenRequest) Reset() {
@@ -855,8 +855,8 @@ type LoginRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PhoneNumber string `protobuf:"bytes,1,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Password    string `protobuf:"bytes,2,opt,name=password,proto3" json:"password"`
+	PhoneNumber string `protobuf:"bytes,1,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Password    string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 }
 
 func (x *LoginRequest) Reset() {
@@ -908,9 +908,9 @@ type LoginResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	User  *GetUserByIdResponse `protobuf:"bytes,1,opt,name=user,proto3" json:"user"`
-	Token string               `protobuf:"bytes,2,opt,name=token,proto3" json:"token"`
-	IsOk  bool                 `protobuf:"varint,3,opt,name=isOk,proto3" json:"isOk"`
+	User  *GetUserByIdResponse `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Token string               `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	IsOk  bool                 `protobuf:"varint,3,opt,name=isOk,proto3" json:"isOk,omitempty"`
 }
 
 func (x *LoginResponse) Reset() {

@@ -1046,6 +1046,7 @@ func CompanyCreate(ctx *gin.Context) {
 // @Produce json
 // @Param page query int false "Page number"
 // @Param size query int false "Page size"
+// @Param filter query string false "filter only accept (active , no_active , demo)"
 // @Success 200 {object} pb.GetAllResponse
 // @Failure 400 {object} utils.AbsResponse
 // @Router /api/company/get-all [get]
