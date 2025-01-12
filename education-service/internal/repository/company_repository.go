@@ -20,27 +20,39 @@ func NewCompanyRepository(db *sql.DB) *CompanyRepository {
 
 func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyResponse, error) {
 	query := `
-        SELECT id, title, avatar, start_time, end_time, company_phone, subdomain
-        FROM company
-        WHERE subdomain = $1
-    `
+		SELECT 
+			c.id, c.title, c.avatar, c.start_time, c.end_time, 
+			c.company_phone, c.subdomain, c.valid_date, 
+			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
+			c.discount_id, c.is_demo, c.created_at
+		FROM 
+			company c
+		LEFT JOIN 
+			tariff t ON c.tariff_id = t.id
+		WHERE 
+			c.subdomain = $1
+	`
+
 	var company pb.GetCompanyResponse
+	var tariff pb.Tariff
+
 	row := r.db.QueryRow(query, domain)
 	err := row.Scan(
-		&company.Id,
-		&company.Title,
-		&company.AvatarUrl,
-		&company.StartTime,
-		&company.EndTime,
-		&company.CompanyPhone,
-		&company.Subdomain,
+		&company.Id, &company.Title, &company.AvatarUrl,
+		&company.StartTime, &company.EndTime, &company.CompanyPhone,
+		&company.Subdomain, &company.ValidDate,
+		&tariff.Id, &tariff.Name, &tariff.Sum,
+		&company.DiscountId, &company.IsDemo, &company.CreatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("company with domain %s not found", domain)
 		}
-		return nil, err
+		return nil, fmt.Errorf("failed to fetch company: %v", err)
 	}
+
+	company.Tariff = &tariff
+
 	return &company, nil
 }
 
@@ -49,7 +61,18 @@ func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.Abs
 	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil || exists {
 		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
 	}
-	_, err := r.db.Exec(`INSERT INTO company(title, avatar, start_time, end_time, company_phone, subdomain) VALUES ($1,$2, $3, $4, $5, $6)`, req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain)
+	_, err := r.db.Exec(`INSERT INTO company(title, avatar, start_time, end_time, company_phone, subdomain, valid_date, tariff_id, discount_id, is_demo) VALUES ($1,$2, $3, $4, $5, $6 , $7,  $8 , $9 , $10)`,
+		req.Title,
+		req.AvatarUrl,
+		req.StartTime,
+		req.EndTime,
+		req.CompanyPhone,
+		req.Subdomain,
+		req.ValidDate,
+		req.TariffId,
+		req.DiscountId,
+		req.IsDemo,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -63,9 +86,17 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 	offset := (page - 1) * size
 
 	query := `
-		SELECT id, title, avatar, start_time, end_time, company_phone, subdomain
-		FROM company
-		ORDER BY id
+		SELECT 
+			c.id, c.title, c.avatar, c.start_time, c.end_time, 
+			c.company_phone, c.subdomain, c.valid_date, 
+			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
+			c.discount_id, c.is_demo, c.created_at
+		FROM 
+			company c
+		LEFT JOIN 
+			tariff t ON c.tariff_id = t.id
+		ORDER BY 
+			c.id
 		LIMIT $1 OFFSET $2
 	`
 
@@ -86,10 +117,20 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 	var items []*pb.GetCompanyResponse
 	for rows.Next() {
 		var company pb.GetCompanyResponse
-		err := rows.Scan(&company.Id, &company.Title, &company.AvatarUrl, &company.StartTime, &company.EndTime, &company.CompanyPhone, &company.Subdomain)
+		var tariff pb.Tariff
+
+		err := rows.Scan(
+			&company.Id, &company.Title, &company.AvatarUrl,
+			&company.StartTime, &company.EndTime, &company.CompanyPhone,
+			&company.Subdomain, &company.ValidDate,
+			&tariff.Id, &tariff.Name, &tariff.Sum,
+			&company.DiscountId, &company.IsDemo, &company.CreatedAt,
+		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
+
+		company.Tariff = &tariff
 		items = append(items, &company)
 	}
 
@@ -105,15 +146,27 @@ func (r *CompanyRepository) GetAll(page int32, size int32) (*pb.GetAllResponse, 
 
 func (r *CompanyRepository) UpdateCompany(req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
 	var exists bool
-	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil || exists {
-		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
+	if err := r.db.QueryRow(
+		`SELECT EXISTS(SELECT 1 FROM company WHERE subdomain=$1 AND id<>$2)`,
+		req.Subdomain, req.Id,
+	).Scan(&exists); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check subdomain existence: %v", err)
 	}
-	_, err := r.db.Exec(`UPDATE company SET title=$1, avatar=$2, start_time=$3, end_time=$4, company_phone=$5, subdomain=$6 where id=$7`, req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain, req.Id)
+	if exists {
+		return nil, status.Error(codes.Aborted, "this subdomain already exists in the database")
+	}
+
+	_, err := r.db.Exec(
+		`UPDATE company SET title=$1, avatar=$2, start_time=$3, end_time=$4, company_phone=$5, subdomain=$6, valid_date=$7, tariff_id=$8, discount_id=$9, is_demo=$10 WHERE id=$11`,
+		req.Title, req.AvatarUrl, req.StartTime, req.EndTime, req.CompanyPhone, req.Subdomain,
+		req.ValidDate, req.TariffId, req.DiscountId, req.IsDemo, req.Id,
+	)
 	if err != nil {
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to update company: %v", err)
 	}
+
 	return &pb.AbsResponse{
 		Status:  http.StatusOK,
-		Message: "company update",
+		Message: "Company updated successfully",
 	}, nil
 }

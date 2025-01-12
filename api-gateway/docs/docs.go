@@ -5388,8 +5388,14 @@ const docTemplate = `{
                 "companyPhone": {
                     "type": "string"
                 },
+                "discount_id": {
+                    "type": "integer"
+                },
                 "endTime": {
                     "type": "string"
+                },
+                "is_demo": {
+                    "type": "boolean"
                 },
                 "startTime": {
                     "type": "string"
@@ -5397,7 +5403,13 @@ const docTemplate = `{
                 "subdomain": {
                     "type": "string"
                 },
+                "tariff_id": {
+                    "type": "integer"
+                },
                 "title": {
+                    "type": "string"
+                },
+                "valid_date": {
                     "type": "string"
                 }
             }
@@ -5964,11 +5976,20 @@ const docTemplate = `{
                 "companyPhone": {
                     "type": "string"
                 },
+                "created_at": {
+                    "type": "string"
+                },
+                "discount_id": {
+                    "type": "integer"
+                },
                 "endTime": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_demo": {
+                    "type": "boolean"
                 },
                 "startTime": {
                     "type": "string"
@@ -5976,7 +5997,13 @@ const docTemplate = `{
                 "subdomain": {
                     "type": "string"
                 },
+                "tariff": {
+                    "$ref": "#/definitions/pb.Tariff"
+                },
                 "title": {
+                    "type": "string"
+                },
+                "valid_date": {
                     "type": "string"
                 }
             }
@@ -6799,11 +6826,17 @@ const docTemplate = `{
                 "companyPhone": {
                     "type": "string"
                 },
+                "discount_id": {
+                    "type": "integer"
+                },
                 "endTime": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_demo": {
+                    "type": "boolean"
                 },
                 "startTime": {
                     "type": "string"
@@ -6811,7 +6844,13 @@ const docTemplate = `{
                 "subdomain": {
                     "type": "string"
                 },
+                "tariff_id": {
+                    "type": "integer"
+                },
                 "title": {
+                    "type": "string"
+                },
+                "valid_date": {
                     "type": "string"
                 }
             }
