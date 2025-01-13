@@ -12,7 +12,7 @@ var jwtKey = []byte("qp_TGOFe56TIehvKUOzQAuMVEqelvKgWR9sznKmPrxBLRLZfdgsngdgzEIf
 type Claims struct {
 	Username  string `json:"username"`
 	Role      string `json:"role"`
-	CompanyId string `json:"company_id"`
+	CompanyId int32  `json:"company_id"`
 	jwt.StandardClaims
 }
 
@@ -21,7 +21,7 @@ func GenerateToken(user *pb.GetUserByIdResponse) (string, error) {
 	claims := &Claims{
 		Username:  user.PhoneNumber,
 		Role:      user.Role,
-		CompanyId: "1",
+		CompanyId: user.CompanyId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

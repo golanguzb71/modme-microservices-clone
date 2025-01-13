@@ -42,7 +42,6 @@ message CreateCompanyRequest{
   int64 discount_id = 10;
   bool is_demo = 1;
 }
-
 message GetCompanyRequest{
   string domain = 1;
 }
@@ -82,6 +81,20 @@ message TariffList{
 }
 
 
+service CompanyFinanceService{
+  rpc Create(CompanyFinance) returns(CompanyFinance) {}
+  rpc Delete(common.DeleteAbsRequest) returns(common.AbsResponse){}
+  rpc GetAll(common.PageRequest) returns(CompanyFinanceList){}
+  rpc GetByCompany(common.DeleteAbsRequest) returns(CompanyFinanceList){}
+}
+message CompanyFinance{
+
+}
+
+message CompanyFinanceList{
+  int32 count = 1;
+  repeated CompanyFinance items = 2;
+}
 // room service start
 service RoomService{
   rpc CreateRoom(CreateRoomRequest)returns(common.AbsResponse);
