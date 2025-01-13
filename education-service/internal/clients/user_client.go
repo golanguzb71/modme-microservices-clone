@@ -3,7 +3,6 @@ package clients
 import (
 	"context"
 	"education-service/proto/pb"
-	"fmt"
 	"google.golang.org/grpc"
 )
 
@@ -17,10 +16,8 @@ func NewUserClient(addr string) (*UserClient, error) {
 		return nil, err
 	}
 
-	//client := pb.NewUserServiceClient(conn)
-	//return &UserClient{client: client}, nil
-	fmt.Println(conn)
-	return nil, nil
+	client := pb.NewUserServiceClient(conn)
+	return &UserClient{client: client}, nil
 }
 
 func (uc *UserClient) GetTeacherById(teacherId string) (string, error) {

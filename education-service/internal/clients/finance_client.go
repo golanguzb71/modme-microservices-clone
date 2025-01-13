@@ -3,7 +3,6 @@ package clients
 import (
 	"context"
 	"education-service/proto/pb"
-	"fmt"
 	"google.golang.org/grpc"
 	"strconv"
 )
@@ -19,11 +18,10 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 		return nil, err
 	}
 
-	//discountClient := pb.NewDiscountServiceClient(conn)
-	//paymentClient := pb.NewPaymentServiceClient(conn)
-	//return &FinanceClient{discountClient: discountClient, paymentClient: paymentClient}, nil
-	fmt.Println(conn)
-	return nil, nil
+	discountClient := pb.NewDiscountServiceClient(conn)
+	paymentClient := pb.NewPaymentServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, paymentClient: paymentClient}, nil
+
 }
 
 func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) (*float64, string) {
