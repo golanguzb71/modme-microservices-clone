@@ -5395,7 +5395,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"
@@ -5989,7 +5989,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"
@@ -6839,7 +6839,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"

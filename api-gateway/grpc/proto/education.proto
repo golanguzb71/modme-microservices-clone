@@ -23,7 +23,7 @@ message UpdateCompanyRequest{
   string subdomain = 7;
   string valid_date = 8;
   int64 tariff_id = 9;
-  int64 discount_id = 10;
+  string discount_id = 10;
   bool is_demo = 11;
 }
 message GetAllResponse{
@@ -39,7 +39,7 @@ message CreateCompanyRequest{
   string subdomain = 7;
   string valid_date = 8;
   int64 tariff_id = 9;
-  int64 discount_id = 10;
+  string discount_id = 10;
   bool is_demo = 1;
 }
 message GetCompanyRequest{
@@ -55,7 +55,7 @@ message GetCompanyResponse{
   string subdomain = 7;
   string valid_date = 8;
   Tariff tariff = 9;
-  int64 discount_id = 10;
+  string discount_id = 10;
   string created_at = 11;
   bool is_demo = 12;
   int32 active_student_count = 13;

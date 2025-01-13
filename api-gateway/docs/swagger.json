@@ -5385,7 +5385,7 @@
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"
@@ -5979,7 +5979,7 @@
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"
@@ -6829,7 +6829,7 @@
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "endTime": {
                     "type": "string"

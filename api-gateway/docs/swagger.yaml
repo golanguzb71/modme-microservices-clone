@@ -430,7 +430,7 @@ definitions:
       companyPhone:
         type: string
       discount_id:
-        type: integer
+        type: string
       endTime:
         type: string
       is_demo:
@@ -815,7 +815,7 @@ definitions:
       created_at:
         type: string
       discount_id:
-        type: integer
+        type: string
       endTime:
         type: string
       id:
@@ -1368,7 +1368,7 @@ definitions:
       companyPhone:
         type: string
       discount_id:
-        type: integer
+        type: string
       endTime:
         type: string
       id:
