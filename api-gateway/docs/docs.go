@@ -6450,6 +6450,9 @@ const docTemplate = `{
                 "birthDate": {
                     "type": "string"
                 },
+                "companyId": {
+                    "type": "integer"
+                },
                 "createdAt": {
                     "type": "string"
                 },

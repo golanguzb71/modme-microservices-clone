@@ -2,11 +2,10 @@ package handlers
 
 import (
 	"api-gateway/grpc/proto/pb"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
-	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 )
 
 // CreateLead godoc
@@ -22,7 +21,7 @@ import (
 // @Security Bearer
 // @Router /api/lead/create [post]
 func CreateLead(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	value := ctx.Query("title")
 	resp, err := leadClient.CreateLead(ctxR, value)
@@ -47,7 +46,7 @@ func CreateLead(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/lead/get-lead-common [post]
 func GetLeadCommon(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 
 	var req pb.GetLeadCommonRequest
@@ -79,7 +78,7 @@ func GetLeadCommon(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/lead/update/{id} [put]
 func UpdateLead(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	title := ctx.Query("title")
@@ -106,7 +105,7 @@ func UpdateLead(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/lead/delete/{id} [delete]
 func DeleteLead(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := leadClient.DeleteLead(ctxR, id)
@@ -131,7 +130,7 @@ func DeleteLead(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/expectation/create [post]
 func CreateExpectation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	title := ctx.Query("title")
 	resp, err := leadClient.CreateExpect(ctxR, title)
@@ -157,7 +156,7 @@ func CreateExpectation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/expectation/update/{id} [put]
 func UpdateExpectation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	title := ctx.Query("title")
@@ -183,7 +182,7 @@ func UpdateExpectation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/expectation/delete/{id} [delete]
 func DeleteExpectation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := leadClient.DeleteExpect(ctxR, id)
@@ -208,7 +207,7 @@ func DeleteExpectation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/set/create [post]
 func CreateSet(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateSetRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -239,7 +238,7 @@ func CreateSet(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/set/update [put]
 func UpdateSet(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.UpdateSetRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -269,7 +268,7 @@ func UpdateSet(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/set/delete/{id} [delete]
 func DeleteSet(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := leadClient.DeleteSet(ctxR, id)
@@ -294,7 +293,7 @@ func DeleteSet(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/leadData/create [post]
 func CreateLeadData(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateLeadDataRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -324,7 +323,7 @@ func CreateLeadData(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/leadData/delete/{id} [delete]
 func DeleteLeadData(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := leadClient.DeleteLeadData(ctxR, id)
@@ -349,7 +348,7 @@ func DeleteLeadData(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/leadData/update [put]
 func UpdateLeadData(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.UpdateLeadDataRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -380,7 +379,7 @@ func UpdateLeadData(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/leadData/change-lead-data [patch]
 func ChangeLeadData(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.ChangeLeadPlaceRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -410,7 +409,7 @@ func ChangeLeadData(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/lead/get-all [get]
 func GetAllLead(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 
 	resp, err := leadClient.GetAllLead(ctxR)
@@ -435,7 +434,7 @@ func GetAllLead(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/set/change-to-group [patch]
 func ChangeToSet(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.ChangeToSetRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -465,7 +464,7 @@ func ChangeToSet(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/lead/get-lead-reports [get]
 func GetLeadReports(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Query("from")
 	till := ctx.Query("till")

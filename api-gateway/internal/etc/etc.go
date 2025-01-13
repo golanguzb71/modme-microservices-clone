@@ -1,11 +1,14 @@
-package middleware
+package etc
 
 import (
 	client "api-gateway/internal/clients"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/metadata"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.HandlerFunc {
@@ -33,6 +36,22 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 		}
 
 		ctx.Set("user", user)
+		ctx.Set("company_id", user.CompanyId)
 		ctx.Next()
 	}
+}
+
+func NewTimoutContext(ctx context.Context) (context.Context, context.CancelFunc) {
+	md := metadata.Pairs()
+	for _, key := range []string{"company_id"} {
+		if ctx.Value(key) != nil {
+			val, ok := ctx.Value(key).(string)
+			if ok {
+				md.Set(key, val)
+			}
+		}
+	}
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	res, cancel := context.WithTimeout(ctx, time.Second*15)
+	return res, cancel
 }

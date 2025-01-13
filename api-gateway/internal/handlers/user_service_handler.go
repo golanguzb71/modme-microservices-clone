@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"api-gateway/grpc/proto/pb"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
-	"context"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 // CreateUser godoc
@@ -23,7 +22,7 @@ import (
 // @Security Bearer
 // @Router /api/user/create [post]
 func CreateUser(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req *pb.CreateUserRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -53,7 +52,7 @@ func CreateUser(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/get-teachers/{isDeleted} [get]
 func GetTeachers(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	isDeleted, err := strconv.ParseBool(ctx.Param("isDeleted"))
 	if err != nil {
@@ -79,7 +78,7 @@ func GetTeachers(ctx *gin.Context) {
 // @Failure 400 {object} utils.AbsResponse
 // @Router /api/user/get-user/{userId} [get]
 func GetUserById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	userId := ctx.Param("userId")
 	response, err := userClient.GetUserById(ctxR, userId)
@@ -102,7 +101,7 @@ func GetUserById(ctx *gin.Context) {
 // @Failure 400 {object} utils.AbsResponse
 // @Router /api/user/update [patch]
 func UpdateUserById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.UpdateUserRequest{}
 	user, err := utils.GetUserFromContext(ctx)
@@ -137,7 +136,7 @@ func UpdateUserById(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/delete/{userId} [delete]
 func DeleteUserById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	userId := ctx.Param("userId")
 	resp, err := userClient.DeleteUserById(ctxR, userId)
@@ -164,7 +163,7 @@ func DeleteUserById(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/get-all-employee/{isArchived} [get]
 func GetAllEmployee(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	isArchived, err := strconv.ParseBool(ctx.Param("isArchived"))
 	if err != nil {
@@ -191,7 +190,7 @@ func GetAllEmployee(ctx *gin.Context) {
 // @Failure 400 {object} utils.AbsResponse "Bad request - Invalid JSON or login failure"
 // @Router /api/user/login [post]
 func Login(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.LoginRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -220,7 +219,7 @@ func Login(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/get-my-profile [get]
 func GetMyInformation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	user, err := utils.GetUserFromContext(ctx)
 	if err != nil {
@@ -261,7 +260,7 @@ func GetMyInformation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/get-all-staff/{isArchived} [get]
 func GetAllStaff(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	isArchived, err := strconv.ParseBool(ctx.Param("isArchived"))
 	if err != nil {
@@ -286,7 +285,7 @@ func GetAllStaff(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/history/{userId} [get]
 func GetUserHistoryById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	userId := ctx.Param("userId")
 	resp, err := userClient.GetHistoryByUserId(ctxR, userId)
@@ -311,7 +310,7 @@ func GetUserHistoryById(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/update-password/{userId}/{password} [put]
 func UpdateUserPassword(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	userId := ctx.Param("userId")
 	password := ctx.Param("password")

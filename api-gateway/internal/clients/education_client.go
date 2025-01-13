@@ -207,8 +207,8 @@ func (lc *EducationClient) CalculateSalaryByTeacher(ctx context.Context, from st
 	})
 }
 
-func (lc *EducationClient) GetLeftAfterTrialPeriod(from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
-	return lc.groupClient.GetLeftAfterTrialPeriod(context.TODO(), &pb.GetLeftAfterTrialPeriodRequest{
+func (lc *EducationClient) GetLeftAfterTrialPeriod(ctx context.Context, from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
+	return lc.groupClient.GetLeftAfterTrialPeriod(ctx, &pb.GetLeftAfterTrialPeriodRequest{
 		From: from,
 		To:   to,
 		Page: page,

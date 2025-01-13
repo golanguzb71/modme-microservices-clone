@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"api-gateway/grpc/proto/pb"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
 	"context"
 	"fmt"
@@ -26,7 +27,7 @@ import (
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/room/create [post]
 func CreateRoom(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.CreateRoomRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -56,7 +57,7 @@ func CreateRoom(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/room/update [put]
 func UpdateRoom(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.AbsRoom
 	err := ctx.ShouldBindJSON(&req)
@@ -84,7 +85,7 @@ func UpdateRoom(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/room/delete/{id} [delete]
 func DeleteRoom(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := educationClient.DeleteRoom(ctxR, id)
@@ -106,7 +107,7 @@ func DeleteRoom(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/room/get-all [get]
 func GetAllRoom(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	rooms, err := educationClient.GetRoom(ctxR)
 	if err != nil {
@@ -130,7 +131,7 @@ func GetAllRoom(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/course/create [post]
 func CreateCourse(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.CreateCourseRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -186,7 +187,7 @@ func UpdateCourse(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/course/delete/{id} [delete]
 func DeleteCourse(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := educationClient.DeleteCourse(ctxR, id)
@@ -208,7 +209,7 @@ func DeleteCourse(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse
 // @Router /api/course/get-all [get]
 func GetAllCourse(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	rooms, err := educationClient.GetCourse(ctxR)
 	if err != nil {
@@ -230,7 +231,7 @@ func GetAllCourse(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/course/get-by-id/{id} [get]
 func GetCourseById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := educationClient.GetCourseById(ctxR, id)
@@ -255,7 +256,7 @@ func GetCourseById(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/create [post]
 func CreateGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.CreateGroupRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -285,7 +286,7 @@ func CreateGroup(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/update [put]
 func UpdateGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req *pb.GetUpdateGroupAbs
 	err := ctx.ShouldBindJSON(&req)
@@ -313,7 +314,7 @@ func UpdateGroup(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/delete/{id} [delete]
 func DeleteGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := educationClient.DeleteGroup(ctxR, id)
@@ -339,7 +340,7 @@ func DeleteGroup(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/get-all/{isArchived} [get]
 func GetAllGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	isArchived := ctx.Param("isArchived")
 	parseBool, err := strconv.ParseBool(isArchived)
@@ -376,7 +377,7 @@ func GetAllGroup(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/get-by-id/{id} [get]
 func GetGroupById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	user, err := utils.GetUserFromContext(ctx)
@@ -439,7 +440,7 @@ func SetAttendance(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/attendance/get-attendance [post]
 func GetAttendance(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	var req pb.GetAttendanceRequest
 	err := ctx.ShouldBindJSON(&req)
@@ -474,7 +475,7 @@ func GetAttendance(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/get-by-course/{courseId} [get]
 func GetGroupByCourseId(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	courseId := ctx.Param("courseId")
 	resp, err := educationClient.GetGroupByCourseId(ctxR, courseId)
@@ -499,7 +500,7 @@ func GetGroupByCourseId(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/get-all/{condition} [get]
 func GetAllStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	condition := ctx.Param("condition")
 	if condition != "ARCHIVED" && condition != "ACTIVE" {
@@ -528,7 +529,7 @@ func GetAllStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/create [post]
 func CreateStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateStudentRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -556,7 +557,7 @@ func CreateStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/add-to-group [post]
 func AddStudentToGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.AddToGroupRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -585,7 +586,7 @@ func AddStudentToGroup(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/update [put]
 func UpdateStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.UpdateStudentRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -612,7 +613,7 @@ func UpdateStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/delete/{id} [delete]
 func DeleteStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	returnMoney, err := strconv.ParseBool(ctx.Query("returnMoney"))
@@ -644,7 +645,7 @@ func DeleteStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/student/get-student-by-id/{studentId} [get]
 func GetStudentById(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	studentId := ctx.Param("studentId")
 	response, err := educationClient.GetStudentById(ctxR, studentId)
@@ -668,7 +669,7 @@ func GetStudentById(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/student/note/get-notes/{studentId} [get]
 func GetNotesByStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	studentId := ctx.Param("studentId")
 	response, err := educationClient.GetNotesByStudentId(ctxR, studentId)
@@ -693,7 +694,7 @@ func GetNotesByStudent(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/student/note/create [post]
 func CreateNoteForStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateNoteRequest{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -721,7 +722,7 @@ func CreateNoteForStudent(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/student/note/delete/{noteId} [delete]
 func DeleteStudentNote(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	note := ctx.Param("noteId")
 	resp, err := educationClient.DeleteNote(ctxR, note)
@@ -745,7 +746,7 @@ func DeleteStudentNote(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/student/search-student/{value} [get]
 func SearchStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	value := ctx.Param("value")
 	resp, err := educationClient.SearchStudentByPhoneName(ctxR, value)
@@ -769,7 +770,7 @@ func SearchStudent(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/history/group/{groupId} [get]
 func GetHistoryGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	value := ctx.Param("groupId")
 	resp, err := educationClient.GetHistoryGroupById(ctxR, value)
@@ -793,7 +794,7 @@ func GetHistoryGroup(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/history/student/{studentId} [get]
 func GetHistoryStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	value := ctx.Param("studentId")
 	resp, err := educationClient.GetHistoryStudentById(ctxR, value)
@@ -817,7 +818,7 @@ func GetHistoryStudent(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/group/transfer-date [post]
 func TransferLessonDate(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.TransferLessonRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -847,7 +848,7 @@ func TransferLessonDate(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/student/change-condition [put]
 func ChangeConditionStudent(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.ChangeConditionStudentRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -883,7 +884,7 @@ func ChangeConditionStudent(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/group/get-by-teacher/{teacherId} [get]
 func GetInformationByTeacher(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	teacherId := ctx.Param("teacherId")
 	isArchived, err := strconv.ParseBool(ctx.Query("isArchived"))
@@ -910,7 +911,7 @@ func GetInformationByTeacher(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/common-information-company [get]
 func GetCommonInformationCompany(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	activeLeadCount := leadClient.GetActiveLeadCount(ctxR)
 	activeStudentCount, activeGroupCount, leaveGroupCount, commonDebtorsCount, eleminatedInTrial := educationClient.GetCommonEducationInformation(ctxR)
@@ -939,7 +940,7 @@ func GetCommonInformationCompany(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/get-chart-income [get]
 func GetChartIncome(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	resp, err := financeClient.GetChartIncome(ctxR, ctx.Query("from"), ctx.Query("to"))
 	if err != nil {
@@ -961,7 +962,7 @@ func GetChartIncome(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/get-table-groups [get]
 func GetTableGroups(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 
 	queryDateType := ctx.Query("dateType")
@@ -1005,7 +1006,9 @@ func LeftAfterTrial(ctx *gin.Context) {
 	to := ctx.Param("to")
 	page := ctx.DefaultQuery("page", "1")
 	pageSize := ctx.DefaultQuery("page_size", "10")
-	resp, err := educationClient.GetLeftAfterTrialPeriod(from, to, page, pageSize)
+	ctxR, cancelFunc := etc.NewTimoutContext(ctx)
+	defer cancelFunc()
+	resp, err := educationClient.GetLeftAfterTrialPeriod(ctxR, from, to, page, pageSize)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return

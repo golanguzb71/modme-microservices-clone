@@ -58,6 +58,7 @@ message GetUserByIdResponse{
   bool gender = 6;
   bool is_deleted = 7;
   string createdAt = 8;
+  int32 companyId = 9;
 }
 message CreateUserRequest{
   string fullName = 1;

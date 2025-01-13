@@ -2,13 +2,12 @@ package handlers
 
 import (
 	"api-gateway/grpc/proto/pb"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
-	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 // GetAllDiscountInformationByGroup godoc
@@ -23,7 +22,7 @@ import (
 // @Security Bearer
 // @Router /api/finance/discount/get-all-by-group/{groupId} [get]
 func GetAllDiscountInformationByGroup(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	groupId := ctx.Param("groupId")
 	resp, err := financeClient.GetDiscountsInformationByGroupId(ctxR, groupId)
@@ -48,7 +47,7 @@ func GetAllDiscountInformationByGroup(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/discount/create [post]
 func CreateDiscount(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.AbsDiscountRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -78,7 +77,7 @@ func CreateDiscount(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal Server Error"
 // @Router /api/finance/discount/delete [delete]
 func DeleteDiscount(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	groupId := ctx.Query("groupId")
 	studentId := ctx.Query("studentId")
@@ -104,7 +103,7 @@ func DeleteDiscount(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/category/create [post]
 func CreateCategory(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateCategoryRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -133,7 +132,7 @@ func CreateCategory(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/category/delete/{categoryId} [delete]
 func DeleteCategory(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	categoryId := ctx.Param("categoryId")
 	resp, err := financeClient.DeleteCategory(ctxR, categoryId)
@@ -155,7 +154,7 @@ func DeleteCategory(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/category/get-all [get]
 func GetAllCategories(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	resp, err := financeClient.GetAllCategories(ctxR)
 	if err != nil {
@@ -178,7 +177,7 @@ func GetAllCategories(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/expense/create [post]
 func CreateExpense(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateExpenseRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -212,7 +211,7 @@ func CreateExpense(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/expense/delete/{id} [delete]
 func DeleteExpense(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	id := ctx.Param("id")
 	resp, err := financeClient.DeleteExpense(ctxR, id)
@@ -241,7 +240,7 @@ func DeleteExpense(ctx *gin.Context) {
 // @Security Bearer
 // @Router       /api/finance/expense/get-all-information/{from}/{to} [get]
 func GetAllInformation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -284,7 +283,7 @@ func GetAllInformation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/expense/get-chart-diagram/{from}/{to} [get]
 func GetChartDiagram(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -309,7 +308,7 @@ func GetChartDiagram(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/discount/history/{userId} [get]
 func GetHistoryDiscount(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	userId := ctx.Param("userId")
 	resp, err := financeClient.GetHistoryDiscount(userId, ctxR)
@@ -378,7 +377,7 @@ func PaymentAdd(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/finance/payment/student/return [post]
 func PaymentReturn(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	user, err := utils.GetUserFromContext(ctx)
 	req := pb.PaymentReturnRequest{}
@@ -411,7 +410,7 @@ func PaymentReturn(ctx *gin.Context) {
 // @Failure 409 {object} utils.AbsResponse
 // @Router /api/finance/payment/student/update [patch]
 func PaymentUpdate(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	user, err := utils.GetUserFromContext(ctx)
 	req := pb.PaymentUpdateRequest{}
@@ -451,7 +450,7 @@ func PaymentUpdate(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/student/get-monthly-status/{studentId} [get]
 func GetMonthlyStatusPayment(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	studentId := ctx.Param("studentId")
 	resp, err := financeClient.GetMonthlyStatusPayment(ctxR, studentId)
@@ -475,7 +474,7 @@ func GetMonthlyStatusPayment(ctx *gin.Context) {
 // @Security  Bearer
 // @Router /api/finance/payment/get-all-payments/{studentId}/{month} [get]
 func GetAllPayments(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	studentId := ctx.Param("studentId")
 	month := ctx.Param("month")
@@ -498,7 +497,7 @@ func GetAllPayments(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/salary/teacher-all [get]
 func GetSalaryAllTeacher(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	resp, err := financeClient.GetSalaryAllTeacher(ctxR)
 	if err != nil {
@@ -522,7 +521,7 @@ func GetSalaryAllTeacher(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/salary/teacher-add [post]
 func AddSalaryTeacher(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	req := pb.CreateTeacherSalaryRequest{}
 	err := ctx.ShouldBindJSON(&req)
@@ -550,7 +549,7 @@ func AddSalaryTeacher(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/salary/delete/{teacherID} [delete]
 func DeleteTeacherSalary(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	teacherId := ctx.Param("teacherID")
 	resp, err := financeClient.DeleteTeacherSalary(ctxR, teacherId)
@@ -576,7 +575,7 @@ func DeleteTeacherSalary(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/payment-take-off/{from}/{to} [get]
 func GetAllTakeOffPayment(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -603,7 +602,7 @@ func GetAllTakeOffPayment(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/payment-take-off/chart/{from}/{to} [get]
 func GetPaymentTakeOffChart(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -629,7 +628,7 @@ func GetPaymentTakeOffChart(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/all-student-payments/{from}/{to} [get]
 func GetAllStudentPayment(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -655,7 +654,7 @@ func GetAllStudentPayment(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/all-student-payments/chart/{from}/{to} [get]
 func GetAllPaymentsStudentChart(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -684,7 +683,7 @@ func GetAllPaymentsStudentChart(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/payment/get-all-debts/{page}/{size} [get]
 func GetAllDebtsInformation(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	page := ctx.Param("page")
 	size := ctx.Param("size")
@@ -713,7 +712,7 @@ func GetAllDebtsInformation(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/finance/salary/calculate/{from}/{to} [get]
 func CalculateSalary(ctx *gin.Context) {
-	ctxR, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
 	from := ctx.Param("from")
 	to := ctx.Param("to")
@@ -725,16 +724,4 @@ func CalculateSalary(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 	return
-}
-
-func CompanyPayAdd(ctx *gin.Context) {
-
-}
-
-func CancelPay(ctx *gin.Context) {
-
-}
-
-func GetAllPay(ctx *gin.Context) {
-
 }

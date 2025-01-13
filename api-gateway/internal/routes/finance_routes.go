@@ -2,8 +2,8 @@ package routes
 
 import (
 	client "api-gateway/internal/clients"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/handlers"
-	"api-gateway/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,49 +12,43 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	{
 		discount := finance.Group("/discount")
 		{
-			discount.GET("/get-all-by-group/:groupId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDiscountInformationByGroup)
-			discount.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateDiscount)
-			discount.DELETE("/delete", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteDiscount)
-			discount.GET("/history/:userId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryDiscount)
+			discount.GET("/get-all-by-group/:groupId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDiscountInformationByGroup)
+			discount.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateDiscount)
+			discount.DELETE("/delete", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteDiscount)
+			discount.GET("/history/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryDiscount)
 		}
 		category := finance.Group("/category")
 		{
-			category.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateCategory)
-			category.DELETE("/delete/:categoryId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteCategory)
-			category.GET("/get-all", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllCategories)
+			category.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateCategory)
+			category.DELETE("/delete/:categoryId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteCategory)
+			category.GET("/get-all", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllCategories)
 		}
 		expense := finance.Group("/expense")
 		{
-			expense.POST("/create", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateExpense)
-			expense.DELETE("/delete/:id", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteExpense)
-			expense.GET("/get-all-information/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllInformation)
-			expense.GET("/get-chart-diagram/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetChartDiagram)
+			expense.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateExpense)
+			expense.DELETE("/delete/:id", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteExpense)
+			expense.GET("/get-all-information/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllInformation)
+			expense.GET("/get-chart-diagram/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetChartDiagram)
 		}
 		payment := finance.Group("/payment")
 		{
-			payment.POST("/student/add", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentAdd)
-			payment.POST("/student/return", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentReturn)
-			payment.PATCH("/student/update", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentUpdate)
-			payment.GET("/student/get-monthly-status/:studentId", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetMonthlyStatusPayment)
-			payment.GET("/get-all-payments/:studentId/:month", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
-			payment.GET("/payment-take-off/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllTakeOffPayment)
-			payment.GET("/payment-take-off/chart/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetPaymentTakeOffChart)
-			payment.GET("/all-student-payments/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudentPayment)
-			payment.GET("/all-student-payments/chart/:from/:to", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPaymentsStudentChart)
-			payment.GET("/get-all-debts/:page/:size", middleware.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDebtsInformation)
-			company := payment.Group("/company")
-			{
-				company.POST("/add-pay", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.CompanyPayAdd)
-				company.DELETE("/cancel-pay/:id", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.CancelPay)
-				company.GET("/get-all-pay/:id", middleware.AuthMiddleware([]string{"SUPER_CEO"}, userClient), handlers.GetAllPay)
-			}
+			payment.POST("/student/add", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentAdd)
+			payment.POST("/student/return", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentReturn)
+			payment.PATCH("/student/update", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.PaymentUpdate)
+			payment.GET("/student/get-monthly-status/:studentId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetMonthlyStatusPayment)
+			payment.GET("/get-all-payments/:studentId/:month", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
+			payment.GET("/payment-take-off/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllTakeOffPayment)
+			payment.GET("/payment-take-off/chart/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetPaymentTakeOffChart)
+			payment.GET("/all-student-payments/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudentPayment)
+			payment.GET("/all-student-payments/chart/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPaymentsStudentChart)
+			payment.GET("/get-all-debts/:page/:size", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDebtsInformation)
 		}
 		salary := finance.Group("/salary")
 		{
-			salary.GET("/teacher-all", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.GetSalaryAllTeacher)
-			salary.POST("/teacher-add", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.AddSalaryTeacher)
-			salary.DELETE("/delete/:teacherID", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.DeleteTeacherSalary)
-			salary.GET("/calculate/:from/:to", middleware.AuthMiddleware([]string{"CEO"}, userClient), handlers.CalculateSalary)
+			salary.GET("/teacher-all", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.GetSalaryAllTeacher)
+			salary.POST("/teacher-add", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.AddSalaryTeacher)
+			salary.DELETE("/delete/:teacherID", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.DeleteTeacherSalary)
+			salary.GET("/calculate/:from/:to", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.CalculateSalary)
 		}
 	}
 }
