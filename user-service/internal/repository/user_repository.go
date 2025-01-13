@@ -195,7 +195,7 @@ func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserBy
        gender,
        is_deleted,
        created_at,
-       company_id
+       coalesce(company_id ,0)
        FROM users where phone_number=$1`, phoneNumber).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
 	if err != nil {
 		return nil, "", err
@@ -203,7 +203,7 @@ func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserBy
 	return &res, password, nil
 }
 func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, error) {
-	query := `SELECT id, phone_number, role, full_name, birth_date, gender, is_deleted, created_at , company_id
+	query := `SELECT id, phone_number, role, full_name, birth_date, gender, is_deleted, created_at
               FROM users WHERE is_deleted = $1`
 	rows, err := r.db.Query(query, isArchived)
 	if err != nil {
@@ -213,7 +213,7 @@ func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, 
 	var response pb.GetAllStuffResponse
 	for rows.Next() {
 		var user pb.GetUserByIdResponse
-		err = rows.Scan(&user.Id, &user.PhoneNumber, &user.Role, &user.Name, &user.BirthDate, &user.Gender, &user.IsDeleted, &user.CreatedAt, &user.CompanyId)
+		err = rows.Scan(&user.Id, &user.PhoneNumber, &user.Role, &user.Name, &user.BirthDate, &user.Gender, &user.IsDeleted, &user.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
