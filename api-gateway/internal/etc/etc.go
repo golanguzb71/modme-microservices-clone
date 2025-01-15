@@ -48,10 +48,10 @@ func NewTimoutContext(ctx context.Context) (context.Context, context.CancelFunc)
 		fmt.Println("companyid topildi")
 		if ctx.Value(key) != nil {
 			fmt.Println("ctx.Value nil emas ekan")
-			val, ok := ctx.Value(key).(string)
+			val, ok := ctx.Value(key).(int32)
 			if ok {
 				fmt.Println("ctx value ")
-				md.Set(key, val)
+				md.Set(key, string(val))
 			}
 		}
 	}
