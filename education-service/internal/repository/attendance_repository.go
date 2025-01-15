@@ -63,7 +63,7 @@ func (r *AttendanceRepository) ensureFinanceClient() error {
 func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.FinanceClient) *AttendanceRepository {
 	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
 }
-func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+func (r *AttendanceRepository) CreateAttendance(companyId, groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
 	if err := r.ensureFinanceClient(); err != nil {
 		return fmt.Errorf("error while ensuring finance client %v", err)
 	}
@@ -87,11 +87,11 @@ func (r *AttendanceRepository) CreateAttendance(groupId string, studentId string
 		}
 	}
 	query := `
-     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role)
-        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11)
+     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role , company_id)
+        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11 , $12)
         ON CONFLICT DO NOTHING
     `
-	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole)
+	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole, companyId)
 	if err != nil {
 		return fmt.Errorf("error while creating attendance %v", err)
 	}
@@ -122,7 +122,7 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	// writing teacher finance remove
 	return nil
 }
-func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool, actionRole, actionId string) (*pb.GetAttendanceResponse, error) {
+func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(companyId string, ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool, actionRole, actionId string) (*pb.GetAttendanceResponse, error) {
 	if !utils.CheckGroupAndTeacher(r.db, groupId, actionRole, actionId) {
 		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
 	}

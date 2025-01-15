@@ -3,9 +3,12 @@ package service
 import (
 	"context"
 	"education-service/internal/repository"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"time"
 )
 
@@ -20,6 +23,10 @@ func NewAttendanceService(repo *repository.AttendanceRepository) *AttendanceServ
 	}
 }
 func (s *AttendanceService) GetAttendance(ctx context.Context, req *pb.GetAttendanceRequest) (*pb.GetAttendanceResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	if req.GroupId == "" {
 		return nil, errors.New("group ID is required")
 	}
@@ -34,9 +41,13 @@ func (s *AttendanceService) GetAttendance(ctx context.Context, req *pb.GetAttend
 	if tillDate.Before(fromDate) {
 		return nil, errors.New("'till' date must be after 'from' date")
 	}
-	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(ctx, req.GroupId, fromDate, tillDate, req.WithOutdated, req.ActionRole, req.ActionId)
+	return s.attendanceRepo.GetAttendanceByGroupAndDateRange(companyId, ctx, req.GroupId, fromDate, tillDate, req.WithOutdated, req.ActionRole, req.ActionId)
 }
 func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttendanceRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	if req.GroupId == "" || req.StudentId == "" || req.TeacherId == "" {
 		return nil, errors.New("group ID, student ID, and teacher ID are required")
 	}
@@ -52,7 +63,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 				Message: "Attendance successfully deleted",
 			}, nil
 		} else {
-			err := s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+			err := s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 			if err != nil {
 				return nil, err
 			}
@@ -86,7 +97,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 					Message: "Attendance successfully deleted",
 				}, nil
 			} else {
-				err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+				err = s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 				if err != nil {
 					return nil, err
 				}
@@ -116,7 +127,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 			Message: "Attendance successfully deleted",
 		}, nil
 	} else {
-		err = s.attendanceRepo.CreateAttendance(req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+		err = s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 		if err != nil {
 			return nil, err
 		}
@@ -127,6 +138,11 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 	}
 }
 func (s *AttendanceService) CalculateTeacherSalaryByAttendance(ctx context.Context, req *pb.CalculateTeacherSalaryRequest) (*pb.CalculateTeacherSalaryResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+
 	var response []*pb.AbsCalculateSalary
 	groups := s.attendanceRepo.GetAllGroupsByTeacherId(req.TeacherId, req.From, req.To)
 	for _, group := range groups {
