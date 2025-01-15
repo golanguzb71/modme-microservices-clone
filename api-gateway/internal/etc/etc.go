@@ -49,9 +49,9 @@ func NewTimoutContext(ctx context.Context) (context.Context, context.CancelFunc)
 		if ctx.Value(key) != nil {
 			fmt.Println("ctx.Value nil emas ekan")
 			val, ok := ctx.Value(key).(int32)
+			fmt.Println(val)
 			if ok {
-				fmt.Println("ctx value ", string(val))
-				md.Set(key, string(val))
+				md.Set(key, "1")
 			}
 		}
 	}
