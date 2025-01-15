@@ -416,7 +416,7 @@ func (r *StudentRepository) GetHistoryByStudentId(companyId string, studentId st
                             WHERE student_id = $1 and company_id=$2
                             ORDER BY created_at DESC`
 
-	rows, err := r.db.Query(studentHistoryQuery, studentId)
+	rows, err := r.db.Query(studentHistoryQuery, studentId, companyId)
 	if err != nil {
 		return nil, err
 	}
