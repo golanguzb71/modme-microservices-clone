@@ -36,6 +36,7 @@ func RecoveryInterceptor(
 	}()
 	return handler(ctx, req)
 }
+
 func GetCompanyId(ctx context.Context) string {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
