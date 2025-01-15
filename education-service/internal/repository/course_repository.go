@@ -14,36 +14,36 @@ func NewCourseRepository(db *sql.DB) *CourseRepository {
 	return &CourseRepository{db: db}
 }
 
-func (r *CourseRepository) CreateCourse(title, description string, durationLesson, courseDuration int32, price float64) error {
-	query := "INSERT INTO courses (title, duration_lesson, course_duration, price, description) VALUES ($1 , $2 , $3 , $4 , $5)"
-	_, err := r.db.Exec(query, title, durationLesson, courseDuration, price, description)
+func (r *CourseRepository) CreateCourse(companyId, title, description string, durationLesson, courseDuration int32, price float64) error {
+	query := "INSERT INTO courses (title, duration_lesson, course_duration, price, description , company_id) VALUES ($1 , $2 , $3 , $4 , $5 , $6)"
+	_, err := r.db.Exec(query, title, durationLesson, courseDuration, price, description, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to create course: %w", err)
 	}
 	return nil
 }
 
-func (r *CourseRepository) UpdateCourse(title, description, id string, durationLesson, courseDuration int32, price float64) error {
-	query := "UPDATE courses SET title=$1, duration_lesson=$2, course_duration=$3, price=$4, description=$5  WHERE id = $6"
-	_, err := r.db.Exec(query, title, durationLesson, courseDuration, price, description, id)
+func (r *CourseRepository) UpdateCourse(companyId, title, description, id string, durationLesson, courseDuration int32, price float64) error {
+	query := "UPDATE courses SET title=$1, duration_lesson=$2, course_duration=$3, price=$4, description=$5  WHERE id = $6 and company_id=$7"
+	_, err := r.db.Exec(query, title, durationLesson, courseDuration, price, description, id, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to update course: %w", err)
 	}
 	return nil
 }
 
-func (r *CourseRepository) DeleteCourse(id string) error {
-	query := "DELETE FROM courses WHERE id = $1"
-	_, err := r.db.Exec(query, id)
+func (r *CourseRepository) DeleteCourse(companyId, id string) error {
+	query := "DELETE FROM courses WHERE id = $1 and company_id=$2"
+	_, err := r.db.Exec(query, id, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to delete course: %w", err)
 	}
 	return nil
 }
 
-func (r *CourseRepository) GetCourse() (*pb.GetUpdateCourseAbs, error) {
-	query := "SELECT id, title, duration_lesson, course_duration, price, description FROM courses"
-	rows, err := r.db.Query(query)
+func (r *CourseRepository) GetCourse(companyId string) (*pb.GetUpdateCourseAbs, error) {
+	query := "SELECT id, title, duration_lesson, course_duration, price, description FROM courses where company_id=$1"
+	rows, err := r.db.Query(query, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -62,10 +62,10 @@ func (r *CourseRepository) GetCourse() (*pb.GetUpdateCourseAbs, error) {
 	return &result, nil
 }
 
-func (r *CourseRepository) GetCourseById(id string) (*pb.GetCourseByIdResponse, error) {
-	query := "SELECT id, title, duration_lesson, course_duration, price, description FROM courses WHERE id = $1"
+func (r *CourseRepository) GetCourseById(companyId, id string) (*pb.GetCourseByIdResponse, error) {
+	query := "SELECT id, title, duration_lesson, course_duration, price, description FROM courses WHERE id = $1 and company_id=$2"
 	var response pb.GetCourseByIdResponse
-	err := r.db.QueryRow(query, id).Scan(&response.Id, &response.Name, &response.LessonDuration, &response.CourseDuration, &response.Price, &response.Description)
+	err := r.db.QueryRow(query, id, companyId).Scan(&response.Id, &response.Name, &response.LessonDuration, &response.CourseDuration, &response.Price, &response.Description)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,10 @@ package service
 import (
 	"context"
 	"education-service/internal/repository"
+	"education-service/internal/utils"
 	"education-service/proto/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -17,7 +20,11 @@ func NewCourseService(repo *repository.CourseRepository) *CourseService {
 }
 
 func (s *CourseService) CreateCourse(ctx context.Context, req *pb.CreateCourseRequest) (*pb.AbsResponse, error) {
-	err := s.repo.CreateCourse(req.Name, req.Description, req.LessonDuration, req.CourseDuration, req.Price)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.CreateCourse(companyId, req.Name, req.Description, req.LessonDuration, req.CourseDuration, req.Price)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +32,11 @@ func (s *CourseService) CreateCourse(ctx context.Context, req *pb.CreateCourseRe
 }
 
 func (s *CourseService) UpdateCourse(ctx context.Context, req *pb.AbsCourse) (*pb.AbsResponse, error) {
-	err := s.repo.UpdateCourse(req.Name, req.Description, req.Id, req.LessonDuration, req.CourseDuration, req.Price)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.UpdateCourse(companyId, req.Name, req.Description, req.Id, req.LessonDuration, req.CourseDuration, req.Price)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +44,11 @@ func (s *CourseService) UpdateCourse(ctx context.Context, req *pb.AbsCourse) (*p
 }
 
 func (s *CourseService) DeleteCourse(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
-	err := s.repo.DeleteCourse(req.Id)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.DeleteCourse(companyId, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +56,17 @@ func (s *CourseService) DeleteCourse(ctx context.Context, req *pb.DeleteAbsReque
 }
 
 func (s *CourseService) GetCourses(ctx context.Context, req *emptypb.Empty) (*pb.GetUpdateCourseAbs, error) {
-	return s.repo.GetCourse()
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return s.repo.GetCourse(companyId)
 }
 
 func (s *CourseService) GetCourseById(ctx context.Context, req *pb.GetCourseByIdRequest) (*pb.GetCourseByIdResponse, error) {
-	return s.repo.GetCourseById(req.Id)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return s.repo.GetCourseById(companyId, req.Id)
 }
