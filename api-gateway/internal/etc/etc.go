@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	"google.golang.org/grpc/metadata"
 	"net/http"
 	"strings"
@@ -36,8 +37,7 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 		}
 		fmt.Println(user)
 		ctx.Set("user", user)
-		ctx.Set("company_id", user.CompanyId)
-		fmt.Println(user.CompanyId)
+		ctx.Set("company_id", cast.ToString(user.CompanyId))
 		ctx.Next()
 	}
 }
@@ -48,10 +48,10 @@ func NewTimoutContext(ctx context.Context) (context.Context, context.CancelFunc)
 		fmt.Println("companyid topildi")
 		if ctx.Value(key) != nil {
 			fmt.Println("ctx.Value nil emas ekan")
-			val, ok := ctx.Value(key).(int32)
-			fmt.Println(val)
+			val, ok := ctx.Value(key).(string)
 			if ok {
-				md.Set(key, "1")
+				fmt.Printf("here the value %v", val)
+				md.Set(key, val)
 			}
 		}
 	}
