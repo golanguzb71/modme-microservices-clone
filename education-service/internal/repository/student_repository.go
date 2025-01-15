@@ -54,7 +54,7 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 
 	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1 and company_id=$2`
 	var totalCount int32
-	err = r.db.QueryRow(countQuery, condition).Scan(&totalCount)
+	err = r.db.QueryRow(countQuery, condition, companyId).Scan(&totalCount)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get total count: %v", err)
 	}
