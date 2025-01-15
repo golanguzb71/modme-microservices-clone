@@ -35,7 +35,6 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 			ctx.Abort()
 			return
 		}
-		fmt.Println(user)
 		ctx.Set("user", user)
 		ctx.Set("company_id", cast.ToString(user.CompanyId))
 		ctx.Next()
