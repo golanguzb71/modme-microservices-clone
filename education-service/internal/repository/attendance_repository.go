@@ -433,7 +433,7 @@ func (r *AttendanceRepository) lessonCounter(from, to, groupId string) int32 {
 	return lessonCount
 }
 
-func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(teacherId string, groupId string, from string, to string) (map[string][]Attendance, error) {
+func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(companyId, teacherId string, groupId string, from string, to string) (map[string][]Attendance, error) {
 	query := `
 		SELECT 
 			is_discounted,
@@ -458,9 +458,10 @@ func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(teacherId string, 
 			attend_date BETWEEN $3 AND $4
 			AND
 		    creator_role='TEACHER'
+			AND a.company_id=$5
 	`
 
-	rows, err := r.db.Query(query, teacherId, groupId, from, to)
+	rows, err := r.db.Query(query, teacherId, groupId, from, to, companyId)
 	if err != nil {
 		return nil, err
 	}

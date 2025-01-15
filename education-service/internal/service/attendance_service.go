@@ -151,7 +151,7 @@ func (s *AttendanceService) CalculateTeacherSalaryByAttendance(ctx context.Conte
 		absCalculate.GroupName = group.Name
 		absCalculate.CommonLessonCountInPeriod = group.LessonCountOnPeriod
 
-		attendancesMap, err := s.attendanceRepo.GetAttendanceByTeacherAndGroup(req.TeacherId, group.Id, req.From, req.To)
+		attendancesMap, err := s.attendanceRepo.GetAttendanceByTeacherAndGroup(companyId, req.TeacherId, group.Id, req.From, req.To)
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("error while getting attendance by teacher and group on calculating %v", err.Error()))
 		}
