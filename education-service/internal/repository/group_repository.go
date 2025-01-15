@@ -22,36 +22,36 @@ type GroupRepository struct {
 func NewGroupRepository(db *sql.DB, userClient *clients.UserClient) *GroupRepository {
 	return &GroupRepository{db: db, userClient: userClient}
 }
-func (r *GroupRepository) CreateGroup(name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) (string, error) {
+func (r *GroupRepository) CreateGroup(companyId string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) (string, error) {
 	query := `
-		INSERT INTO groups(course_id, teacher_id, room_id, date_type, days, start_time, start_date, end_date, is_archived, name) 
+		INSERT INTO groups(course_id, teacher_id, room_id, date_type, days, start_time, start_date, end_date, is_archived, name, company_id) 
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
 		RETURNING id`
 
 	var groupId string
-	err := r.db.QueryRow(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, false, name).Scan(&groupId)
+	err := r.db.QueryRow(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, false, name, companyId).Scan(&groupId)
 	if err != nil {
 		return "", err
 	}
 	return groupId, nil
 }
-func (r *GroupRepository) UpdateGroup(id string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
-	query := `UPDATE groups SET course_id=$1, teacher_id=$2, room_id=$3, date_type=$4, days=$5, start_time=$6, start_date=$7, end_date=$8, name=$9 WHERE id=$10`
-	_, err := r.db.Exec(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, name, id)
+func (r *GroupRepository) UpdateGroup(companyId string, id string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) error {
+	query := `UPDATE groups SET course_id=$1, teacher_id=$2, room_id=$3, date_type=$4, days=$5, start_time=$6, start_date=$7, end_date=$8, name=$9 WHERE id=$10 and company_id=$11`
+	_, err := r.db.Exec(query, courseId, teacherId, roomId, dateType, pq.Array(days), lessonStartTime, groupStartDate, groupEndDate, name, id, companyId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (r *GroupRepository) DeleteGroup(id string) error {
-	query := `UPDATE groups SET is_archived = NOT is_archived WHERE id = $1`
-	_, err := r.db.Exec(query, id)
+func (r *GroupRepository) DeleteGroup(companyId string, id string) error {
+	query := `UPDATE groups SET is_archived = NOT is_archived WHERE id = $1 and company_id=$2`
+	_, err := r.db.Exec(query, id, companyId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (r *GroupRepository) GetGroup(page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
+func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
        g.teacher_id,
@@ -63,11 +63,11 @@ FROM groups g
 LEFT JOIN courses c ON g.course_id = c.id
 LEFT JOIN rooms r ON g.room_id = r.id
 LEFT JOIN group_students gs ON g.id = gs.group_id
-WHERE g.is_archived = $1
+WHERE g.is_archived = $1 and g.company_id=$4
 GROUP BY g.id, c.title, r.title, r.capacity
 LIMIT $2 OFFSET $3;`
 
-	rows, err := r.db.Query(query, isArchive, size, offset)
+	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
 		return nil, fmt.Errorf("error querying database: %w", err)
@@ -118,7 +118,7 @@ LIMIT $2 OFFSET $3;`
 
 	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
 }
-func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
+func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
 	if !utils.CheckGroupAndTeacher(r.db, id, actionRole, actionId) {
 		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
 	}
@@ -130,7 +130,7 @@ func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.Get
               LEFT JOIN courses c ON g.course_id = c.id
               LEFT JOIN rooms r ON g.room_id = r.id
               LEFT JOIN group_students gs ON g.id = gs.group_id
-              WHERE g.id = $1
+              WHERE g.id = $1 and g.company_id=$2
               GROUP BY g.id, c.title, r.title, r.capacity , c.course_duration , c.duration_lesson , c.description , c.price`
 
 	var group pb.GetGroupAbsResponse
@@ -138,7 +138,7 @@ func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.Get
 	var course pb.AbsCourse
 	var room pb.AbsRoom
 
-	err := r.db.QueryRow(query, id).Scan(
+	err := r.db.QueryRow(query, id, companyId).Scan(
 		&group.Id, &course.Id, &course.Name, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
 		&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType, &course.CourseDuration, &course.LessonDuration, &course.Description, &course.Price, &group.TeacherId,
 	)
@@ -155,7 +155,7 @@ func (r *GroupRepository) GetGroupById(id, actionRole, actionId string) (*pb.Get
 	group.StudentCount = studentCount.Int32
 	return &group, nil
 }
-func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCourseResponse, error) {
+func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) (*pb.GetGroupsByCourseResponse, error) {
 	query := `
         SELECT 
             g.teacher_id,
@@ -166,10 +166,10 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
             g.start_time,
             g.name
         FROM groups g
-        WHERE g.course_id = $1
+        WHERE g.course_id = $1 and company_id=$2
     `
 
-	rows, err := r.db.Query(query, courseId)
+	rows, err := r.db.Query(query, courseId, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func (r *GroupRepository) GetGroupByCourseId(courseId string) (*pb.GetGroupsByCo
 
 	return &response, nil
 }
-func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (*pb.GetGroupsByTeacherResponse, error) {
+func (r *GroupRepository) GetGroupByTeacherId(companyId string, teacherId string, archived bool) (*pb.GetGroupsByTeacherResponse, error) {
 	query := `
 		SELECT 
 		    g.id,
@@ -235,9 +235,9 @@ func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (
 		FROM groups g
 		INNER JOIN courses c ON g.course_id = c.id
 		LEFT JOIN rooms r ON g.room_id = r.id
-		WHERE g.teacher_id = $1 AND g.is_archived = $2
+		WHERE g.teacher_id = $1 AND g.is_archived = $2 and g.company_id=$3
 	`
-	rows, err := r.db.Query(query, teacherId, archived)
+	rows, err := r.db.Query(query, teacherId, archived, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -250,7 +250,7 @@ func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (
 			return nil, err
 		}
 		group.ActiveStudentCount = activeStudentCount
-		students, err := r.GetStudentsByGroupId(group.Id)
+		students, err := r.GetStudentsByGroupId(companyId, group.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -263,14 +263,14 @@ func (r *GroupRepository) GetGroupByTeacherId(teacherId string, archived bool) (
 
 	return &response, nil
 }
-func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent, error) {
+func (r *GroupRepository) GetStudentsByGroupId(companyId string, groupId string) ([]*pb.AbsStudent, error) {
 	query := `
 		SELECT s.id, s.name, s.phone 
 		FROM students s
 		INNER JOIN group_students gs ON gs.student_id = s.id
-		WHERE gs.group_id = $1 AND gs.condition = 'ACTIVE'
+		WHERE gs.group_id = $1 AND gs.condition = 'ACTIVE' and gs.company_id=$2
 	`
-	rows, err := r.db.Query(query, groupId)
+	rows, err := r.db.Query(query, groupId, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -290,37 +290,37 @@ func (r *GroupRepository) GetStudentsByGroupId(groupId string) ([]*pb.AbsStudent
 
 	return students, nil
 }
-func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformationEducationResponse, error) {
+func (r *GroupRepository) GetCommonInformationEducation(companyId string) (*pb.GetCommonInformationEducationResponse, error) {
 	// Initialize the response to avoid nil pointer dereference
 	response := new(pb.GetCommonInformationEducationResponse)
 
 	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount, eleminatedInTrial int32
 
 	// Query to get leaveGroupCount
-	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE'`).Scan(&leaveGroupCount)
+	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE' and company_id=$1`, companyId).Scan(&leaveGroupCount)
 	if err != nil {
 		leaveGroupCount = 0
 	}
 
 	// Query to get activeGroupCount
-	err = r.db.QueryRow(`SELECT COUNT(id) FROM groups where is_archived=false`).Scan(&activeGroupCount)
+	err = r.db.QueryRow(`SELECT COUNT(id) FROM groups where is_archived=false and company_id=$2`, companyId).Scan(&activeGroupCount)
 	if err != nil {
 		activeGroupCount = 0
 	}
 
 	// Query to get activeStudentCount
-	err = r.db.QueryRow(`SELECT count(id) FROM students where condition='ACTIVE'`).Scan(&activeStudentCount)
+	err = r.db.QueryRow(`SELECT count(id) FROM students where condition='ACTIVE' and company_id=$3`, companyId).Scan(&activeStudentCount)
 	if err != nil {
 		activeStudentCount = 0
 	}
 
 	// Query to get debtorsCount
-	err = r.db.QueryRow(`SELECT COUNT(id) FROM students where balance < 0`).Scan(&debtorsCount)
+	err = r.db.QueryRow(`SELECT COUNT(id) FROM students where balance < 0 and company_id=$4`, companyId).Scan(&debtorsCount)
 	if err != nil {
 		debtorsCount = 0
 	}
 
-	err = r.db.QueryRow(`SELECT count(id) FROM group_student_condition_history where is_eliminated_trial`).Scan(&eleminatedInTrial)
+	err = r.db.QueryRow(`SELECT count(id) FROM group_student_condition_history where is_eliminated_trial and company_id=$5`, companyId).Scan(&eleminatedInTrial)
 	if err != nil {
 		eleminatedInTrial = 0
 	}
@@ -332,8 +332,7 @@ func (r *GroupRepository) GetCommonInformationEducation() (*pb.GetCommonInformat
 	response.EleminatedInTrial = eleminatedInTrial
 	return response, nil
 }
-
-func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsByStudentResponse, error) {
+func (r *GroupRepository) GetGroupsByStudentId(companyId string, studentId string) (*pb.GetGroupsByStudentResponse, error) {
 	var (
 		comments []*pb.DebtorComment
 		groups   []*pb.DebtorGroup
@@ -342,9 +341,9 @@ func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsB
 	commentQuery := `
 		SELECT id, comment
 		FROM student_note 
-		WHERE student_id = $1
+		WHERE student_id = $1 and company_id=$2
 	`
-	commentRows, err := r.db.Query(commentQuery, studentId)
+	commentRows, err := r.db.Query(commentQuery, studentId, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch comments: %v", err)
 	}
@@ -362,9 +361,9 @@ func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsB
 		SELECT g.id, g.name AS course_title
 		FROM group_students gs
 		JOIN groups g ON gs.group_id = g.id
-		WHERE gs.student_id = $1
+		WHERE gs.student_id = $1 and gs.company_id=$2
 	`
-	groupRows, err := r.db.Query(groupQuery, studentId)
+	groupRows, err := r.db.Query(groupQuery, studentId, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch groups: %v", err)
 	}
@@ -383,19 +382,18 @@ func (r *GroupRepository) GetGroupsByStudentId(studentId string) (*pb.GetGroupsB
 		Groups:   groups,
 	}, nil
 }
-
-func (r *GroupRepository) GetLeftAfterTrial(from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
+func (r *GroupRepository) GetLeftAfterTrial(companyId string, from string, to string, page string, size string) (*pb.GetLeftAfterTrialPeriodResponse, error) {
 	countQuery := `
 		SELECT COUNT(*)
 		FROM group_student_condition_history gsch
 		JOIN students ss ON gsch.student_id = ss.id
 		JOIN groups g ON gsch.group_id = g.id
-		WHERE gsch.is_eliminated_trial = TRUE
+		WHERE gsch.is_eliminated_trial = TRUE and gsch.company_id=$3
 		AND gsch.specific_date BETWEEN $1 AND $2;
 	`
 
 	var totalItemCount int
-	err := r.db.QueryRow(countQuery, from, to).Scan(&totalItemCount)
+	err := r.db.QueryRow(countQuery, from, to, companyId).Scan(&totalItemCount)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get total item count: %v", err)
 	}
@@ -414,7 +412,7 @@ func (r *GroupRepository) GetLeftAfterTrial(from string, to string, page string,
 		FROM group_student_condition_history gsch
 		JOIN students ss ON gsch.student_id = ss.id
 		JOIN groups g ON gsch.group_id = g.id
-		WHERE gsch.is_eliminated_trial = TRUE
+		WHERE gsch.is_eliminated_trial = TRUE and gsch.company_id=$5
 		AND gsch.specific_date BETWEEN $1 AND $2
 		LIMIT $3 OFFSET $4;
 	`
@@ -430,7 +428,7 @@ func (r *GroupRepository) GetLeftAfterTrial(from string, to string, page string,
 
 	offset := (pageInt - 1) * sizeInt
 
-	rows, err := r.db.Query(query, from, to, sizeInt, offset)
+	rows, err := r.db.Query(query, from, to, sizeInt, offset, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query group_student_condition_history: %v", err)
 	}
