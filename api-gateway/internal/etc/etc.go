@@ -34,9 +34,10 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 			ctx.Abort()
 			return
 		}
-
+		fmt.Println(user)
 		ctx.Set("user", user)
 		ctx.Set("company_id", user.CompanyId)
+		fmt.Println(user.CompanyId)
 		ctx.Next()
 	}
 }
@@ -44,9 +45,12 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 func NewTimoutContext(ctx context.Context) (context.Context, context.CancelFunc) {
 	md := metadata.Pairs()
 	for _, key := range []string{"company_id"} {
+		fmt.Println("companyid topildi")
 		if ctx.Value(key) != nil {
+			fmt.Println("ctx.Value nil emas ekan")
 			val, ok := ctx.Value(key).(string)
 			if ok {
+				fmt.Println("ctx value ")
 				md.Set(key, val)
 			}
 		}

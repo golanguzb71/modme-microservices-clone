@@ -24,7 +24,6 @@ func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStuden
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
 	return s.repo.GetAllStudent(companyId, req.Condition, req.Page, req.Size)
-
 }
 
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
