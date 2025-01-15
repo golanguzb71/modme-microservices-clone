@@ -41,7 +41,7 @@ func (r *StudentRepository) ensureFinanceClient() error {
 	}
 	return nil
 }
-func (r *StudentRepository) GetAllStudent(condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
+func (r *StudentRepository) GetAllStudent(companyId string, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil || pageInt < 1 {
 		return nil, fmt.Errorf("invalid page value: %v", err)
@@ -52,7 +52,7 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 	}
 	offset := (pageInt - 1) * sizeInt
 
-	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1`
+	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1 and company_id=$2`
 	var totalCount int32
 	err = r.db.QueryRow(countQuery, condition).Scan(&totalCount)
 	if err != nil {
@@ -65,10 +65,10 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
     SELECT id, name, gender, date_of_birth, phone, address, passport_id, additional_contact, 
            balance, condition, telegram_username, created_at
     FROM students
-    WHERE condition = $1
+    WHERE condition = $1 and company_id=$4
     ORDER BY created_at desc 
     LIMIT $2 OFFSET $3`
-	studentRows, err := r.db.Query(studentQuery, condition, sizeInt, offset)
+	studentRows, err := r.db.Query(studentQuery, condition, sizeInt, offset, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute student query: %v", err)
 	}
@@ -108,10 +108,10 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
     JOIN group_students gs ON s.id = gs.student_id
     JOIN groups g ON gs.group_id = g.id and g.is_archived='false'
     JOIN courses c ON g.course_id = c.id
-    WHERE s.id = ANY($1)
+    WHERE s.id = ANY($1) and c.company_id=$2
     ORDER BY s.id, g.id`
 
-	groupRows, err := r.db.Query(groupQuery, pq.Array(studentIDs))
+	groupRows, err := r.db.Query(groupQuery, pq.Array(studentIDs), companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute group query: %v", err)
 	}
@@ -153,36 +153,36 @@ func (r *StudentRepository) GetAllStudent(condition string, page string, size st
 		TotalCount: totalPages,
 	}, nil
 }
-func (r *StudentRepository) CreateStudent(createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
+func (r *StudentRepository) CreateStudent(companyId string, createdBy string, phoneNumber string, name string, groupId string, address string, additionalContact string, dateFrom string, birthDate string, gender bool, passportId string, telegramUsername string) error {
 	studentId := uuid.New()
-	_, err := r.db.Exec(`INSERT INTO students(id, name, phone, date_of_birth, gender, telegram_username, passport_id, additional_contact, address) values ($1, $2,$3,$4,$5,$6,$7,$8,$9)`, studentId, name, phoneNumber, birthDate, gender, telegramUsername, passportId, additionalContact, address)
+	_, err := r.db.Exec(`INSERT INTO students(id, name, phone, date_of_birth, gender, telegram_username, passport_id, additional_contact, address , company_id) values ($1, $2,$3,$4,$5,$6,$7,$8,$9 , $10)`, studentId, name, phoneNumber, birthDate, gender, telegramUsername, passportId, additionalContact, address, companyId)
 	if err != nil {
 		return err
 	}
 	if groupId != "" && dateFrom != "" && createdBy != "" {
-		_, err = r.db.Exec(`INSERT INTO group_students(id, group_id, student_id, created_by) values ($1 ,$2 ,$3 ,$4)`, uuid.New(), groupId, studentId, createdBy)
+		_, err = r.db.Exec(`INSERT INTO group_students(id, group_id, student_id, created_by , company_id) values ($1 ,$2 ,$3 ,$4 , $5)`, uuid.New(), groupId, studentId, createdBy, companyId)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
-func (r *StudentRepository) UpdateStudent(studentId string, number string, name string, address string, additionalContact string, birth string, gender bool, passportId string) error {
-	_, err := r.db.Exec(`UPDATE students SET phone =$1, name=$2, address =$3, additional_contact =$4, date_of_birth =$5, gender =$6, passport_id=$7 where id=$8`, number, name, address, additionalContact, birth, gender, passportId, studentId)
+func (r *StudentRepository) UpdateStudent(companyId string, studentId string, number string, name string, address string, additionalContact string, birth string, gender bool, passportId string) error {
+	_, err := r.db.Exec(`UPDATE students SET phone =$1, name=$2, address =$3, additional_contact =$4, date_of_birth =$5, gender =$6, passport_id=$7 where id=$8 and company_id=$9`, number, name, address, additionalContact, birth, gender, passportId, studentId, companyId)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool, actionById, actionByName string) error {
+func (r *StudentRepository) DeleteStudent(companyId string, studentId string, returnMoney bool, actionById, actionByName string) error {
 	var cond string
-	if err := r.db.QueryRow(`select condition from students where id = $1`, studentId).Scan(&cond); err != nil {
+	if err := r.db.QueryRow(`select condition from students where id = $1 and company_id=$2`, studentId, companyId).Scan(&cond); err != nil {
 		return err
 	}
 
 	if cond == "ACTIVE" {
-		groupsQuery := `SELECT  group_id FROM group_students where condition='ACTIVE' and student_id=$1`
-		rows, err := r.db.Query(groupsQuery, studentId)
+		groupsQuery := `SELECT  group_id FROM group_students where condition='ACTIVE' and student_id=$1 and company_id=$2`
+		rows, err := r.db.Query(groupsQuery, studentId, companyId)
 		if err != nil {
 			return err
 		}
@@ -193,43 +193,42 @@ func (r *StudentRepository) DeleteStudent(studentId string, returnMoney bool, ac
 			if err != nil {
 				return err
 			}
-			_, _ = r.ChangeConditionStudent(studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
+			_, _ = r.ChangeConditionStudent(companyId, studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
 		}
-		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1`, studentId)
+		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1 and company_id=$2`, studentId, companyId)
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err := r.db.Exec(`UPDATE students SET condition='ACTIVE' where id=$1`, studentId)
+		_, err := r.db.Exec(`UPDATE students SET condition='ACTIVE' where id=$1 and company_id=$2`, studentId, companyId)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
-func (r *StudentRepository) AddToGroup(groupId string, studentIds []string, createdDate, createdBy string) error {
+func (r *StudentRepository) AddToGroup(companyId string, groupId string, studentIds []string, createdDate, createdBy string) error {
 	var checker bool
-	query := `INSERT INTO group_students(id, group_id, student_id, condition, last_specific_date, created_by) values ($1 ,$2 ,$3 ,$4 , $5 , $6)`
-	queryForChecking := `SELECT exists(SELECT 1 FROM students where condition = 'ARCHIVED' and id=$1)`
-	queryGroupChecking := `SELECT exists(SELECT 1 FROM groups where id=$1 and is_archived=true)`
-	err := r.db.QueryRow(queryGroupChecking, groupId).Scan(&checker)
+	query := `INSERT INTO group_students(id, group_id, student_id, condition, last_specific_date, created_by , company_id) values ($1 ,$2 ,$3 ,$4 , $5 , $6 , $7)`
+	queryForChecking := `SELECT exists(SELECT 1 FROM students where condition = 'ARCHIVED' and id=$1 and company_id=$2)`
+	queryGroupChecking := `SELECT exists(SELECT 1 FROM groups where id=$1 and is_archived=true and company_id=$2)`
+	err := r.db.QueryRow(queryGroupChecking, groupId, companyId).Scan(&checker)
 	if err != nil || checker {
 		return errors.New(fmt.Sprintf("forbidden (archived group action error) id=%s", groupId))
 	}
 	for _, data := range studentIds {
-		err := r.db.QueryRow(queryForChecking, data).Scan(&checker)
+		err := r.db.QueryRow(queryForChecking, data, companyId).Scan(&checker)
 		if err != nil || checker {
 			return errors.New(fmt.Sprintf("forbidden (archived student action error) id=%s", data))
 		}
-		_, err = r.db.Exec(query, uuid.New(), groupId, data, "FREEZE", createdDate, createdBy)
+		_, err = r.db.Exec(query, uuid.New(), groupId, data, "FREEZE", createdDate, createdBy, companyId)
 		if err != nil {
 			continue
 		}
 	}
 	return nil
 }
-
-func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdResponse, error) {
+func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.GetStudentByIdResponse, error) {
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
 	}
@@ -237,7 +236,7 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 	var result pb.GetStudentByIdResponse
 
 	err := r.db.QueryRow(`SELECT id, name, gender, date_of_birth, phone, balance, created_at , condition , additional_contact
-                          FROM students WHERE id = $1`, id).
+                          FROM students WHERE id = $1 and company_id=$2`, id, companyId).
 		Scan(&result.Id, &result.Name, &result.Gender, &result.DateOfBirth, &result.Phone, &result.Balance, &result.CreatedAt, &result.Condition, &result.AdditionalContact)
 	if err != nil {
 		return nil, err
@@ -251,7 +250,7 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
         JOIN groups g ON g.id = gs.group_id and g.is_archived='false'
         JOIN rooms r ON g.room_id = r.id
         JOIN courses c ON c.id = g.course_id
-        WHERE gs.student_id = $1`, id)
+        WHERE gs.student_id = $1 and c.company_id=$2`, id, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -293,8 +292,8 @@ func (r *StudentRepository) GetStudentById(id string) (*pb.GetStudentByIdRespons
 
 	return &result, nil
 }
-func (r *StudentRepository) GetNoteByStudent(id string) (*pb.GetNotesByStudent, error) {
-	rows, err := r.db.Query(`SELECT id, comment, created_at FROM student_note where student_id=$1`, id)
+func (r *StudentRepository) GetNoteByStudent(companyId string, id string) (*pb.GetNotesByStudent, error) {
+	rows, err := r.db.Query(`SELECT id, comment, created_at FROM student_note where student_id=$1 and company_id=$2`, id, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -310,8 +309,8 @@ func (r *StudentRepository) GetNoteByStudent(id string) (*pb.GetNotesByStudent, 
 	}
 	return &pb.GetNotesByStudent{Notes: notes}, nil
 }
-func (r *StudentRepository) CreateNoteForStudent(note string, studentId string) (*pb.AbsResponse, error) {
-	_, err := r.db.Exec(`INSERT INTO student_note(id , student_id, comment) values ($1,$2,$3)`, uuid.New(), studentId, note)
+func (r *StudentRepository) CreateNoteForStudent(companyId string, note string, studentId string) (*pb.AbsResponse, error) {
+	_, err := r.db.Exec(`INSERT INTO student_note(id , student_id, comment , company_id) values ($1,$2,$3 , $4)`, uuid.New(), studentId, note, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -320,8 +319,8 @@ func (r *StudentRepository) CreateNoteForStudent(note string, studentId string) 
 		Message: "created",
 	}, nil
 }
-func (r *StudentRepository) DeleteStudentNote(id string) (*pb.AbsResponse, error) {
-	_, err := r.db.Exec(`DELETE FROM student_note WHERE id = $1`, id)
+func (r *StudentRepository) DeleteStudentNote(companyId string, id string) (*pb.AbsResponse, error) {
+	_, err := r.db.Exec(`DELETE FROM student_note WHERE id = $1 and company_id=$2`, id, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -330,14 +329,14 @@ func (r *StudentRepository) DeleteStudentNote(id string) (*pb.AbsResponse, error
 		Message: "deleted",
 	}, nil
 }
-func (r *StudentRepository) SearchStudent(value string) (*pb.SearchStudentResponse, error) {
+func (r *StudentRepository) SearchStudent(companyId string, value string) (*pb.SearchStudentResponse, error) {
 	query := `
         SELECT id, name, phone 
         FROM students 
-        WHERE name ILIKE $1 OR phone ILIKE $2;
+        WHERE name ILIKE $1 OR phone ILIKE $2 and company_id=$3;
     `
 
-	rows, err := r.db.Query(query, "%"+value+"%", "%"+value+"%")
+	rows, err := r.db.Query(query, "%"+value+"%", "%"+value+"%", companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -358,13 +357,13 @@ func (r *StudentRepository) SearchStudent(value string) (*pb.SearchStudentRespon
 
 	return &pb.SearchStudentResponse{Students: students}, nil
 }
-func (r *StudentRepository) GetHistoryGroupById(groupId string) (*pb.GetHistoryGroupResponse, error) {
+func (r *StudentRepository) GetHistoryGroupById(companyId string, groupId string) (*pb.GetHistoryGroupResponse, error) {
 	response := &pb.GetHistoryGroupResponse{}
 	groupHistoryQuery := `SELECT id, field, old_value, current_value 
                           FROM group_history 
-                          WHERE group_id = $1 order by created_at desc`
+                          WHERE group_id = $1 and company_id=$2 order by created_at desc`
 
-	rows, err := r.db.Query(groupHistoryQuery, groupId)
+	rows, err := r.db.Query(groupHistoryQuery, groupId, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -383,11 +382,11 @@ func (r *StudentRepository) GetHistoryGroupById(groupId string) (*pb.GetHistoryG
                             JOIN students s ON gs.student_id = s.id   
                             JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
                             JOIN groups g on g.id=gs.group_id
-                            WHERE gs.group_id = $1
+                            WHERE gs.group_id = $1 and g.company_id=$2
                             order by created_at desc
                             `
 
-	rows, err = r.db.Query(studentHistoryQuery, groupId)
+	rows, err = r.db.Query(studentHistoryQuery, groupId, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -410,11 +409,11 @@ func (r *StudentRepository) GetHistoryGroupById(groupId string) (*pb.GetHistoryG
 
 	return response, nil
 }
-func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHistoryStudentResponse, error) {
+func (r *StudentRepository) GetHistoryByStudentId(companyId string, studentId string) (*pb.GetHistoryStudentResponse, error) {
 	response := &pb.GetHistoryStudentResponse{}
 	studentHistoryQuery := `SELECT id, field, old_value, current_value 
                             FROM student_history 
-                            WHERE student_id = $1 
+                            WHERE student_id = $1 and company_id=$2
                             ORDER BY created_at DESC`
 
 	rows, err := r.db.Query(studentHistoryQuery, studentId)
@@ -438,10 +437,10 @@ func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHist
                                JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
                                JOIN groups g ON g.id = gs.group_id
                                JOIN courses c on c.id=g.course_id
-                               WHERE gs.student_id = $1
+                               WHERE gs.student_id = $1 and gs.company_id=$2
                                ORDER BY gh.created_at DESC`
 
-	rows, err = r.db.Query(conditionsHistoryQuery, studentId)
+	rows, err = r.db.Query(conditionsHistoryQuery, studentId, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -473,7 +472,7 @@ func (r *StudentRepository) GetHistoryByStudentId(studentId string) (*pb.GetHist
 
 	return response, nil
 }
-func (r *StudentRepository) TransferLessonDate(groupId string, from string, to string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) TransferLessonDate(companyId string, groupId string, from string, to string) (*pb.AbsResponse, error) {
 	//validDay, err := utils.IsValidLessonDay(r.db, groupId, from)
 	//if err != nil {
 	//	return nil, err
@@ -486,17 +485,17 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 	//	}, nil
 	//}
 	var checker bool
-	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3)`, groupId, from, to).Scan(&checker)
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3 and company_id=$4)`, groupId, from, to, companyId).Scan(&checker)
 	if err != nil {
 		return nil, err
 	}
 	if checker {
-		_, err = r.db.Exec(`DELETE FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3`, groupId, from, to)
+		_, err = r.db.Exec(`DELETE FROM transfer_lesson where group_id=$1 and real_date=$2 and transfer_date=$3 and company_id=$4`, groupId, from, to, companyId)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		_, err = r.db.Exec(`INSERT INTO transfer_lesson(id, group_id, real_date, transfer_date) values ($1, $2, $3, $4)`, uuid.New(), groupId, from, to)
+		_, err = r.db.Exec(`INSERT INTO transfer_lesson(id, group_id, real_date, transfer_date , company_id) values ($1, $2, $3, $4 , $5)`, uuid.New(), groupId, from, to, companyId)
 		if err != nil {
 			return nil, err
 		}
@@ -506,7 +505,7 @@ func (r *StudentRepository) TransferLessonDate(groupId string, from string, to s
 		Message: "accomplished",
 	}, nil
 }
-func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeConditionStudent(companyId string, studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
 	isEliminatedInTrial := false
 
 	if err := r.ensureFinanceClient(); err != nil {
@@ -533,7 +532,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		return nil, fmt.Errorf("invalid tillDate: it must be in the past and valid")
 	}
 
-	if !r.checkArgumentsIsActive(groupId, studentId) {
+	if !r.checkArgumentsIsActive(companyId, groupId, studentId) {
 		return nil, fmt.Errorf("group or student is not active")
 	}
 
@@ -546,7 +545,7 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	err = tx.QueryRow(`
         SELECT condition, id
         FROM group_students
-        WHERE student_id = $1 AND group_id = $2`, studentId, groupId).
+        WHERE student_id = $1 AND group_id = $2 and company_id=$3`, studentId, groupId, companyId).
 		Scan(&oldCondition, &groupStudentId)
 	if err != nil {
 		tx.Rollback()
@@ -562,9 +561,9 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
         UPDATE group_students
         SET condition = $1,
             last_specific_date = COALESCE($2, NOW())
-        WHERE id=$3
+        WHERE id=$3 and company_id=$4
     `
-	_, err = tx.Exec(updateStmt, status, tillDateParsed, groupStudentId)
+	_, err = tx.Exec(updateStmt, status, tillDateParsed, groupStudentId, companyId)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
@@ -576,8 +575,8 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
             SELECT EXISTS(
                 SELECT 1
                 FROM group_student_condition_history
-                WHERE student_id = $1 AND group_id = $2 AND group_student_id = $3
-            )`, studentId, groupId, groupStudentId).
+                WHERE student_id = $1 AND group_id = $2 AND group_student_id = $3 and company_id=$3
+            )`, studentId, groupId, groupStudentId, companyId).
 			Scan(&exists)
 		if err != nil {
 			tx.Rollback()
@@ -587,10 +586,10 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 	}
 
 	insertHistoryStmt := `
-        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9)
+        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial , company_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9 , $10)
     `
-	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEliminatedInTrial)
+	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEliminatedInTrial, companyId)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)
@@ -643,21 +642,20 @@ func (r *StudentRepository) ChangeConditionStudent(studentId string, groupId str
 		Status:  200,
 	}, nil
 }
-
-func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bool) (*pb.GetStudentsByGroupIdResponse, error) {
+func (r *StudentRepository) GetStudentsByGroupId(companyId string, groupId string, withOutdated bool) (*pb.GetStudentsByGroupIdResponse, error) {
 	var students []*pb.AbsStudent
 	query := `
         SELECT s.id, s.name, s.phone
         FROM students s
         JOIN group_students gs ON s.id = gs.student_id
-        WHERE gs.group_id = $1
+        WHERE gs.group_id = $1 and s.company_id=$3
     `
 
 	if !withOutdated {
 		query += " AND gs.condition = 'ACTIVE'"
 	}
 
-	rows, err := r.db.Query(query, groupId)
+	rows, err := r.db.Query(query, groupId, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
@@ -677,7 +675,7 @@ func (r *StudentRepository) GetStudentsByGroupId(groupId string, withOutdated bo
 
 	return &pb.GetStudentsByGroupIdResponse{Students: students}, nil
 }
-func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeUserBalanceHistory(companyId string, comment string, groupId string, createdById string, createdByName string, givenDate string, amount string, paymentType string, studentId string) (*pb.AbsResponse, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to begin transaction: %v", err)
@@ -693,14 +691,14 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 	var currentBalance float64
 	var groupName string
 
-	err = tx.QueryRow("SELECT balance FROM students WHERE id = $1", studentId).Scan(&currentBalance)
+	err = tx.QueryRow("SELECT balance FROM students WHERE id = $1 and company_id=$2", studentId, companyId).Scan(&currentBalance)
 	if err != nil {
 		tx.Rollback()
 		return nil, status.Errorf(codes.Internal, "Failed to get current balance: %v", err)
 	}
 
 	if paymentType != "TAKE_OFF" && groupId != "" {
-		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1", groupId).Scan(&groupName)
+		err = tx.QueryRow("SELECT name FROM groups WHERE id = $1 and company_id=$2", groupId, companyId).Scan(&groupName)
 		if errors.Is(err, sql.ErrNoRows) {
 			groupName = ""
 		} else if err != nil {
@@ -725,7 +723,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		tx.Rollback()
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid payment type: %s", paymentType)
 	}
-	err = r.BalanceHistoryMaker(tx, currentBalance, newBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType)
+	err = r.BalanceHistoryMaker(companyId, tx, currentBalance, newBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType)
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
@@ -734,7 +732,7 @@ func (r *StudentRepository) ChangeUserBalanceHistory(comment string, groupId str
 		Message: "balance edited",
 	}, nil
 }
-func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, oldDebit string, currentDebit string, givenDate string, comment string, paymentType string, createdById string, createdByName string, groupId string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(companyId string, studentId string, oldDebit string, currentDebit string, givenDate string, comment string, paymentType string, createdById string, createdByName string, groupId string) (*pb.AbsResponse, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to begin transaction: %v", err)
@@ -781,7 +779,7 @@ func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, ol
 		tx.Rollback()
 		return nil, status.Errorf(codes.Aborted, "invalid payment type")
 	}
-	err = r.BalanceHistoryMaker(tx, oldBalance, currentBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, fmt.Sprintf("%.2f", currentAmountValue), paymentType)
+	err = r.BalanceHistoryMaker(companyId, tx, oldBalance, currentBalance, studentId, comment, groupId, groupName, createdById, createdByName, givenDate, fmt.Sprintf("%.2f", currentAmountValue), paymentType)
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
@@ -790,7 +788,7 @@ func (r *StudentRepository) ChangeUserBalanceHistoryByDebit(studentId string, ol
 		Message: "balance edited",
 	}, nil
 }
-func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newBalance float64, studentId string, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType string) error {
+func (r *StudentRepository) BalanceHistoryMaker(companyId string, tx *sql.Tx, currentBalance, newBalance float64, studentId string, comment, groupId, groupName, createdById, createdByName, givenDate, amount, paymentType string) error {
 	result, err := tx.Exec("UPDATE students SET balance = $1 WHERE id = $2", newBalance, studentId)
 	if err != nil {
 		tx.Rollback()
@@ -832,9 +830,9 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 		field = "balance_take_off"
 	}
 	_, err = tx.Exec(`
-        INSERT INTO student_history (id, student_id, field, old_value, current_value, created_at)
-        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
-    `, studentId, field, currentBalance, historyJSON, time.Now())
+        INSERT INTO student_history (id, student_id, field, old_value, current_value, created_at , company_id)
+        VALUES (gen_random_uuid(), $1, $2, $3, $4, $5 , $6)
+    `, studentId, field, currentBalance, historyJSON, time.Now(), companyId)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -846,24 +844,24 @@ func (r *StudentRepository) BalanceHistoryMaker(tx *sql.Tx, currentBalance, newB
 	}
 	return nil
 }
-func (r *StudentRepository) checkArgumentsIsActive(groupId, studentId string) bool {
+func (r *StudentRepository) checkArgumentsIsActive(companyId string, groupId, studentId string) bool {
 	var checker bool
-	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where is_archived='false' and id=$1)`, groupId).Scan(&checker)
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where is_archived='false' and id=$1 and company_id=$2)`, groupId, companyId).Scan(&checker)
 	if err != nil || !checker {
 		return false
 	}
-	err = r.db.QueryRow(`SELECT exists(SELECT 1 FROM students where condition='ACTIVE' and id=$1)`, studentId).Scan(&checker)
+	err = r.db.QueryRow(`SELECT exists(SELECT 1 FROM students where condition='ACTIVE' and id=$1 and company_id=$2)`, studentId, companyId).Scan(&checker)
 	if err != nil || !checker {
 		return false
 	}
 
 	return checker
 }
-func (r *StudentRepository) StudentBalanceTaker() {
+func (r *StudentRepository) StudentBalanceTaker(companyId string) {
 	if err := r.ensureFinanceClient(); err != nil {
 		return
 	}
-	rows, err := r.db.Query(`SELECT id FROM students where condition='ACTIVE'`)
+	rows, err := r.db.Query(`SELECT id FROM students where condition='ACTIVE' and company_id = $1 `, companyId)
 	if err != nil {
 		fmt.Printf("error get active student %v", err)
 		return
@@ -877,7 +875,7 @@ func (r *StudentRepository) StudentBalanceTaker() {
 			fmt.Printf("error scanning active student %v", err)
 			continue
 		}
-		extraRow, err := r.db.Query(`SELECT group_id FROM group_students where student_id=$1 and condition='ACTIVE'`, studentId)
+		extraRow, err := r.db.Query(`SELECT group_id FROM group_students where student_id=$1 and condition='ACTIVE' and company_id= $2`, studentId, companyId)
 		fmt.Println(studentId)
 		if err != nil {
 			fmt.Printf("error getting  active groupid %v", err)
@@ -895,7 +893,7 @@ func (r *StudentRepository) StudentBalanceTaker() {
 				continue
 			}
 			discountAmount, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
-			err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1`, groupId).Scan(&takingPrice)
+			err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1 and c.company_id=$2`, groupId, companyId).Scan(&takingPrice)
 			if err != nil {
 				fmt.Printf("error getting course price active student %v", err)
 				continue

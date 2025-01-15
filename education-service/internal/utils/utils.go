@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"math"
 	"strings"
@@ -235,4 +236,13 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 
 	*price = math.Round(coursePrice / float64(lessonCount))
 	return nil
+}
+func GetCompanyId(ctx context.Context) string {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		if _, ok := md["company_id"]; ok {
+			return md["company_id"][0]
+		}
+	}
+	return ""
 }
