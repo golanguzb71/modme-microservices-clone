@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"user-service/internal/repository"
+	"user-service/internal/utils"
 	"user-service/proto/pb"
 )
 
@@ -18,37 +21,73 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 }
 
 func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.AbsResponse, error) {
-	return u.userRepo.CreateUser(req.Gender, req.PhoneNumber, req.BirthDate, req.FullName, req.Password, req.Role)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.CreateUser(companyId, req.Gender, req.PhoneNumber, req.BirthDate, req.FullName, req.Password, req.Role)
 }
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
-	return u.userRepo.GetTeachers(req.IsDeleted)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetUserByIdResponse, error) {
-	return u.userRepo.GetUserById(req.UserId)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.GetUserById(companyId, req.UserId)
 }
 
 func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequest) (*pb.AbsResponse, error) {
-	return u.userRepo.UpdateUser(req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.UpdateUser(companyId, req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber)
 }
 
 func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.AbsResponse, error) {
-	return u.userRepo.DeleteUser(req.UserId)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.DeleteUser(companyId, req.UserId)
 }
 
 func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllEmployeeResponse, error) {
-	return u.userRepo.GetAllEmployee(req.IsArchived)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.GetAllEmployee(companyId, req.IsArchived)
 }
 
 func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllStuffResponse, error) {
-	return u.userRepo.GetAllStuff(req.IsArchived)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.GetAllStuff(companyId, req.IsArchived)
 }
 
 func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetHistoryByUserIdResponse, error) {
-	return u.userRepo.GetHistoryByUserId(req.UserId)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.GetHistoryByUserId(companyId, req.UserId)
 }
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, req *pb.UpdateUserPasswordRequest) (*pb.AbsResponse, error) {
-	return u.userRepo.UpdateUserPassword(req.UserId, req.NewPassword)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return u.userRepo.UpdateUserPassword(companyId, req.UserId, req.NewPassword)
 }

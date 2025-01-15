@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -34,4 +35,13 @@ func RecoveryInterceptor(
 		}
 	}()
 	return handler(ctx, req)
+}
+func GetCompanyId(ctx context.Context) string {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		if _, ok := md["company_id"]; ok {
+			return md["company_id"][0]
+		}
+	}
+	return ""
 }

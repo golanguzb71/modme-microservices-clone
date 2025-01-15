@@ -33,12 +33,12 @@ func (r *UserRepository) ensureGroupClient() error {
 	}
 	return nil
 }
-func (r *UserRepository) CreateUser(gender bool, number string, birthDate string, name string, password string, role string) (*pb.AbsResponse, error) {
+func (r *UserRepository) CreateUser(companyId string, gender bool, number string, birthDate string, name string, password string, role string) (*pb.AbsResponse, error) {
 	encodedPassword, err := utils.EncodePassword(password)
 	if err != nil {
 		return nil, err
 	}
-	_, err = r.db.Exec(`INSERT INTO users(id, full_name, phone_number, password, role, birth_date, gender) values ($1 , $2 , $3 , $4 , $5 , $6, $7)`, uuid.New(), name, number, encodedPassword, role, birthDate, gender)
+	_, err = r.db.Exec(`INSERT INTO users(id, full_name, phone_number, password, role, birth_date, gender,  company_id) values ($1 , $2 , $3 , $4 , $5 , $6, $7 , $8)`, uuid.New(), name, number, encodedPassword, role, birthDate, gender, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -47,12 +47,12 @@ func (r *UserRepository) CreateUser(gender bool, number string, birthDate string
 		Message: "created",
 	}, nil
 }
-func (r *UserRepository) GetTeachers(isDeleted bool) (*pb.GetTeachersResponse, error) {
+func (r *UserRepository) GetTeachers(companyId string, isDeleted bool) (*pb.GetTeachersResponse, error) {
 	if err := r.ensureGroupClient(); err != nil {
 		return nil, err
 	}
 
-	rows, err := r.db.Query(`SELECT id, full_name, phone_number FROM users WHERE is_deleted=$1 AND role='TEACHER'`, isDeleted)
+	rows, err := r.db.Query(`SELECT id, full_name, phone_number FROM users WHERE is_deleted=$1 AND role='TEACHER' and company_id=$2`, isDeleted, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (r *UserRepository) GetTeachers(isDeleted bool) (*pb.GetTeachersResponse, e
 
 	return &response, nil
 }
-func (r *UserRepository) GetUserById(userId string) (*pb.GetUserByIdResponse, error) {
+func (r *UserRepository) GetUserById(companyId string, userId string) (*pb.GetUserByIdResponse, error) {
 	var response pb.GetUserByIdResponse
 	err := r.db.QueryRow(`SELECT id,
        full_name,
@@ -93,32 +93,32 @@ func (r *UserRepository) GetUserById(userId string) (*pb.GetUserByIdResponse, er
        birth_date,
        gender,
        is_deleted,
-       created_at FROM users where id=$1`, userId).Scan(&response.Id, &response.Name, &response.PhoneNumber, &response.Role, &response.BirthDate, &response.Gender, &response.IsDeleted, &response.CreatedAt)
+       created_at FROM users where id=$1 and company_id=$2`, userId, companyId).Scan(&response.Id, &response.Name, &response.PhoneNumber, &response.Role, &response.BirthDate, &response.Gender, &response.IsDeleted, &response.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
 	return &response, nil
 }
-func (r *UserRepository) UpdateUser(userId string, name string, gender bool, role string, birthDate string, phoneNumber string) (*pb.AbsResponse, error) {
+func (r *UserRepository) UpdateUser(companyId string, userId string, name string, gender bool, role string, birthDate string, phoneNumber string) (*pb.AbsResponse, error) {
 	if role != "TEACHER" && role != "ADMIN" && role != "EMPLOYEE" && role != "CEO" {
 		return &pb.AbsResponse{Status: 400, Message: "Invalid role"}, nil
 	}
 	query := `
         UPDATE users 
         SET full_name = $1, phone_number = $2, gender = $3, role = $4, birth_date = $5
-        WHERE id = $6
+        WHERE id = $6 and company_id=$7
     `
 
-	_, err := r.db.Exec(query, name, phoneNumber, gender, role, birthDate, userId)
+	_, err := r.db.Exec(query, name, phoneNumber, gender, role, birthDate, userId, companyId)
 	if err != nil {
 		return nil, err
 	}
 
 	return &pb.AbsResponse{Status: 200, Message: "User updated successfully"}, nil
 }
-func (r *UserRepository) DeleteUser(id string) (*pb.AbsResponse, error) {
+func (r *UserRepository) DeleteUser(companyId string, id string) (*pb.AbsResponse, error) {
 	var role string
-	err := r.db.QueryRow(`SELECT role FROM users where id=$1`, id).Scan(&role)
+	err := r.db.QueryRow(`SELECT role FROM users where id=$1 and company_id=$2`, id, companyId).Scan(&role)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, err.Error())
 	}
@@ -135,9 +135,9 @@ func (r *UserRepository) DeleteUser(id string) (*pb.AbsResponse, error) {
 	query := `
         UPDATE users 
         SET is_deleted = NOT is_deleted 
-        WHERE id = $1
+        WHERE id = $1 and company_id=$2
     `
-	result, err := r.db.Exec(query, id)
+	result, err := r.db.Exec(query, id, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -151,14 +151,14 @@ func (r *UserRepository) DeleteUser(id string) (*pb.AbsResponse, error) {
 	}
 	return &pb.AbsResponse{Status: 200, Message: "User status toggled successfully"}, nil
 }
-func (r *UserRepository) GetAllEmployee(isArchived bool) (*pb.GetAllEmployeeResponse, error) {
+func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.GetAllEmployeeResponse, error) {
 	query := `
         SELECT id, full_name, phone_number, role, birth_date, gender, is_deleted, created_at 
         FROM users 
-        WHERE is_deleted = $1 AND role IN ('ADMIN', 'EMPLOYEE')
+        WHERE is_deleted = $1 AND role IN ('ADMIN', 'EMPLOYEE') and company_id=$2
     `
 
-	rows, err := r.db.Query(query, isArchived)
+	rows, err := r.db.Query(query, isArchived, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func (r *UserRepository) GetAllEmployee(isArchived bool) (*pb.GetAllEmployeeResp
 
 	return &pb.GetAllEmployeeResponse{Employees: employees}, nil
 }
-func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
+func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
 	res := pb.GetUserByIdResponse{}
 	var password string
 	err := r.db.QueryRow(`SELECT id,
@@ -196,16 +196,16 @@ func (r *UserRepository) GetUserByPhoneNumber(phoneNumber string) (*pb.GetUserBy
        is_deleted,
        created_at,
        coalesce(company_id ,0)
-       FROM users where phone_number=$1`, phoneNumber).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+       FROM users where phone_number=$1 and company_id=$2`, phoneNumber, companyId).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
 	if err != nil {
 		return nil, "", err
 	}
 	return &res, password, nil
 }
-func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, error) {
+func (r *UserRepository) GetAllStuff(companyId string, isArchived bool) (*pb.GetAllStuffResponse, error) {
 	query := `SELECT id, phone_number, role, full_name, birth_date, gender, is_deleted, created_at
-              FROM users WHERE is_deleted = $1`
-	rows, err := r.db.Query(query, isArchived)
+              FROM users WHERE is_deleted = $1 and company_id=$2`
+	rows, err := r.db.Query(query, isArchived, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func (r *UserRepository) GetAllStuff(isArchived bool) (*pb.GetAllStuffResponse, 
 	}
 	return &response, nil
 }
-func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdResponse, error) {
+func (r *UserRepository) GetHistoryByUserId(companyId string, id string) (*pb.GetHistoryByUserIdResponse, error) {
 	query := `
 	SELECT 
 		updated_field,
@@ -232,7 +232,7 @@ func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdRe
 		current_value,
 		created_at
 	FROM users_history
-	WHERE user_id = $1
+	WHERE user_id = $1 
 	ORDER BY created_at DESC;
 	`
 
@@ -259,10 +259,9 @@ func (r *UserRepository) GetHistoryByUserId(id string) (*pb.GetHistoryByUserIdRe
 		Histories: historyItems,
 	}, nil
 }
-
-func (r *UserRepository) UpdateUserPassword(userId string, password string) (*pb.AbsResponse, error) {
+func (r *UserRepository) UpdateUserPassword(companyId string, userId string, password string) (*pb.AbsResponse, error) {
 	var userExists bool
-	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM users where id=$1)`, userId).Scan(&userExists)
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM users where id=$1 and company_id=$2)`, userId, companyId).Scan(&userExists)
 	if err != nil {
 		return nil, err
 	}
@@ -273,7 +272,7 @@ func (r *UserRepository) UpdateUserPassword(userId string, password string) (*pb
 	if err != nil {
 		return nil, err
 	}
-	_, err = r.db.Exec(`UPDATE users set password=$1 where id=$2`, newEncodedPass, userId)
+	_, err = r.db.Exec(`UPDATE users set password=$1 where id=$2 and company_id=$3`, newEncodedPass, userId, companyId)
 	if err != nil {
 		return nil, err
 	}
