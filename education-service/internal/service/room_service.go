@@ -24,7 +24,7 @@ func (s *RoomService) CreateRoom(ctx context.Context, req *pb.CreateRoomRequest)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.CreateRoom(req.Name, req.Capacity)
+	err := s.repo.CreateRoom(companyId, req.Name, req.Capacity)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s *RoomService) UpdateRoom(ctx context.Context, req *pb.AbsRoom) (*pb.AbsR
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.UpdateRoom(&req.Id, &req.Name, &req.Capacity)
+	err := s.repo.UpdateRoom(companyId, &req.Id, &req.Name, &req.Capacity)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (s *RoomService) DeleteRoom(ctx context.Context, req *pb.DeleteAbsRequest) 
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.DeleteRoom(req.Id)
+	err := s.repo.DeleteRoom(companyId, req.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -60,5 +60,5 @@ func (s *RoomService) GetRooms(ctx context.Context, req *emptypb.Empty) (*pb.Get
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetRoom()
+	return s.repo.GetRoom(companyId)
 }

@@ -21,7 +21,7 @@ func NewAuthService(repo *repository.UserRepository) *AuthService {
 }
 
 func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	user, password, err := as.userRepo.GetUserByPhoneNumber(request.PhoneNumber)
+	user, password, err := as.userRepo.GetUserByPhoneNumber("", request.PhoneNumber)
 	if err != nil || user.IsDeleted {
 		return nil, errors.New("notog'ri login yoki parol")
 	}
@@ -45,7 +45,7 @@ func (as *AuthService) ValidateToken(ctx context.Context, req *pb.ValidateTokenR
 	if err != nil {
 		return nil, err
 	}
-	user, _, err := as.userRepo.GetUserByPhoneNumber(claims.Username)
+	user, _, err := as.userRepo.GetUserByPhoneNumber("", claims.Username)
 	if err != nil {
 		return nil, err
 	}

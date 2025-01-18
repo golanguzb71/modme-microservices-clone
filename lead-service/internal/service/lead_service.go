@@ -68,7 +68,7 @@ func (s *LeadService) GetListSection(ctx context.Context, req *emptypb.Empty) (*
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetAllLeads()
+	return s.repo.GetAllLeads(companyId)
 }
 
 func (s *LeadService) GetLeadReports(ctx context.Context, req *pb.GetLeadReportsRequest) (*pb.GetLeadReportsResponse, error) {

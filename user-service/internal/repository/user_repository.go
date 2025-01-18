@@ -186,7 +186,9 @@ func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.
 func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
 	res := pb.GetUserByIdResponse{}
 	var password string
-	err := r.db.QueryRow(`SELECT id,
+	query := ""
+	if companyId != "" {
+		query = `SELECT id,
        full_name,
        phone_number,
        password,
@@ -196,10 +198,29 @@ func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber stri
        is_deleted,
        created_at,
        coalesce(company_id ,0)
-       FROM users where phone_number=$1 and company_id=$2`, phoneNumber, companyId).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
-	if err != nil {
-		return nil, "", err
+       FROM users where phone_number=$1 and company_id=$2`
+		err := r.db.QueryRow(query, phoneNumber, companyId).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+		if err != nil {
+			return nil, "", err
+		}
+	} else {
+		query = `SELECT id,
+       full_name,
+       phone_number,
+       password,
+       role,
+       birth_date,
+       gender,
+       is_deleted,
+       created_at,
+       coalesce(company_id ,0)
+       FROM users where phone_number=$1`
+		err := r.db.QueryRow(query, phoneNumber).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+		if err != nil {
+			return nil, "", err
+		}
 	}
+
 	return &res, password, nil
 }
 func (r *UserRepository) GetAllStuff(companyId string, isArchived bool) (*pb.GetAllStuffResponse, error) {
