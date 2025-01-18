@@ -1297,7 +1297,7 @@ func TariffDelete(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, 200, "deleted")
 }
 
-// FinanceCreate
+// FinanceCreate godoc
 // @Summary Create a finance record
 // @Description Create a new company finance record
 // @Tags companyFinance
@@ -1322,7 +1322,7 @@ func FinanceCreate(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, 200, "created")
 }
 
-// FinanceDelete
+// FinanceDelete godoc
 // @Summary Delete a finance record
 // @Description Delete a company finance record by its ID
 // @Tags companyFinance
@@ -1343,7 +1343,7 @@ func FinanceDelete(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, http.StatusOK, "deleted")
 }
 
-// FinanceGetAll
+// FinanceGetAll godoc
 // @Summary Get all finance records
 // @Description Retrieve a list of all company finance records
 // @Tags companyFinance
@@ -1368,7 +1368,7 @@ func FinanceGetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, &resp)
 }
 
-// FinanceGetByCompany
+// FinanceGetByCompany godoc
 // @Summary Get finance records by company
 // @Description Retrieve finance records filtered by company
 // @Tags companyFinance
