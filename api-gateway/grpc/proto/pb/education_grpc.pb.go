@@ -465,7 +465,7 @@ type CompanyFinanceServiceClient interface {
 	Create(ctx context.Context, in *CompanyFinance, opts ...grpc.CallOption) (*CompanyFinance, error)
 	Delete(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error)
-	GetByCompany(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error)
+	GetByCompany(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceSelf, error)
 }
 
 type companyFinanceServiceClient struct {
@@ -506,9 +506,9 @@ func (c *companyFinanceServiceClient) GetAll(ctx context.Context, in *PageReques
 	return out, nil
 }
 
-func (c *companyFinanceServiceClient) GetByCompany(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error) {
+func (c *companyFinanceServiceClient) GetByCompany(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceSelf, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CompanyFinanceList)
+	out := new(CompanyFinanceSelf)
 	err := c.cc.Invoke(ctx, CompanyFinanceService_GetByCompany_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -523,7 +523,7 @@ type CompanyFinanceServiceServer interface {
 	Create(context.Context, *CompanyFinance) (*CompanyFinance, error)
 	Delete(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	GetAll(context.Context, *PageRequest) (*CompanyFinanceList, error)
-	GetByCompany(context.Context, *DeleteAbsRequest) (*CompanyFinanceList, error)
+	GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelf, error)
 	mustEmbedUnimplementedCompanyFinanceServiceServer()
 }
 
@@ -543,7 +543,7 @@ func (UnimplementedCompanyFinanceServiceServer) Delete(context.Context, *DeleteA
 func (UnimplementedCompanyFinanceServiceServer) GetAll(context.Context, *PageRequest) (*CompanyFinanceList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedCompanyFinanceServiceServer) GetByCompany(context.Context, *DeleteAbsRequest) (*CompanyFinanceList, error) {
+func (UnimplementedCompanyFinanceServiceServer) GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelf, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByCompany not implemented")
 }
 func (UnimplementedCompanyFinanceServiceServer) mustEmbedUnimplementedCompanyFinanceServiceServer() {}
@@ -622,7 +622,7 @@ func _CompanyFinanceService_GetAll_Handler(srv interface{}, ctx context.Context,
 }
 
 func _CompanyFinanceService_GetByCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteAbsRequest)
+	in := new(PageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -634,7 +634,7 @@ func _CompanyFinanceService_GetByCompany_Handler(srv interface{}, ctx context.Co
 		FullMethod: CompanyFinanceService_GetByCompany_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CompanyFinanceServiceServer).GetByCompany(ctx, req.(*DeleteAbsRequest))
+		return srv.(CompanyFinanceServiceServer).GetByCompany(ctx, req.(*PageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

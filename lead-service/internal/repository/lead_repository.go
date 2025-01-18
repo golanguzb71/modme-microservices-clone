@@ -15,33 +15,33 @@ func NewLeadRepository(db *sql.DB) *LeadRepository {
 	return &LeadRepository{db: db}
 }
 
-func (r *LeadRepository) CreateLead(title string) error {
-	query := "INSERT INTO lead_section (title) VALUES ($1)"
-	_, err := r.db.Exec(query, title)
+func (r *LeadRepository) CreateLead(companyId string, title string) error {
+	query := "INSERT INTO lead_section (title , company_id) VALUES ($1 , $2)"
+	_, err := r.db.Exec(query, title, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to create lead: %w", err)
 	}
 	return nil
 }
 
-func (r *LeadRepository) GetLeadCommon(req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
+func (r *LeadRepository) GetLeadCommon(companyId string, req *pb.GetLeadCommonRequest) (*pb.GetLeadCommonResponse, error) {
 	resp := &pb.GetLeadCommonResponse{}
 	requestedSections := make(map[string][]string)
 	for _, request := range req.Requests {
 		requestedSections[request.Type] = append(requestedSections[request.Type], request.Id)
 	}
-	fetchAllSections(resp, r.db, requestedSections)
+	fetchAllSections(companyId, resp, r.db, requestedSections)
 
 	return resp, nil
 }
 
-func fetchAllSections(p *pb.GetLeadCommonResponse, db *sql.DB, requestedSections map[string][]string) {
-	calculateSet(p, db, requestedSections["set"])
-	calculateExpectations(p, db, requestedSections["expectation"])
-	calculateLeadsWithDetails(p, db, requestedSections["lead"])
+func fetchAllSections(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedSections map[string][]string) {
+	calculateSet(companyId, p, db, requestedSections["set"])
+	calculateExpectations(companyId, p, db, requestedSections["expectation"])
+	calculateLeadsWithDetails(companyId, p, db, requestedSections["lead"])
 }
 
-func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
+func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ss.id, ss.title
         FROM set_section ss
@@ -71,7 +71,7 @@ func calculateSet(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string
 	p.Sets = sections
 }
 
-func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
+func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT es.id, es.title
         FROM expect_section es
@@ -101,7 +101,7 @@ func calculateExpectations(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds
 	p.Expectations = sections
 }
 
-func calculateLeadsWithDetails(p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
+func calculateLeadsWithDetails(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ls.id, ls.title
         FROM lead_section ls
@@ -171,7 +171,7 @@ func containsString(slice []string, str string) bool {
 	return false
 }
 
-func (r *LeadRepository) UpdateLead(id, title string) error {
+func (r *LeadRepository) UpdateLead(companyId string, id, title string) error {
 	query := "UPDATE lead_section SET title = $1 WHERE id = $2"
 	_, err := r.db.Exec(query, title, id)
 	if err != nil {
@@ -180,7 +180,7 @@ func (r *LeadRepository) UpdateLead(id, title string) error {
 	return nil
 }
 
-func (r *LeadRepository) DeleteLead(id string) error {
+func (r *LeadRepository) DeleteLead(companyId string, id string) error {
 	query := "DELETE FROM lead_section WHERE id = $1"
 	_, err := r.db.Exec(query, id)
 	if err != nil {
@@ -189,7 +189,7 @@ func (r *LeadRepository) DeleteLead(id string) error {
 	return nil
 }
 
-func (r *LeadRepository) GetAllLeads() (*pb.GetLeadListResponse, error) {
+func (r *LeadRepository) GetAllLeads(companyId string) (*pb.GetLeadListResponse, error) {
 	query := `SELECT id, title FROM lead_section`
 	rows, err := r.db.Query(query)
 	if err != nil {
@@ -219,7 +219,7 @@ func (r *LeadRepository) GetAllLeads() (*pb.GetLeadListResponse, error) {
 	return result, nil
 }
 
-func (r *LeadRepository) GetLeadReports(endYear string, startYear string) (*pb.GetLeadReportsResponse, error) {
+func (r *LeadRepository) GetLeadReports(companyId string, endYear string, startYear string) (*pb.GetLeadReportsResponse, error) {
 	if startYear > endYear {
 		return nil, fmt.Errorf("start year must be less than or equal to end year")
 	}
@@ -286,7 +286,7 @@ func (r *LeadRepository) GetLeadReports(endYear string, startYear string) (*pb.G
 	return response, nil
 }
 
-func (r *LeadRepository) GetActiveLeadCount() (*pb.GetActiveLeadCountResponse, error) {
+func (r *LeadRepository) GetActiveLeadCount(companyId string) (*pb.GetActiveLeadCountResponse, error) {
 	activeLeadCount := 0
 	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user`).Scan(&activeLeadCount)
 	return &pb.GetActiveLeadCountResponse{ActiveLeadCount: int32(activeLeadCount)}, nil

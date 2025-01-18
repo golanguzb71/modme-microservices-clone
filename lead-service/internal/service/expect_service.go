@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"lid-service/internal/repository"
+	"lid-service/internal/utils"
 	"lid-service/proto/pb"
 )
 
@@ -16,7 +19,11 @@ func NewExpectService(repo *repository.ExpectRepository) *ExpectService {
 }
 
 func (s *ExpectService) CreateExpect(ctx context.Context, req *pb.CreateExpectRequest) (*pb.AbsResponse, error) {
-	err := s.repo.CreateExpectation(req.Title)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.CreateExpectation(companyId, req.Title)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +31,11 @@ func (s *ExpectService) CreateExpect(ctx context.Context, req *pb.CreateExpectRe
 }
 
 func (s *ExpectService) UpdateExpect(ctx context.Context, req *pb.UpdateExpectRequest) (*pb.AbsResponse, error) {
-	err := s.repo.UpdateExpectation(req.Id, req.Title)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.UpdateExpectation(companyId, req.Id, req.Title)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +43,11 @@ func (s *ExpectService) UpdateExpect(ctx context.Context, req *pb.UpdateExpectRe
 }
 
 func (s *ExpectService) DeleteExpect(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
-	err := s.repo.DeleteExpectation(req.Id)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.DeleteExpectation(companyId, req.Id)
 	if err != nil {
 		return nil, err
 	}

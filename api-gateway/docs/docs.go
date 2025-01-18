@@ -194,6 +194,184 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/company/finance/create": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a new company finance record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "finance"
+                ],
+                "summary": "Create a finance record",
+                "parameters": [
+                    {
+                        "description": "Company finance details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CompanyFinance"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/company/finance/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete a company finance record by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "finance"
+                ],
+                "summary": "Delete a finance record",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the company finance record to delete",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "deleted",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/company/finance/get-all": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve a list of all company finance records",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "finance"
+                ],
+                "summary": "Get all finance records",
+                "parameters": [
+                    {
+                        "description": "Pagination details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.PageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of finance records",
+                        "schema": {
+                            "$ref": "#/definitions/pb.CompanyFinanceList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/company/finance/get-by-company": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieve finance records filtered by company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "finance"
+                ],
+                "summary": "Get finance records by company",
+                "parameters": [
+                    {
+                        "description": "Pagination and filtering details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.PageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of finance records for a specific company",
+                        "schema": {
+                            "$ref": "#/definitions/pb.CompanyFinanceSelf"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/company/get-all": {
             "get": {
                 "security": [
@@ -5374,6 +5552,101 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CompanyFinance": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "edited_valid_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "sum": {
+                    "type": "number"
+                },
+                "tariff_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "pb.CompanyFinanceForList": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
+                },
+                "company_name": {
+                    "type": "string"
+                },
+                "finished_to": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "start_from": {
+                    "type": "string"
+                },
+                "sum": {
+                    "type": "number"
+                },
+                "tariff_id": {
+                    "type": "string"
+                },
+                "tariff_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.CompanyFinanceList": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.CompanyFinanceForList"
+                    }
+                }
+            }
+        },
+        "pb.CompanyFinanceSelf": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "edit_valid_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "sum": {
+                    "type": "number"
+                },
+                "tariff_id": {
+                    "type": "integer"
+                },
+                "tariff_sum": {
+                    "type": "integer"
+                }
+            }
+        },
         "pb.CreateCategoryRequest": {
             "type": "object",
             "properties": {
@@ -6573,6 +6846,29 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
+                }
+            }
+        },
+        "pb.PageRequest": {
+            "type": "object",
+            "properties": {
+                "companyId": {
+                    "type": "string"
+                },
+                "filter": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "string"
                 }
             }
         },

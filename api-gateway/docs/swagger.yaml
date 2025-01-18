@@ -416,6 +416,68 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.CompanyFinance:
+    properties:
+      comment:
+        type: string
+      company_id:
+        type: integer
+      created_at:
+        type: string
+      edited_valid_date:
+        type: string
+      id:
+        type: integer
+      sum:
+        type: number
+      tariff_id:
+        type: integer
+    type: object
+  pb.CompanyFinanceForList:
+    properties:
+      company_id:
+        type: integer
+      company_name:
+        type: string
+      finished_to:
+        type: string
+      id:
+        type: integer
+      start_from:
+        type: string
+      sum:
+        type: number
+      tariff_id:
+        type: string
+      tariff_name:
+        type: string
+    type: object
+  pb.CompanyFinanceList:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/pb.CompanyFinanceForList'
+        type: array
+    type: object
+  pb.CompanyFinanceSelf:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      edit_valid_date:
+        type: string
+      id:
+        type: integer
+      sum:
+        type: number
+      tariff_id:
+        type: integer
+      tariff_sum:
+        type: integer
+    type: object
   pb.CreateCategoryRequest:
     properties:
       desc:
@@ -1196,6 +1258,21 @@ definitions:
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
     type: object
+  pb.PageRequest:
+    properties:
+      companyId:
+        type: string
+      filter:
+        type: string
+      from:
+        type: string
+      page:
+        type: integer
+      size:
+        type: integer
+      to:
+        type: string
+    type: object
   pb.PaymentAddRequest:
     properties:
       actionById:
@@ -1578,6 +1655,117 @@ paths:
       summary: SUPER_CEO
       tags:
       - company
+  /api/company/finance/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new company finance record
+      parameters:
+      - description: Company finance details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CompanyFinance'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: created
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Create a finance record
+      tags:
+      - finance
+  /api/company/finance/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a company finance record by its ID
+      parameters:
+      - description: ID of the company finance record to delete
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: deleted
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Delete a finance record
+      tags:
+      - finance
+  /api/company/finance/get-all:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve a list of all company finance records
+      parameters:
+      - description: Pagination details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.PageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of finance records
+          schema:
+            $ref: '#/definitions/pb.CompanyFinanceList'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Get all finance records
+      tags:
+      - finance
+  /api/company/finance/get-by-company:
+    post:
+      consumes:
+      - application/json
+      description: Retrieve finance records filtered by company
+      parameters:
+      - description: Pagination and filtering details
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.PageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of finance records for a specific company
+          schema:
+            $ref: '#/definitions/pb.CompanyFinanceSelf'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Get finance records by company
+      tags:
+      - finance
   /api/company/get-all:
     get:
       consumes:

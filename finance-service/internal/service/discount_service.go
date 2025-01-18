@@ -3,7 +3,10 @@ package service
 import (
 	"context"
 	"finance-service/internal/repository"
+	"finance-service/internal/utils"
 	"finance-service/proto/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net/http"
 )
 
@@ -17,6 +20,10 @@ func NewDiscountService(repo *repository.DiscountRepository) *DiscountService {
 }
 
 func (ds *DiscountService) CreateDiscount(ctx context.Context, req *pb.AbsDiscountRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	if err := ds.repo.CreateDiscount(req.GroupId, req.StudentId, req.DiscountPrice, req.Comment, req.StartDate, req.EndDate, req.WithTeacher); err != nil {
 		return nil, err
 	}
@@ -27,6 +34,10 @@ func (ds *DiscountService) CreateDiscount(ctx context.Context, req *pb.AbsDiscou
 }
 
 func (ds *DiscountService) DeleteDiscount(ctx context.Context, req *pb.AbsDiscountRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	if err := ds.repo.DeleteDiscount(req.GroupId, req.StudentId); err != nil {
 		return nil, err
 	}
@@ -37,13 +48,25 @@ func (ds *DiscountService) DeleteDiscount(ctx context.Context, req *pb.AbsDiscou
 }
 
 func (ds *DiscountService) GetHistoryDiscount(ctx context.Context, req *pb.GetHistoryDiscountRequest) (*pb.GetHistoryDiscountResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	return ds.repo.GetHistoryDiscount(req.StudentId)
 }
 
 func (ds *DiscountService) GetAllInformationDiscount(ctx context.Context, req *pb.GetInformationDiscountRequest) (*pb.GetInformationDiscountResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	return ds.repo.GetAllDiscountByGroup(req.GroupId)
 }
 
 func (ds *DiscountService) GetDiscountByStudentId(ctx context.Context, req *pb.GetDiscountByStudentIdRequest) (*pb.GetDiscountByStudentIdResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	return ds.repo.GetDiscountByStudentId(req.StudentId, req.GroupId)
 }

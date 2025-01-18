@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"lid-service/internal/repository"
+	"lid-service/internal/utils"
 	"lid-service/proto/pb"
 )
 
@@ -17,7 +20,11 @@ func NewLeadDataService(repo *repository.LeadDataRepository) *LeadDataService {
 
 // CreateLeadData handles lead data creation
 func (s *LeadDataService) CreateLeadData(ctx context.Context, req *pb.CreateLeadDataRequest) (*pb.AbsResponse, error) {
-	err := s.repo.CreateLeadData(&req.PhoneNumber, &req.LeadId, nil, nil, &req.Comment, &req.Name)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.CreateLeadData(companyId, &req.PhoneNumber, &req.LeadId, nil, nil, &req.Comment, &req.Name)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to create lead data: " + err.Error()}, err
 	}
@@ -26,7 +33,11 @@ func (s *LeadDataService) CreateLeadData(ctx context.Context, req *pb.CreateLead
 
 // UpdateLeadData handles lead data updates
 func (s *LeadDataService) UpdateLeadData(ctx context.Context, req *pb.UpdateLeadDataRequest) (*pb.AbsResponse, error) {
-	err := s.repo.UpdateLeadData(req.Id, req.PhoneNumber, req.Comment, req.Name)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.UpdateLeadData(companyId, req.Id, req.PhoneNumber, req.Comment, req.Name)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to update lead data: " + err.Error()}, err
 	}
@@ -35,7 +46,11 @@ func (s *LeadDataService) UpdateLeadData(ctx context.Context, req *pb.UpdateLead
 
 // DeleteLeadData handles lead data deletion
 func (s *LeadDataService) DeleteLeadData(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
-	err := s.repo.DeleteLeadData(req.Id)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.DeleteLeadData(companyId, req.Id)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to delete lead data: " + err.Error()}, err
 	}
@@ -43,7 +58,11 @@ func (s *LeadDataService) DeleteLeadData(ctx context.Context, req *pb.DeleteAbsR
 }
 
 func (s *LeadDataService) ChangeLeadPlace(ctx context.Context, req *pb.ChangeLeadPlaceRequest) (*pb.AbsResponse, error) {
-	err := s.repo.ChangeLeadPlace(&req.ChangedSet.Id, &req.ChangedSet.SectionType, &req.LeadDataId)
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	err := s.repo.ChangeLeadPlace(companyId, &req.ChangedSet.Id, &req.ChangedSet.SectionType, &req.LeadDataId)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to change lead data: " + err.Error()}, err
 	}

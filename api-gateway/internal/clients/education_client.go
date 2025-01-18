@@ -9,13 +9,14 @@ import (
 )
 
 type EducationClient struct {
-	roomClient       pb.RoomServiceClient
-	courseClient     pb.CourseServiceClient
-	groupClient      pb.GroupServiceClient
-	attendanceClient pb.AttendanceServiceClient
-	studentClient    pb.StudentServiceClient
-	companyClient    pb.CompanyServiceClient
-	tariffClient     pb.TariffServiceClient
+	roomClient           pb.RoomServiceClient
+	courseClient         pb.CourseServiceClient
+	groupClient          pb.GroupServiceClient
+	attendanceClient     pb.AttendanceServiceClient
+	studentClient        pb.StudentServiceClient
+	companyClient        pb.CompanyServiceClient
+	tariffClient         pb.TariffServiceClient
+	companyFinanceClient pb.CompanyFinanceServiceClient
 }
 
 func NewEducationClient(addr string) (*EducationClient, error) {
@@ -31,7 +32,8 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	studentClient := pb.NewStudentServiceClient(conn)
 	companyClient := pb.NewCompanyServiceClient(conn)
 	tariffClient := pb.NewTariffServiceClient(conn)
-	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient, companyClient: companyClient, tariffClient: tariffClient}, nil
+	companyFinanceClient := pb.NewCompanyFinanceServiceClient(conn)
+	return &EducationClient{roomClient: roomClient, courseClient: courseClient, groupClient: groupClient, attendanceClient: attendanceClient, studentClient: studentClient, companyClient: companyClient, tariffClient: tariffClient, companyFinanceClient: companyFinanceClient}, nil
 }
 
 // Education Service method client
@@ -262,4 +264,20 @@ func (lc *EducationClient) GetAllTariff() *pb.TariffList {
 		return nil
 	}
 	return resp
+}
+
+func (lc *EducationClient) FinanceCreate(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
+	return lc.companyFinanceClient.Create(context.TODO(), req)
+}
+
+func (lc *EducationClient) FinanceDelete(id string) (*pb.AbsResponse, error) {
+	return lc.companyFinanceClient.Delete(context.TODO(), &pb.DeleteAbsRequest{Id: id})
+}
+
+func (lc *EducationClient) FinanceGetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelf, error) {
+	return lc.companyFinanceClient.GetByCompany(context.TODO(), req)
+}
+
+func (lc *EducationClient) FinanceGetAll(req *pb.PageRequest) (*pb.CompanyFinanceList, error) {
+	return lc.companyFinanceClient.GetAll(context.TODO(), req)
 }

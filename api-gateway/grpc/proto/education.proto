@@ -85,15 +85,50 @@ service CompanyFinanceService{
   rpc Create(CompanyFinance) returns(CompanyFinance) {}
   rpc Delete(common.DeleteAbsRequest) returns(common.AbsResponse){}
   rpc GetAll(common.PageRequest) returns(CompanyFinanceList){}
-  rpc GetByCompany(common.DeleteAbsRequest) returns(CompanyFinanceList){}
+  rpc GetByCompany(common.PageRequest) returns(CompanyFinanceSelf){}
 }
-message CompanyFinance{
 
+message CompanyFinance{
+  int32 id = 1;
+  int32 company_id = 2;
+  int32 tariff_id = 3;
+  string comment = 4;
+  float sum = 5;
+  string edited_valid_date = 6;
+  string created_at = 7;
+}
+
+message CompanyFinanceSelf{
+  int32 id = 1;
+  int32 tariff_id = 2;
+  int32 tariff_sum = 3;
+  string comment = 4;
+  float sum = 5;
+  string edit_valid_date = 6;
+  string created_at = 7;
+}
+message CompanyFinanceSelfList{
+  int32 count = 1;
+  float sum_amount_period = 2;
+  string tariff_name = 3;
+  string discount_name = 4;
+  float required_sum = 5;
+  repeated CompanyFinanceSelf items = 6;
 }
 
 message CompanyFinanceList{
   int32 count = 1;
-  repeated CompanyFinance items = 2;
+  repeated CompanyFinanceForList items = 2;
+}
+message CompanyFinanceForList{
+  int32 id = 1;
+  string company_name = 2;
+  int32 company_id = 3;
+  string start_from = 4;
+  string finished_to = 5;
+  string tariff_id = 6;
+  string tariff_name = 7;
+  float sum = 8;
 }
 // room service start
 service RoomService{

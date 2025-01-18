@@ -14,6 +14,7 @@ service DiscountService{
   rpc DeleteDiscount(AbsDiscountRequest) returns(common.AbsResponse);
   rpc GetHistoryDiscount(GetHistoryDiscountRequest) returns (GetHistoryDiscountResponse);
 }
+
 message GetHistoryDiscountRequest{
   string studentId = 1;
   string groupId = 2;

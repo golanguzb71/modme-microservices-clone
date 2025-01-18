@@ -1297,18 +1297,98 @@ func TariffDelete(ctx *gin.Context) {
 	utils.RespondSuccess(ctx, 200, "deleted")
 }
 
+// FinanceCreate
+// @Summary Create a finance record
+// @Description Create a new company finance record
+// @Tags company_finance
+// @Accept json
+// @Produce json
+// @Param body body pb.CompanyFinance true "Company finance details"
+// @Success 200 {object} utils.AbsResponse "created"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/finance/create [post]
+// @Security Bearer
 func FinanceCreate(ctx *gin.Context) {
-
+	req := pb.CompanyFinance{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	_, err := educationClient.FinanceCreate(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, 200, "created")
 }
 
+// FinanceDelete
+// @Summary Delete a finance record
+// @Description Delete a company finance record by its ID
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param id query string true "ID of the company finance record to delete"
+// @Success 200 {object} utils.AbsResponse "deleted"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/finance/delete [delete]
+// @Security Bearer
 func FinanceDelete(ctx *gin.Context) {
-
+	financeCompanyId := ctx.Query("id")
+	_, err := educationClient.FinanceDelete(financeCompanyId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, http.StatusOK, "deleted")
 }
 
+// FinanceGetAll
+// @Summary Get all finance records
+// @Description Retrieve a list of all company finance records
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param body body pb.PageRequest true "Pagination details"
+// @Success 200 {object} pb.CompanyFinanceList "list of finance records"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/finance/get-all [post]
+// @Security Bearer
 func FinanceGetAll(ctx *gin.Context) {
-
+	req := pb.PageRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.FinanceGetAll(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, &resp)
 }
 
+// FinanceGetByCompany
+// @Summary Get finance records by company
+// @Description Retrieve finance records filtered by company
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param body body pb.PageRequest true "Pagination and filtering details"
+// @Success 200 {object} pb.CompanyFinanceSelf "list of finance records for a specific company"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/finance/get-by-company [post]
+// @Security Bearer
 func FinanceGetByCompany(ctx *gin.Context) {
-
+	req := pb.PageRequest{}
+	if err := ctx.ShouldBindJSON(ctx); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := educationClient.FinanceGetByCompany(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, &resp)
 }

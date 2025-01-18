@@ -3,8 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"lid-service/internal/clients"
 	"lid-service/internal/repository"
+	"lid-service/internal/utils"
 	"lid-service/proto/pb"
 	"strconv"
 	"time"
@@ -22,6 +25,10 @@ func NewSetService(repo *repository.SetRepository, client *clients.GroupClient, 
 }
 
 func (s *SetService) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	err := s.repo.CreateSet(req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to create set: " + err.Error()}, err
@@ -30,6 +37,10 @@ func (s *SetService) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*
 }
 
 func (s *SetService) UpdateSet(ctx context.Context, req *pb.UpdateSetRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	err := s.repo.UpdateSet(req.Id, req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to update set: " + err.Error()}, err
@@ -38,6 +49,10 @@ func (s *SetService) UpdateSet(ctx context.Context, req *pb.UpdateSetRequest) (*
 }
 
 func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	err := s.repo.DeleteSet(req.Id)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to delete set: " + err.Error()}, err
@@ -46,6 +61,10 @@ func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*
 }
 
 func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest) (*pb.AbsResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
 	if s.groupClient == nil {
 		return nil, fmt.Errorf("uninitialized group detected")
 	}
