@@ -273,7 +273,7 @@
             }
         },
         "/api/company/finance/get-all": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "Bearer": []
@@ -318,7 +318,7 @@
             }
         },
         "/api/company/finance/get-by-company": {
-            "post": {
+            "get": {
                 "security": [
                     {
                         "Bearer": []

@@ -1711,7 +1711,7 @@ paths:
       tags:
       - companyFinance
   /api/company/finance/get-all:
-    post:
+    get:
       consumes:
       - application/json
       description: Retrieve a list of all company finance records
@@ -1739,7 +1739,7 @@ paths:
       tags:
       - companyFinance
   /api/company/finance/get-by-company:
-    post:
+    get:
       consumes:
       - application/json
       description: Retrieve finance records filtered by company
