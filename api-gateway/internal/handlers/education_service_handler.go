@@ -1300,7 +1300,7 @@ func TariffDelete(ctx *gin.Context) {
 // FinanceCreate
 // @Summary Create a finance record
 // @Description Create a new company finance record
-// @Tags company_finance
+// @Tags companyFinance
 // @Accept json
 // @Produce json
 // @Param body body pb.CompanyFinance true "Company finance details"
@@ -1325,7 +1325,7 @@ func FinanceCreate(ctx *gin.Context) {
 // FinanceDelete
 // @Summary Delete a finance record
 // @Description Delete a company finance record by its ID
-// @Tags finance
+// @Tags companyFinance
 // @Accept json
 // @Produce json
 // @Param id query string true "ID of the company finance record to delete"
@@ -1346,7 +1346,7 @@ func FinanceDelete(ctx *gin.Context) {
 // FinanceGetAll
 // @Summary Get all finance records
 // @Description Retrieve a list of all company finance records
-// @Tags finance
+// @Tags companyFinance
 // @Accept json
 // @Produce json
 // @Param body body pb.PageRequest true "Pagination details"
@@ -1371,7 +1371,7 @@ func FinanceGetAll(ctx *gin.Context) {
 // FinanceGetByCompany
 // @Summary Get finance records by company
 // @Description Retrieve finance records filtered by company
-// @Tags finance
+// @Tags companyFinance
 // @Accept json
 // @Produce json
 // @Param body body pb.PageRequest true "Pagination and filtering details"

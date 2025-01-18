@@ -209,7 +209,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "finance"
+                    "companyFinance"
                 ],
                 "summary": "Create a finance record",
                 "parameters": [
@@ -254,7 +254,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "finance"
+                    "companyFinance"
                 ],
                 "summary": "Delete a finance record",
                 "parameters": [
@@ -297,7 +297,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "finance"
+                    "companyFinance"
                 ],
                 "summary": "Get all finance records",
                 "parameters": [
@@ -342,7 +342,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "finance"
+                    "companyFinance"
                 ],
                 "summary": "Get finance records by company",
                 "parameters": [

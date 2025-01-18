@@ -1682,7 +1682,7 @@ paths:
       - Bearer: []
       summary: Create a finance record
       tags:
-      - finance
+      - companyFinance
   /api/company/finance/delete:
     delete:
       consumes:
@@ -1709,7 +1709,7 @@ paths:
       - Bearer: []
       summary: Delete a finance record
       tags:
-      - finance
+      - companyFinance
   /api/company/finance/get-all:
     post:
       consumes:
@@ -1737,7 +1737,7 @@ paths:
       - Bearer: []
       summary: Get all finance records
       tags:
-      - finance
+      - companyFinance
   /api/company/finance/get-by-company:
     post:
       consumes:
@@ -1765,7 +1765,7 @@ paths:
       - Bearer: []
       summary: Get finance records by company
       tags:
-      - finance
+      - companyFinance
   /api/company/get-all:
     get:
       consumes:
