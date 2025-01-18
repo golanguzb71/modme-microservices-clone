@@ -283,7 +283,7 @@ const docTemplate = `{
             }
         },
         "/api/company/finance/get-all": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -328,7 +328,7 @@ const docTemplate = `{
             }
         },
         "/api/company/finance/get-by-company": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []

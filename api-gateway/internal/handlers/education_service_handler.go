@@ -1352,7 +1352,7 @@ func FinanceDelete(ctx *gin.Context) {
 // @Param body body pb.PageRequest true "Pagination details"
 // @Success 200 {object} pb.CompanyFinanceList "list of finance records"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
-// @Router /api/company/finance/get-all [get]
+// @Router /api/company/finance/get-all [post]
 // @Security Bearer
 func FinanceGetAll(ctx *gin.Context) {
 	req := pb.PageRequest{}
@@ -1377,7 +1377,7 @@ func FinanceGetAll(ctx *gin.Context) {
 // @Param body body pb.PageRequest true "Pagination and filtering details"
 // @Success 200 {object} pb.CompanyFinanceSelf "list of finance records for a specific company"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
-// @Router /api/company/finance/get-by-company [get]
+// @Router /api/company/finance/get-by-company [post]
 // @Security Bearer
 func FinanceGetByCompany(ctx *gin.Context) {
 	req := pb.PageRequest{}
