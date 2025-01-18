@@ -1381,7 +1381,7 @@ func FinanceGetAll(ctx *gin.Context) {
 // @Security Bearer
 func FinanceGetByCompany(ctx *gin.Context) {
 	req := pb.PageRequest{}
-	if err := ctx.ShouldBindJSON(ctx); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
