@@ -20,6 +20,222 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	CompanyFinanceService_Create_FullMethodName       = "/education.CompanyFinanceService/Create"
+	CompanyFinanceService_Delete_FullMethodName       = "/education.CompanyFinanceService/Delete"
+	CompanyFinanceService_GetAll_FullMethodName       = "/education.CompanyFinanceService/GetAll"
+	CompanyFinanceService_GetByCompany_FullMethodName = "/education.CompanyFinanceService/GetByCompany"
+)
+
+// CompanyFinanceServiceClient is the client API for CompanyFinanceService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type CompanyFinanceServiceClient interface {
+	Create(ctx context.Context, in *CompanyFinance, opts ...grpc.CallOption) (*CompanyFinance, error)
+	Delete(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error)
+	GetByCompany(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceSelf, error)
+}
+
+type companyFinanceServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewCompanyFinanceServiceClient(cc grpc.ClientConnInterface) CompanyFinanceServiceClient {
+	return &companyFinanceServiceClient{cc}
+}
+
+func (c *companyFinanceServiceClient) Create(ctx context.Context, in *CompanyFinance, opts ...grpc.CallOption) (*CompanyFinance, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompanyFinance)
+	err := c.cc.Invoke(ctx, CompanyFinanceService_Create_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *companyFinanceServiceClient) Delete(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AbsResponse)
+	err := c.cc.Invoke(ctx, CompanyFinanceService_Delete_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *companyFinanceServiceClient) GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompanyFinanceList)
+	err := c.cc.Invoke(ctx, CompanyFinanceService_GetAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *companyFinanceServiceClient) GetByCompany(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceSelf, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompanyFinanceSelf)
+	err := c.cc.Invoke(ctx, CompanyFinanceService_GetByCompany_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CompanyFinanceServiceServer is the server API for CompanyFinanceService service.
+// All implementations must embed UnimplementedCompanyFinanceServiceServer
+// for forward compatibility.
+type CompanyFinanceServiceServer interface {
+	Create(context.Context, *CompanyFinance) (*CompanyFinance, error)
+	Delete(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
+	GetAll(context.Context, *PageRequest) (*CompanyFinanceList, error)
+	GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelf, error)
+	mustEmbedUnimplementedCompanyFinanceServiceServer()
+}
+
+// UnimplementedCompanyFinanceServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedCompanyFinanceServiceServer struct{}
+
+func (UnimplementedCompanyFinanceServiceServer) Create(context.Context, *CompanyFinance) (*CompanyFinance, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedCompanyFinanceServiceServer) Delete(context.Context, *DeleteAbsRequest) (*AbsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedCompanyFinanceServiceServer) GetAll(context.Context, *PageRequest) (*CompanyFinanceList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedCompanyFinanceServiceServer) GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelf, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByCompany not implemented")
+}
+func (UnimplementedCompanyFinanceServiceServer) mustEmbedUnimplementedCompanyFinanceServiceServer() {}
+func (UnimplementedCompanyFinanceServiceServer) testEmbeddedByValue()                               {}
+
+// UnsafeCompanyFinanceServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CompanyFinanceServiceServer will
+// result in compilation errors.
+type UnsafeCompanyFinanceServiceServer interface {
+	mustEmbedUnimplementedCompanyFinanceServiceServer()
+}
+
+func RegisterCompanyFinanceServiceServer(s grpc.ServiceRegistrar, srv CompanyFinanceServiceServer) {
+	// If the following call pancis, it indicates UnimplementedCompanyFinanceServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&CompanyFinanceService_ServiceDesc, srv)
+}
+
+func _CompanyFinanceService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyFinance)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyFinanceServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyFinanceService_Create_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyFinanceServiceServer).Create(ctx, req.(*CompanyFinance))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CompanyFinanceService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyFinanceServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyFinanceService_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyFinanceServiceServer).Delete(ctx, req.(*DeleteAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CompanyFinanceService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyFinanceServiceServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyFinanceService_GetAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyFinanceServiceServer).GetAll(ctx, req.(*PageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CompanyFinanceService_GetByCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyFinanceServiceServer).GetByCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyFinanceService_GetByCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyFinanceServiceServer).GetByCompany(ctx, req.(*PageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// CompanyFinanceService_ServiceDesc is the grpc.ServiceDesc for CompanyFinanceService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var CompanyFinanceService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "education.CompanyFinanceService",
+	HandlerType: (*CompanyFinanceServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _CompanyFinanceService_Create_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _CompanyFinanceService_Delete_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _CompanyFinanceService_GetAll_Handler,
+		},
+		{
+			MethodName: "GetByCompany",
+			Handler:    _CompanyFinanceService_GetByCompany_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "education.proto",
+}
+
+const (
 	CompanyService_GetCompanyBySubdomain_FullMethodName = "/education.CompanyService/GetCompanyBySubdomain"
 	CompanyService_CreateCompany_FullMethodName         = "/education.CompanyService/CreateCompany"
 	CompanyService_GetAll_FullMethodName                = "/education.CompanyService/GetAll"

@@ -86,6 +86,8 @@ func RunServer() {
 	companyService := service.NewCompanyService(companyRepo)
 	tarrifRepo := repository.NewTariffRepository(db)
 	tarrifService := service.NewTariffService(tarrifRepo)
+	companyFinanceRepo := repository.NewCompanyFinanceRepository(db)
+	companyFinanceService := service.NewCompanyFinanceService(companyFinanceRepo)
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Server.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen on port %v: %v", cfg.Server.Port, err)
@@ -101,7 +103,7 @@ func RunServer() {
 	pb.RegisterStudentServiceServer(grpcServer, studentService)
 	pb.RegisterCompanyServiceServer(grpcServer, companyService)
 	pb.RegisterTariffServiceServer(grpcServer, tarrifService)
-
+	pb.RegisterCompanyFinanceServiceServer(grpcServer, companyFinanceService)
 	c := cron.New()
 	_, err = c.AddFunc("10 1 1 * *", func() {
 		fmt.Println("Running student balance taker ....")
