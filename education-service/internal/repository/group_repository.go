@@ -66,7 +66,7 @@ LEFT JOIN group_students gs ON g.id = gs.group_id
 WHERE g.is_archived = $1 and g.company_id=$4
 GROUP BY g.id, c.title, r.title, r.capacity
 LIMIT $2 OFFSET $3;`
-
+	fmt.Println(query)
 	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
