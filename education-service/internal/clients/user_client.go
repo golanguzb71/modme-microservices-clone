@@ -20,8 +20,8 @@ func NewUserClient(addr string) (*UserClient, error) {
 	return &UserClient{client: client}, nil
 }
 
-func (uc *UserClient) GetTeacherById(teacherId string) (string, error) {
-	user, err := uc.client.GetUserById(context.TODO(), &pb.UserAbsRequest{UserId: teacherId})
+func (uc *UserClient) GetTeacherById(ctx context.Context, teacherId string) (string, error) {
+	user, err := uc.client.GetUserById(ctx, &pb.UserAbsRequest{UserId: teacherId})
 	if err != nil {
 		return "", err
 	}

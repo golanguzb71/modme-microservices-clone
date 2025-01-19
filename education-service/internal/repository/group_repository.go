@@ -66,7 +66,6 @@ LEFT JOIN group_students gs ON g.id = gs.group_id
 WHERE g.is_archived = $1 and g.company_id=$4
 GROUP BY g.id, c.title, r.title, r.capacity
 LIMIT $2 OFFSET $3;`
-	fmt.Println(query)
 	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
@@ -91,7 +90,7 @@ LIMIT $2 OFFSET $3;`
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
 
-		teacherName, err := r.userClient.GetTeacherById(group.TeacherId)
+		teacherName, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), group.TeacherId)
 		if err != nil {
 			continue
 		}
@@ -108,7 +107,7 @@ LIMIT $2 OFFSET $3;`
 	}
 	var totalCount int32
 	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id=$2;`
-	err = r.db.QueryRow(countQuery, isArchive).Scan(&totalCount, companyId)
+	err = r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
 	if err != nil {
 		log.Printf("Error counting total groups: %v", err)
 		return nil, fmt.Errorf("error counting total groups: %w", err)
