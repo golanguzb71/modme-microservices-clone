@@ -19,14 +19,14 @@ type DiscountRepository struct {
 	paymentRepo   *PaymentRepository
 }
 
-func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
+func (r *DiscountRepository) CreateDiscount(companyId, groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
 	var checker bool
 	tx, err := r.db.Begin()
 	if err != nil {
 		return status.Errorf(codes.Aborted, "error while creating transaction %v", err)
 	}
 
-	err = tx.QueryRow(`SELECT EXISTS(SELECT 1 FROM student_discount WHERE group_id=$1 AND student_id=$2)`, groupId, studentId).Scan(&checker)
+	err = tx.QueryRow(`SELECT EXISTS(SELECT 1 FROM student_discount WHERE group_id=$1 AND student_id=$2 AND company_id=$3)`, groupId, studentId, companyId).Scan(&checker)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error checking existing discount: %v", err)
 	}
@@ -34,15 +34,15 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 		return status.Errorf(codes.AlreadyExists, "Discount already exists")
 	}
 
-	_, err = tx.Exec(`INSERT INTO student_discount (student_id, discount, group_id, comment, start_at, end_at, withteacher) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7)`, studentId, discountPrice, groupId, comment, startDate, endDate, withTeacher)
+	_, err = tx.Exec(`INSERT INTO student_discount (student_id, discount, group_id, comment, start_at, end_at, withteacher , company_id) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7 , $8)`, studentId, discountPrice, groupId, comment, startDate, endDate, withTeacher, companyId)
 	if err != nil {
 		tx.Rollback()
 		return status.Errorf(codes.Internal, "Status discount insert error: %v", err)
 	}
 
-	_, err = tx.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
-		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8, $9)`, uuid.New(), studentId, groupId, startDate, endDate, withTeacher, comment, "CREATE", discountPrice)
+	_, err = tx.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount, company_id)
+		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8, $9, $10)`, uuid.New(), studentId, groupId, startDate, endDate, withTeacher, comment, "CREATE", discountPrice, companyId)
 	if err != nil {
 		tx.Rollback()
 		return status.Errorf(codes.Internal, "Error inserting into student history: %v", err)
@@ -51,8 +51,8 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 	rows, err := tx.Query(`
         SELECT id, student_id, method, amount, given_date, comment, created_at, payment_type, created_by_id, created_by_name, group_id
         FROM student_payments
-        WHERE student_id = $1 AND group_id = $2 AND given_date BETWEEN $3 AND $4 AND payment_type = 'TAKE_OFF'`,
-		studentId, groupId, startDate, endDate)
+        WHERE student_id = $1 AND group_id = $2 AND given_date BETWEEN $3 AND $4 AND payment_type = 'TAKE_OFF' AND company_id=$5`,
+		studentId, groupId, startDate, endDate, companyId)
 	if err != nil {
 		tx.Rollback()
 		return status.Errorf(codes.Internal, "Error fetching student payments: %v", err)
@@ -113,10 +113,10 @@ func (r *DiscountRepository) CreateDiscount(groupId string, studentId string, di
 	return nil
 }
 
-func (r *DiscountRepository) DeleteDiscount(groupId string, studentId string) error {
+func (r *DiscountRepository) DeleteDiscount(companyId, groupId string, studentId string) error {
 	var discount pb.AbsDiscountRequest
 	var createdAt string
-	err := r.db.QueryRow(`SELECT student_id, discount, group_id, comment, start_at, end_at, withteacher, created_at FROM student_discount where student_id=$1 and group_id=$2`, studentId, groupId).Scan(
+	err := r.db.QueryRow(`SELECT student_id, discount, group_id, comment, start_at, end_at, withteacher, created_at FROM student_discount where student_id=$1 and group_id=$2 and company_id=$3 `, studentId, groupId, companyId).Scan(
 		&discount.StudentId,
 		&discount.DiscountPrice,
 		&discount.GroupId,
@@ -129,18 +129,18 @@ func (r *DiscountRepository) DeleteDiscount(groupId string, studentId string) er
 	if err != nil {
 		return status.Errorf(codes.NotFound, err.Error())
 	}
-	_, err = r.db.Exec(`DELETE FROM student_discount where group_id=$1 and student_id=$2`, groupId, studentId)
+	_, err = r.db.Exec(`DELETE FROM student_discount where group_id=$1 and student_id=$2 and company_id=$3`, groupId, studentId, companyId)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error while deleting disount %f", err)
 	}
-	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount)
-		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8 , $9)`, uuid.New(), studentId, groupId, discount.StartDate, discount.EndDate, discount.WithTeacher, discount.Comment, "DELETE", discount.DiscountPrice)
+	_, err = r.db.Exec(`INSERT INTO student_discount_history (id, student_id, group_id, start_at, end_at, withteacher, comment, action , discount , company_id)
+		VALUES ($1, $2, $3, $4, $5 , $6 , $7, $8 , $9 , $10)`, uuid.New(), studentId, groupId, discount.StartDate, discount.EndDate, discount.WithTeacher, discount.Comment, "DELETE", discount.DiscountPrice, companyId)
 	if err != nil {
 		return status.Errorf(codes.Internal, "Error inserting into student history: %v", err)
 	}
 	return nil
 }
-func (r *DiscountRepository) GetAllDiscountByGroup(groupId string) (*pb.GetInformationDiscountResponse, error) {
+func (r *DiscountRepository) GetAllDiscountByGroup(companyId, groupId string) (*pb.GetInformationDiscountResponse, error) {
 	resp, err := r.studentClient.GetStudentsByGroupId(groupId)
 	if err != nil {
 		return nil, err
@@ -153,13 +153,14 @@ func (r *DiscountRepository) GetAllDiscountByGroup(groupId string) (*pb.GetInfor
 		element.StudentId = el.Id
 		element.StudentName = el.Name
 		element.StudentPhoneNumber = el.PhoneNumber
-		r.db.QueryRow(`SELECT  discount, comment, created_at , start_at , end_at , withteacher FROM student_discount WHERE group_id=$1 and student_id=$2`, groupId, el.Id).Scan(&element.Discount, &element.Cause, &element.CreatedAt, &element.StartAt, &element.EndAt, &element.WithTeacher)
+		r.db.QueryRow(`SELECT  discount, comment, created_at , start_at , end_at , withteacher FROM student_discount WHERE group_id=$1 and student_id=$2 and company_id=$3`, groupId, el.Id, companyId).Scan(&element.Discount, &element.Cause, &element.CreatedAt, &element.StartAt, &element.EndAt, &element.WithTeacher)
 		res = append(res, &element)
 	}
 	result.Discounts = res
 	return &result, nil
 }
-func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscountResponse, error) {
+
+func (r *DiscountRepository) GetHistoryDiscount(companyId, id string) (*pb.GetHistoryDiscountResponse, error) {
 	query := `
 		SELECT group_id, student_id,discount, comment, start_at, end_at, withTeacher, action, created_at
 		FROM student_discount_history
@@ -204,12 +205,12 @@ func (r *DiscountRepository) GetHistoryDiscount(id string) (*pb.GetHistoryDiscou
 	return &pb.GetHistoryDiscountResponse{Discounts: discounts}, nil
 }
 
-func (r *DiscountRepository) GetDiscountByStudentId(studentId, groupId string) (*pb.GetDiscountByStudentIdResponse, error) {
+func (r *DiscountRepository) GetDiscountByStudentId(companyId, studentId, groupId string) (*pb.GetDiscountByStudentIdResponse, error) {
 	var discount float64
 	var startAt, endAt string
 	var withTeacher bool
 
-	err := r.db.QueryRow(`SELECT discount, start_at, end_at , withteacher FROM student_discount WHERE student_id=$1 AND group_id=$2`, studentId, groupId).Scan(&discount, &startAt, &endAt, &withTeacher)
+	err := r.db.QueryRow(`SELECT discount, start_at, end_at , withteacher FROM student_discount WHERE student_id=$1 AND group_id=$2 and company_id=$3`, studentId, groupId, companyId).Scan(&discount, &startAt, &endAt, &withTeacher)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("no discount found for the given student and group")

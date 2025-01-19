@@ -25,7 +25,7 @@ func (c *CategoryService) CreateCategory(ctx context.Context, req *pb.CreateCate
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := c.repo.CreateCategory(req.Name, req.Desc); err != nil {
+	if err := c.repo.CreateCategory(companyId, req.Name, req.Desc); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -38,7 +38,7 @@ func (c *CategoryService) DeleteCategory(ctx context.Context, req *pb.DeleteAbsR
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := c.repo.DeleteCategory(req.Id); err != nil {
+	if err := c.repo.DeleteCategory(companyId, req.Id); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -51,5 +51,5 @@ func (c *CategoryService) GetAllCategory(ctx context.Context, req *emptypb.Empty
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return c.repo.GetAllCategory()
+	return c.repo.GetAllCategory(companyId)
 }
