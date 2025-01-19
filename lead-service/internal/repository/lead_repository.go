@@ -63,9 +63,9 @@ func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, req
 		section.Type = "set"
 
 		if containsString(requestedIds, section.Id) {
-			section.Leads = fetchLeadsForSection(db, section.Id, "set")
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "set")
 		}
-		_ = db.QueryRow(`SELECT count(*) FROM lead_user where set_id=$1`, section.Id).Scan(&section.LeadsCount)
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where set_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Sets = sections
@@ -74,9 +74,9 @@ func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, req
 func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT es.id, es.title
-        FROM expect_section es
+        FROM expect_section es where company_id=$1
     `
-	rows, err := db.Query(query)
+	rows, err := db.Query(query, companyId)
 	if err != nil {
 		log.Printf("Error fetching expectations: %v", err)
 		return
@@ -93,9 +93,9 @@ func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sq
 		section.Type = "expectation"
 
 		if containsString(requestedIds, section.Id) {
-			section.Leads = fetchLeadsForSection(db, section.Id, "expectation")
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "expectation")
 		}
-		_ = db.QueryRow(`SELECT count(*) FROM lead_user where expect_id=$1`, section.Id).Scan(&section.LeadsCount)
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where expect_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Expectations = sections
@@ -104,9 +104,9 @@ func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sq
 func calculateLeadsWithDetails(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ls.id, ls.title
-        FROM lead_section ls
+        FROM lead_section ls where company_id=$1
     `
-	rows, err := db.Query(query)
+	rows, err := db.Query(query, companyId)
 	if err != nil {
 		log.Printf("Error fetching lead sections: %v", err)
 		return
@@ -122,28 +122,28 @@ func calculateLeadsWithDetails(companyId string, p *pb.GetLeadCommonResponse, db
 		}
 		section.Type = "lead"
 		if containsString(requestedIds, section.Id) {
-			section.Leads = fetchLeadsForSection(db, section.Id, "lead")
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "lead")
 		}
-		_ = db.QueryRow(`SELECT count(*) FROM lead_user where lead_id=$1`, section.Id).Scan(&section.LeadsCount)
+		_ = db.QueryRow(`SELECT count(*) FROM lead_user where lead_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
 		sections = append(sections, section)
 	}
 	p.Leads = sections
 }
 
-func fetchLeadsForSection(db *sql.DB, sectionId, sectionType string) []*pb.Lead {
+func fetchLeadsForSection(companyId string, db *sql.DB, sectionId, sectionType string) []*pb.Lead {
 	var query string
 	switch sectionType {
 	case "set":
-		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE set_id=$1`
+		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE set_id=$1 and company_id=$2`
 	case "expectation":
-		query = `SELECT id,full_name, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1`
+		query = `SELECT id,full_name, comment, created_at, phone_number FROM lead_user WHERE expect_id=$1 and company_id=$2`
 	case "lead":
-		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE lead_id=$1`
+		query = `SELECT id, full_name,  comment, created_at, phone_number FROM lead_user WHERE lead_id=$1 and company_id=$2`
 	default:
 		return nil
 	}
 
-	rows, err := db.Query(query, sectionId)
+	rows, err := db.Query(query, sectionId, companyId)
 	if err != nil {
 		log.Printf("Error fetching leads for section: %v", err)
 		return nil
@@ -172,8 +172,8 @@ func containsString(slice []string, str string) bool {
 }
 
 func (r *LeadRepository) UpdateLead(companyId string, id, title string) error {
-	query := "UPDATE lead_section SET title = $1 WHERE id = $2"
-	_, err := r.db.Exec(query, title, id)
+	query := "UPDATE lead_section SET title = $1 WHERE id = $2 and company_id=$3"
+	_, err := r.db.Exec(query, title, id, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to update lead: %w", err)
 	}
@@ -181,8 +181,8 @@ func (r *LeadRepository) UpdateLead(companyId string, id, title string) error {
 }
 
 func (r *LeadRepository) DeleteLead(companyId string, id string) error {
-	query := "DELETE FROM lead_section WHERE id = $1"
-	_, err := r.db.Exec(query, id)
+	query := "DELETE FROM lead_section WHERE id = $1 and company_id=$2"
+	_, err := r.db.Exec(query, id, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to delete lead: %w", err)
 	}
@@ -190,8 +190,8 @@ func (r *LeadRepository) DeleteLead(companyId string, id string) error {
 }
 
 func (r *LeadRepository) GetAllLeads(companyId string) (*pb.GetLeadListResponse, error) {
-	query := `SELECT id, title FROM lead_section`
-	rows, err := r.db.Query(query)
+	query := `SELECT id, title FROM lead_section where company_id=$1`
+	rows, err := r.db.Query(query, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -232,13 +232,13 @@ func (r *LeadRepository) GetLeadReports(companyId string, endYear string, startY
 	conversionQuery := `
         SELECT conversion_date, SUM(lead_count) as total_leads
         FROM lead_conversion_reports
-        WHERE conversion_date >= $1 AND conversion_date <= $2
+        WHERE conversion_date >= $1 AND conversion_date <= $2 and company_id=$3
         GROUP BY conversion_date
         ORDER BY conversion_date
     `
 	conversionStartDate := startYear
 	conversionEndDate := endYear
-	conversionRows, err := r.db.Query(conversionQuery, conversionStartDate, conversionEndDate)
+	conversionRows, err := r.db.Query(conversionQuery, conversionStartDate, conversionEndDate, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("error querying lead conversions: %v", err)
 	}
@@ -260,11 +260,11 @@ func (r *LeadRepository) GetLeadReports(companyId string, endYear string, startY
 	sourceQuery := `
         SELECT source, SUM(lead_count) as total_leads
         FROM lead_source_reports
-        WHERE created_at >= $1 AND created_at <= $2
+        WHERE created_at >= $1 AND created_at <= $2 and company_id=$3
         GROUP BY source
         ORDER BY total_leads DESC
     `
-	sourceRows, err := r.db.Query(sourceQuery, conversionStartDate, conversionEndDate)
+	sourceRows, err := r.db.Query(sourceQuery, conversionStartDate, conversionEndDate, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("error querying lead sources: %v", err)
 	}
@@ -288,6 +288,6 @@ func (r *LeadRepository) GetLeadReports(companyId string, endYear string, startY
 
 func (r *LeadRepository) GetActiveLeadCount(companyId string) (*pb.GetActiveLeadCountResponse, error) {
 	activeLeadCount := 0
-	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user`).Scan(&activeLeadCount)
+	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user where company_id=$1`).Scan(&activeLeadCount, companyId)
 	return &pb.GetActiveLeadCountResponse{ActiveLeadCount: int32(activeLeadCount)}, nil
 }

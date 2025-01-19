@@ -29,7 +29,7 @@ func (s *SetService) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.CreateSet(req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
+	err := s.repo.CreateSet(companyId, req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to create set: " + err.Error()}, err
 	}
@@ -41,7 +41,7 @@ func (s *SetService) UpdateSet(ctx context.Context, req *pb.UpdateSetRequest) (*
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.UpdateSet(req.Id, req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
+	err := s.repo.UpdateSet(companyId, req.Id, req.Title, req.CourseId, req.TeacherId, req.DateType, req.Date, req.LessonStartTime)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to update set: " + err.Error()}, err
 	}
@@ -53,7 +53,7 @@ func (s *SetService) DeleteSet(ctx context.Context, req *pb.DeleteAbsRequest) (*
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	err := s.repo.DeleteSet(req.Id)
+	err := s.repo.DeleteSet(companyId, req.Id)
 	if err != nil {
 		return &pb.AbsResponse{Status: 500, Message: "Failed to delete set: " + err.Error()}, err
 	}
@@ -99,7 +99,7 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 		return nil, err
 	}
 	currentDate := time.Now().Format("2006-01-02")
-	names, phoneNumbers, err := s.repo.GetLeadDataBySetId(req.SetId)
+	names, phoneNumbers, err := s.repo.GetLeadDataBySetId(companyId, req.SetId)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 			return nil, err
 		}
 	}
-	err = s.repo.DeleteSet(req.SetId)
+	err = s.repo.DeleteSet(companyId, req.SetId)
 	if err != nil {
 		return nil, err
 	}
