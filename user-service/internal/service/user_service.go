@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"user-service/internal/repository"
@@ -30,6 +31,7 @@ func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
+	fmt.Println("here is the company id ", companyId)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
