@@ -137,7 +137,7 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 			return nil, fmt.Errorf("failed to scan group row: %v", err)
 		}
 
-		name, err := r.userClient.GetTeacherById(teacherId)
+		name, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId)
 		if err != nil {
 			return nil, err
 		}
@@ -278,7 +278,7 @@ func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.Get
 		}
 		groupStudent.Room = &room
 		groupStudent.Course = &course
-		name, err := r.userClient.GetTeacherById(teacherId)
+		name, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId)
 		if err != nil {
 			return nil, err
 		}
