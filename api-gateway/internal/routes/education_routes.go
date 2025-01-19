@@ -30,8 +30,8 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		finance := company.Group("/finance")
 		finance.POST("/create", handlers.FinanceCreate)
 		finance.DELETE("/delete", handlers.FinanceDelete)
-		finance.GET("/get-all", handlers.FinanceGetAll)
-		finance.GET("/get-by-company", handlers.FinanceGetByCompany)
+		finance.POST("/get-all", handlers.FinanceGetAll)
+		finance.POST("/get-by-company", handlers.FinanceGetByCompany)
 	}
 	room := api.Group("/room")
 	{
