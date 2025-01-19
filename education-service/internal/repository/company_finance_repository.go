@@ -28,8 +28,15 @@ func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFin
 	if editedValidDate <= validDate {
 		return nil, fmt.Errorf("edited_valid_date (%s) must be greater than valid_date (%s)", editedValidDate, validDate)
 	}
-
-	_, err = r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	_, err = tx.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
+	if err != nil {
+		return nil, err
+	}
+	_, err = tx.Exec(`UPDATE company SET valid_date=$1 where id=$2`, req.EditedValidDate, req.CompanyId)
 	if err != nil {
 		return nil, err
 	}
