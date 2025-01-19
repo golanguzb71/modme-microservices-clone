@@ -83,7 +83,7 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 
 	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id = $2;`
 
-	log.Printf("countQuery params: isArchived=%v, companyId=%v", isArchive, companyId)
+	fmt.Printf("countQuery params: isArchived=%v, companyId=%v", isArchive, companyId)
 	var totalCount int32
 	err := r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
 	if err != nil {
@@ -95,7 +95,6 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 
 	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
 	if err != nil {
-		log.Printf("Error querying database: %v", err)
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 	defer rows.Close()
