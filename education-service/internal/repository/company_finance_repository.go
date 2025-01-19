@@ -231,8 +231,8 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 			tariff t ON t.id = cp.tariff_id
 		WHERE 
 			cp.company_id = $1 
-			AND ($2 IS NULL OR cp.created_at >= $2)
-			AND ($3 IS NULL OR cp.created_at <= $3)
+			AND ($2::TIMESTAMP IS NULL OR cp.created_at >= $2::TIMESTAMP)
+			AND ($3::TIMESTAMP IS NULL OR cp.created_at <= $3::TIMESTAMP)
 		ORDER BY 
 			cp.created_at DESC
 		LIMIT $4 OFFSET $5;
@@ -244,26 +244,28 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 			company_payments cp
 		WHERE 
 			cp.company_id = $1 
-			AND ($2 IS NULL OR cp.created_at >= $2)
-			AND ($3 IS NULL OR cp.created_at <= $3);
+			AND ($2::TIMESTAMP IS NULL OR cp.created_at >= $2::TIMESTAMP)
+			AND ($3::TIMESTAMP IS NULL OR cp.created_at <= $3::TIMESTAMP);
 	`
 
 	sumQuery := `
-			SELECT 
-				coalesce(SUM(cp.sum), 0) AS sum_amount_period, 
-				coalesce(t.name, '') AS tariff_name, 
-				coalesce(cp.discount_name, '') AS discount_name,
-				t.sum AS required_sum
-			FROM 
-				company_payments cp
-			LEFT JOIN 
-				tariff t ON t.id = cp.tariff_id
-			WHERE 
-				cp.company_id = $1 
-				AND ($2 IS NULL OR cp.created_at >= $2)
-				AND ($3 IS NULL OR cp.created_at <= $3)group by t.name, cp.discount_name, t.sum
-			LIMIT 1;
-		`
+		SELECT 
+			coalesce(SUM(cp.sum), 0) AS sum_amount_period, 
+			coalesce(t.name, '') AS tariff_name, 
+			coalesce(cp.discount_name, '') AS discount_name,
+			t.sum AS required_sum
+		FROM 
+			company_payments cp
+		LEFT JOIN 
+			tariff t ON t.id = cp.tariff_id
+		WHERE 
+			cp.company_id = $1 
+			AND ($2::TIMESTAMP IS NULL OR cp.created_at >= $2::TIMESTAMP)
+			AND ($3::TIMESTAMP IS NULL OR cp.created_at <= $3::TIMESTAMP)
+		GROUP BY 
+			t.name, cp.discount_name, t.sum
+		LIMIT 1;
+	`
 
 	var totalCount int32
 	err := r.db.QueryRow(countQuery, companyId, from, to).Scan(&totalCount)
