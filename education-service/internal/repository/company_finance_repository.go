@@ -159,7 +159,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	to := req.GetTo()
 
 	var totalCount int32
-	err := r.db.QueryRow(countQuery, from, to).Scan(&totalCount)
+	err := r.db.QueryRow(countQuery).Scan(&totalCount)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 	`
 
 	var totalCount int32
-	err := r.db.QueryRow(countQuery, companyId, from, to).Scan(&totalCount)
+	err := r.db.QueryRow(countQuery, companyId).Scan(&totalCount)
 	if err != nil {
 		return nil, err
 	}
