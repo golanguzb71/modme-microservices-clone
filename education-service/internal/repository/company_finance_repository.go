@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
+	"fmt"
 )
 
 type CompanyFinanceRepository struct {
@@ -14,8 +15,21 @@ func NewCompanyFinanceRepository(db *sql.DB) *CompanyFinanceRepository {
 }
 
 func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
-	r.db.QueryRow(`SELECT * FROM company `)
-	_, err := r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
+	var validDate string
+	err := r.db.QueryRow(`SELECT valid_date FROM company WHERE id = $1`, req.GetCompanyId()).Scan(&validDate)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("company with id %d not found", req.GetCompanyId())
+		}
+		return nil, err
+	}
+
+	editedValidDate := req.GetEditedValidDate()
+	if editedValidDate <= validDate {
+		return nil, fmt.Errorf("edited_valid_date (%s) must be greater than valid_date (%s)", editedValidDate, validDate)
+	}
+
+	_, err = r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
 	if err != nil {
 		return nil, err
 	}
