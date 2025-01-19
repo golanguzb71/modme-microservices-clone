@@ -5554,6 +5554,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "discount_id": {
+                    "type": "integer"
+                },
                 "edited_valid_date": {
                     "type": "string"
                 },
@@ -5575,6 +5578,12 @@
                     "type": "integer"
                 },
                 "company_name": {
+                    "type": "string"
+                },
+                "discount_id": {
+                    "type": "string"
+                },
+                "discount_name": {
                     "type": "string"
                 },
                 "finished_to": {
@@ -5619,6 +5628,9 @@
                 },
                 "created_at": {
                     "type": "string"
+                },
+                "discount_id": {
+                    "type": "integer"
                 },
                 "edit_valid_date": {
                     "type": "string"

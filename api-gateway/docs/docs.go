@@ -5564,6 +5564,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "discount_id": {
+                    "type": "integer"
+                },
                 "edited_valid_date": {
                     "type": "string"
                 },
@@ -5585,6 +5588,12 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "company_name": {
+                    "type": "string"
+                },
+                "discount_id": {
+                    "type": "string"
+                },
+                "discount_name": {
                     "type": "string"
                 },
                 "finished_to": {
@@ -5629,6 +5638,9 @@ const docTemplate = `{
                 },
                 "created_at": {
                     "type": "string"
+                },
+                "discount_id": {
+                    "type": "integer"
                 },
                 "edit_valid_date": {
                     "type": "string"

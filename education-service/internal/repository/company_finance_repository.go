@@ -14,7 +14,7 @@ func NewCompanyFinanceRepository(db *sql.DB) *CompanyFinanceRepository {
 }
 
 func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
-	r.db.Query(``)
+	r.db.Query(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date) values ($1 ,$2,$3,$4,$5)`, req.CompanyId, req.TariffId)
 	return nil, nil
 }
 
