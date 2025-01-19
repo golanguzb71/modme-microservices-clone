@@ -183,5 +183,124 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 }
 
 func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelfList, error) {
-	return nil, nil
+	page := req.GetPage()
+	if page <= 0 {
+		page = 1
+	}
+
+	size := req.GetSize()
+	if size <= 0 {
+		size = 2
+	}
+
+	offset := (page - 1) * size
+
+	from := req.GetFrom()
+	to := req.GetTo()
+	companyId := req.GetCompanyId()
+
+	query := `
+		SELECT 
+			cp.id, 
+			cp.tariff_id, 
+			t.sum AS tariff_sum, 
+			coalesce(cp.comment, ''), 
+			cp.sum, 
+			cp.edited_valid_date, 
+			cp.created_at, 
+			coalesce(cp.discount_id, ''), 
+			coalesce(cp.discount_name, '')
+		FROM 
+			company_payments cp
+		LEFT JOIN 
+			tariff t ON t.id = cp.tariff_id
+		WHERE 
+			cp.company_id = $1 
+			AND ($2 IS NULL OR cp.created_at >= $2)
+			AND ($3 IS NULL OR cp.created_at <= $3)
+		ORDER BY 
+			cp.created_at DESC
+		LIMIT $4 OFFSET $5;
+	`
+
+	countQuery := `
+		SELECT COUNT(*)
+		FROM 
+			company_payments cp
+		WHERE 
+			cp.company_id = $1 
+			AND ($2 IS NULL OR cp.created_at >= $2)
+			AND ($3 IS NULL OR cp.created_at <= $3);
+	`
+
+	sumQuery := `
+			SELECT 
+				coalesce(SUM(cp.sum), 0) AS sum_amount_period, 
+				coalesce(t.name, '') AS tariff_name, 
+				coalesce(cp.discount_name, '') AS discount_name,
+				t.sum AS required_sum
+			FROM 
+				company_payments cp
+			LEFT JOIN 
+				tariff t ON t.id = cp.tariff_id
+			WHERE 
+				cp.company_id = $1 
+				AND ($2 IS NULL OR cp.created_at >= $2)
+				AND ($3 IS NULL OR cp.created_at <= $3)group by t.name, cp.discount_name, t.sum
+			LIMIT 1;
+		`
+
+	var totalCount int32
+	err := r.db.QueryRow(countQuery, companyId, from, to).Scan(&totalCount)
+	if err != nil {
+		return nil, err
+	}
+
+	var sumAmountPeriod float32
+	var tariffName string
+	var discountName string
+	var requiredSum float32
+	err = r.db.QueryRow(sumQuery, companyId, from, to).Scan(&sumAmountPeriod, &tariffName, &discountName, &requiredSum)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Query(query, companyId, from, to, size, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []*pb.CompanyFinanceSelf
+	for rows.Next() {
+		var item pb.CompanyFinanceSelf
+		err := rows.Scan(
+			&item.Id,
+			&item.TariffId,
+			&item.TariffSum,
+			&item.Comment,
+			&item.Sum,
+			&item.EditValidDate,
+			&item.CreatedAt,
+			&item.DiscountId,
+			&item.DiscountName,
+		)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, &item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &pb.CompanyFinanceSelfList{
+		Count:           totalCount,
+		SumAmountPeriod: sumAmountPeriod,
+		TariffName:      tariffName,
+		DiscountName:    discountName,
+		RequiredSum:     requiredSum,
+		Items:           items,
+	}, nil
 }
