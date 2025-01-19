@@ -135,8 +135,8 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 		LEFT JOIN 
 			tariff t ON t.id = cp.tariff_id
 		WHERE 
-			($1 IS NULL OR cp.created_at >= $1) 
-			AND ($2 IS NULL OR cp.created_at <= $2)
+			($1::TIMESTAMP IS NULL OR cp.created_at >= $1) 
+			AND ($2::TIMESTAMP IS NULL OR cp.created_at <= $2)
 		ORDER BY 
 			cp.created_at DESC
 		LIMIT $3 OFFSET $4;
@@ -147,8 +147,8 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 		FROM 
 			company_payments cp
 		WHERE 
-			($1 IS NULL OR cp.created_at >= $1) 
-			AND ($2 IS NULL OR cp.created_at <= $2);
+			($1::TIMESTAMP IS NULL OR cp.created_at >= $1) 
+			AND ($2::TIMESTAMP IS NULL OR cp.created_at <= $2);
 	`
 
 	from := req.GetFrom()
