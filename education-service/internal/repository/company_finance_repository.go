@@ -171,6 +171,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 		return nil, err
 	}
 
+	totalCount = totalCount / size
 	rows, err := r.db.Query(query, from, to, size, offset)
 	if err != nil {
 		return nil, err
@@ -320,7 +321,7 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-
+	totalCount = totalCount / size
 	return &pb.CompanyFinanceSelfList{
 		Count:           totalCount,
 		SumAmountPeriod: sumAmountPeriod,
