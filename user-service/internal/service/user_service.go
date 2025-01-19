@@ -21,7 +21,7 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 }
 
 func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.AbsResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -29,7 +29,7 @@ func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 }
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -37,7 +37,7 @@ func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersReques
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetUserByIdResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -45,7 +45,7 @@ func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (
 }
 
 func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequest) (*pb.AbsResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -53,7 +53,7 @@ func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequ
 }
 
 func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.AbsResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -61,7 +61,7 @@ func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest
 }
 
 func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllEmployeeResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -69,7 +69,7 @@ func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployee
 }
 
 func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllStuffResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -77,7 +77,7 @@ func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeReq
 }
 
 func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetHistoryByUserIdResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
@@ -85,7 +85,7 @@ func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsReq
 }
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, req *pb.UpdateUserPasswordRequest) (*pb.AbsResponse, error) {
-	companyId := utils.GetCompanyId(ctx)
+	companyId := utils.GetCompanyDetails(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
