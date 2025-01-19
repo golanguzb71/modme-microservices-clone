@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"user-service/internal/repository"
 	"user-service/internal/utils"
 	"user-service/proto/pb"
@@ -27,20 +26,16 @@ func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	fmt.Println("here is the company id ", companyId)
-
 	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetUserByIdResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-
 	return u.userRepo.GetUserById(companyId, req.UserId)
 }
 
 func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-
 	return u.userRepo.UpdateUser(companyId, req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber)
 }
 

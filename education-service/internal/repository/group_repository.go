@@ -107,8 +107,8 @@ LIMIT $2 OFFSET $3;`
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
 	var totalCount int32
-	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1;`
-	err = r.db.QueryRow(countQuery, isArchive).Scan(&totalCount)
+	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id=$2;`
+	err = r.db.QueryRow(countQuery, isArchive).Scan(&totalCount, companyId)
 	if err != nil {
 		log.Printf("Error counting total groups: %v", err)
 		return nil, fmt.Errorf("error counting total groups: %w", err)
