@@ -145,10 +145,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	countQuery := `
 		SELECT COUNT(*)
 		FROM 
-			company_payments cp
-		WHERE 
-			($1::TIMESTAMP IS NULL OR cp.created_at >= $1) 
-			AND ($2::TIMESTAMP IS NULL OR cp.created_at <= $2);
+			company_payments
 	`
 
 	from := req.GetFrom()
@@ -244,8 +241,6 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 			company_payments cp
 		WHERE 
 			cp.company_id = $1 
-			AND ($2::TIMESTAMP IS NULL OR cp.created_at >= $2::TIMESTAMP)
-			AND ($3::TIMESTAMP IS NULL OR cp.created_at <= $3::TIMESTAMP);
 	`
 
 	sumQuery := `

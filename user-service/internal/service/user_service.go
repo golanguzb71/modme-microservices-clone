@@ -26,6 +26,7 @@ func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
+
 	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
 }
 
