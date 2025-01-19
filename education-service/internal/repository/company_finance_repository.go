@@ -14,16 +14,173 @@ func NewCompanyFinanceRepository(db *sql.DB) *CompanyFinanceRepository {
 }
 
 func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
-	r.db.Query(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date) values ($1 ,$2,$3,$4,$5)`, req.CompanyId, req.TariffId)
+	_, err := r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date) values ($1 ,$2,$3,$4,$5)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate)
+	if err != nil {
+		return nil, err
+	}
 	return nil, nil
 }
 
 func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsResponse, error) {
-	return nil, nil
-}
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, err
+	}
 
+	var exists bool
+	err = tx.QueryRow(`
+		SELECT EXISTS(
+			SELECT 1 
+			FROM company 
+			WHERE valid_date = (SELECT edited_valid_date FROM company_payments WHERE id = $1)
+		)
+	`, req.Id).Scan(&exists)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	if exists {
+		_, err = tx.Exec(`
+			UPDATE company
+			SET valid_date = (
+				SELECT edited_valid_date
+				FROM (
+					SELECT edited_valid_date
+					FROM company_payments
+					WHERE company_id = (
+						SELECT company_id
+						FROM company_payments
+						WHERE id = $1
+					)
+					AND id != $1
+					ORDER BY created_at DESC
+					LIMIT 2
+				) subquery
+				ORDER BY created_at ASC
+				LIMIT 1
+			)
+			WHERE id = (
+				SELECT company_id
+				FROM company_payments
+				WHERE id = $1
+			);
+		`, req.Id)
+		if err != nil {
+			tx.Rollback()
+			return nil, err
+		}
+	}
+
+	_, err = tx.Exec(`DELETE FROM company_payments WHERE id = $1`, req.Id)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.AbsResponse{
+		Status:  200,
+		Message: "ok",
+	}, nil
+}
 func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanceList, error) {
-	return nil, nil
+	page := req.GetPage()
+	if page <= 0 {
+		page = 1
+	}
+
+	size := req.GetSize()
+	if size <= 0 {
+		size = 2
+	}
+
+	offset := (page - 1) * size
+
+	query := `
+		SELECT 
+			cp.id, 
+			c.title AS company_name, 
+			cp.company_id, 
+			cp.created_at AS start_from, 
+			cp.edited_valid_date AS finished_to, 
+			t.id AS tariff_id, 
+			t.name AS tariff_name, 
+			cp.sum
+		FROM 
+			company_payments cp
+		LEFT JOIN 
+			company c ON c.id = cp.company_id
+		LEFT JOIN 
+			tariff t ON t.id = cp.tariff_id
+		WHERE 
+			($1 IS NULL OR cp.created_at >= $1) 
+			AND ($2 IS NULL OR cp.created_at <= $2)
+		ORDER BY 
+			cp.created_at DESC
+		LIMIT $3 OFFSET $4;
+	`
+
+	countQuery := `
+		SELECT COUNT(*)
+		FROM 
+			company_payments cp
+		WHERE 
+			($1 IS NULL OR cp.created_at >= $1) 
+			AND ($2 IS NULL OR cp.created_at <= $2);
+	`
+
+	from := req.GetFrom()
+	to := req.GetTo()
+
+	var totalCount int32
+	err := r.db.QueryRow(countQuery, from, to).Scan(&totalCount)
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := r.db.Query(query, from, to, size, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Parse the results
+	var items []*pb.CompanyFinanceForList
+	for rows.Next() {
+		var item pb.CompanyFinanceForList
+		err := rows.Scan(
+			&item.Id,
+			&item.CompanyName,
+			&item.CompanyId,
+			&item.StartFrom,
+			&item.FinishedTo,
+			&item.TariffId,
+			&item.TariffName,
+			&item.Sum,
+			&item.DiscountId,
+			&item.DiscountName,
+		)
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, &item)
+	}
+
+	// Check for row iteration errors
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Prepare the response
+	return &pb.CompanyFinanceList{
+		Count: totalCount,
+		Items: items,
+	}, nil
 }
 
 func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelf, error) {

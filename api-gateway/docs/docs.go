@@ -5565,7 +5565,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
+                },
+                "discount_name": {
+                    "type": "string"
                 },
                 "edited_valid_date": {
                     "type": "string"
@@ -5640,7 +5643,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "discount_id": {
-                    "type": "integer"
+                    "type": "string"
+                },
+                "discount_name": {
+                    "type": "string"
                 },
                 "edit_valid_date": {
                     "type": "string"

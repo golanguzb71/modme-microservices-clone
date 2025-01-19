@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS company
     subdomain     varchar                    NOT NULL,
     valid_date    DATE                       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     tariff_id     int references tariff (id) NOT NULL,
-    discount_id   int,
+    discount_id   varchar,
     is_demo       bool                                DEFAULT FALSE,
     created_at    timestamp                           DEFAULT CURRENT_TIMESTAMP
 );
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS company_payments
     id                serial primary key,
     company_id        int references company (id) NOT NULL,
     tariff_id         int references tariff (id)  NOT NULL,
+    discount_id       varchar                     NOT NULL,
     comment           varchar,
     sum               float                       NOT NULL,
     edited_valid_date date                        NOT NULL,

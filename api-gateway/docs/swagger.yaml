@@ -425,7 +425,9 @@ definitions:
       created_at:
         type: string
       discount_id:
-        type: integer
+        type: string
+      discount_name:
+        type: string
       edited_valid_date:
         type: string
       id:
@@ -474,7 +476,9 @@ definitions:
       created_at:
         type: string
       discount_id:
-        type: integer
+        type: string
+      discount_name:
+        type: string
       edit_valid_date:
         type: string
       id:
