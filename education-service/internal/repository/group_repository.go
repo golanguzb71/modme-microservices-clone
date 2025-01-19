@@ -53,19 +53,46 @@ func (r *GroupRepository) DeleteGroup(companyId string, id string) error {
 }
 func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
-	query := `SELECT g.id, g.course_id, COALESCE(c.title, 'Unknown Course') as course_title, 
-       g.teacher_id,
-       g.room_id, COALESCE(r.title, 'Unknown Room') as room_title, r.capacity, g.start_date, g.end_date, g.is_archived, 
-       g.name, 
-       COUNT(gs.id) as student_count, 
-       g.created_at , g.days , g.start_time , g.date_type
-FROM groups g
-LEFT JOIN courses c ON g.course_id = c.id
-LEFT JOIN rooms r ON g.room_id = r.id
-LEFT JOIN group_students gs ON g.id = gs.group_id
-WHERE g.is_archived = $1 and g.company_id=$4
-GROUP BY g.id, c.title, r.title, r.capacity
-LIMIT $2 OFFSET $3;`
+
+	query := `
+		SELECT 
+			g.id, 
+			g.course_id, 
+			COALESCE(c.title, 'Unknown Course') as course_title, 
+			g.teacher_id,
+			g.room_id, 
+			COALESCE(r.title, 'Unknown Room') as room_title, 
+			r.capacity, 
+			g.start_date, 
+			g.end_date, 
+			g.is_archived, 
+			g.name, 
+			COUNT(gs.id) as student_count, 
+			g.created_at, 
+			g.days, 
+			g.start_time, 
+			g.date_type
+		FROM groups g
+		LEFT JOIN courses c ON g.course_id = c.id
+		LEFT JOIN rooms r ON g.room_id = r.id
+		LEFT JOIN group_students gs ON g.id = gs.group_id
+		WHERE g.is_archived = $1 and g.company_id = $4
+		GROUP BY g.id, c.title, r.title, r.capacity
+		LIMIT $2 OFFSET $3;
+	`
+
+	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id = $2;`
+
+	log.Printf("countQuery params: isArchived=%v, companyId=%v", isArchive, companyId)
+	var totalCount int32
+	err := r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
+	if err != nil {
+		log.Printf("Error counting total groups: %v (isArchived=%v, companyId=%v)", err, isArchive, companyId)
+		return nil, fmt.Errorf("error counting total groups: %w", err)
+	}
+
+	totalPageCount := (totalCount + size - 1) / size
+
 	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
 	if err != nil {
 		log.Printf("Error querying database: %v", err)
@@ -92,6 +119,7 @@ LIMIT $2 OFFSET $3;`
 
 		teacherName, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), group.TeacherId)
 		if err != nil {
+			log.Printf("Error fetching teacher by ID: %v", err)
 			continue
 		}
 		group.TeacherName = teacherName
@@ -105,18 +133,13 @@ LIMIT $2 OFFSET $3;`
 	if err = rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
-	var totalCount int32
-	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id=$2;`
-	err = r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
-	if err != nil {
-		log.Printf("Error counting total groups: %v", err)
-		return nil, fmt.Errorf("error counting total groups: %w", err)
-	}
 
-	totalPageCount := (totalCount + size - 1) / size
-
-	return &pb.GetGroupsResponse{Groups: groups, TotalPageCount: totalPageCount}, nil
+	return &pb.GetGroupsResponse{
+		Groups:         groups,
+		TotalPageCount: totalPageCount,
+	}, nil
 }
+
 func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
 	if !utils.CheckGroupAndTeacher(r.db, id, actionRole, actionId) {
 		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
