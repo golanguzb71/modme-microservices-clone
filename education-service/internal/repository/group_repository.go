@@ -147,7 +147,7 @@ func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionI
 		}
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
-	teacherName, _ := r.userClient.GetTeacherById(group.TeacherId)
+	teacherName, _ := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), group.TeacherId)
 	group.TeacherName = teacherName
 	group.Course = &course
 	group.Room = &room
@@ -191,7 +191,7 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 		if err != nil {
 			return nil, err
 		}
-		teacherName, err := r.userClient.GetTeacherById(teacherId.String)
+		teacherName, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId.String)
 		if err != nil {
 			return nil, err
 		}
