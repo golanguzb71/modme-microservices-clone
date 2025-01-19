@@ -14,7 +14,7 @@ func NewCompanyFinanceRepository(db *sql.DB) *CompanyFinanceRepository {
 }
 
 func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
-	_, err := r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date) values ($1 ,$2,$3,$4,$5)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate)
+	_, err := r.db.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,9 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 			cp.edited_valid_date AS finished_to, 
 			t.id AS tariff_id, 
 			t.name AS tariff_name, 
-			cp.sum
+			cp.sum,
+			coalesce(cp.discount_id , ''),
+			coalesce(cp.discount_name , '')
 		FROM 
 			company_payments cp
 		LEFT JOIN 
@@ -149,7 +151,6 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	}
 	defer rows.Close()
 
-	// Parse the results
 	var items []*pb.CompanyFinanceForList
 	for rows.Next() {
 		var item pb.CompanyFinanceForList
@@ -171,18 +172,16 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 		items = append(items, &item)
 	}
 
-	// Check for row iteration errors
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	// Prepare the response
 	return &pb.CompanyFinanceList{
 		Count: totalCount,
 		Items: items,
 	}, nil
 }
 
-func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelf, error) {
+func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelfList, error) {
 	return nil, nil
 }

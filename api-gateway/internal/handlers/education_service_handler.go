@@ -1375,7 +1375,7 @@ func FinanceGetAll(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param body body pb.PageRequest true "Pagination and filtering details"
-// @Success 200 {object} pb.CompanyFinanceSelf "list of finance records for a specific company"
+// @Success 200 {object} pb.CompanyFinanceSelfList "list of finance records for a specific company"
 // @Failure 400 {object} utils.AbsResponse "Bad request"
 // @Router /api/company/finance/get-by-company [post]
 // @Security Bearer

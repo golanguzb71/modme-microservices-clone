@@ -7,11 +7,12 @@ import "common.proto";
 
 import "google/protobuf/empty.proto";
 
+
 service CompanyFinanceService{
   rpc Create(CompanyFinance) returns(CompanyFinance) {}
   rpc Delete(common.DeleteAbsRequest) returns(common.AbsResponse){}
   rpc GetAll(common.PageRequest) returns(CompanyFinanceList){}
-  rpc GetByCompany(common.PageRequest) returns(CompanyFinanceSelf){}
+  rpc GetByCompany(common.PageRequest) returns(CompanyFinanceSelfList){}
 }
 
 message CompanyFinance{
@@ -22,7 +23,8 @@ message CompanyFinance{
   float sum = 5;
   string edited_valid_date = 6;
   string created_at = 7;
-  int32 discount_id = 8;
+  string discount_id = 8;
+  string discount_name = 9;
 }
 
 message CompanyFinanceSelf{
@@ -33,7 +35,8 @@ message CompanyFinanceSelf{
   float sum = 5;
   string edit_valid_date = 6;
   string created_at = 7;
-  int32 discount_id = 8;
+  string discount_id = 8;
+  string discount_name = 9;
 }
 message CompanyFinanceSelfList{
   int32 count = 1;
@@ -60,7 +63,6 @@ message CompanyFinanceForList{
   string discount_id = 9;
   string discount_name = 10;
 }
-
 
 service CompanyService{
   rpc GetCompanyBySubdomain(GetCompanyRequest) returns(GetCompanyResponse);

@@ -274,7 +274,7 @@ func (lc *EducationClient) FinanceDelete(id string) (*pb.AbsResponse, error) {
 	return lc.companyFinanceClient.Delete(context.TODO(), &pb.DeleteAbsRequest{Id: id})
 }
 
-func (lc *EducationClient) FinanceGetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelf, error) {
+func (lc *EducationClient) FinanceGetByCompany(req *pb.PageRequest) (*pb.CompanyFinanceSelfList, error) {
 	return lc.companyFinanceClient.GetByCompany(context.TODO(), req)
 }
 

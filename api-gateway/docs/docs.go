@@ -360,7 +360,7 @@ const docTemplate = `{
                     "200": {
                         "description": "list of finance records for a specific company",
                         "schema": {
-                            "$ref": "#/definitions/pb.CompanyFinanceSelf"
+                            "$ref": "#/definitions/pb.CompanyFinanceSelfList"
                         }
                     },
                     "400": {
@@ -5662,6 +5662,32 @@ const docTemplate = `{
                 },
                 "tariff_sum": {
                     "type": "integer"
+                }
+            }
+        },
+        "pb.CompanyFinanceSelfList": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "discount_name": {
+                    "type": "string"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.CompanyFinanceSelf"
+                    }
+                },
+                "required_sum": {
+                    "type": "number"
+                },
+                "sum_amount_period": {
+                    "type": "number"
+                },
+                "tariff_name": {
+                    "type": "string"
                 }
             }
         },

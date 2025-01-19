@@ -26,6 +26,6 @@ func (cf *CompanyFinanceService) Delete(ctx context.Context, req *pb.DeleteAbsRe
 func (cf *CompanyFinanceService) GetAll(ctx context.Context, req *pb.PageRequest) (*pb.CompanyFinanceList, error) {
 	return cf.companyFinanceRepo.GetAll(req)
 }
-func (cf *CompanyFinanceService) GetByCompany(ctx context.Context, req *pb.PageRequest) (*pb.CompanyFinanceSelf, error) {
+func (cf *CompanyFinanceService) GetByCompany(ctx context.Context, req *pb.PageRequest) (*pb.CompanyFinanceSelfList, error) {
 	return cf.companyFinanceRepo.GetByCompany(req)
 }

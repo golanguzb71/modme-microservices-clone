@@ -490,6 +490,23 @@ definitions:
       tariff_sum:
         type: integer
     type: object
+  pb.CompanyFinanceSelfList:
+    properties:
+      count:
+        type: integer
+      discount_name:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/pb.CompanyFinanceSelf'
+        type: array
+      required_sum:
+        type: number
+      sum_amount_period:
+        type: number
+      tariff_name:
+        type: string
+    type: object
   pb.CreateCategoryRequest:
     properties:
       desc:
@@ -1768,7 +1785,7 @@ paths:
         "200":
           description: list of finance records for a specific company
           schema:
-            $ref: '#/definitions/pb.CompanyFinanceSelf'
+            $ref: '#/definitions/pb.CompanyFinanceSelfList'
         "400":
           description: Bad request
           schema:
