@@ -38,17 +38,12 @@ func RecoveryInterceptor(
 }
 
 func GetCompanyDetails(ctx context.Context) string {
-	fmt.Println(ctx)
 	md, ok := metadata.FromIncomingContext(ctx)
-	fmt.Println("company id checking ............")
 	if ok {
-		fmt.Println("company id ok is true")
 		if _, ok := md["company_id"]; ok {
-			fmt.Println("company id md company_id ok very true ")
 			fmt.Println("here the value ", md["company_id"][0])
 			return md["company_id"][0]
 		}
 	}
-	fmt.Println("company id topilmadi")
 	return ""
 }

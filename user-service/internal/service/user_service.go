@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"user-service/internal/repository"
@@ -29,7 +30,12 @@ func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 }
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
+	fmt.Println("======================     get teacher urligi request keldi ======================")
+
 	companyId := utils.GetCompanyDetails(ctx)
+	fmt.Println(companyId)
+	fmt.Println("======================     get teacher urligi request ketdi ======================")
+
 	if companyId != "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
