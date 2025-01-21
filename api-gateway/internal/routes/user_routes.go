@@ -22,4 +22,11 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		user.GET("/history/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetUserHistoryById)
 		user.PUT("/update-password/:userId/:password", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.UpdateUserPassword)
 	}
+	companyUser := api.Group("/company-user")
+	{
+		companyUser.POST("/create", handlers.CreateUserForCompany)
+		companyUser.GET("/get-user/:userId", handlers.GetUserByIdForCompany)
+		companyUser.PATCH("/update", handlers.UpdateUserbyIdForCompany)
+		companyUser.DELETE("/delete/:userId", handlers.DeleteUserByIdForCompany)
+	}
 }

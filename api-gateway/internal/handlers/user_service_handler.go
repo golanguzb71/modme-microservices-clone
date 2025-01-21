@@ -4,7 +4,10 @@ import (
 	"api-gateway/grpc/proto/pb"
 	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
+	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/metadata"
 	"net/http"
 	"strconv"
 )
@@ -52,13 +55,13 @@ func CreateUser(ctx *gin.Context) {
 // @Security Bearer
 // @Router /api/user/get-teachers/{isDeleted} [get]
 func GetTeachers(ctx *gin.Context) {
-	ctxR, cancel := etc.NewTimoutContext(ctx)
-	defer cancel()
 	isDeleted, err := strconv.ParseBool(ctx.Param("isDeleted"))
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return
 	}
+	ctxR, cancel := etc.NewTimoutContext(ctx)
+	defer cancel()
 	resp, err := userClient.GetTeachers(ctxR, isDeleted)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
@@ -321,4 +324,55 @@ func UpdateUserPassword(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, resp)
 	return
+}
+
+func CreateUserForCompany(ctx *gin.Context) {
+	companyId := ctx.Query("companyId")
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctxR := metadata.NewOutgoingContext(context.Background(), md)
+
+	var userForCompany pb.CreateUserRequest
+	if err := ctx.ShouldBindJSON(&userForCompany); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := userClient.CreateUser(ctxR, &userForCompany)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
+}
+
+func GetUserByIdForCompany(ctx *gin.Context) {
+	companyId := ctx.Query("companyId")
+	userId := ctx.Param("userId")
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctxR := metadata.NewOutgoingContext(context.Background(), md)
+	response, err := userClient.GetUserById(ctxR, userId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+	return
+}
+
+func UpdateUserbyIdForCompany(ctx *gin.Context) {
+	companyId := ctx.Query("companyId")
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctxR := metadata.NewOutgoingContext(context.Background(), md)
+	userClient.UpdateUserById(ctxR, nil)
+}
+
+func DeleteUserByIdForCompany(ctx *gin.Context) {
+	companyId := ctx.Query("companyId")
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctxR := metadata.NewOutgoingContext(context.Background(), md)
+	fmt.Println(ctxR)
 }
