@@ -64,8 +64,7 @@ func (r *UserRepository) GetTeachers(companyId string, isDeleted bool) (*pb.GetT
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
-
-		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(id, false)
+		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(companyId), id, false)
 		if err != nil {
 			return nil, err
 		}

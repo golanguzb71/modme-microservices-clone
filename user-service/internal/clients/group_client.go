@@ -20,11 +20,11 @@ func NewGroupClient(addr string) (*GroupClient, error) {
 	return &GroupClient{client: client}, nil
 }
 
-func (gc *GroupClient) GetGroupsByTeacherId(teacherId string, isArchived bool) (int, error) {
+func (gc *GroupClient) GetGroupsByTeacherId(ctx context.Context, teacherId string, isArchived bool) (int, error) {
 	if gc.client == nil {
 		return 0, fmt.Errorf("GroupService client is not initialized")
 	}
-	resp, err := gc.client.GetGroupsByTeacherId(context.TODO(), &pb.GetGroupsByTeacherIdRequest{
+	resp, err := gc.client.GetGroupsByTeacherId(ctx, &pb.GetGroupsByTeacherIdRequest{
 		TeacherId:  teacherId,
 		IsArchived: isArchived,
 	})

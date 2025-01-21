@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"time"
 )
 
 func EncodePassword(password string) (string, error) {
@@ -46,4 +47,13 @@ func GetCompanyDetails(ctx context.Context) string {
 		}
 	}
 	return ""
+}
+
+func NewTimoutContext(companyId string) context.Context {
+	var ctx context.Context
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	res, _ := context.WithTimeout(ctx, time.Second*15)
+	return res
 }

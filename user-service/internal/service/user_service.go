@@ -33,8 +33,6 @@ func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersReques
 	fmt.Println("======================     get teacher urligi request keldi ======================")
 
 	companyId := utils.GetCompanyDetails(ctx)
-	fmt.Println(companyId)
-	fmt.Println("======================     get teacher urligi request ketdi ======================")
 
 	if companyId != "" {
 		return nil, status.Error(codes.Aborted, "company id required")
