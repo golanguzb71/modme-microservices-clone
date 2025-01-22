@@ -1,21 +1,25 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
+	"education-service/internal/clients"
 	"education-service/proto/pb"
 	"errors"
 	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
+	"strconv"
 )
 
 type CompanyRepository struct {
-	db *sql.DB
+	db         *sql.DB
+	userClient *clients.UserClient
 }
 
-func NewCompanyRepository(db *sql.DB) *CompanyRepository {
-	return &CompanyRepository{db: db}
+func NewCompanyRepository(db *sql.DB, uc *clients.UserClient) *CompanyRepository {
+	return &CompanyRepository{db: db, userClient: uc}
 }
 
 func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyResponse, error) {
@@ -49,9 +53,17 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 			return nil, fmt.Errorf("company with domain %s not found", domain)
 		}
 	}
-
+	id, err := r.userClient.GetUserByCompanyId(context.Background(), company.Id, "CEO")
+	if err != nil {
+		company.CeoId = 0
+	} else {
+		ceoid, err2 := strconv.Atoi(id.UserId)
+		if err2 != nil {
+			ceoid = 0
+		}
+		company.CeoId = int32(ceoid)
+	}
 	company.Tariff = &tariff
-
 	return &company, nil
 }
 

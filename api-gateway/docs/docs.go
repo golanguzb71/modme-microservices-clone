@@ -6545,6 +6545,9 @@ const docTemplate = `{
                 "avatarUrl": {
                     "type": "string"
                 },
+                "ceo_id": {
+                    "type": "integer"
+                },
                 "companyPhone": {
                     "type": "string"
                 },

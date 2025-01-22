@@ -97,3 +97,7 @@ func (u *UserService) UpdateUserPassword(ctx context.Context, req *pb.UpdateUser
 
 	return u.userRepo.UpdateUserPassword(companyId, req.UserId, req.NewPassword)
 }
+
+func (u *UserService) GetUserByCompanyId(ctx context.Context, req *pb.GetUserByCompanyIdRequest) (*pb.GetUserByCompanyIdResponse, error) {
+	return u.userRepo.GetUserCompanyId(req.CompanyId, req.Role)
+}

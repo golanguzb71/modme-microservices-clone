@@ -28,6 +28,7 @@ const (
 	UserService_GetAllStuff_FullMethodName        = "/user.UserService/GetAllStuff"
 	UserService_GetHistoryByUserId_FullMethodName = "/user.UserService/GetHistoryByUserId"
 	UserService_UpdateUserPassword_FullMethodName = "/user.UserService/UpdateUserPassword"
+	UserService_GetUserByCompanyId_FullMethodName = "/user.UserService/GetUserByCompanyId"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -43,6 +44,7 @@ type UserServiceClient interface {
 	GetAllStuff(ctx context.Context, in *GetAllEmployeeRequest, opts ...grpc.CallOption) (*GetAllStuffResponse, error)
 	GetHistoryByUserId(ctx context.Context, in *UserAbsRequest, opts ...grpc.CallOption) (*GetHistoryByUserIdResponse, error)
 	UpdateUserPassword(ctx context.Context, in *UpdateUserPasswordRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetUserByCompanyId(ctx context.Context, in *GetUserByCompanyIdRequest, opts ...grpc.CallOption) (*GetUserByCompanyIdResponse, error)
 }
 
 type userServiceClient struct {
@@ -143,6 +145,16 @@ func (c *userServiceClient) UpdateUserPassword(ctx context.Context, in *UpdateUs
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserByCompanyId(ctx context.Context, in *GetUserByCompanyIdRequest, opts ...grpc.CallOption) (*GetUserByCompanyIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserByCompanyIdResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserByCompanyId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -156,6 +168,7 @@ type UserServiceServer interface {
 	GetAllStuff(context.Context, *GetAllEmployeeRequest) (*GetAllStuffResponse, error)
 	GetHistoryByUserId(context.Context, *UserAbsRequest) (*GetHistoryByUserIdResponse, error)
 	UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*AbsResponse, error)
+	GetUserByCompanyId(context.Context, *GetUserByCompanyIdRequest) (*GetUserByCompanyIdResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -192,6 +205,9 @@ func (UnimplementedUserServiceServer) GetHistoryByUserId(context.Context, *UserA
 }
 func (UnimplementedUserServiceServer) UpdateUserPassword(context.Context, *UpdateUserPasswordRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserPassword not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserByCompanyId(context.Context, *GetUserByCompanyIdRequest) (*GetUserByCompanyIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByCompanyId not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -376,6 +392,24 @@ func _UserService_UpdateUserPassword_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserByCompanyId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByCompanyIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserByCompanyId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserByCompanyId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserByCompanyId(ctx, req.(*GetUserByCompanyIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +452,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserPassword",
 			Handler:    _UserService_UpdateUserPassword_Handler,
+		},
+		{
+			MethodName: "GetUserByCompanyId",
+			Handler:    _UserService_GetUserByCompanyId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

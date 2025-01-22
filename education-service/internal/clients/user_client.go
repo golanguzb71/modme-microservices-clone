@@ -27,3 +27,7 @@ func (uc *UserClient) GetTeacherById(ctx context.Context, teacherId string) (str
 	}
 	return user.Name, nil
 }
+
+func (uc *UserClient) GetUserByCompanyId(ctx context.Context, companyId, role string) (*pb.GetUserByCompanyIdResponse, error) {
+	return uc.client.GetUserByCompanyId(ctx, &pb.GetUserByCompanyIdRequest{CompanyId: companyId, Role: role})
+}

@@ -12,7 +12,16 @@ service UserService {
   rpc GetAllStuff(GetAllEmployeeRequest) returns(GetAllStuffResponse);
   rpc GetHistoryByUserId(UserAbsRequest) returns(GetHistoryByUserIdResponse);
   rpc UpdateUserPassword(UpdateUserPasswordRequest)returns(common.AbsResponse);
+  rpc GetUserByCompanyId(GetUserByCompanyIdRequest) returns (GetUserByCompanyIdResponse);
 }
+message GetUserByCompanyIdRequest{
+  string role = 1;
+  string companyId = 2;
+}
+message GetUserByCompanyIdResponse{
+  string userId = 1;
+}
+
 message UpdateUserPasswordRequest{
   string userId = 1;
   string newPassword = 2;

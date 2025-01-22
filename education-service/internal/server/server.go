@@ -82,7 +82,7 @@ func RunServer() {
 	attendanceService := service.NewAttendanceService(attendanceRepo)
 	studentRepo := repository.NewStudentRepository(db, userClient, financeClientChanForStudent)
 	studentService := service.NewStudentService(studentRepo)
-	companyRepo := repository.NewCompanyRepository(db)
+	companyRepo := repository.NewCompanyRepository(db, &userClient)
 	companyService := service.NewCompanyService(companyRepo)
 	tarrifRepo := repository.NewTariffRepository(db)
 	tarrifService := service.NewTariffService(tarrifRepo)

@@ -65,7 +65,7 @@ func (r *UserRepository) GetTeachers(ctx context.Context, companyId string, isDe
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
-		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(ctx, companyId), id, false)
+		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(context.Background(), id, false)
 		if err != nil {
 			return nil, err
 		}
@@ -123,7 +123,7 @@ func (r *UserRepository) DeleteUser(companyId string, id string) (*pb.AbsRespons
 		return nil, status.Errorf(codes.Aborted, err.Error())
 	}
 	if role == "TEACHER" {
-		groupCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(context.Background(), companyId), id, false)
+		groupCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(companyId), id, false)
 		if err != nil {
 			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
 		} else if groupCount > 0 {
@@ -301,4 +301,38 @@ func (r *UserRepository) UpdateUserPassword(companyId string, userId string, pas
 		Status:  200,
 		Message: "password updated",
 	}, nil
+}
+
+func (r *UserRepository) GetUserCompanyId(companyId string, role string) (*pb.GetUserByCompanyIdResponse, error) {
+	query := `
+        SELECT id 
+        FROM users 
+        WHERE company_id = $1 AND role = $2 AND is_deleted = false
+    `
+
+	rows, err := r.db.Query(query, companyId, role)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	response := &pb.GetUserByCompanyIdResponse{}
+
+	for rows.Next() {
+		var userId string
+		if err := rows.Scan(&userId); err != nil {
+			return nil, fmt.Errorf("failed to scan row: %w", err)
+		}
+		response.UserId += userId + ","
+	}
+
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("error occurred while iterating rows: %w", rows.Err())
+	}
+
+	if len(response.UserId) > 0 {
+		response.UserId = response.UserId[:len(response.UserId)-1]
+	}
+
+	return response, nil
 }
