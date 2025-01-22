@@ -23,27 +23,23 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 
 func (u *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 	return u.userRepo.CreateUser(companyId, req.Gender, req.PhoneNumber, req.BirthDate, req.FullName, req.Password, req.Role)
 }
 
 func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersRequest) (*pb.GetTeachersResponse, error) {
-	fmt.Println("======================     get teacher urligi request keldi ======================")
-
 	companyId := utils.GetCompanyDetails(ctx)
-
 	if companyId == "" {
-		return nil, status.Error(codes.Aborted, fmt.Sprintf("company id required manashu ekan blin %v and %v", companyId, companyId == ""))
+		return nil, status.Error(codes.Aborted, fmt.Sprintf("company id required  %v and %v", companyId, companyId == ""))
 	}
-
 	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetUserByIdResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 	return u.userRepo.GetUserById(companyId, req.UserId)
@@ -51,7 +47,7 @@ func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (
 
 func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 	return u.userRepo.UpdateUser(companyId, req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber)
@@ -59,7 +55,7 @@ func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequ
 
 func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
@@ -68,7 +64,7 @@ func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest
 
 func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllEmployeeResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
@@ -77,7 +73,7 @@ func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployee
 
 func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllStuffResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
@@ -86,7 +82,7 @@ func (u *UserService) GetAllStuff(ctx context.Context, req *pb.GetAllEmployeeReq
 
 func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetHistoryByUserIdResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
@@ -95,7 +91,7 @@ func (u *UserService) GetHistoryByUserId(ctx context.Context, req *pb.UserAbsReq
 
 func (u *UserService) UpdateUserPassword(ctx context.Context, req *pb.UpdateUserPasswordRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyDetails(ctx)
-	if companyId != "" {
+	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
