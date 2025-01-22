@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
-	"strconv"
 )
 
 type CompanyRepository struct {
@@ -57,11 +56,7 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 	if err != nil {
 		return nil, status.Error(codes.Aborted, err.Error())
 	} else {
-		ceoid, err := strconv.Atoi(id.UserId)
-		if err != nil {
-			return nil, status.Error(codes.Aborted, err.Error())
-		}
-		company.CeoId = int32(ceoid)
+		company.CeoId = id.UserId
 	}
 	company.Tariff = &tariff
 	return &company, nil
