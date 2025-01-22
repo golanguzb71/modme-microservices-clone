@@ -98,7 +98,7 @@ func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroup
 func (s *GroupService) GetGroupsByTeacherId(ctx context.Context, req *pb.GetGroupsByTeacherIdRequest) (*pb.GetGroupsByTeacherResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
-		return nil, status.Error(codes.Aborted, "error while getting company from context")
+		return nil, status.Error(codes.NotFound, "error while getting company from context")
 	}
 	return s.repo.GetGroupByTeacherId(companyId, req.TeacherId, req.IsArchived)
 }
