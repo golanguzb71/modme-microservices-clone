@@ -49,8 +49,7 @@ func GetCompanyDetails(ctx context.Context) string {
 	return ""
 }
 
-func NewTimoutContext(companyId string) context.Context {
-	var ctx context.Context
+func NewTimoutContext(ctx context.Context, companyId string) context.Context {
 	md := metadata.Pairs()
 	md.Set("company_id", companyId)
 	ctx = metadata.NewOutgoingContext(ctx, md)
