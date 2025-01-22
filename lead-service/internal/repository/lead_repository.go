@@ -44,9 +44,9 @@ func fetchAllSections(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB,
 func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, requestedIds []string) {
 	query := `
         SELECT ss.id, ss.title
-        FROM set_section ss
+        FROM set_section ss where company_id=$1
     `
-	rows, err := db.Query(query)
+	rows, err := db.Query(query, companyId)
 	if err != nil {
 		log.Printf("Error fetching sets: %v", err)
 		return

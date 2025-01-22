@@ -48,7 +48,7 @@ func (r *SetRepository) DeleteSet(companyId, id string) error {
 }
 
 func (r *SetRepository) GetLeadDataBySetId(companyId, setId string) ([]string, []string, error) {
-	queryLeadData := `SELECT full_name , phone_number FROM lead_user where set_id=$1 and company_id=$2 and company_id=$3`
+	queryLeadData := `SELECT full_name , phone_number FROM lead_user where set_id=$1 and company_id=$2`
 	rows, err := r.db.Query(queryLeadData, setId, companyId)
 	if err != nil {
 		return nil, nil, err
