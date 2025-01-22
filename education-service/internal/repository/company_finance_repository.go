@@ -38,7 +38,12 @@ func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFin
 		tx.Rollback()
 		return nil, err
 	}
-	_, err = tx.Exec(`UPDATE company SET valid_date=$1 where id=$2`, req.EditedValidDate, req.CompanyId)
+	_, err = tx.Exec(`UPDATE company
+SET 
+    valid_date = $1,
+    is_demo = CASE WHEN is_demo = true THEN false ELSE is_demo END
+WHERE id = $2;
+`, req.EditedValidDate, req.CompanyId)
 	if err != nil {
 		tx.Rollback()
 		return nil, err

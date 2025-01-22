@@ -97,7 +97,7 @@ func (r *CompanyRepository) GetAll(page int32, size int32, filter string) (*pb.G
 	case "active":
 		filterCondition = "WHERE c.valid_date > NOW() and c.is_demo = false"
 	case "no_active":
-		filterCondition = "WHERE c.valid_date <= NOW()"
+		filterCondition = "WHERE c.valid_date <= NOW() "
 	default:
 		filterCondition = ""
 	}
