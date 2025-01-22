@@ -34,7 +34,7 @@ func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersReques
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, fmt.Sprintf("company id required  %v and %v", companyId, companyId == ""))
 	}
-	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
+	return u.userRepo.GetTeachers(ctx, companyId, req.IsDeleted)
 }
 
 func (u *UserService) GetUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.GetUserByIdResponse, error) {

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
@@ -47,7 +48,7 @@ func (r *UserRepository) CreateUser(companyId string, gender bool, number string
 		Message: "created",
 	}, nil
 }
-func (r *UserRepository) GetTeachers(companyId string, isDeleted bool) (*pb.GetTeachersResponse, error) {
+func (r *UserRepository) GetTeachers(ctx context.Context, companyId string, isDeleted bool) (*pb.GetTeachersResponse, error) {
 	if err := r.ensureGroupClient(); err != nil {
 		return nil, err
 	}
@@ -64,7 +65,7 @@ func (r *UserRepository) GetTeachers(companyId string, isDeleted bool) (*pb.GetT
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
-		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(companyId), id, false)
+		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(ctx, id, false)
 		if err != nil {
 			return nil, err
 		}
