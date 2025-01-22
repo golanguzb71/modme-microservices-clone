@@ -6546,7 +6546,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "ceo_id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "companyPhone": {
                     "type": "string"
