@@ -35,7 +35,7 @@ func (u *UserService) GetTeachers(ctx context.Context, req *pb.GetTeachersReques
 	companyId := utils.GetCompanyDetails(ctx)
 
 	if companyId != "" {
-		return nil, status.Error(codes.Aborted, "company id required manashu ekan blin")
+		return nil, status.Error(codes.Aborted, fmt.Sprintf("company id required manashu ekan blin %v and %v", companyId, companyId == ""))
 	}
 
 	return u.userRepo.GetTeachers(companyId, req.IsDeleted)
