@@ -55,11 +55,11 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 	}
 	id, err := r.userClient.GetUserByCompanyId(context.Background(), company.Id, "CEO")
 	if err != nil {
-		company.CeoId = 0
+		return nil, status.Error(codes.Aborted, err.Error())
 	} else {
-		ceoid, err2 := strconv.Atoi(id.UserId)
-		if err2 != nil {
-			ceoid = 0
+		ceoid, err := strconv.Atoi(id.UserId)
+		if err != nil {
+			return nil, status.Error(codes.Aborted, err.Error())
 		}
 		company.CeoId = int32(ceoid)
 	}
