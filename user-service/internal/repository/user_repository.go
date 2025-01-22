@@ -123,7 +123,7 @@ func (r *UserRepository) DeleteUser(companyId string, id string) (*pb.AbsRespons
 		return nil, status.Errorf(codes.Aborted, err.Error())
 	}
 	if role == "TEACHER" {
-		groupCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(companyId), id, false)
+		groupCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(context.Background(), companyId), id, false)
 		if err != nil {
 			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
 		} else if groupCount > 0 {
