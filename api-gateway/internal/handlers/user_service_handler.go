@@ -5,7 +5,6 @@ import (
 	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/metadata"
 	"net/http"
@@ -326,6 +325,19 @@ func UpdateUserPassword(ctx *gin.Context) {
 	return
 }
 
+// CreateUserForCompany godoc
+// @Summary SUPER_CEO
+// @Description Create a new user associated with a company
+// @Tags company-user
+// @Accept json
+// @Produce json
+// @Param companyId query string true "Company ID"
+// @Param user body pb.CreateUserRequest true "User data"
+// @Success 200 {object} utils.AbsResponse "Successfully created user"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/company-user/create [post]
 func CreateUserForCompany(ctx *gin.Context) {
 	companyId := ctx.Query("companyId")
 	md := metadata.Pairs()
@@ -346,12 +358,26 @@ func CreateUserForCompany(ctx *gin.Context) {
 	return
 }
 
+// GetUserByIdForCompany godoc
+// @Summary SUPER_CEO
+// @Description Retrieve details of a user by their ID and company ID
+// @Tags company-user
+// @Accept json
+// @Produce json
+// @Param companyId query string true "Company ID"
+// @Param userId path string true "User ID"
+// @Success 200 {object} pb.GetUserByIdResponse "Successfully retrieved user"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 404 {object} utils.AbsResponse "User not found"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/company-user/get-user/{userId} [get]
 func GetUserByIdForCompany(ctx *gin.Context) {
 	companyId := ctx.Query("companyId")
 	userId := ctx.Param("userId")
 	md := metadata.Pairs()
 	md.Set("company_id", companyId)
-	ctxR := metadata.NewOutgoingContext(context.Background(), md)
+	ctxR := metadata.NewOutgoingContext(ctx, md)
 	response, err := userClient.GetUserById(ctxR, userId)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
@@ -361,18 +387,64 @@ func GetUserByIdForCompany(ctx *gin.Context) {
 	return
 }
 
+// UpdateUserbyIdForCompany godoc
+// @Summary SUPER_CEO
+// @Description Update user details by their ID and company ID
+// @Tags company-user
+// @Accept json
+// @Produce json
+// @Param companyId query string true "Company ID"
+// @Param user body pb.UpdateUserRequest true "Updated user data"
+// @Success 200 {object} utils.AbsResponse "Successfully updated user"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 404 {object} utils.AbsResponse "User not found"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/company-user/update [patch]
 func UpdateUserbyIdForCompany(ctx *gin.Context) {
+	req := pb.UpdateUserRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
 	companyId := ctx.Query("companyId")
 	md := metadata.Pairs()
 	md.Set("company_id", companyId)
-	ctxR := metadata.NewOutgoingContext(context.Background(), md)
-	userClient.UpdateUserById(ctxR, nil)
+	ctxR := metadata.NewOutgoingContext(ctx, md)
+	resp, err := userClient.UpdateUserById(ctxR, &req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }
 
+// DeleteUserByIdForCompany godoc
+// @Summary SUPER_CEO
+// @Description Delete a user by their ID and associated company ID
+// @Tags company-user
+// @Accept json
+// @Produce json
+// @Param companyId query string true "Company ID"
+// @Param userId path string true "User ID"
+// @Success 200 {object} utils.AbsResponse "Successfully deleted user"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Failure 404 {object} utils.AbsResponse "User not found"
+// @Failure 500 {object} utils.AbsResponse "Internal server error"
+// @Security Bearer
+// @Router /api/company-user/delete/{userId} [delete]
 func DeleteUserByIdForCompany(ctx *gin.Context) {
 	companyId := ctx.Query("companyId")
+	userId := ctx.Param("userId")
 	md := metadata.Pairs()
 	md.Set("company_id", companyId)
-	ctxR := metadata.NewOutgoingContext(context.Background(), md)
-	fmt.Println(ctxR)
+	ctxR := metadata.NewOutgoingContext(ctx, md)
+	resp, err := userClient.DeleteUserById(ctxR, userId)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	utils.RespondSuccess(ctx, resp.Status, resp.Message)
+	return
 }
