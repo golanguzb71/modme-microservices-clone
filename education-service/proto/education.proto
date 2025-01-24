@@ -37,6 +37,7 @@ message CompanyFinanceSelf{
   string created_at = 7;
   string discount_id = 8;
   string discount_name = 9;
+  string tariff_name=10;
 }
 message CompanyFinanceSelfList{
   int32 count = 1;

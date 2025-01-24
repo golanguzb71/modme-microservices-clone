@@ -5906,6 +5906,9 @@ const docTemplate = `{
                 "tariff_id": {
                     "type": "integer"
                 },
+                "tariff_name": {
+                    "type": "string"
+                },
                 "tariff_sum": {
                     "type": "integer"
                 }

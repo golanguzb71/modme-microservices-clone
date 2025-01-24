@@ -263,7 +263,8 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 			cp.edited_valid_date, 
 			cp.created_at, 
 			coalesce(cp.discount_id, ''), 
-			coalesce(cp.discount_name, '')
+			coalesce(cp.discount_name, ''),
+			coalesce(t.name , '')
 		FROM 
 			company_payments cp
 		LEFT JOIN 
@@ -340,6 +341,7 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 			&item.CreatedAt,
 			&item.DiscountId,
 			&item.DiscountName,
+			&item.TariffName,
 		)
 		if err != nil {
 			return nil, err
