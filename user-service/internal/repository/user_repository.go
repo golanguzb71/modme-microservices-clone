@@ -65,7 +65,7 @@ func (r *UserRepository) GetTeachers(ctx context.Context, companyId string, isDe
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
-		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(ctx, id, false)
+		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(ctx, companyId), id, false)
 		if err != nil {
 			return nil, err
 		}
