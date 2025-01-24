@@ -76,29 +76,52 @@ func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsRespo
 
 	if exists {
 		_, err = tx.Exec(`
-			UPDATE company
-			SET valid_date = (
-				SELECT edited_valid_date
-				FROM (
-					SELECT edited_valid_date
-					FROM company_payments
-					WHERE company_id = (
-						SELECT company_id
-						FROM company_payments
-						WHERE id = $1
-					)
-					AND id != $1
-					ORDER BY created_at DESC
-					LIMIT 2
-				) subquery
-				ORDER BY created_at ASC
-				LIMIT 1
-			)
-			WHERE id = (
-				SELECT company_id
-				FROM company_payments
-				WHERE id = $1
-			);
+			DO $$
+BEGIN
+    UPDATE company
+    SET valid_date = (
+        SELECT edited_valid_date
+        FROM (
+            SELECT edited_valid_date
+            FROM company_payments
+            WHERE company_id = (
+                SELECT company_id
+                FROM company_payments
+                WHERE id = $1
+            )
+            AND id != $1
+            ORDER BY created_at DESC
+            LIMIT 2
+        ) subquery
+        ORDER BY created_at ASC
+        LIMIT 1
+    )
+    WHERE id = (
+        SELECT company_id
+        FROM company_payments
+        WHERE id = $1
+    );
+
+    IF NOT FOUND THEN
+        UPDATE company
+        SET valid_date = CURRENT_DATE - INTERVAL '1 day'
+        WHERE id = (
+            SELECT company_id
+            FROM company_payments
+            WHERE id = $1
+        );
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        UPDATE company
+        SET valid_date = CURRENT_DATE - INTERVAL '1 day'
+        WHERE id = (
+            SELECT company_id
+            FROM company_payments
+            WHERE id = $1
+        );
+END $$;
+
 		`, req.Id)
 		if err != nil {
 			tx.Rollback()
