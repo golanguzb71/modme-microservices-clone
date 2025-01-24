@@ -75,54 +75,46 @@ func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsRespo
 	}
 
 	if exists {
-		_, err = tx.Exec(`
+		// Dynamically inject the ID into the SQL block
+		query := fmt.Sprintf(`
 			DO $$
-BEGIN
-    UPDATE company
-    SET valid_date = (
-        SELECT edited_valid_date
-        FROM (
-            SELECT edited_valid_date
-            FROM company_payments
-            WHERE company_id = (
-                SELECT company_id
-                FROM company_payments
-                WHERE id = $1
-            )
-            AND id != $1
-            ORDER BY created_at DESC
-            LIMIT 2
-        ) subquery
-        ORDER BY created_at ASC
-        LIMIT 1
-    )
-    WHERE id = (
-        SELECT company_id
-        FROM company_payments
-        WHERE id = $1
-    );
+			DECLARE
+				target_company_id INT;
+			BEGIN
+				SELECT company_id INTO target_company_id
+				FROM company_payments
+				WHERE id = %d;
 
-    IF NOT FOUND THEN
-        UPDATE company
-        SET valid_date = CURRENT_DATE - INTERVAL '1 day'
-        WHERE id = (
-            SELECT company_id
-            FROM company_payments
-            WHERE id = $1
-        );
-    END IF;
-EXCEPTION
-    WHEN OTHERS THEN
-        UPDATE company
-        SET valid_date = CURRENT_DATE - INTERVAL '1 day'
-        WHERE id = (
-            SELECT company_id
-            FROM company_payments
-            WHERE id = $1
-        );
-END $$;
+				UPDATE company
+				SET valid_date = (
+					SELECT edited_valid_date
+					FROM (
+						SELECT edited_valid_date
+						FROM company_payments
+						WHERE company_id = target_company_id
+						AND id != %d
+						ORDER BY created_at DESC
+						LIMIT 2
+					) subquery
+					ORDER BY created_at ASC
+					LIMIT 1
+				)
+				WHERE id = target_company_id;
 
-		`, req.Id)
+				IF NOT FOUND THEN
+					UPDATE company
+					SET valid_date = CURRENT_DATE - INTERVAL '1 day'
+					WHERE id = target_company_id;
+				END IF;
+			EXCEPTION
+				WHEN OTHERS THEN
+					UPDATE company
+					SET valid_date = CURRENT_DATE - INTERVAL '1 day'
+					WHERE id = target_company_id;
+			END $$;
+		`, req.Id, req.Id)
+
+		_, err = tx.Exec(query)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
@@ -145,6 +137,7 @@ END $$;
 		Message: "ok",
 	}, nil
 }
+
 func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanceList, error) {
 	page := req.GetPage()
 	if page <= 0 {
