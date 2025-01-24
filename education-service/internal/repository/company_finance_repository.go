@@ -136,47 +136,50 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	offset := (page - 1) * size
 
 	query := `
-		SELECT 
-			cp.id, 
-			c.title AS company_name, 
-			cp.company_id, 
-			cp.created_at AS start_from, 
-			cp.edited_valid_date AS finished_to, 
-			t.id AS tariff_id, 
-			t.name AS tariff_name, 
+		SELECT
+			cp.id,
+			c.title AS company_name,
+			cp.company_id,
+			cp.created_at AS start_from,
+			cp.edited_valid_date AS finished_to,
+			t.id AS tariff_id,
+			t.name AS tariff_name,
 			cp.sum,
 			coalesce(cp.discount_id , ''),
 			coalesce(cp.discount_name , '')
-		FROM 
+		FROM
 			company_payments cp
-		LEFT JOIN 
+		LEFT JOIN
 			company c ON c.id = cp.company_id
-		LEFT JOIN 
+		LEFT JOIN
 			tariff t ON t.id = cp.tariff_id
-		WHERE 
-			($1::TIMESTAMP IS NULL OR cp.created_at >= $1) 
+		WHERE
+			($1::TIMESTAMP IS NULL OR cp.created_at >= $1)
 			AND ($2::TIMESTAMP IS NULL OR cp.created_at <= $2)
-		ORDER BY 
+		ORDER BY
 			cp.created_at DESC
 		LIMIT $3 OFFSET $4;
 	`
 
 	countQuery := `
 		SELECT COUNT(*)
-		FROM 
+		FROM
 			company_payments
 	`
 
 	from := req.GetFrom()
 	to := req.GetTo()
 
+	// Get the total record count
 	var totalCount int32
 	err := r.db.QueryRow(countQuery).Scan(&totalCount)
 	if err != nil {
 		return nil, err
 	}
 
-	totalCount = totalCount / size
+	// Calculate the total page count
+	totalPageCount := (totalCount + int32(size) - 1) / int32(size) // Ceiling division
+
 	rows, err := r.db.Query(query, from, to, size, offset)
 	if err != nil {
 		return nil, err
@@ -209,7 +212,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	}
 
 	return &pb.CompanyFinanceList{
-		Count: totalCount,
+		Count: totalPageCount, // Total page count
 		Items: items,
 	}, nil
 }
@@ -288,6 +291,8 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 		return nil, err
 	}
 
+	totalPageCount := (totalCount + int32(size) - 1) / int32(size) // Ceiling division
+
 	var sumAmountPeriod float32
 	var tariffName string
 	var discountName string
@@ -326,9 +331,9 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	totalCount = totalCount / size
+
 	return &pb.CompanyFinanceSelfList{
-		Count:           totalCount,
+		Count:           totalPageCount,
 		SumAmountPeriod: sumAmountPeriod,
 		TariffName:      tariffName,
 		DiscountName:    discountName,
