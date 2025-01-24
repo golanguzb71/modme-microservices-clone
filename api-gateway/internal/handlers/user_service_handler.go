@@ -228,7 +228,7 @@ func GetMyInformation(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
-	if user.Role == "ADMIN" || user.Role == "CEO" {
+	if user.Role == "ADMIN" || user.Role == "CEO" || user.Role == "SUPER_CEO" {
 		ctx.JSON(http.StatusOK, user)
 		return
 	}
@@ -246,7 +246,7 @@ func GetMyInformation(ctx *gin.Context) {
 		return
 	}
 
-	utils.RespondError(ctx, http.StatusUnauthorized, "aborted: required role ADMIN, CEO, or TEACHER")
+	utils.RespondError(ctx, http.StatusUnauthorized, "aborted: required role ADMIN, CEO, SUPER_CEO or TEACHER")
 }
 
 // GetAllStaff godoc
