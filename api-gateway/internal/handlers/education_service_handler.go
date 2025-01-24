@@ -1259,6 +1259,7 @@ func TariffUpdate(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
 		return
 	}
+
 	_, err := educationClient.UpdateTariff(&tariff)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err.Error())
