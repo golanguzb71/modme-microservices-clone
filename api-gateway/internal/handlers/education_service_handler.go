@@ -1188,15 +1188,12 @@ func GetImage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Filename is required"})
 		return
 	}
-
 	uploadDir := "./uploads"
 	filePath := filepath.Join(uploadDir, filename)
-
 	if !fileExists(filePath) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
 		return
 	}
-
 	ctx.File(filePath)
 }
 
