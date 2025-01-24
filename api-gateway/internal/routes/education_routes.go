@@ -87,4 +87,5 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		history.GET("/group/:groupId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryGroup)
 		history.GET("/student/:studentId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetHistoryStudent)
 	}
+
 }
