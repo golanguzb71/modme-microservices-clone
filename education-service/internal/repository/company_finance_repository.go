@@ -75,46 +75,53 @@ func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsRespo
 	}
 
 	if exists {
-		// Dynamically inject the ID into the SQL block
-		query := fmt.Sprintf(`
-			DO $$
-			DECLARE
-				target_company_id INT;
-			BEGIN
-				SELECT company_id INTO target_company_id
+		var validDate sql.NullTime
+		err = tx.QueryRow(`
+			SELECT edited_valid_date
+			FROM (
+				SELECT edited_valid_date
 				FROM company_payments
-				WHERE id = %d;
-
-				UPDATE company
-				SET valid_date = (
-					SELECT edited_valid_date
-					FROM (
-						SELECT edited_valid_date
-						FROM company_payments
-						WHERE company_id = target_company_id
-						AND id != %d
-						ORDER BY created_at DESC
-						LIMIT 2
-					) subquery
-					ORDER BY created_at ASC
-					LIMIT 1
+				WHERE company_id = (
+					SELECT company_id
+					FROM company_payments
+					WHERE id = $1
 				)
-				WHERE id = target_company_id;
+				AND id != $1
+				ORDER BY created_at DESC
+				LIMIT 2
+			) subquery
+			ORDER BY created_at ASC
+			LIMIT 1
+		`, req.Id).Scan(&validDate)
+		if err != nil && err != sql.ErrNoRows {
+			tx.Rollback()
+			return nil, err
+		}
 
-				IF NOT FOUND THEN
-					UPDATE company
-					SET valid_date = CURRENT_DATE - INTERVAL '1 day'
-					WHERE id = target_company_id;
-				END IF;
-			EXCEPTION
-				WHEN OTHERS THEN
-					UPDATE company
-					SET valid_date = CURRENT_DATE - INTERVAL '1 day'
-					WHERE id = target_company_id;
-			END $$;
-		`, req.Id, req.Id)
+		if validDate.Valid {
+			// Update the company with the found valid_date
+			_, err = tx.Exec(`
+				UPDATE company
+				SET valid_date = $1
+				WHERE id = (
+					SELECT company_id
+					FROM company_payments
+					WHERE id = $2
+				);
+			`, validDate.Time, req.Id)
+		} else {
+			// No valid_date found, set valid_date to one day before today
+			_, err = tx.Exec(`
+				UPDATE company
+				SET valid_date = CURRENT_DATE - INTERVAL '1 day'
+				WHERE id = (
+					SELECT company_id
+					FROM company_payments
+					WHERE id = $1
+				);
+			`, req.Id)
+		}
 
-		_, err = tx.Exec(query)
 		if err != nil {
 			tx.Rollback()
 			return nil, err
