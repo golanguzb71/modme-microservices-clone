@@ -17,7 +17,7 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		user.PATCH("/update", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.UpdateUserById)
 		user.DELETE("/delete/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteUserById)
 		user.GET("/get-all-employee/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllEmployee)
-		user.GET("/get-my-profile", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetMyInformation)
+		user.GET("/get-my-profile", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER", "SUPER_CEO"}, userClient), handlers.GetMyInformation)
 		user.GET("/get-all-staff/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStaff)
 		user.GET("/history/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetUserHistoryById)
 		user.PUT("/update-password/:userId/:password", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.UpdateUserPassword)
