@@ -106,7 +106,7 @@ func (r *CompanyRepository) GetAll(page int32, size int32, filter string) (*pb.G
 		SELECT 
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
-			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, 
+			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price,  t.discounts,
 			COALESCE(c.discount_id, '0'), c.is_demo, c.created_at, 
 			(SELECT COUNT(*) FROM students WHERE condition = 'ACTIVE' AND company_id = c.id) AS student_count
 		FROM 
@@ -142,7 +142,7 @@ func (r *CompanyRepository) GetAll(page int32, size int32, filter string) (*pb.G
 			&company.Id, &company.Title, &company.AvatarUrl,
 			&company.StartTime, &company.EndTime, &company.CompanyPhone,
 			&company.Subdomain, &company.ValidDate,
-			&tariff.Id, &tariff.Name, &tariff.Sum,
+			&tariff.Id, &tariff.Name, &tariff.Sum, &tariff.Discounts,
 			&company.DiscountId, &company.IsDemo, &company.CreatedAt, &company.ActiveStudentCount,
 		)
 		if err != nil {
