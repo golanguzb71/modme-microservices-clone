@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"education-service/proto/pb"
+	"errors"
 	"fmt"
 )
 
@@ -90,16 +91,14 @@ func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsRespo
 				ORDER BY created_at DESC
 				LIMIT 2
 			) subquery
-			ORDER BY created_at ASC
 			LIMIT 1
 		`, req.Id).Scan(&validDate)
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			tx.Rollback()
 			return nil, err
 		}
 
 		if validDate.Valid {
-			// Update the company with the found valid_date
 			_, err = tx.Exec(`
 				UPDATE company
 				SET valid_date = $1
@@ -110,7 +109,6 @@ func (r CompanyFinanceRepository) Delete(req *pb.DeleteAbsRequest) (*pb.AbsRespo
 				);
 			`, validDate.Time, req.Id)
 		} else {
-			// No valid_date found, set valid_date to one day before today
 			_, err = tx.Exec(`
 				UPDATE company
 				SET valid_date = CURRENT_DATE - INTERVAL '1 day'
@@ -193,15 +191,13 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	from := req.GetFrom()
 	to := req.GetTo()
 
-	// Get the total record count
 	var totalCount int32
 	err := r.db.QueryRow(countQuery).Scan(&totalCount)
 	if err != nil {
 		return nil, err
 	}
 
-	// Calculate the total page count
-	totalPageCount := (totalCount + int32(size) - 1) / int32(size) // Ceiling division
+	totalPageCount := (totalCount + int32(size) - 1) / int32(size)
 
 	rows, err := r.db.Query(query, from, to, size, offset)
 	if err != nil {
@@ -235,7 +231,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 	}
 
 	return &pb.CompanyFinanceList{
-		Count: totalPageCount, // Total page count
+		Count: totalPageCount,
 		Items: items,
 	}, nil
 }
