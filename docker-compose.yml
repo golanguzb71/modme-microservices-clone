@@ -144,6 +144,8 @@ services:
       - sphere-education-service
       - sphere-lead-service
       - sphere-finance-service
+    volumes:
+      - api_gateway_uploads:/app/uploads
     restart: unless-stopped
 
 volumes:
@@ -151,6 +153,7 @@ volumes:
   postgres_education_data:
   postgres_user_data:
   postgres_finance_data:
+  api_gateway_uploads:
 
 networks:
   default:

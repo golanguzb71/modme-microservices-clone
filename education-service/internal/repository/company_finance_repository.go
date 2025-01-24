@@ -19,7 +19,7 @@ func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFin
 	var validDate string
 	err := r.db.QueryRow(`SELECT valid_date FROM company WHERE id = $1`, req.GetCompanyId()).Scan(&validDate)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("company with id %d not found", req.GetCompanyId())
 		}
 		return nil, err
