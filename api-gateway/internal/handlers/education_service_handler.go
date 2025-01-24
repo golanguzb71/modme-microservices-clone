@@ -1143,7 +1143,7 @@ func UploadImage(ctx *gin.Context) {
 	}
 	filename := fmt.Sprintf("image_%d%s", time.Now().UnixNano(), ext)
 
-	uploadDir := "./uploads"
+	uploadDir := "/uploads"
 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory: " + err.Error()})
 		return
@@ -1188,7 +1188,7 @@ func GetImage(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Filename is required"})
 		return
 	}
-	uploadDir := "./uploads"
+	uploadDir := "/uploads"
 	filePath := filepath.Join(uploadDir, filename)
 	if !fileExists(filePath) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
