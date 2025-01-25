@@ -106,7 +106,7 @@ func (r *UserRepository) UpdateUser(companyId string, userId string, name string
 	}
 	query := `
         UPDATE users 
-        SET full_name = $1, phone_number = $2, gender = $3, role = $4, birth_date = $5, password=$6
+        SET full_name = $1, phone_number = $2, gender = $3, role = $4, birth_date = $5, password=$8
         WHERE id = $6 and company_id=$7
     `
 	if password != "" {
