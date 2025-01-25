@@ -99,17 +99,23 @@ func (r *UserRepository) GetUserById(companyId string, userId string) (*pb.GetUs
 	}
 	return &response, nil
 }
-func (r *UserRepository) UpdateUser(companyId string, userId string, name string, gender bool, role string, birthDate string, phoneNumber string) (*pb.AbsResponse, error) {
+func (r *UserRepository) UpdateUser(companyId string, userId string, name string, gender bool, role string, birthDate string, phoneNumber, password string) (*pb.AbsResponse, error) {
+	var err error
 	if role != "TEACHER" && role != "ADMIN" && role != "EMPLOYEE" && role != "CEO" {
 		return &pb.AbsResponse{Status: 400, Message: "Invalid role"}, nil
 	}
 	query := `
         UPDATE users 
-        SET full_name = $1, phone_number = $2, gender = $3, role = $4, birth_date = $5
+        SET full_name = $1, phone_number = $2, gender = $3, role = $4, birth_date = $5, password=$6
         WHERE id = $6 and company_id=$7
     `
-
-	_, err := r.db.Exec(query, name, phoneNumber, gender, role, birthDate, userId, companyId)
+	if password != "" {
+		password, err = utils.EncodePassword(password)
+		if err != nil {
+			return nil, err
+		}
+	}
+	_, err = r.db.Exec(query, name, phoneNumber, gender, role, birthDate, userId, companyId, password)
 	if err != nil {
 		return nil, err
 	}

@@ -39,6 +39,7 @@ message UpdateUserRequest{
   string name = 3;
   string birthDate = 4;
   bool gender = 5;
+  string password = 7;
 }
 message GetAllEmployeeRequest{
   bool isArchived = 1;

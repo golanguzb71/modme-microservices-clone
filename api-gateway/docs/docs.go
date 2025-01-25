@@ -7600,6 +7600,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "password": {
+                    "type": "string"
+                },
                 "phoneNumber": {
                     "type": "string"
                 },

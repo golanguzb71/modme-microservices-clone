@@ -50,7 +50,7 @@ func (u *UserService) UpdateUserById(ctx context.Context, req *pb.UpdateUserRequ
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
-	return u.userRepo.UpdateUser(companyId, req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber)
+	return u.userRepo.UpdateUser(companyId, req.Id, req.Name, req.Gender, req.Role, req.BirthDate, req.PhoneNumber, req.Password)
 }
 
 func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest) (*pb.AbsResponse, error) {
