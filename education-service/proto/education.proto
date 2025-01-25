@@ -13,6 +13,7 @@ service CompanyFinanceService{
   rpc Delete(common.DeleteAbsRequest) returns(common.AbsResponse){}
   rpc GetAll(common.PageRequest) returns(CompanyFinanceList){}
   rpc GetByCompany(common.PageRequest) returns(CompanyFinanceSelfList){}
+  rpc UpdateByCompany(CompanyFinance) returns(CompanyFinance){}
 }
 
 message CompanyFinance{

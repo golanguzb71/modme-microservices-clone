@@ -20,10 +20,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CompanyFinanceService_Create_FullMethodName       = "/education.CompanyFinanceService/Create"
-	CompanyFinanceService_Delete_FullMethodName       = "/education.CompanyFinanceService/Delete"
-	CompanyFinanceService_GetAll_FullMethodName       = "/education.CompanyFinanceService/GetAll"
-	CompanyFinanceService_GetByCompany_FullMethodName = "/education.CompanyFinanceService/GetByCompany"
+	CompanyFinanceService_Create_FullMethodName          = "/education.CompanyFinanceService/Create"
+	CompanyFinanceService_Delete_FullMethodName          = "/education.CompanyFinanceService/Delete"
+	CompanyFinanceService_GetAll_FullMethodName          = "/education.CompanyFinanceService/GetAll"
+	CompanyFinanceService_GetByCompany_FullMethodName    = "/education.CompanyFinanceService/GetByCompany"
+	CompanyFinanceService_UpdateByCompany_FullMethodName = "/education.CompanyFinanceService/UpdateByCompany"
 )
 
 // CompanyFinanceServiceClient is the client API for CompanyFinanceService service.
@@ -34,6 +35,7 @@ type CompanyFinanceServiceClient interface {
 	Delete(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	GetAll(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceList, error)
 	GetByCompany(ctx context.Context, in *PageRequest, opts ...grpc.CallOption) (*CompanyFinanceSelfList, error)
+	UpdateByCompany(ctx context.Context, in *CompanyFinance, opts ...grpc.CallOption) (*CompanyFinance, error)
 }
 
 type companyFinanceServiceClient struct {
@@ -84,6 +86,16 @@ func (c *companyFinanceServiceClient) GetByCompany(ctx context.Context, in *Page
 	return out, nil
 }
 
+func (c *companyFinanceServiceClient) UpdateByCompany(ctx context.Context, in *CompanyFinance, opts ...grpc.CallOption) (*CompanyFinance, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompanyFinance)
+	err := c.cc.Invoke(ctx, CompanyFinanceService_UpdateByCompany_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CompanyFinanceServiceServer is the server API for CompanyFinanceService service.
 // All implementations must embed UnimplementedCompanyFinanceServiceServer
 // for forward compatibility.
@@ -92,6 +104,7 @@ type CompanyFinanceServiceServer interface {
 	Delete(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	GetAll(context.Context, *PageRequest) (*CompanyFinanceList, error)
 	GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelfList, error)
+	UpdateByCompany(context.Context, *CompanyFinance) (*CompanyFinance, error)
 	mustEmbedUnimplementedCompanyFinanceServiceServer()
 }
 
@@ -113,6 +126,9 @@ func (UnimplementedCompanyFinanceServiceServer) GetAll(context.Context, *PageReq
 }
 func (UnimplementedCompanyFinanceServiceServer) GetByCompany(context.Context, *PageRequest) (*CompanyFinanceSelfList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByCompany not implemented")
+}
+func (UnimplementedCompanyFinanceServiceServer) UpdateByCompany(context.Context, *CompanyFinance) (*CompanyFinance, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateByCompany not implemented")
 }
 func (UnimplementedCompanyFinanceServiceServer) mustEmbedUnimplementedCompanyFinanceServiceServer() {}
 func (UnimplementedCompanyFinanceServiceServer) testEmbeddedByValue()                               {}
@@ -207,6 +223,24 @@ func _CompanyFinanceService_GetByCompany_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CompanyFinanceService_UpdateByCompany_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompanyFinance)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyFinanceServiceServer).UpdateByCompany(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyFinanceService_UpdateByCompany_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyFinanceServiceServer).UpdateByCompany(ctx, req.(*CompanyFinance))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CompanyFinanceService_ServiceDesc is the grpc.ServiceDesc for CompanyFinanceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +263,10 @@ var CompanyFinanceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByCompany",
 			Handler:    _CompanyFinanceService_GetByCompany_Handler,
+		},
+		{
+			MethodName: "UpdateByCompany",
+			Handler:    _CompanyFinanceService_UpdateByCompany_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
