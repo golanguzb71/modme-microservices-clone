@@ -369,18 +369,6 @@ func (r CompanyFinanceRepository) UpdateByCompany(req *pb.CompanyFinance) (*pb.C
 		return nil, fmt.Errorf("failed to start transaction: %v", err)
 	}
 	defer tx.Rollback()
-	var latestEditedValidDate string
-	err = tx.QueryRow(`
-		SELECT edited_valid_date
-		FROM company_payments
-		WHERE company_id = (SELECT company_id FROM company_payments WHERE id = $1)
-		ORDER BY created_at DESC
-		LIMIT 1
-	`, req.GetId()).Scan(&latestEditedValidDate)
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve latest edited_valid_date: %v", err)
-	}
-
 	var existingRecord pb.CompanyFinance
 	err = tx.QueryRow(`
 		SELECT id, comment, sum, edited_valid_date
@@ -404,16 +392,16 @@ func (r CompanyFinanceRepository) UpdateByCompany(req *pb.CompanyFinance) (*pb.C
 		return nil, fmt.Errorf("failed to retrieve company valid_date: %v", err)
 	}
 
-	if latestEditedValidDate == companyValidDate {
-		_, err = tx.Exec(`
+	_, err = tx.Exec(`
 			UPDATE company_payments
 			SET comment = $1, sum = $2, edited_valid_date = $3
 			WHERE id = $4
 		`, req.GetComment(), req.GetSum(), req.GetEditedValidDate(), req.GetId())
-		if err != nil {
-			return nil, fmt.Errorf("failed to update company finance: %v", err)
-		}
+	if err != nil {
+		return nil, fmt.Errorf("failed to update company finance: %v", err)
+	}
 
+	if existingRecord.EditedValidDate == companyValidDate {
 		_, err = tx.Exec(`
 			UPDATE company
 			SET valid_date = $1
