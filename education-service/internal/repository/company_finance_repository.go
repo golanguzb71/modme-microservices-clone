@@ -362,3 +362,38 @@ func (r CompanyFinanceRepository) GetByCompany(req *pb.PageRequest) (*pb.Company
 		Items:           items,
 	}, nil
 }
+
+func (r CompanyFinanceRepository) UpdateByCompany(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
+	var existingRecord pb.CompanyFinance
+	err := r.db.QueryRow(`
+		SELECT id, comment, sum, edited_valid_date
+		FROM company_payments
+		WHERE id = $1
+	`, req.GetId()).Scan(&existingRecord.Id, &existingRecord.Comment, &existingRecord.Sum, &existingRecord.EditedValidDate)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("company finance record not found")
+		}
+		return nil, fmt.Errorf("failed to check if record exists: %v", err)
+	}
+
+	_, err = r.db.Exec(`
+		UPDATE company_payments
+		SET comment = $1, sum = $2, edited_valid_date = $3
+		WHERE id = $4
+	`, req.GetComment(), req.GetSum(), req.GetEditedValidDate(), req.GetId())
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to update company finance: %v", err)
+	}
+
+	updatedRecord := &pb.CompanyFinance{
+		Id:              req.GetId(),
+		Comment:         req.GetComment(),
+		Sum:             req.GetSum(),
+		EditedValidDate: req.GetEditedValidDate(),
+	}
+
+	return updatedRecord, nil
+}

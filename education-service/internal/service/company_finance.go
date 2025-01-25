@@ -29,3 +29,7 @@ func (cf *CompanyFinanceService) GetAll(ctx context.Context, req *pb.PageRequest
 func (cf *CompanyFinanceService) GetByCompany(ctx context.Context, req *pb.PageRequest) (*pb.CompanyFinanceSelfList, error) {
 	return cf.companyFinanceRepo.GetByCompany(req)
 }
+
+func (cf *CompanyFinanceService) UpdateByCompany(ctx context.Context, req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
+	return cf.companyFinanceRepo.UpdateByCompany(req)
+}
