@@ -388,6 +388,29 @@ func (r CompanyFinanceRepository) UpdateByCompany(req *pb.CompanyFinance) (*pb.C
 		return nil, fmt.Errorf("failed to update company finance: %v", err)
 	}
 
+	var latestEditedValidDate string
+	err = r.db.QueryRow(`
+		SELECT edited_valid_date
+		FROM company_payments
+		WHERE company_id = (SELECT company_id FROM company_payments WHERE id = $1)
+		ORDER BY created_at DESC
+		LIMIT 1
+	`, req.GetId()).Scan(&latestEditedValidDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve latest edited_valid_date: %v", err)
+	}
+
+	if latestEditedValidDate == req.GetEditedValidDate() {
+		_, err = r.db.Exec(`
+			UPDATE company
+			SET valid_date = $1
+			WHERE id = (SELECT company_id FROM company_payments WHERE id = $2)
+		`, req.GetEditedValidDate(), req.GetId())
+		if err != nil {
+			return nil, fmt.Errorf("failed to update company valid_date: %v", err)
+		}
+	}
+
 	updatedRecord := &pb.CompanyFinance{
 		Id:              req.GetId(),
 		Comment:         req.GetComment(),
