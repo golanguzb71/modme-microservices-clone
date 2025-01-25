@@ -1,6 +1,3 @@
-
-# LiveSphere - Learning Center Management System
-=======
 # Livesphere - Learning Center Management System
 
 Overview
