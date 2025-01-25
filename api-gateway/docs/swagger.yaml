@@ -1957,6 +1957,34 @@ paths:
       summary: Get finance records by company
       tags:
       - companyFinance
+  /api/company/finance/update:
+    put:
+      consumes:
+      - application/json
+      description: Update finance details for a specific company
+      parameters:
+      - description: Finance details to be updated
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CompanyFinance'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated finance details
+          schema:
+            $ref: '#/definitions/pb.CompanyFinance'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: Update finance records by company
+      tags:
+      - companyFinance
   /api/company/get-all:
     get:
       consumes:

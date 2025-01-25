@@ -618,6 +618,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/company/finance/update": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update finance details for a specific company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "companyFinance"
+                ],
+                "summary": "Update finance records by company",
+                "parameters": [
+                    {
+                        "description": "Finance details to be updated",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.CompanyFinance"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated finance details",
+                        "schema": {
+                            "$ref": "#/definitions/pb.CompanyFinance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/company/get-all": {
             "get": {
                 "security": [

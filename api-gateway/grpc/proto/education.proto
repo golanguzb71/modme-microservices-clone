@@ -87,8 +87,8 @@ service CompanyFinanceService{
   rpc Delete(common.DeleteAbsRequest) returns(common.AbsResponse){}
   rpc GetAll(common.PageRequest) returns(CompanyFinanceList){}
   rpc GetByCompany(common.PageRequest) returns(CompanyFinanceSelfList){}
+  rpc UpdateByCompany(CompanyFinance) returns(CompanyFinance){}
 }
-
 message CompanyFinance{
   int32 id = 1;
   int32 company_id = 2;
@@ -100,7 +100,6 @@ message CompanyFinance{
   string discount_id = 8;
   string discount_name = 9;
 }
-
 message CompanyFinanceSelf{
   int32 id = 1;
   int32 tariff_id = 2;
@@ -113,7 +112,6 @@ message CompanyFinanceSelf{
   string discount_name = 9;
   string tariff_name=10;
 }
-
 message CompanyFinanceSelfList{
   int32 count = 1;
   float sum_amount_period = 2;
@@ -122,7 +120,6 @@ message CompanyFinanceSelfList{
   float required_sum = 5;
   repeated CompanyFinanceSelf items = 6;
 }
-
 message CompanyFinanceList{
   int32 count = 1;
   repeated CompanyFinanceForList items = 2;

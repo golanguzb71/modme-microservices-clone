@@ -1390,3 +1390,28 @@ func FinanceGetByCompany(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, &resp)
 }
+
+// FinanceUpdateByCompany godoc
+// @Summary Update finance records by company
+// @Description Update finance details for a specific company
+// @Tags companyFinance
+// @Accept json
+// @Produce json
+// @Param body body pb.CompanyFinance true "Finance details to be updated"
+// @Success 200 {object} pb.CompanyFinance "Updated finance details"
+// @Failure 400 {object} utils.AbsResponse "Bad request"
+// @Router /api/company/finance/update [put]
+// @Security Bearer
+func FinanceUpdateByCompany(ctx *gin.Context) {
+	req := pb.CompanyFinance{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	res, err := educationClient.FinanceUpdate(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, res)
+}

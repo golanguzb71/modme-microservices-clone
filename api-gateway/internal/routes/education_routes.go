@@ -32,6 +32,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		finance.DELETE("/delete", handlers.FinanceDelete)
 		finance.POST("/get-all", handlers.FinanceGetAll)
 		finance.POST("/get-by-company", handlers.FinanceGetByCompany)
+		finance.PUT("/update", handlers.FinanceUpdateByCompany)
 	}
 	room := api.Group("/room")
 	{

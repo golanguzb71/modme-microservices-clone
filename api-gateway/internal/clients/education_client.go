@@ -281,3 +281,7 @@ func (lc *EducationClient) FinanceGetByCompany(req *pb.PageRequest) (*pb.Company
 func (lc *EducationClient) FinanceGetAll(req *pb.PageRequest) (*pb.CompanyFinanceList, error) {
 	return lc.companyFinanceClient.GetAll(context.TODO(), req)
 }
+
+func (lc *EducationClient) FinanceUpdate(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
+	return lc.companyFinanceClient.UpdateByCompany(context.TODO(), req)
+}
