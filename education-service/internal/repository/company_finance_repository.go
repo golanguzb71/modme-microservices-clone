@@ -415,8 +415,6 @@ func (r CompanyFinanceRepository) UpdateByCompany(req *pb.CompanyFinance) (*pb.C
 		if err != nil {
 			return nil, fmt.Errorf("failed to commit transaction: %v", err)
 		}
-	} else {
-		return nil, fmt.Errorf("edited_valid_date and company valid_date do not match")
 	}
 
 	updatedRecord := &pb.CompanyFinance{
