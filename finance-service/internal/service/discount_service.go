@@ -24,7 +24,7 @@ func (ds *DiscountService) CreateDiscount(ctx context.Context, req *pb.AbsDiscou
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := ds.repo.CreateDiscount(companyId, req.GroupId, req.StudentId, req.DiscountPrice, req.Comment, req.StartDate, req.EndDate, req.WithTeacher); err != nil {
+	if err := ds.repo.CreateDiscount(ctx, companyId, req.GroupId, req.StudentId, req.DiscountPrice, req.Comment, req.StartDate, req.EndDate, req.WithTeacher); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{

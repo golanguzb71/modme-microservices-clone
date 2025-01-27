@@ -21,7 +21,7 @@ type DiscountRepository struct {
 	paymentRepo   *PaymentRepository
 }
 
-func (r *DiscountRepository) CreateDiscount(companyId, groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
+func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, groupId string, studentId string, discountPrice, comment, startDate, endDate string, withTeacher bool) error {
 	var checker bool
 	tx, err := r.db.Begin()
 	if err != nil {
@@ -98,10 +98,11 @@ func (r *DiscountRepository) CreateDiscount(companyId, groupId string, studentId
 		}
 		payments = append(payments, payment)
 	}
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for _, payment := range payments {
 		payment.Amount = payment.Amount - discountPri
-		err := r.paymentRepo.AddPayment(payment.GivenDate, discountPrice, "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
+		err := r.paymentRepo.AddPayment(ctx, companyId, payment.GivenDate, discountPrice, "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
 		if err != nil {
 			tx.Rollback()
 			return err
