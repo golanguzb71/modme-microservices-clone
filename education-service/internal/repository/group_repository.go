@@ -25,7 +25,7 @@ func NewGroupRepository(db *sql.DB, userClient *clients.UserClient) *GroupReposi
 func (r *GroupRepository) CreateGroup(companyId string, name string, courseId int32, teacherId string, dateType string, days []string, roomId int32, lessonStartTime string, groupStartDate string, groupEndDate string) (string, error) {
 	query := `
 		INSERT INTO groups(course_id, teacher_id, room_id, date_type, days, start_time, start_date, end_date, is_archived, name, company_id) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11) 
 		RETURNING id`
 
 	var groupId string
