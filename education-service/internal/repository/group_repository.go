@@ -115,8 +115,8 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
-
-		teacherName, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), group.TeacherId)
+		ctx, cancelFunc := utils.NewTimoutContext(companyId)
+		teacherName, err := r.userClient.GetTeacherById(ctx, group.TeacherId)
 		if err != nil {
 			log.Printf("Error fetching teacher by ID: %v", err)
 			continue
@@ -127,6 +127,7 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 		group.StudentCount = studentCount
 
 		groups = append(groups, &group)
+		cancelFunc()
 	}
 
 	if err = rows.Err(); err != nil {
@@ -169,7 +170,9 @@ func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionI
 		}
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
-	teacherName, _ := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), group.TeacherId)
+	ctx, cancelFunc := utils.NewTimoutContext(companyId)
+	defer cancelFunc()
+	teacherName, _ := r.userClient.GetTeacherById(ctx, group.TeacherId)
 	group.TeacherName = teacherName
 	group.Course = &course
 	group.Room = &room
@@ -213,7 +216,8 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 		if err != nil {
 			return nil, err
 		}
-		teacherName, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId.String)
+		ctx, cancelFunc := utils.NewTimoutContext(companyId)
+		teacherName, err := r.userClient.GetTeacherById(ctx, teacherId.String)
 		if err != nil {
 			return nil, err
 		}
@@ -224,6 +228,7 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 		groupResponse.DateType = dateType.String
 		groupResponse.LessonStartTime = lessonStartTime.String
 		response.Groups = append(response.Groups, &groupResponse)
+		cancelFunc()
 	}
 
 	if err := rows.Err(); err != nil {

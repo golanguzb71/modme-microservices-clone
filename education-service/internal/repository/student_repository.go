@@ -137,7 +137,8 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 			return nil, fmt.Errorf("failed to scan group row: %v", err)
 		}
 
-		name, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId)
+		ctx, cancelFunc := utils.NewTimoutContext(companyId)
+		name, err := r.userClient.GetTeacherById(ctx, teacherId)
 		if err != nil {
 			return nil, err
 		}
@@ -146,6 +147,7 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 		group.Course = &course
 		student := studentMap[studentID]
 		student.Groups = append(student.Groups, &group)
+		cancelFunc()
 	}
 
 	return &pb.GetAllStudentResponse{
@@ -278,12 +280,14 @@ func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.Get
 		}
 		groupStudent.Room = &room
 		groupStudent.Course = &course
-		name, err := r.userClient.GetTeacherById(utils.NewTimoutContext(companyId), teacherId)
+		ctx, cancelFunc := utils.NewTimoutContext(companyId)
+		name, err := r.userClient.GetTeacherById(ctx, teacherId)
 		if err != nil {
 			return nil, err
 		}
 		groupStudent.TeacherName = name
 		result.Groups = append(result.Groups, &groupStudent)
+		cancelFunc()
 	}
 
 	if err := rows.Err(); err != nil {
