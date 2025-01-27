@@ -94,7 +94,7 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 		GroupStartDate:  req.StartDate,
 		GroupEndDate:    req.EndDate,
 	}
-	ctx, cancelFunc := utils.NewTimoutContext(companyId)
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	err, groupId := s.groupClient.CreateGroup(ctx, &createGroupReq)
 	if err != nil {
