@@ -59,7 +59,7 @@ func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteStuden
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := s.repo.DeleteStudent(companyId, req.StudentId, req.ReturnMoney, req.ActionById, req.ActionByName); err != nil {
+	if err := s.repo.DeleteStudent(ctx, companyId, req.StudentId, req.ReturnMoney, req.ActionById, req.ActionByName); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -144,7 +144,8 @@ func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.Cha
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.ChangeConditionStudent(companyId, req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName)
+	return s.repo.ChangeConditionStudent(ctx,
+		companyId, req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName)
 }
 
 func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetStudentsByGroupIdRequest) (*pb.GetStudentsByGroupIdResponse, error) {

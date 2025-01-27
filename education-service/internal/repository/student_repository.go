@@ -176,7 +176,7 @@ func (r *StudentRepository) UpdateStudent(companyId string, studentId string, nu
 	}
 	return nil
 }
-func (r *StudentRepository) DeleteStudent(companyId string, studentId string, returnMoney bool, actionById, actionByName string) error {
+func (r *StudentRepository) DeleteStudent(ctx context.Context, companyId string, studentId string, returnMoney bool, actionById, actionByName string) error {
 	var cond string
 	if err := r.db.QueryRow(`select condition from students where id = $1 and company_id=$2`, studentId, companyId).Scan(&cond); err != nil {
 		return err
@@ -195,7 +195,7 @@ func (r *StudentRepository) DeleteStudent(companyId string, studentId string, re
 			if err != nil {
 				return err
 			}
-			_, _ = r.ChangeConditionStudent(companyId, studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
+			_, _ = r.ChangeConditionStudent(ctx, companyId, studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
 		}
 		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1 and company_id=$2`, studentId, companyId)
 		if err != nil {
@@ -508,7 +508,7 @@ func (r *StudentRepository) TransferLessonDate(companyId string, groupId string,
 		Message: "accomplished",
 	}, nil
 }
-func (r *StudentRepository) ChangeConditionStudent(companyId string, studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyId string, studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
 	isEliminatedInTrial := false
 
 	if err := r.ensureFinanceClient(); err != nil {
@@ -600,11 +600,12 @@ func (r *StudentRepository) ChangeConditionStudent(companyId string, studentId s
 
 	fromDate := tillDateParsed.Time
 	currentDate := time.Now()
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
 		monthYearDate := d.Format("2006-01-02") // Format as YYYY-MM for clarity
 
-		manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+		manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
 		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYearDate)
 		if err != nil {
 			tx.Rollback()
