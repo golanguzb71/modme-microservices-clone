@@ -22,7 +22,7 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
 	if req.Type == "ADD" {
-		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, false); err != nil {
+		if err := ps.repo.AddPayment(ctx, companyId, req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, false); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
@@ -30,7 +30,7 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 			Message: "payment added",
 		}, nil
 	} else if req.Type == "TAKE_OFF" {
-		if err := ps.repo.TakeOffPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
+		if err := ps.repo.TakeOffPayment(ctx, companyId, req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
@@ -38,7 +38,7 @@ func (ps *PaymentService) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequ
 			Message: "payment take_off successfully",
 		}, nil
 	} else if req.Type == "REFUND" {
-		if err := ps.repo.AddPayment(req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, true); err != nil {
+		if err := ps.repo.AddPayment(ctx, companyId, req.Date, req.Sum, req.Method, req.Comment, req.UserId, req.ActionByName, req.ActionById, req.GroupId, true); err != nil {
 			return nil, status.Errorf(codes.Canceled, err.Error())
 		}
 		return &pb.AbsResponse{
@@ -53,28 +53,28 @@ func (ps *PaymentService) PaymentReturn(ctx context.Context, req *pb.PaymentRetu
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.PaymentReturn(req.PaymentId, req.ActionByName, req.ActionById)
+	return ps.repo.PaymentReturn(ctx, companyId, req.PaymentId, req.ActionByName, req.ActionById)
 }
 func (ps *PaymentService) PaymentUpdate(ctx context.Context, req *pb.PaymentUpdateRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.PaymentUpdate(req.PaymentId, req.Date, req.Method, req.UserId, req.Comment, req.Debit, req.ActionByName, req.ActionById, req.GroupId)
+	return ps.repo.PaymentUpdate(ctx, companyId, req.PaymentId, req.Date, req.Method, req.UserId, req.Comment, req.Debit, req.ActionByName, req.ActionById, req.GroupId)
 }
 func (ps *PaymentService) GetMonthlyStatus(ctx context.Context, req *pb.GetMonthlyStatusRequest) (*pb.GetMonthlyStatusResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetMonthlyStatus(req.UserId)
+	return ps.repo.GetMonthlyStatus(ctx, companyId, req.UserId)
 }
 func (ps *PaymentService) GetAllPaymentsByMonth(ctx context.Context, req *pb.GetAllPaymentsByMonthRequest) (*pb.GetAllPaymentsByMonthResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllPaymentsByMonth(req.Month, req.UserId)
+	return ps.repo.GetAllPaymentsByMonth(ctx, companyId, req.Month, req.UserId)
 }
 
 func (ps *PaymentService) GetAllPaymentTakeOff(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffResponse, error) {
@@ -82,14 +82,14 @@ func (ps *PaymentService) GetAllPaymentTakeOff(ctx context.Context, req *pb.GetA
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllPaymentTakeOff(req.From, req.To)
+	return ps.repo.GetAllPaymentTakeOff(ctx, companyId, req.From, req.To)
 }
 func (ps *PaymentService) GetAllPaymentTakeOffChart(ctx context.Context, req *pb.GetAllPaymentTakeOffRequest) (*pb.GetAllPaymentTakeOffChartResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllPaymentTakeOffChart(req.From, req.To)
+	return ps.repo.GetAllPaymentTakeOffChart(ctx, companyId, req.From, req.To)
 }
 
 func (ps *PaymentService) GetAllStudentPayments(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsResponse, error) {
@@ -97,7 +97,7 @@ func (ps *PaymentService) GetAllStudentPayments(ctx context.Context, req *pb.Get
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllStudentPayments(req.From, req.To)
+	return ps.repo.GetAllStudentPayments(ctx, companyId, req.From, req.To)
 }
 
 func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsChartResponse, error) {
@@ -105,7 +105,7 @@ func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *p
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllStudentPaymentsChart(req.From, req.To)
+	return ps.repo.GetAllStudentPaymentsChart(ctx, companyId, req.From, req.To)
 }
 
 func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.GetAllDebtsRequest) (*pb.GetAllDebtsInformationResponse, error) {
@@ -113,14 +113,14 @@ func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.Ge
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllDebtsInformation(req.From, req.To, req.PageParam.Page, req.PageParam.Size)
+	return ps.repo.GetAllDebtsInformation(ctx, companyId, req.From, req.To, req.PageParam.Page, req.PageParam.Size)
 }
 func (ps *PaymentService) GetCommonFinanceInformation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetCommonFinanceInformation()
+	return ps.repo.GetCommonFinanceInformation(ctx, companyId)
 }
 
 func (ps *PaymentService) GetIncomeChart(ctx context.Context, req *pb.GetIncomeChartRequest) (*pb.GetIncomeChartResponse, error) {
@@ -128,7 +128,7 @@ func (ps *PaymentService) GetIncomeChart(ctx context.Context, req *pb.GetIncomeC
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetIncomeChart(req.From, req.To)
+	return ps.repo.GetIncomeChart(ctx, companyId, req.From, req.To)
 }
 
 func NewPaymentService(repo *repository.PaymentRepository) *PaymentService {

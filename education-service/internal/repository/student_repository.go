@@ -274,7 +274,7 @@ func (r *StudentRepository) GetStudentById(ctx context.Context, companyId string
 			return nil, err
 		}
 
-		discount, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), result.Id, groupStudent.Id)
+		discount, _ := r.financeClient.GetDiscountByStudentId(ctx, result.Id, groupStudent.Id)
 		groupStudent.PriceForStudent = course.Price
 		if discount != nil {
 			groupStudent.PriceForStudent = course.Price - *discount
@@ -628,7 +628,7 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 			return nil, fmt.Errorf("unknown status: %s", status)
 		}
 
-		_, err = r.financeClient.PaymentAdd(
+		_, err = r.financeClient.PaymentAdd(ctx,
 			description, monthYearDate, "CASH", fmt.Sprintf("%v", amount),
 			studentId, transactionType, actionById, actionByName, groupId)
 		if err != nil {
@@ -871,7 +871,8 @@ func (r *StudentRepository) StudentBalanceTaker(companyId string) {
 		return
 	}
 	defer rows.Close()
-
+	ctx, cancelFunc := utils.NewTimoutContext(context.Background(), companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var studentId string
 		err = rows.Scan(&studentId)
@@ -896,7 +897,7 @@ func (r *StudentRepository) StudentBalanceTaker(companyId string) {
 				fmt.Printf("error scanning groupid student %v", err)
 				continue
 			}
-			discountAmount, _ := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+			discountAmount, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
 			err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1 and c.company_id=$2`, groupId, companyId).Scan(&takingPrice)
 			if err != nil {
 				fmt.Printf("error getting course price active student %v", err)
@@ -909,7 +910,7 @@ func (r *StudentRepository) StudentBalanceTaker(companyId string) {
 				comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi chegirma narxida"
 			}
 			//_, err := r.ChangeUserBalanceHistory("ushbu oy uchun oylik tolov student balansidan yechib olindi.", groupId, "00000000-0000-0000-0000-000000000000", "TIZIM", time.Now().Format("2006-01-02"), takingPrice, "TAKE_OFF", studentId)
-			_, err := r.financeClient.PaymentAdd(comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
+			_, err := r.financeClient.PaymentAdd(ctx, comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
 			if err != nil {
 				fmt.Printf("error changing balance history active student %v", err)
 				continue

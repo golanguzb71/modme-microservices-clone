@@ -52,7 +52,7 @@ func (ds *DiscountService) GetHistoryDiscount(ctx context.Context, req *pb.GetHi
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ds.repo.GetHistoryDiscount(companyId, req.StudentId)
+	return ds.repo.GetHistoryDiscount(ctx, companyId, req.StudentId)
 }
 
 func (ds *DiscountService) GetAllInformationDiscount(ctx context.Context, req *pb.GetInformationDiscountRequest) (*pb.GetInformationDiscountResponse, error) {
@@ -60,7 +60,7 @@ func (ds *DiscountService) GetAllInformationDiscount(ctx context.Context, req *p
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ds.repo.GetAllDiscountByGroup(companyId, req.GroupId)
+	return ds.repo.GetAllDiscountByGroup(ctx, companyId, req.GroupId)
 }
 
 func (ds *DiscountService) GetDiscountByStudentId(ctx context.Context, req *pb.GetDiscountByStudentIdRequest) (*pb.GetDiscountByStudentIdResponse, error) {

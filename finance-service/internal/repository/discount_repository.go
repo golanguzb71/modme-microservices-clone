@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"finance-service/internal/clients"
+	"finance-service/internal/utils"
 	"finance-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
@@ -140,8 +142,10 @@ func (r *DiscountRepository) DeleteDiscount(companyId, groupId string, studentId
 	}
 	return nil
 }
-func (r *DiscountRepository) GetAllDiscountByGroup(companyId, groupId string) (*pb.GetInformationDiscountResponse, error) {
-	resp, err := r.studentClient.GetStudentsByGroupId(groupId)
+func (r *DiscountRepository) GetAllDiscountByGroup(ctx context.Context, companyId, groupId string) (*pb.GetInformationDiscountResponse, error) {
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
+	resp, err := r.studentClient.GetStudentsByGroupId(ctx, groupId)
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +164,7 @@ func (r *DiscountRepository) GetAllDiscountByGroup(companyId, groupId string) (*
 	return &result, nil
 }
 
-func (r *DiscountRepository) GetHistoryDiscount(companyId, id string) (*pb.GetHistoryDiscountResponse, error) {
+func (r *DiscountRepository) GetHistoryDiscount(ctx context.Context, companyId, id string) (*pb.GetHistoryDiscountResponse, error) {
 	query := `
 		SELECT group_id, student_id,discount, comment, start_at, end_at, withTeacher, action, created_at
 		FROM student_discount_history
@@ -174,6 +178,8 @@ func (r *DiscountRepository) GetHistoryDiscount(companyId, id string) (*pb.GetHi
 		return nil, err
 	}
 	defer rows.Close()
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var discount pb.AbsHistoryDiscount
 		var startAt, endAt, createdAt time.Time
@@ -191,7 +197,8 @@ func (r *DiscountRepository) GetHistoryDiscount(companyId, id string) (*pb.GetHi
 		); err != nil {
 			return nil, err
 		}
-		name, _, _, _ := r.studentClient.GetStudentById(discount.StudentId)
+
+		name, _, _, _ := r.studentClient.GetStudentById(ctx, discount.StudentId)
 		discount.StudentName = name
 		discount.StartDate = startAt.Format("2006-01-02")
 		discount.EndDate = endAt.Format("2006-01-02")

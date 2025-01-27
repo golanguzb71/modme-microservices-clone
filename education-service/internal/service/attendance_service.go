@@ -63,7 +63,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 				Message: "Attendance successfully deleted",
 			}, nil
 		} else {
-			err := s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+			err := s.attendanceRepo.CreateAttendance(ctx, companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 			if err != nil {
 				return nil, err
 			}
@@ -97,7 +97,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 					Message: "Attendance successfully deleted",
 				}, nil
 			} else {
-				err = s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+				err = s.attendanceRepo.CreateAttendance(ctx, companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 				if err != nil {
 					return nil, err
 				}
@@ -127,7 +127,7 @@ func (s *AttendanceService) SetAttendance(ctx context.Context, req *pb.SetAttend
 			Message: "Attendance successfully deleted",
 		}, nil
 	} else {
-		err = s.attendanceRepo.CreateAttendance(companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
+		err = s.attendanceRepo.CreateAttendance(ctx, companyId, req.GroupId, req.StudentId, req.TeacherId, req.AttendDate, req.Status, req.ActionById, req.ActionByRole)
 		if err != nil {
 			return nil, err
 		}

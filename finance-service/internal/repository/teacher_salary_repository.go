@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"finance-service/internal/clients"
+	"finance-service/internal/utils"
 	"finance-service/proto/pb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -16,14 +17,14 @@ type TeacherSalaryRepository struct {
 	userClient *clients.UserClient
 }
 
-func (r *TeacherSalaryRepository) CreateTeacherSalary(amount int32, teacherId string, amountType string) (*pb.AbsResponse, error) {
+func (r *TeacherSalaryRepository) CreateTeacherSalary(ctx context.Context, companyId string, amount int32, teacherId string, amountType string) (*pb.AbsResponse, error) {
 	if amountType == "PERCENT" && (amount > 100 || amount < 0) {
 		return nil, status.Errorf(codes.Aborted, "invalid amount for PERCENT: must be between 0 and 100")
 	}
 	if amountType != "PERCENT" && amount < 10000 {
 		return nil, status.Errorf(codes.Aborted, "invalid amount: must be non-negative")
 	}
-	_, err := r.db.Exec("INSERT INTO teacher_salary (teacher_id, salary_type, salary_type_count) VALUES ($1, $2, $3)", teacherId, amountType, amount)
+	_, err := r.db.Exec("INSERT INTO teacher_salary (teacher_id, salary_type, salary_type_count , company_id) VALUES ($1, $2, $3 , $4)", teacherId, amountType, amount, companyId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to insert data: %v", err)
 	}
@@ -33,8 +34,8 @@ func (r *TeacherSalaryRepository) CreateTeacherSalary(amount int32, teacherId st
 	}, nil
 }
 
-func (r *TeacherSalaryRepository) DeleteTeacherSalary(teacherId string) (*pb.AbsResponse, error) {
-	result, err := r.db.Exec("DELETE FROM teacher_salary WHERE teacher_id = $1", teacherId)
+func (r *TeacherSalaryRepository) DeleteTeacherSalary(ctx context.Context, companyId string, teacherId string) (*pb.AbsResponse, error) {
+	result, err := r.db.Exec("DELETE FROM teacher_salary WHERE teacher_id = $1 and company_id=$2", teacherId, companyId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete salary: %v", err)
 	}
@@ -50,14 +51,15 @@ func (r *TeacherSalaryRepository) DeleteTeacherSalary(teacherId string) (*pb.Abs
 	return &pb.AbsResponse{Message: "Salary deleted successfully"}, nil
 }
 
-func (r *TeacherSalaryRepository) GetTeacherSalary() (*pb.GetTeachersSalaryRequest, error) {
-	rows, err := r.db.Query("SELECT teacher_id, salary_type, salary_type_count  FROM teacher_salary")
+func (r *TeacherSalaryRepository) GetTeacherSalary(ctx context.Context, companyId string) (*pb.GetTeachersSalaryRequest, error) {
+	rows, err := r.db.Query("SELECT teacher_id, salary_type, salary_type_count  FROM teacher_salary where company_id=$1", companyId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to retrieve salaries: %v", err)
 	}
 	defer rows.Close()
-
 	var salaries []*pb.AbsGetTeachersSalary
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var teacherId, salaryType, teacherName string
 		var amount int32
@@ -65,7 +67,7 @@ func (r *TeacherSalaryRepository) GetTeacherSalary() (*pb.GetTeachersSalaryReque
 		if err := rows.Scan(&teacherId, &salaryType, &amount); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to scan row: %v", err)
 		}
-		user, err := r.userClient.GetUserById(context.TODO(), teacherId)
+		user, err := r.userClient.GetUserById(ctx, teacherId)
 		if err != nil {
 			teacherName = "Teacher Name not available"
 		}
@@ -85,9 +87,9 @@ func (r *TeacherSalaryRepository) GetTeacherSalary() (*pb.GetTeachersSalaryReque
 	return &pb.GetTeachersSalaryRequest{Salaries: salaries}, nil
 }
 
-func (r *TeacherSalaryRepository) GetTeacherSalaryByTeacherID(teacherId string) (*pb.AbsGetTeachersSalary, error) {
+func (r *TeacherSalaryRepository) GetTeacherSalaryByTeacherID(ctx context.Context, companyId string, teacherId string) (*pb.AbsGetTeachersSalary, error) {
 	var salary pb.AbsGetTeachersSalary
-	err := r.db.QueryRow("SELECT teacher_id, salary_type, salary_type_count FROM teacher_salary WHERE teacher_id = $1", teacherId).
+	err := r.db.QueryRow("SELECT teacher_id, salary_type, salary_type_count FROM teacher_salary WHERE teacher_id = $1 and company_id=$2", teacherId, companyId).
 		Scan(&salary.TeacherId, &salary.Type, &salary.Amount)
 
 	if err != nil {

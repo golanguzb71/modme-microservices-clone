@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"finance-service/internal/clients"
+	"finance-service/internal/utils"
 	"finance-service/proto/pb"
 	"fmt"
 	"github.com/google/uuid"
@@ -16,19 +17,19 @@ type ExpenseRepository struct {
 	userClient *clients.UserClient
 }
 
-func (r *ExpenseRepository) CreateExpense(title, givenDate, expenseType, categoryId, userId, sum, createdBy, paymentMethod string) error {
+func (r *ExpenseRepository) CreateExpense(ctx context.Context, companyId, title, givenDate, expenseType, categoryId, userId, sum, createdBy, paymentMethod string) error {
 	query := `
 		INSERT INTO expense (
-			id, title, user_id, category_id, expense_type, sum, created_at , given_date, created_by, payment_method
+			id, title, user_id, category_id, expense_type, sum, created_at , given_date, created_by, payment_method,company_id
 		) VALUES (
-		 $1, $2, $3, $4, $5, $6, NOW(), $7, $8 , $9
+		 $1, $2, $3, $4, $5, $6, NOW(), $7, $8 , $9, $10
 		)
 	`
 	var err error
 	if expenseType == "USER" {
-		_, err = r.db.Exec(query, uuid.New(), title, userId, nil, expenseType, sum, givenDate, createdBy, paymentMethod)
+		_, err = r.db.Exec(query, uuid.New(), title, userId, nil, expenseType, sum, givenDate, createdBy, paymentMethod, companyId)
 	} else {
-		_, err = r.db.Exec(query, uuid.New(), title, nil, categoryId, expenseType, sum, givenDate, createdBy, paymentMethod)
+		_, err = r.db.Exec(query, uuid.New(), title, nil, categoryId, expenseType, sum, givenDate, createdBy, paymentMethod, companyId)
 	}
 
 	if err != nil {
@@ -36,33 +37,33 @@ func (r *ExpenseRepository) CreateExpense(title, givenDate, expenseType, categor
 	}
 	return nil
 }
-func (r *ExpenseRepository) DeleteExpense(id string) error {
-	_, err := r.db.Exec(`DELETE FROM expense where id=$1`, id)
+func (r *ExpenseRepository) DeleteExpense(companyId, id string) error {
+	_, err := r.db.Exec(`DELETE FROM expense where id=$1 and company_id=$2`, id, companyId)
 	if err != nil {
 		return status.Errorf(codes.Aborted, "error while deleting expense %v", err)
 	}
 	return nil
 }
-func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpenseDiagramResponse, error) {
+func (r *ExpenseRepository) GetExpenseDiagram(ctx context.Context, companyId, to, from string) (*pb.GetAllExpenseDiagramResponse, error) {
 	query := `
-	SELECT 
-		CASE 
-			WHEN expense_type = 'USER' THEN user_id::text
-			WHEN expense_type = 'CATEGORY' THEN c.name
-		END AS userOrCategories,
-		SUM(e.sum) AS userOrCategoriesAmount,
-		TO_CHAR(e.given_date, 'YYYY-MM') AS month,
-		SUM(SUM(e.sum)) OVER () AS amountCommonExpense,
-		expense_type,
-		user_id
-	FROM expense e
-	LEFT JOIN category c ON e.category_id = c.id
-	WHERE e.given_date BETWEEN $1 AND $2
-	GROUP BY userOrCategories, month, expense_type, user_id
-	ORDER BY month;
-	`
+		SELECT 
+			CASE 
+				WHEN expense_type = 'USER' THEN user_id::text
+				WHEN expense_type = 'CATEGORY' THEN c.name
+			END AS userOrCategories,
+			SUM(e.sum) AS userOrCategoriesAmount,
+			TO_CHAR(e.given_date, 'YYYY-MM') AS month,
+			SUM(SUM(e.sum)) OVER () AS amountCommonExpense,
+			expense_type,
+			user_id
+		FROM expense e 
+		LEFT JOIN category c ON e.category_id = c.id
+		WHERE e.given_date BETWEEN $1 AND $2 and e.company_id=$3
+		GROUP BY userOrCategories, month, expense_type, user_id
+		ORDER BY month;
+		`
 
-	rows, err := r.db.Query(query, from, to)
+	rows, err := r.db.Query(query, from, to, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +73,8 @@ func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpens
 	userOrCategoriesMap := make(map[string]float64)
 	monthAmountMap := make(map[string]float64)
 	var commonExpense float64
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var (
 			userOrCategory       string
@@ -87,7 +89,7 @@ func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpens
 		}
 
 		if expenseType == "USER" && userID.Valid {
-			userResp, err := r.userClient.GetUserById(context.TODO(), userID.String)
+			userResp, err := r.userClient.GetUserById(ctx, userID.String)
 			if err != nil {
 				return nil, fmt.Errorf("error fetching user name: %v", err)
 			}
@@ -113,7 +115,7 @@ func (r *ExpenseRepository) GetExpenseDiagram(to, from string) (*pb.GetAllExpens
 
 	return &response, nil
 }
-func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
+func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string, page, size int32, from, to, idType string, id interface{}) (*pb.GetAllExpenseResponse, error) {
 	offset := (page - 1) * size
 
 	baseQuery := `
@@ -132,10 +134,10 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 			e.created_at
 		FROM expense e
 		LEFT JOIN category c ON e.category_id = c.id
-		WHERE e.given_date BETWEEN $1 AND $2`
+		WHERE e.given_date BETWEEN $1 AND $2 and c.company_id=$3`
 
-	args := []interface{}{from, to}
-	paramCount := 2
+	args := []interface{}{from, to, companyId}
+	paramCount := 3
 
 	if idType == "USER" || idType == "CATEGORY" {
 		paramCount++
@@ -156,7 +158,8 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 		return nil, fmt.Errorf("error querying expenses: %v", err)
 	}
 	defer rows.Close()
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	var expenses []*pb.GetAllExpenseAbs
 	for rows.Next() {
 		var expense pb.GetAllExpenseAbs
@@ -198,13 +201,13 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 			}
 		}
 		if idType == "USER" || (userID.Valid && userID.String != "") {
-			userResp, err := r.userClient.GetUserById(context.TODO(), userID.String)
+			userResp, err := r.userClient.GetUserById(ctx, userID.String)
 			if err != nil {
 				return nil, fmt.Errorf("error fetching user details: %v", err)
 			}
 			expense.User = userResp
 		}
-		creatorResp, err := r.userClient.GetUserById(context.TODO(), createdBy)
+		creatorResp, err := r.userClient.GetUserById(ctx, createdBy)
 		if err != nil {
 			return nil, fmt.Errorf("error fetching creator details: %v", err)
 		}
@@ -218,27 +221,27 @@ func (r *ExpenseRepository) GetAllExpense(page, size int32, from, to, idType str
 	}
 
 	countQuery := `
-		SELECT COUNT(*) 
+		SELECT COUNT(*)
 		FROM expense e
-		WHERE e.given_date BETWEEN $1 AND $2`
-
+		LEFT JOIN category c ON e.category_id = c.id
+		WHERE e.given_date BETWEEN $1 AND $2 AND c.company_id = $3`
+	countArgs := []interface{}{from, to, companyId}
 	if idType == "USER" || idType == "CATEGORY" {
 		fieldName := "e.user_id"
 		if idType == "CATEGORY" {
 			fieldName = "e.category_id"
 		}
-		countQuery += fmt.Sprintf(" AND %s = $3", fieldName)
+		countQuery += fmt.Sprintf(" AND %s = $4", fieldName)
+		countArgs = append(countArgs, id)
 	}
 
 	var totalCount int32
-	countArgs := args[:len(args)-2]
 	err = r.db.QueryRow(countQuery, countArgs...).Scan(&totalCount)
 	if err != nil {
 		return nil, fmt.Errorf("error counting expenses: %v", err)
 	}
 
 	totalPageCount := (totalCount + size - 1) / size
-
 	return &pb.GetAllExpenseResponse{
 		TotalPageCount: totalPageCount,
 		Expenses:       expenses,

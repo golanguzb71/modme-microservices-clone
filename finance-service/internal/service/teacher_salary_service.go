@@ -26,21 +26,21 @@ func (ts *TeacherSalaryService) CreateTeacherSalary(ctx context.Context, req *pb
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ts.repo.CreateTeacherSalary(req.Amount, req.TeacherId, req.Type)
+	return ts.repo.CreateTeacherSalary(ctx, companyId, req.Amount, req.TeacherId, req.Type)
 }
 func (ts *TeacherSalaryService) DeleteTeacherSalary(ctx context.Context, req *pb.DeleteTeacherSalaryRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ts.repo.DeleteTeacherSalary(req.TeacherId)
+	return ts.repo.DeleteTeacherSalary(ctx, companyId, req.TeacherId)
 }
 func (ts *TeacherSalaryService) GetTeacherSalary(ctx context.Context, req *emptypb.Empty) (*pb.GetTeachersSalaryRequest, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ts.repo.GetTeacherSalary()
+	return ts.repo.GetTeacherSalary(ctx, companyId)
 }
 
 func (ts *TeacherSalaryService) GetTeacherSalaryByTeacherID(ctx context.Context, req *pb.DeleteTeacherSalaryRequest) (*pb.AbsGetTeachersSalary, error) {
@@ -48,5 +48,5 @@ func (ts *TeacherSalaryService) GetTeacherSalaryByTeacherID(ctx context.Context,
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ts.repo.GetTeacherSalaryByTeacherID(req.TeacherId)
+	return ts.repo.GetTeacherSalaryByTeacherID(ctx, companyId, req.TeacherId)
 }

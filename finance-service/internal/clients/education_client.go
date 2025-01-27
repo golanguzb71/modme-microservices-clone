@@ -22,28 +22,28 @@ func NewEducationClient(addr string) (*EducationClient, error) {
 	return &EducationClient{studentClient: studentClient, groupClient: groupClient}, nil
 }
 
-func (ec *EducationClient) GetStudentById(studentId string) (string, string, float64, error) {
-	student, err := ec.studentClient.GetStudentById(context.TODO(), &pb.NoteStudentByAbsRequest{Id: studentId})
+func (ec *EducationClient) GetStudentById(ctx context.Context, studentId string) (string, string, float64, error) {
+	student, err := ec.studentClient.GetStudentById(ctx, &pb.NoteStudentByAbsRequest{Id: studentId})
 	if err != nil {
 		return "", "", 0, err
 	}
 	return student.Name, student.Phone, student.Balance, nil
 }
 
-func (ec *EducationClient) GetStudentsByGroupId(groupId string) (*pb.GetStudentsByGroupIdResponse, error) {
-	return ec.studentClient.GetStudentsByGroupId(context.TODO(), &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: true})
+func (ec *EducationClient) GetStudentsByGroupId(ctx context.Context, groupId string) (*pb.GetStudentsByGroupIdResponse, error) {
+	return ec.studentClient.GetStudentsByGroupId(ctx, &pb.GetStudentsByGroupIdRequest{GroupId: groupId, WithOutdated: true})
 }
 
-func (ec *EducationClient) GetGroupNameById(groupId string) string {
-	group, err := ec.groupClient.GetGroupById(context.TODO(), &pb.GetGroupByIdRequest{Id: groupId})
+func (ec *EducationClient) GetGroupNameById(ctx context.Context, groupId string) string {
+	group, err := ec.groupClient.GetGroupById(ctx, &pb.GetGroupByIdRequest{Id: groupId})
 	if err != nil {
 		return ""
 	}
 	return group.Name
 }
 
-func (ec *EducationClient) ChangeUserBalanceHistory(studentId string, amount string, givenDate string, comment string, paymentType string, actionById string, actionByName string, groupId string) error {
-	_, err := ec.studentClient.ChangeUserBalanceHistory(context.TODO(), &pb.ChangeUserBalanceHistoryRequest{
+func (ec *EducationClient) ChangeUserBalanceHistory(ctx context.Context, studentId string, amount string, givenDate string, comment string, paymentType string, actionById string, actionByName string, groupId string) error {
+	_, err := ec.studentClient.ChangeUserBalanceHistory(ctx, &pb.ChangeUserBalanceHistoryRequest{
 		StudentId:     studentId,
 		Amount:        amount,
 		GivenDate:     givenDate,

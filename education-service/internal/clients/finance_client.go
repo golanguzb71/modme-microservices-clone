@@ -36,8 +36,8 @@ func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, 
 	return &discountAmount, resp.DiscountOwner
 }
 
-func (fc *FinanceClient) PaymentAdd(comment, date, method, sum, userId, paymentType, actionById, actionByName, groupId string) (*pb.AbsResponse, error) {
-	return fc.paymentClient.PaymentAdd(context.TODO(), &pb.PaymentAddRequest{
+func (fc *FinanceClient) PaymentAdd(ctx context.Context, comment, date, method, sum, userId, paymentType, actionById, actionByName, groupId string) (*pb.AbsResponse, error) {
+	return fc.paymentClient.PaymentAdd(ctx, &pb.PaymentAddRequest{
 		Comment:      comment,
 		Date:         date,
 		Method:       method,

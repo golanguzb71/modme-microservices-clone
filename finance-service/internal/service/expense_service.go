@@ -20,7 +20,7 @@ func (e *ExpenseService) CreateExpense(ctx context.Context, req *pb.CreateExpens
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := e.repo.CreateExpense(req.Title, req.GivenDate, req.ExpenseType, req.CategoryId, req.UserId, req.Sum, req.CreatedById, req.PaymentMethod); err != nil {
+	if err := e.repo.CreateExpense(ctx, companyId, req.Title, req.GivenDate, req.ExpenseType, req.CategoryId, req.UserId, req.Sum, req.CreatedById, req.PaymentMethod); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -33,7 +33,7 @@ func (e *ExpenseService) DeleteExpense(ctx context.Context, req *pb.DeleteAbsReq
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	if err := e.repo.DeleteExpense(req.Id); err != nil {
+	if err := e.repo.DeleteExpense(companyId, req.Id); err != nil {
 		return nil, err
 	}
 	return &pb.AbsResponse{
@@ -46,14 +46,14 @@ func (e *ExpenseService) GetAllExpense(ctx context.Context, req *pb.GetAllExpens
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return e.repo.GetAllExpense(req.PageReq.Page, req.PageReq.Size, req.From, req.To, req.Type, req.Id)
+	return e.repo.GetAllExpense(ctx, companyId, req.PageReq.Page, req.PageReq.Size, req.From, req.To, req.Type, req.Id)
 }
 func (e *ExpenseService) GetAllExpenseDiagram(ctx context.Context, req *pb.GetAllExpenseDiagramRequest) (*pb.GetAllExpenseDiagramResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return e.repo.GetExpenseDiagram(req.To, req.From)
+	return e.repo.GetExpenseDiagram(ctx, companyId, req.To, req.From)
 }
 
 func NewExpenseService(repo *repository.ExpenseRepository) *ExpenseService {

@@ -63,16 +63,18 @@ func (r *AttendanceRepository) ensureFinanceClient() error {
 func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.FinanceClient) *AttendanceRepository {
 	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
 }
-func (r *AttendanceRepository) CreateAttendance(companyId, groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
 	if err := r.ensureFinanceClient(); err != nil {
 		return fmt.Errorf("error while ensuring finance client %v", err)
 	}
 	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
 		return fmt.Errorf("oops this teacherid not the same for this group")
 	}
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	isDiscounted := false
 	var price float64
-	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(context.TODO(), studentId, groupId)
+	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
 	if discountAmount != nil && discountOwner == "TEACHER" {
 		isDiscounted = true
 		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount); err != nil {

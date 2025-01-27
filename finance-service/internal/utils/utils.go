@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"strconv"
+	"time"
 )
 
 func RecoveryInterceptor(
@@ -42,4 +43,12 @@ func GetCompanyId(ctx context.Context) string {
 		}
 	}
 	return ""
+}
+
+func NewTimoutContext(ctx context.Context, companyId string) (context.Context, context.CancelFunc) {
+	md := metadata.Pairs()
+	md.Set("company_id", companyId)
+	ctx = metadata.NewOutgoingContext(ctx, md)
+	res, cancelFunc := context.WithTimeout(ctx, time.Second*60)
+	return res, cancelFunc
 }
