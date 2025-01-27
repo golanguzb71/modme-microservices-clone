@@ -41,7 +41,7 @@ func (r *StudentRepository) ensureFinanceClient() error {
 	}
 	return nil
 }
-func (r *StudentRepository) GetAllStudent(companyId string, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
+func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil || pageInt < 1 {
 		return nil, fmt.Errorf("invalid page value: %v", err)
@@ -121,6 +121,8 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 	for _, student := range students {
 		studentMap[student.Id] = student
 	}
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 
 	for groupRows.Next() {
 		var studentID string
@@ -137,7 +139,6 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 			return nil, fmt.Errorf("failed to scan group row: %v", err)
 		}
 
-		ctx, cancelFunc := utils.NewTimoutContext(companyId)
 		name, err := r.userClient.GetTeacherById(ctx, teacherId)
 		if err != nil {
 			return nil, err
@@ -147,7 +148,6 @@ func (r *StudentRepository) GetAllStudent(companyId string, condition string, pa
 		group.Course = &course
 		student := studentMap[studentID]
 		student.Groups = append(student.Groups, &group)
-		cancelFunc()
 	}
 
 	return &pb.GetAllStudentResponse{
@@ -230,7 +230,7 @@ func (r *StudentRepository) AddToGroup(companyId string, groupId string, student
 	}
 	return nil
 }
-func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.GetStudentByIdResponse, error) {
+func (r *StudentRepository) GetStudentById(ctx context.Context, companyId string, id string) (*pb.GetStudentByIdResponse, error) {
 	if err := r.ensureFinanceClient(); err != nil {
 		return nil, err
 	}
@@ -257,7 +257,8 @@ func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.Get
 		return nil, err
 	}
 	defer rows.Close()
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var groupStudent pb.GetGroupStudent
 		var room pb.AbsRoom
@@ -280,14 +281,12 @@ func (r *StudentRepository) GetStudentById(companyId string, id string) (*pb.Get
 		}
 		groupStudent.Room = &room
 		groupStudent.Course = &course
-		ctx, cancelFunc := utils.NewTimoutContext(companyId)
 		name, err := r.userClient.GetTeacherById(ctx, teacherId)
 		if err != nil {
 			return nil, err
 		}
 		groupStudent.TeacherName = name
 		result.Groups = append(result.Groups, &groupStudent)
-		cancelFunc()
 	}
 
 	if err := rows.Err(); err != nil {

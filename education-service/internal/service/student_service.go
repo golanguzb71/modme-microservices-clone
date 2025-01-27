@@ -23,7 +23,7 @@ func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStuden
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetAllStudent(companyId, req.Condition, req.Page, req.Size)
+	return s.repo.GetAllStudent(ctx, companyId, req.Condition, req.Page, req.Size)
 }
 
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
@@ -87,7 +87,7 @@ func (s *StudentService) GetStudentById(ctx context.Context, req *pb.NoteStudent
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetStudentById(companyId, req.Id)
+	return s.repo.GetStudentById(ctx, companyId, req.Id)
 }
 func (s *StudentService) GetNoteByStudent(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetNotesByStudent, error) {
 	companyId := utils.GetCompanyId(ctx)
