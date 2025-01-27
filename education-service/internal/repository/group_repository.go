@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"education-service/internal/clients"
 	"education-service/internal/utils"
@@ -51,7 +52,7 @@ func (r *GroupRepository) DeleteGroup(companyId string, id string) error {
 	}
 	return nil
 }
-func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
+func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 
 	query := `
@@ -98,7 +99,8 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 	defer rows.Close()
-
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	var groups []*pb.GetGroupAbsResponse
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
@@ -115,7 +117,6 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
-		ctx, cancelFunc := utils.NewTimoutContext(companyId)
 		teacherName, err := r.userClient.GetTeacherById(ctx, group.TeacherId)
 		if err != nil {
 			log.Printf("Error fetching teacher by ID: %v", err)
@@ -127,7 +128,6 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 		group.StudentCount = studentCount
 
 		groups = append(groups, &group)
-		cancelFunc()
 	}
 
 	if err = rows.Err(); err != nil {
@@ -140,7 +140,7 @@ func (r *GroupRepository) GetGroup(companyId string, page, size int32, isArchive
 	}, nil
 }
 
-func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
+func (r *GroupRepository) GetGroupById(ctx context.Context, companyId string, id, actionRole, actionId string) (*pb.GetGroupAbsResponse, error) {
 	if !utils.CheckGroupAndTeacher(r.db, id, actionRole, actionId) {
 		return nil, status.Errorf(codes.Aborted, "Ooops. this group not found in your groupList")
 	}
@@ -170,7 +170,7 @@ func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionI
 		}
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
-	ctx, cancelFunc := utils.NewTimoutContext(companyId)
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	teacherName, _ := r.userClient.GetTeacherById(ctx, group.TeacherId)
 	group.TeacherName = teacherName
@@ -179,7 +179,7 @@ func (r *GroupRepository) GetGroupById(companyId string, id, actionRole, actionI
 	group.StudentCount = studentCount.Int32
 	return &group, nil
 }
-func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) (*pb.GetGroupsByCourseResponse, error) {
+func (r *GroupRepository) GetGroupByCourseId(ctx context.Context, companyId string, courseId string) (*pb.GetGroupsByCourseResponse, error) {
 	query := `
         SELECT 
             g.teacher_id,
@@ -200,6 +200,8 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 	defer rows.Close()
 
 	var response pb.GetGroupsByCourseResponse
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var groupResponse pb.GetGroupByCourseAbsResponse
 		var startDate, endDate, lessonStartTime, dateType, name, teacherId sql.NullString
@@ -216,7 +218,7 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 		if err != nil {
 			return nil, err
 		}
-		ctx, cancelFunc := utils.NewTimoutContext(companyId)
+
 		teacherName, err := r.userClient.GetTeacherById(ctx, teacherId.String)
 		if err != nil {
 			return nil, err
@@ -228,7 +230,6 @@ func (r *GroupRepository) GetGroupByCourseId(companyId string, courseId string) 
 		groupResponse.DateType = dateType.String
 		groupResponse.LessonStartTime = lessonStartTime.String
 		response.Groups = append(response.Groups, &groupResponse)
-		cancelFunc()
 	}
 
 	if err := rows.Err(); err != nil {

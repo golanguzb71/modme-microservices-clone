@@ -59,7 +59,7 @@ func (u *UserService) DeleteUserById(ctx context.Context, req *pb.UserAbsRequest
 		return nil, status.Error(codes.Aborted, "company id required")
 	}
 
-	return u.userRepo.DeleteUser(companyId, req.UserId)
+	return u.userRepo.DeleteUser(ctx, companyId, req.UserId)
 }
 
 func (u *UserService) GetAllEmployee(ctx context.Context, req *pb.GetAllEmployeeRequest) (*pb.GetAllEmployeeResponse, error) {

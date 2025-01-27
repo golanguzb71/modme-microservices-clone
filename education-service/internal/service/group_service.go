@@ -61,7 +61,7 @@ func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) 
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	group, err := s.repo.GetGroup(companyId, req.Page.Page, req.Page.Size, req.IsArchived)
+	group, err := s.repo.GetGroup(ctx, companyId, req.Page.Page, req.Page.Size, req.IsArchived)
 	if err != nil {
 		log.Printf("Error in GetGroups: %v", err)
 		return nil, err
@@ -74,7 +74,7 @@ func (s *GroupService) GetGroupById(ctx context.Context, req *pb.GetGroupByIdReq
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	group, err := s.repo.GetGroupById(companyId, req.Id, req.ActionRole, req.ActionId)
+	group, err := s.repo.GetGroupById(ctx, companyId, req.Id, req.ActionRole, req.ActionId)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err
@@ -87,7 +87,7 @@ func (s *GroupService) GetGroupsByCourseId(ctx context.Context, req *pb.GetGroup
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	groups, err := s.repo.GetGroupByCourseId(companyId, req.Id)
+	groups, err := s.repo.GetGroupByCourseId(ctx, companyId, req.Id)
 	if err != nil {
 		log.Printf("Error in GetGroupById: %v", err)
 		return nil, err

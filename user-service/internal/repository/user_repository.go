@@ -60,12 +60,15 @@ func (r *UserRepository) GetTeachers(ctx context.Context, companyId string, isDe
 	defer rows.Close()
 
 	var response pb.GetTeachersResponse
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
 	for rows.Next() {
 		var id, fullName, phoneNumber string
 		if err := rows.Scan(&id, &fullName, &phoneNumber); err != nil {
 			return nil, err
 		}
-		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(ctx, companyId), id, false)
+
+		activeGroupsCount, err := r.groupClient.GetGroupsByTeacherId(ctx, id, false)
 		if err != nil {
 			return nil, err
 		}
@@ -132,14 +135,16 @@ func (r *UserRepository) UpdateUser(companyId string, userId string, name string
 
 	return &pb.AbsResponse{Status: 200, Message: "User updated successfully"}, nil
 }
-func (r *UserRepository) DeleteUser(companyId string, id string) (*pb.AbsResponse, error) {
+func (r *UserRepository) DeleteUser(ctx context.Context, companyId string, id string) (*pb.AbsResponse, error) {
 	var role string
 	err := r.db.QueryRow(`SELECT role FROM users where id=$1 and company_id=$2`, id, companyId).Scan(&role)
 	if err != nil {
 		return nil, status.Errorf(codes.Aborted, err.Error())
 	}
 	if role == "TEACHER" {
-		groupCount, err := r.groupClient.GetGroupsByTeacherId(utils.NewTimoutContext(context.Background(), companyId), id, false)
+		ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+		defer cancelFunc()
+		groupCount, err := r.groupClient.GetGroupsByTeacherId(ctx, id, false)
 		if err != nil {
 			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
 		} else if groupCount > 0 {

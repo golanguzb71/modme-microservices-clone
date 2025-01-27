@@ -49,10 +49,10 @@ func GetCompanyDetails(ctx context.Context) string {
 	return ""
 }
 
-func NewTimoutContext(ctx context.Context, companyId string) context.Context {
+func NewTimoutContext(ctx context.Context, companyId string) (context.Context, context.CancelFunc) {
 	md := metadata.Pairs()
 	md.Set("company_id", companyId)
 	ctx = metadata.NewOutgoingContext(ctx, md)
-	res, _ := context.WithTimeout(ctx, time.Second*15)
-	return res
+	res, cancelFunc := context.WithTimeout(ctx, time.Second*15)
+	return res, cancelFunc
 }
