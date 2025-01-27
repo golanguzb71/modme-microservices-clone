@@ -652,7 +652,7 @@ func (r *StudentRepository) GetStudentsByGroupId(companyId string, groupId strin
         SELECT s.id, s.name, s.phone
         FROM students s
         JOIN group_students gs ON s.id = gs.student_id
-        WHERE gs.group_id = $1 and s.company_id=$3
+        WHERE gs.group_id = $1 and s.company_id=$2
     `
 
 	if !withOutdated {
