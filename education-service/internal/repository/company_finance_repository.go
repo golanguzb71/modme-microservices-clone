@@ -34,7 +34,7 @@ func (r CompanyFinanceRepository) Create(req *pb.CompanyFinance) (*pb.CompanyFin
 		tx.Rollback()
 		return nil, err
 	}
-	_, err = tx.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id) values ($1 ,$2,$3,$4,$5 , $6,$7)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId)
+	_, err = tx.Exec(`INSERT INTO company_payments(company_id, tariff_id, comment, sum, edited_valid_date , discount_name , discount_id ,tariff_sum) values ($1 ,$2,$3,$4,$5 , $6,$7 , $8)`, req.CompanyId, req.TariffId, req.Comment, req.Sum, req.EditedValidDate, req.DiscountName, req.DiscountId, req.TariffSum)
 	if err != nil {
 		tx.Rollback()
 		return nil, err
@@ -167,7 +167,8 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 			t.name AS tariff_name,
 			cp.sum,
 			coalesce(cp.discount_id , ''),
-			coalesce(cp.discount_name , '')
+			coalesce(cp.discount_name , ''),
+			cp.tariff_sum
 		FROM
 			company_payments cp
 		LEFT JOIN
@@ -219,6 +220,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 			&item.Sum,
 			&item.DiscountId,
 			&item.DiscountName,
+			&item.TariffSum,
 		)
 		if err != nil {
 			return nil, err

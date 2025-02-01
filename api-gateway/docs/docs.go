@@ -5872,6 +5872,9 @@ const docTemplate = `{
                 },
                 "tariff_id": {
                     "type": "integer"
+                },
+                "tariff_sum": {
+                    "type": "number"
                 }
             }
         },
@@ -5907,6 +5910,9 @@ const docTemplate = `{
                 },
                 "tariff_name": {
                     "type": "string"
+                },
+                "tariff_sum": {
+                    "type": "number"
                 }
             }
         },

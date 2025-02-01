@@ -353,9 +353,11 @@ func PaymentAdd(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, "min 10 000 USD")
 		return
 	}
+	ctxR, cancel := etc.NewTimoutContext(ctx)
+	defer cancel()
 	req.ActionByName = user.Name
 	req.ActionById = user.Id
-	resp, err := financeClient.PaymentAdd(&req)
+	resp, err := financeClient.PaymentAdd(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return

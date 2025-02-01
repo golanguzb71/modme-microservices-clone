@@ -59,7 +59,7 @@ message GetCompanyResponse{
   string created_at = 11;
   bool is_demo = 12;
   int32 active_student_count = 13;
-  string ceo_id=14;
+  string ceo_id = 14;
 }
 service TariffService{
   rpc Create(Tariff) returns(Tariff);
@@ -93,6 +93,7 @@ message CompanyFinance{
   int32 id = 1;
   int32 company_id = 2;
   int32 tariff_id = 3;
+  float tariff_sum = 10;
   string comment = 4;
   float sum = 5;
   string edited_valid_date = 6;
@@ -110,7 +111,7 @@ message CompanyFinanceSelf{
   string created_at = 7;
   string discount_id = 8;
   string discount_name = 9;
-  string tariff_name=10;
+  string tariff_name = 10;
 }
 message CompanyFinanceSelfList{
   int32 count = 1;
@@ -135,6 +136,7 @@ message CompanyFinanceForList{
   float sum = 8;
   string discount_id = 9;
   string discount_name = 10;
+  float tariff_sum = 11;
 }
 // room service start
 service RoomService{
