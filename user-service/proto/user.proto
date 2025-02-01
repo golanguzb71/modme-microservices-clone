@@ -43,7 +43,7 @@ message UpdateUserRequest{
   string phoneNumber = 1;
   string role = 2;
   string name = 3;
-  string birthDate =4;
+  string birthDate = 4;
   bool gender = 5;
   string password = 7;
 }
@@ -99,6 +99,7 @@ message ValidateTokenRequest{
 message LoginRequest{
   string phoneNumber = 1;
   string password = 2;
+  string companyId = 3;
 }
 message LoginResponse{
   GetUserByIdResponse user = 1;

@@ -23,7 +23,7 @@ func NewAuthService(repo *repository.UserRepository) *AuthService {
 }
 
 func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
-	user, password, err := as.userRepo.GetUserByPhoneNumber("", request.PhoneNumber)
+	user, password, err := as.userRepo.GetUserByPhoneNumber(request.CompanyId, request.PhoneNumber)
 	if err != nil {
 		return nil, errors.New("notog'ri login yoki parol")
 	}
