@@ -379,21 +379,7 @@ func (r *UserRepository) GetUserByIdFilter(id string) (*pb.GetUserByIdResponse, 
 			return nil, "", err
 		}
 	} else {
-		query = `SELECT id,
-       full_name,
-       phone_number,
-       password,
-       role,
-       birth_date,
-       gender,
-       is_deleted,
-       created_at,
-       coalesce(company_id ,0)
-       FROM users where id=$1`
-		err := r.db.QueryRow(query, id).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
-		if err != nil {
-			return nil, "", err
-		}
+		return nil, "", status.Error(codes.Unauthenticated, "user id not found")
 	}
 
 	return &res, password, nil

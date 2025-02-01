@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"user-service/internal/repository"
 	"user-service/internal/security"
 	"user-service/internal/utils"
@@ -48,6 +50,9 @@ func (as *AuthService) ValidateToken(ctx context.Context, req *pb.ValidateTokenR
 	user, _, err := as.userRepo.GetUserByIdFilter(claims.Username)
 	if err != nil {
 		return nil, err
+	}
+	if user.IsDeleted {
+		return nil, status.Error(codes.Aborted, "forbidden operation. deleted user request detect")
 	}
 	var checker = false
 	for _, role := range req.RequiredRoles {
