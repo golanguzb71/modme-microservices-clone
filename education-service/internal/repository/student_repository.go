@@ -571,7 +571,7 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
-
+	go utils.SendTelegramMessage(studentId, groupId, groupStudentId, companyId)
 	if oldCondition == "FREEZE" && status == "DELETE" {
 		var exists bool
 		err = tx.QueryRow(`
