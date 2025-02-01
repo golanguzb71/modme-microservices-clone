@@ -342,7 +342,7 @@ func (r *GroupRepository) GetCommonInformationEducation(companyId string) (*pb.G
 		debtorsCount = 0
 	}
 
-	err = r.db.QueryRow(`SELECT count(*) FROM group_student_condition_history where is_eliminated_trial and company_id=$1`, companyId).Scan(&eleminatedInTrial)
+	err = r.db.QueryRow(`SELECT count(*) FROM group_student_condition_history where is_eliminated_trial=true and company_id=$1`, companyId).Scan(&eleminatedInTrial)
 	if err != nil {
 		eleminatedInTrial = 0
 	}
