@@ -134,7 +134,7 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 			e.created_at
 		FROM expense e
 		LEFT JOIN category c ON e.category_id = c.id
-		WHERE e.given_date BETWEEN $1 AND $2 and c.company_id=$3`
+		WHERE e.given_date BETWEEN $1 AND $2 AND c.company_id = $3`
 
 	args := []interface{}{from, to, companyId}
 	paramCount := 3
@@ -149,17 +149,20 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 		args = append(args, id)
 	}
 
-	baseQuery += " ORDER BY e.created_at DESC LIMIT $%d OFFSET $%d"
+	// Corrected LIMIT and OFFSET placeholders
+	baseQuery += " ORDER BY e.created_at DESC LIMIT $4 OFFSET $5"
 	args = append(args, size, offset)
-	baseQuery = fmt.Sprintf(baseQuery, paramCount+1, paramCount+2)
 
-	rows, err := r.db.Query(baseQuery, args...)
+	// Set up context before query execution
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
+
+	rows, err := r.db.QueryContext(ctx, baseQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("error querying expenses: %v", err)
 	}
 	defer rows.Close()
-	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
-	defer cancelFunc()
+
 	var expenses []*pb.GetAllExpenseAbs
 	for rows.Next() {
 		var expense pb.GetAllExpenseAbs
@@ -200,6 +203,8 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 				Desc: categoryDesc,
 			}
 		}
+
+		// Only fetch user details if userID is valid
 		if idType == "USER" || (userID.Valid && userID.String != "") {
 			userResp, err := r.userClient.GetUserById(ctx, userID.String)
 			if err != nil {
@@ -207,6 +212,8 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 			}
 			expense.User = userResp
 		}
+
+		// Fetch creator details
 		creatorResp, err := r.userClient.GetUserById(ctx, createdBy)
 		if err != nil {
 			return nil, fmt.Errorf("error fetching creator details: %v", err)
@@ -220,12 +227,14 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 		return nil, fmt.Errorf("error iterating expense rows: %v", err)
 	}
 
+	// Corrected count query
 	countQuery := `
 		SELECT COUNT(*)
 		FROM expense e
 		LEFT JOIN category c ON e.category_id = c.id
-		WHERE e.given_date BETWEEN $1 AND $2 AND e.company_id = $3`
+		WHERE e.given_date BETWEEN $1 AND $2 AND c.company_id = $3`
 	countArgs := []interface{}{from, to, companyId}
+
 	if idType == "USER" || idType == "CATEGORY" {
 		fieldName := "e.user_id"
 		if idType == "CATEGORY" {
@@ -236,7 +245,7 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 	}
 
 	var totalCount int32
-	err = r.db.QueryRow(countQuery, countArgs...).Scan(&totalCount)
+	err = r.db.QueryRowContext(ctx, countQuery, countArgs...).Scan(&totalCount)
 	if err != nil {
 		return nil, fmt.Errorf("error counting expenses: %v", err)
 	}
