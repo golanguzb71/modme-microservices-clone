@@ -172,7 +172,7 @@ func (r *PaymentRepository) PaymentReturn(ctx context.Context, companyId, paymen
 	}
 
 	deleteQuery := `DELETE FROM student_payments WHERE id = $1 and company_id=$2`
-	_, err = tx.Exec(deleteQuery, paymentId)
+	_, err = tx.Exec(deleteQuery, paymentId, companyId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to delete payment: %v", err)
 	}
