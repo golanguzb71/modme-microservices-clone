@@ -357,3 +357,44 @@ func (r *UserRepository) GetUserCompanyId(companyId string, role string) (*pb.Ge
 
 	return response, nil
 }
+
+func (r *UserRepository) GetUserByIdFilter(id string) (*pb.GetUserByIdResponse, string, error) {
+	res := pb.GetUserByIdResponse{}
+	var password string
+	query := ""
+	if id != "" {
+		query = `SELECT id,
+       full_name,
+       phone_number,
+       password,
+       role,
+       birth_date,
+       gender,
+       is_deleted,
+       created_at,
+       coalesce(company_id ,0)
+       FROM users where id=$1`
+		err := r.db.QueryRow(query, id).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+		if err != nil {
+			return nil, "", err
+		}
+	} else {
+		query = `SELECT id,
+       full_name,
+       phone_number,
+       password,
+       role,
+       birth_date,
+       gender,
+       is_deleted,
+       created_at,
+       coalesce(company_id ,0)
+       FROM users where id=$1`
+		err := r.db.QueryRow(query, id).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+		if err != nil {
+			return nil, "", err
+		}
+	}
+
+	return &res, password, nil
+}

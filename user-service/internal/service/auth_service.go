@@ -45,7 +45,7 @@ func (as *AuthService) ValidateToken(ctx context.Context, req *pb.ValidateTokenR
 	if err != nil {
 		return nil, err
 	}
-	user, _, err := as.userRepo.GetUserByPhoneNumber("", claims.Username)
+	user, _, err := as.userRepo.GetUserByIdFilter(claims.Username)
 	if err != nil {
 		return nil, err
 	}
