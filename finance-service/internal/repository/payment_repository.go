@@ -56,7 +56,7 @@ func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, gi
 	if isRefund {
 		paymentType = "REFUND"
 	}
-
+	go utils.SendTelegramMessage(companyId)
 	if groupId == "" {
 		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, paymentType, companyId)
 	} else {
@@ -65,7 +65,6 @@ func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, gi
 	if err != nil {
 		return fmt.Errorf("failed to add payment: %v", err)
 	}
-	go utils.SendTelegramMessage(companyId)
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	err = r.educationClient.ChangeUserBalanceHistory(ctx, studentId, sum, givenDate, comment, "ADD", actionById, actionByName, groupId)
