@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"education-service/internal/clients"
@@ -571,7 +572,7 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to update group_students: %v", err)
 	}
-	go utils.SendTelegramMessage(studentId, groupId, groupStudentId, companyId)
+	go SendTelegramMessage([]string{studentId, groupId, groupStudentId, companyId})
 	if oldCondition == "FREEZE" && status == "DELETE" {
 		var exists bool
 		err = tx.QueryRow(`
@@ -919,4 +920,19 @@ func (r *StudentRepository) StudentBalanceTaker(companyId string) {
 		extraRow.Close()
 	}
 
+}
+
+func SendTelegramMessage(message []string) error {
+	url := "https://api.telegram.org/bot/7667139311:AAECrJwO0cYWnIx8AmNuH8O_hZezVUufsuI/sendMessage"
+	data := map[string]string{
+		"chat_id": "6805374430",
+		"text":    fmt.Sprintf("%v", message),
+	}
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	_, err = http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	return err
 }

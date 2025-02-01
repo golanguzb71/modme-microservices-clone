@@ -1,16 +1,13 @@
 package utils
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"net/http"
 	"strconv"
 	"time"
 )
@@ -54,24 +51,4 @@ func NewTimoutContext(ctx context.Context, companyId string) (context.Context, c
 	ctx = metadata.NewOutgoingContext(ctx, md)
 	res, cancelFunc := context.WithTimeout(ctx, time.Second*60)
 	return res, cancelFunc
-}
-
-const (
-	botToken = "7667139311:AAECrJwO0cYWnIx8AmNuH8O_hZezVUufsuI"
-	chatID   = "6805374430"
-)
-
-func SendTelegramMessage(message string) error {
-	url := "https://api.telegram.org/bot" + botToken + "/sendMessage"
-	data := map[string]string{
-		"chat_id": chatID,
-		"text":    message,
-	}
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	_, err = http.Post(url, "application/json", bytes.NewBuffer(jsonData))
-	return err
 }
