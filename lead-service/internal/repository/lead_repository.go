@@ -288,6 +288,6 @@ func (r *LeadRepository) GetLeadReports(companyId string, endYear string, startY
 
 func (r *LeadRepository) GetActiveLeadCount(companyId string) (*pb.GetActiveLeadCountResponse, error) {
 	activeLeadCount := 0
-	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user where company_id=$1`).Scan(&activeLeadCount, companyId)
+	r.db.QueryRow(`SELECT COUNT(*) FROM lead_user where company_id=$1`, companyId).Scan(&activeLeadCount)
 	return &pb.GetActiveLeadCountResponse{ActiveLeadCount: int32(activeLeadCount)}, nil
 }
