@@ -50,13 +50,12 @@ func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, gi
 	}
 	paymentID := uuid.New()
 	query := `INSERT INTO student_payments 
-		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at , group_id , company_id)
+		(id, student_id, method, amount, given_date, comment, created_by_id, created_by_name , created_at , group_id ,payment_type, company_id)
 		VALUES ($1, $2, $3, $4, $5, $6, $11, $7, $8 , $9 , $10 , $11)`
 	paymentType := "ADD"
 	if isRefund {
 		paymentType = "REFUND"
 	}
-	go utils.SendTelegramMessage(companyId)
 	if groupId == "" {
 		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, paymentType, companyId)
 	} else {
