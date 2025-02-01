@@ -223,7 +223,7 @@ func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber stri
        is_deleted,
        created_at,
        coalesce(company_id ,0)
-       FROM users where phone_number=$1 and company_id=$2 and is_deleted=true`
+       FROM users where phone_number=$1 and company_id=$2 and is_deleted=false`
 		err := r.db.QueryRow(query, phoneNumber, companyId).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
 		if err != nil {
 			return nil, "", err
@@ -239,7 +239,7 @@ func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber stri
        is_deleted,
        created_at,
        coalesce(company_id ,0)
-       FROM users where phone_number=$1 and is_deleted=true`
+       FROM users where phone_number=$1 and is_deleted=false`
 		err := r.db.QueryRow(query, phoneNumber).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
 		if err != nil {
 			return nil, "", err
