@@ -224,7 +224,7 @@ func (r *ExpenseRepository) GetAllExpense(ctx context.Context, companyId string,
 		SELECT COUNT(*)
 		FROM expense e
 		LEFT JOIN category c ON e.category_id = c.id
-		WHERE e.given_date BETWEEN $1 AND $2 AND c.company_id = $3`
+		WHERE e.given_date BETWEEN $1 AND $2 AND e.company_id = $3`
 	countArgs := []interface{}{from, to, companyId}
 	if idType == "USER" || idType == "CATEGORY" {
 		fieldName := "e.user_id"
