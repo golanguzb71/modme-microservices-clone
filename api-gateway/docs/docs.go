@@ -7174,6 +7174,9 @@ const docTemplate = `{
         "pb.LoginRequest": {
             "type": "object",
             "properties": {
+                "companyId": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },

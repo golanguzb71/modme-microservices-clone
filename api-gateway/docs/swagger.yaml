@@ -1281,6 +1281,8 @@ definitions:
     type: object
   pb.LoginRequest:
     properties:
+      companyId:
+        type: string
       password:
         type: string
       phoneNumber:

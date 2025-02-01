@@ -35,6 +35,10 @@ func (r *UserRepository) ensureGroupClient() error {
 	return nil
 }
 func (r *UserRepository) CreateUser(companyId string, gender bool, number string, birthDate string, name string, password string, role string) (*pb.AbsResponse, error) {
+	var exists bool
+	if err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM users where phone_number=$1 and company_id=$2 and is_deleted=false)`, number, companyId).Scan(&exists); err != nil {
+		return nil, status.Error(codes.PermissionDenied, "this phone number already exists")
+	}
 	encodedPassword, err := utils.EncodePassword(password)
 	if err != nil {
 		return nil, err

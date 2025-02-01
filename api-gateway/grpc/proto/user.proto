@@ -92,6 +92,7 @@ message ValidateTokenRequest{
 message LoginRequest{
   string phoneNumber = 1;
   string password = 2;
+  string companyId=3;
 }
 message LoginResponse{
   GetUserByIdResponse user = 1;
