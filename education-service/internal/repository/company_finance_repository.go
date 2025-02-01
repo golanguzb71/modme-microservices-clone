@@ -168,7 +168,7 @@ func (r CompanyFinanceRepository) GetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 			cp.sum,
 			coalesce(cp.discount_id , ''),
 			coalesce(cp.discount_name , ''),
-			cp.tariff_sum
+			cp.tariff_sum 
 		FROM
 			company_payments cp
 		LEFT JOIN
