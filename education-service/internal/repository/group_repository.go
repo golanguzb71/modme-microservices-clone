@@ -318,40 +318,34 @@ func (r *GroupRepository) GetStudentsByGroupId(companyId string, groupId string)
 	return students, nil
 }
 func (r *GroupRepository) GetCommonInformationEducation(companyId string) (*pb.GetCommonInformationEducationResponse, error) {
-	// Initialize the response to avoid nil pointer dereference
 	response := new(pb.GetCommonInformationEducationResponse)
 
 	var leaveGroupCount, activeGroupCount, activeStudentCount, debtorsCount, eleminatedInTrial int32
 
-	// Query to get leaveGroupCount
-	err := r.db.QueryRow(`SELECT COUNT(id) FROM group_students where condition='DELETE' and company_id=$1`, companyId).Scan(&leaveGroupCount)
+	err := r.db.QueryRow(`SELECT COUNT(*) FROM group_students where condition='DELETE' and company_id=$1`, companyId).Scan(&leaveGroupCount)
 	if err != nil {
 		leaveGroupCount = 0
 	}
 
-	// Query to get activeGroupCount
-	err = r.db.QueryRow(`SELECT COUNT(id) FROM groups where is_archived=false and company_id=$2`, companyId).Scan(&activeGroupCount)
+	err = r.db.QueryRow(`SELECT COUNT(*) FROM groups where is_archived=false and company_id=$1`, companyId).Scan(&activeGroupCount)
 	if err != nil {
 		activeGroupCount = 0
 	}
 
-	// Query to get activeStudentCount
-	err = r.db.QueryRow(`SELECT count(id) FROM students where condition='ACTIVE' and company_id=$3`, companyId).Scan(&activeStudentCount)
+	err = r.db.QueryRow(`SELECT count(*) FROM students where condition='ACTIVE' and company_id=$1`, companyId).Scan(&activeStudentCount)
 	if err != nil {
 		activeStudentCount = 0
 	}
 
-	// Query to get debtorsCount
-	err = r.db.QueryRow(`SELECT COUNT(id) FROM students where balance < 0 and company_id=$4`, companyId).Scan(&debtorsCount)
+	err = r.db.QueryRow(`SELECT COUNT(*) FROM students where balance < 0 and company_id=$1`, companyId).Scan(&debtorsCount)
 	if err != nil {
 		debtorsCount = 0
 	}
 
-	err = r.db.QueryRow(`SELECT count(id) FROM group_student_condition_history where is_eliminated_trial and company_id=$5`, companyId).Scan(&eleminatedInTrial)
+	err = r.db.QueryRow(`SELECT count(*) FROM group_student_condition_history where is_eliminated_trial and company_id=$1`, companyId).Scan(&eleminatedInTrial)
 	if err != nil {
 		eleminatedInTrial = 0
 	}
-	// Assign the values to the response fields
 	response.DebtorsCount = debtorsCount
 	response.LeaveGroupCount = leaveGroupCount
 	response.ActiveGroupCount = activeGroupCount
