@@ -21,6 +21,7 @@ type PaymentRepository struct {
 }
 
 func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, givenDate, sum, method, comment, studentId, actionByName, actionById, groupId string, isRefund bool) error {
+
 	tx, err := r.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
@@ -64,6 +65,7 @@ func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, gi
 	if err != nil {
 		return fmt.Errorf("failed to add payment: %v", err)
 	}
+	go utils.SendTelegramMessage(companyId)
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	err = r.educationClient.ChangeUserBalanceHistory(ctx, studentId, sum, givenDate, comment, "ADD", actionById, actionByName, groupId)
@@ -640,12 +642,10 @@ func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyI
 }
 
 func (r *PaymentRepository) GetCommonFinanceInformation(ctx context.Context, companyId string) (*pb.GetCommonInformationResponse, error) {
-	// Initialize the response to avoid nil pointer dereference
 	response := new(pb.GetCommonInformationResponse)
 
 	var payInCurrentMonth int32
 
-	// Query to get payInCurrentMonth
 	err := r.db.QueryRow(`
         SELECT COUNT(id)
         FROM student_payments
@@ -657,8 +657,7 @@ func (r *PaymentRepository) GetCommonFinanceInformation(ctx context.Context, com
 		payInCurrentMonth = 0
 	}
 
-	// Set values on the response object
-	response.DebtorsCount = 0 // Set DebtorsCount to 0 (if required, otherwise remove this line)
+	response.DebtorsCount = 0
 	response.PayInCurrentMonth = payInCurrentMonth
 
 	return response, nil
@@ -721,7 +720,6 @@ func (r *PaymentRepository) GetIncomeChart(ctx context.Context, companyId string
 			Balance:       fmt.Sprintf("%.2f", balance),
 		})
 	}
-	fmt.Println(&response)
 	return &response, nil
 }
 
