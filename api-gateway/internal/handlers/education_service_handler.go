@@ -4,7 +4,6 @@ import (
 	"api-gateway/grpc/proto/pb"
 	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -419,7 +418,9 @@ func SetAttendance(ctx *gin.Context) {
 	}
 	req.ActionById = user.Id
 	req.ActionByRole = user.Role
-	resp, err := educationClient.SetAttendanceByGroup(context.TODO(), &req)
+	ctxR, cancelFunc := etc.NewTimoutContext(ctx)
+	defer cancelFunc()
+	resp, err := educationClient.SetAttendanceByGroup(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -440,8 +441,6 @@ func SetAttendance(ctx *gin.Context) {
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Router /api/attendance/get-attendance [post]
 func GetAttendance(ctx *gin.Context) {
-	ctxR, cancel := etc.NewTimoutContext(ctx)
-	defer cancel()
 	var req pb.GetAttendanceRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -453,6 +452,8 @@ func GetAttendance(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
+	ctxR, cancel := etc.NewTimoutContext(ctx)
+	defer cancel()
 	req.ActionRole = user.Role
 	req.ActionId = user.Id
 	resp, err := educationClient.GetAttendanceByGroup(ctxR, &req)
