@@ -2,12 +2,14 @@ package etc
 
 import (
 	client "api-gateway/internal/clients"
+	"api-gateway/internal/metrics"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cast"
 	"google.golang.org/grpc/metadata"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -38,6 +40,28 @@ func AuthMiddleware(requiredRoles []string, userClient *client.UserClient) gin.H
 		ctx.Set("user", user)
 		ctx.Set("company_id", cast.ToString(user.CompanyId))
 		ctx.Next()
+	}
+}
+
+func PrometheusMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+
+		c.Next()
+
+		duration := time.Since(start)
+		status := strconv.Itoa(c.Writer.Status())
+
+		metrics.HttpRequestsTotal.WithLabelValues(
+			c.Request.Method,
+			c.FullPath(),
+			status,
+		).Inc()
+
+		metrics.HttpRequestDuration.WithLabelValues(
+			c.Request.Method,
+			c.FullPath(),
+		).Observe(duration.Seconds())
 	}
 }
 

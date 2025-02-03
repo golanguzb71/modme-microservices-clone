@@ -4,10 +4,12 @@ import (
 	"api-gateway/config"
 	_ "api-gateway/docs"
 	"api-gateway/grpc"
+	"api-gateway/internal/etc"
 	"api-gateway/internal/handlers"
 	"api-gateway/internal/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 )
 
@@ -32,7 +34,7 @@ func main() {
 	corsConfig.ExposeHeaders = []string{"Content-Length"}
 	corsConfig.AllowCredentials = true
 	router.Use(cors.New(corsConfig))
-
+	router.Use(etc.PrometheusMiddleware())
 	grpcClients := grpc.InitializeGrpcClients(cfg)
 	handlers.InitClients(grpcClients)
 	routes.SetUpRoutes(router, grpcClients.UserClient)
