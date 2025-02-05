@@ -5,6 +5,7 @@ import (
 	"api-gateway/internal/etc"
 	"api-gateway/internal/utils"
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc/metadata"
 	"net/http"
@@ -199,6 +200,7 @@ func Login(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
+	fmt.Println(&req)
 	resp, err := userClient.Login(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
