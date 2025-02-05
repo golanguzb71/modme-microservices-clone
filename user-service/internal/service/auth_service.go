@@ -25,7 +25,7 @@ func NewAuthService(repo *repository.UserRepository) *AuthService {
 func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	user, password, err := as.userRepo.GetUserByPhoneNumber(request.CompanyId, request.PhoneNumber)
 	if err != nil {
-		return nil, errors.New("notog'ri login yoki parol")
+		return nil, status.Error(codes.PermissionDenied, "notog'ri login yoki parol")
 	}
 	if user.IsDeleted {
 		return nil, status.Error(codes.Unauthenticated, "forbidden operation. deleted user request detect")
