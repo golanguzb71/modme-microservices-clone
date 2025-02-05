@@ -107,7 +107,7 @@ func RunServer() {
 	c := cron.New()
 	_, err = c.AddFunc("10 1 1 * *", func() {
 		fmt.Println("Running student balance taker ....")
-		studentRepo.StudentBalanceTaker("1")
+		studentRepo.StudentBalanceTaker()
 		fmt.Println("Completed student balance taker")
 	})
 

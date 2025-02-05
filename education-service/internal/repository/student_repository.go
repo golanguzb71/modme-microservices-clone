@@ -860,62 +860,75 @@ func (r *StudentRepository) checkArgumentsIsActive(companyId string, groupId, st
 
 	return checker
 }
-func (r *StudentRepository) StudentBalanceTaker(companyId string) {
-	if err := r.ensureFinanceClient(); err != nil {
-		return
-	}
-	rows, err := r.db.Query(`SELECT id FROM students where condition='ACTIVE' and company_id = $1 `, companyId)
+func (r *StudentRepository) StudentBalanceTaker() {
+	rows, err := r.db.Query(`SELECT id FROM company WHERE valid_date > CURRENT_DATE`)
 	if err != nil {
-		fmt.Printf("error get active student %v", err)
+		fmt.Println("error while getting companies:", err)
 		return
-	}
-	defer rows.Close()
-	ctx, cancelFunc := utils.NewTimoutContext(context.Background(), companyId)
-	defer cancelFunc()
-	for rows.Next() {
-		var studentId string
-		err = rows.Scan(&studentId)
-		if err != nil {
-			fmt.Printf("error scanning active student %v", err)
-			continue
-		}
-		extraRow, err := r.db.Query(`SELECT group_id FROM group_students where student_id=$1 and condition='ACTIVE' and company_id= $2`, studentId, companyId)
-		fmt.Println(studentId)
-		if err != nil {
-			fmt.Printf("error getting  active groupid %v", err)
-			continue
-		}
-		for extraRow.Next() {
-			var (
-				groupId     string
-				takingPrice float64
-				comment     string
-			)
-			err = extraRow.Scan(&groupId)
-			if err != nil {
-				fmt.Printf("error scanning groupid student %v", err)
-				continue
-			}
-			discountAmount, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
-			err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1 and c.company_id=$2`, groupId, companyId).Scan(&takingPrice)
-			if err != nil {
-				fmt.Printf("error getting course price active student %v", err)
-				continue
-			}
-			if discountAmount == nil {
-				comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi."
-			} else {
-				takingPrice = takingPrice - *discountAmount
-				comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi chegirma narxida"
-			}
-			//_, err := r.ChangeUserBalanceHistory("ushbu oy uchun oylik tolov student balansidan yechib olindi.", groupId, "00000000-0000-0000-0000-000000000000", "TIZIM", time.Now().Format("2006-01-02"), takingPrice, "TAKE_OFF", studentId)
-			_, err := r.financeClient.PaymentAdd(ctx, comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
-			if err != nil {
-				fmt.Printf("error changing balance history active student %v", err)
-				continue
-			}
-		}
-		extraRow.Close()
 	}
 
+	for rows.Next() {
+		var companyId string
+		err := rows.Scan(&companyId)
+		if err != nil {
+			fmt.Println("erorr while scanning companyid")
+			continue
+		}
+		if err := r.ensureFinanceClient(); err != nil {
+			return
+		}
+		rows, err := r.db.Query(`SELECT id FROM students where condition='ACTIVE' and company_id = $1 `, companyId)
+		if err != nil {
+			fmt.Printf("error get active student %v", err)
+			return
+		}
+		defer rows.Close()
+		ctx, cancelFunc := utils.NewTimoutContext(context.Background(), companyId)
+		defer cancelFunc()
+		for rows.Next() {
+			var studentId string
+			err = rows.Scan(&studentId)
+			if err != nil {
+				fmt.Printf("error scanning active student %v", err)
+				continue
+			}
+			extraRow, err := r.db.Query(`SELECT group_id FROM group_students where student_id=$1 and condition='ACTIVE' and company_id= $2`, studentId, companyId)
+			fmt.Println(studentId)
+			if err != nil {
+				fmt.Printf("error getting  active groupid %v", err)
+				continue
+			}
+			for extraRow.Next() {
+				var (
+					groupId     string
+					takingPrice float64
+					comment     string
+				)
+				err = extraRow.Scan(&groupId)
+				if err != nil {
+					fmt.Printf("error scanning groupid student %v", err)
+					continue
+				}
+				discountAmount, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
+				err = r.db.QueryRow(`SELECT c.price FROM groups g join courses c on g.course_id=c.id where g.id=$1 and c.company_id=$2`, groupId, companyId).Scan(&takingPrice)
+				if err != nil {
+					fmt.Printf("error getting course price active student %v", err)
+					continue
+				}
+				if discountAmount == nil {
+					comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi."
+				} else {
+					takingPrice = takingPrice - *discountAmount
+					comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi chegirma narxida"
+				}
+				//_, err := r.ChangeUserBalanceHistory("ushbu oy uchun oylik tolov student balansidan yechib olindi.", groupId, "00000000-0000-0000-0000-000000000000", "TIZIM", time.Now().Format("2006-01-02"), takingPrice, "TAKE_OFF", studentId)
+				_, err := r.financeClient.PaymentAdd(ctx, comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
+				if err != nil {
+					fmt.Printf("error changing balance history active student %v", err)
+					continue
+				}
+			}
+			extraRow.Close()
+		}
+	}
 }
