@@ -211,10 +211,8 @@ func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.
 func (r *UserRepository) GetUserByPhoneNumber(companyId string, phoneNumber string) (*pb.GetUserByIdResponse, string, error) {
 	res := pb.GetUserByIdResponse{}
 	var password string
-	fmt.Println("while login ", companyId)
 	query := ""
 	if companyId != "" {
-		fmt.Println("1 ga kirdi")
 		query = `SELECT id,
        full_name,
        phone_number,
