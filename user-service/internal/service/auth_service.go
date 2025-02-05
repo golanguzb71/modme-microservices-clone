@@ -32,7 +32,7 @@ func (as *AuthService) Login(ctx context.Context, request *pb.LoginRequest) (*pb
 	}
 	err = utils.ComparePasswords(password, request.Password)
 	if err != nil {
-		return nil, errors.New("notog'ri login yoki parol")
+		return nil, status.Error(codes.Unauthenticated, "notog'ri login yoki parol")
 	}
 	token, err := security.GenerateToken(user)
 	if err != nil {
