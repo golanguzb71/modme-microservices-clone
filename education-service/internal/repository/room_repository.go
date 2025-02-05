@@ -44,7 +44,7 @@ func (r *RoomRepository) DeleteRoom(companyId string, id string) error {
 		return status.Error(codes.Aborted, "ushbu xona guruhga bog'langan o'chirishga ruxsat yoq")
 	}
 	query := "DELETE FROM rooms WHERE id = $1 and company_id=$2"
-	_, err := r.db.Exec(query, id, companyId)
+	_, err = r.db.Exec(query, id, companyId)
 	if err != nil {
 		return fmt.Errorf("failed to delete room: %w", err)
 	}
