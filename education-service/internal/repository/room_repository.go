@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"education-service/proto/pb"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type RoomRepository struct {
@@ -33,6 +35,14 @@ func (r *RoomRepository) UpdateRoom(companyId string, id, title *string, capacit
 }
 
 func (r *RoomRepository) DeleteRoom(companyId string, id string) error {
+	check := false
+	err := r.db.QueryRow(`SELECT exists(SELECT 1 FROM groups where room_id=$1)`, id).Scan(&check)
+	if err != nil {
+		return err
+	}
+	if check {
+		return status.Error(codes.Aborted, "ushbu xona guruhga bog'langan o'chirishga ruxsat yoq")
+	}
 	query := "DELETE FROM rooms WHERE id = $1 and company_id=$2"
 	_, err := r.db.Exec(query, id, companyId)
 	if err != nil {
