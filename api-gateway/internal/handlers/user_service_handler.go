@@ -192,8 +192,7 @@ func GetAllEmployee(ctx *gin.Context) {
 // @Failure 400 {object} utils.AbsResponse "Bad request - Invalid JSON or login failure"
 // @Router /api/user/login [post]
 func Login(ctx *gin.Context) {
-	ctxR, cancel := etc.NewTimoutContext(ctx)
-	defer cancel()
+	ctxR := context.Background()
 	req := pb.LoginRequest{}
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
