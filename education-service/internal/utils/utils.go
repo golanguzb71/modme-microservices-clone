@@ -65,18 +65,18 @@ func RecoveryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryS
 func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId string, tillDate string) (float64, error) {
 	var coursePrice float64
 	var courseDurationLesson int
-	var groupStartTime string
+	var groupStartDate string // Changed from groupStartTime to be more explicit
 	var groupDays []string
 	var dateType string
 
 	query := `
-        SELECT c.price, c.course_duration, g.start_time, g.days, g.date_type
+        SELECT c.price, c.course_duration, g.start_date, g.days, g.date_type  -- Changed from start_time to start_date
         FROM groups g
         JOIN courses c ON g.course_id = c.id
         WHERE g.id = $1
     `
 
-	err := db.QueryRow(query, groupId).Scan(&coursePrice, &courseDurationLesson, &groupStartTime, pq.Array(&groupDays), &dateType)
+	err := db.QueryRow(query, groupId).Scan(&coursePrice, &courseDurationLesson, &groupStartDate, pq.Array(&groupDays), &dateType)
 	if err != nil {
 		return 0, fmt.Errorf("error getting course details: %v", err)
 	}
@@ -85,10 +85,10 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		coursePrice = *manualPriceForCourse
 	}
 
-	// Parse the group start time
-	groupStart, err := time.Parse("2006-01-02", groupStartTime)
+	// Parse the group start date
+	groupStart, err := time.Parse("2006-01-02", groupStartDate)
 	if err != nil {
-		return 0, fmt.Errorf("error parsing group start time: %v", err)
+		return 0, fmt.Errorf("error parsing group start date: %v", err)
 	}
 
 	// Parse the till date
