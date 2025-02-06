@@ -173,6 +173,7 @@ services:
     labels:
       - "service_name=api-gateway"
 
+  # Logging Infrastructure
   loki:
     image: grafana/loki:2.9.2
     command: -config.file=/etc/loki/local-config.yaml
@@ -182,7 +183,7 @@ services:
       - loki_data:/loki
     logging: *default-logging
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:3100/ready"]
+      test: [ "CMD-SHELL", "wget -q --tries=1 -O- http://localhost:3100/ready" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -197,6 +198,36 @@ services:
       - loki
     logging: *default-logging
 
+  # Metrics Infrastructure
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    logging: *default-logging
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.1
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    logging: *default-logging
   grafana:
     image: grafana/grafana:10.2.0
     ports:
@@ -206,17 +237,15 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=false
       - GF_SECURITY_ADMIN_USER=abdulaziz
       - GF_SECURITY_ADMIN_PASSWORD=backendlogs
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/docker-monitoring.json
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/etc/grafana/dashboards
     depends_on:
+      - prometheus
       - loki
-    logging: *default-logging
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:3000/api/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres_lead_data:
@@ -226,6 +255,7 @@ volumes:
   api_gateway_uploads:
   loki_data:
   grafana_data:
+  prometheus_data:
 
 networks:
   default:
