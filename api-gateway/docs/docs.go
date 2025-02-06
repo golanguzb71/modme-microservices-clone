@@ -5678,6 +5678,9 @@ const docTemplate = `{
         "pb.AbsStudentHistory": {
             "type": "object",
             "properties": {
+                "comment": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },

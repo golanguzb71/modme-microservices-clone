@@ -380,7 +380,7 @@ func (r *StudentRepository) GetHistoryGroupById(companyId string, groupId string
 		response.GroupHistory = append(response.GroupHistory, &history)
 	}
 
-	studentHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at , g.name , g.start_time , g.start_date , g.end_date , g.date_type , gs.condition
+	studentHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at , g.name , g.start_time , g.start_date , g.end_date , g.date_type , gs.condition , coalesce(gh.comment ,'')
                             FROM group_students gs
                             JOIN students s ON gs.student_id = s.id   
                             JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
@@ -401,7 +401,7 @@ func (r *StudentRepository) GetHistoryGroupById(companyId string, groupId string
 		var group pb.AbsGroup
 		var createdAt string
 		if err := rows.Scan(&student.Id, &student.Name, &student.PhoneNumber, &studentHistory.OldCondition, &studentHistory.CurrentCondition,
-			&studentHistory.SpecificDate, &createdAt, &group.Name, &group.LessonStartTime, &group.GroupStartDate, &group.GroupEndDate, &group.DateType, &group.CurrentGroupStatus); err != nil {
+			&studentHistory.SpecificDate, &createdAt, &group.Name, &group.LessonStartTime, &group.GroupStartDate, &group.GroupEndDate, &group.DateType, &group.CurrentGroupStatus, &studentHistory.Comment); err != nil {
 			return nil, err
 		}
 		studentHistory.Group = &group
@@ -434,7 +434,7 @@ func (r *StudentRepository) GetHistoryByStudentId(companyId string, studentId st
 	}
 	conditionsHistoryQuery := `SELECT s.id, s.name, s.phone, gh.old_condition, gh.current_condition, gh.specific_date, gh.created_at, 
                                    g.id, g.name, g.start_time, g.start_date, g.end_date, g.date_type, 
-                                   gs.condition, c.id , c.price , c.description , c.title , c.course_duration , g.is_archived
+                                   gs.condition, c.id , c.price , c.description , c.title , c.course_duration , g.is_archived , coalesce(gh.comment , '')
                                FROM group_students gs
                                JOIN students s ON gs.student_id = s.id
                                JOIN group_student_condition_history gh ON gs.id = gh.group_student_id
@@ -461,7 +461,7 @@ func (r *StudentRepository) GetHistoryByStudentId(companyId string, studentId st
 			&studentHistory.SpecificDate, &createdAt,
 			&group.Id, &group.Name, &group.LessonStartTime,
 			&group.GroupStartDate, &group.GroupEndDate,
-			&group.DateType, &group.CurrentGroupStatus, &course.Id, &course.Price, &course.Description, &course.Name, &course.CourseDuration, &group.IsArchived); err != nil {
+			&group.DateType, &group.CurrentGroupStatus, &course.Id, &course.Price, &course.Description, &course.Name, &course.CourseDuration, &group.IsArchived, &studentHistory.Comment); err != nil {
 			return nil, err
 		}
 

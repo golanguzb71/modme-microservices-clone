@@ -277,6 +277,8 @@ definitions:
     type: object
   pb.AbsStudentHistory:
     properties:
+      comment:
+        type: string
       createdAt:
         type: string
       currentCondition:

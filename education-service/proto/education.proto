@@ -535,6 +535,7 @@ message AbsStudentHistory{
   string currentCondition = 6;
   string specificDate = 4;
   string createdAt = 5;
+  string comment = 7;
 }
 message AbsGroup{
   string id = 1;
