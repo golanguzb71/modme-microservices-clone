@@ -85,57 +85,53 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		coursePrice = *manualPriceForCourse
 	}
 
-	// Parse the till date
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	// Get start of month and end of month
+	// Get start and end of month
 	startOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location())
 	endOfMonth := startOfMonth.AddDate(0, 1, -1)
 
-	// Calculate total lessons in the current month
-	totalLessonsInMonth := calculateLessonsInPeriod(groupDays, dateType, startOfMonth, endOfMonth)
-	if totalLessonsInMonth == 0 {
+	// Get all lesson dates for the month
+	lessonDates := getLessonDatesInMonth(groupDays, dateType, startOfMonth, endOfMonth)
+	if len(lessonDates) == 0 {
 		return 0, fmt.Errorf("no lessons scheduled for the current month")
 	}
 
-	// Calculate passed lessons from start of month until till date
-	passedLessons := calculateLessonsInPeriod(groupDays, dateType, startOfMonth, tillDateParsed)
+	// Find first lesson date of the month
+	firstLessonDate := lessonDates[0]
 
-	// Adjust passed lessons if tillDate is after the 3rd of the month
-	if tillDateParsed.Day() > 3 {
-		passedLessons-- // Skip one lesson
+	// If we're before or on the first lesson date, return full amount
+	if !tillDateParsed.After(firstLessonDate) {
+		return coursePrice, nil
 	}
 
-	if passedLessons < 0 {
-		passedLessons = 0
-	}
-
-	// Calculate price per lesson
-	pricePerLesson := coursePrice / float64(totalLessonsInMonth)
-
-	// Calculate money to deduct based on passed lessons
-	moneyToDeduct := pricePerLesson * float64(passedLessons)
-
-	// Calculate remaining money
-	remainingMoney := coursePrice - moneyToDeduct
-
-	// Round the result correctly
-	remainingMoney = math.Round(remainingMoney)
-
-	return remainingMoney, nil
-}
-
-func calculateLessonsInPeriod(groupDays []string, dateType string, startDate, endDate time.Time) int {
-	totalLessons := 0
-	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
-		if isLessonDay(currentDate, groupDays, dateType) {
-			totalLessons++
+	// Count passed lessons
+	passedLessons := 0
+	for _, lessonDate := range lessonDates {
+		if lessonDate.Before(tillDateParsed) {
+			passedLessons++
 		}
 	}
-	return totalLessons
+
+	// Calculate money per lesson and remaining amount
+	pricePerLesson := coursePrice / float64(len(lessonDates))
+	remainingMoney := coursePrice - (float64(passedLessons) * pricePerLesson)
+
+	return math.Round(remainingMoney), nil
+}
+
+// New function to get all lesson dates in a month
+func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDate time.Time) []time.Time {
+	var lessonDates []time.Time
+	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+		if isLessonDay(currentDate, groupDays, dateType) {
+			lessonDates = append(lessonDates, currentDate)
+		}
+	}
+	return lessonDates
 }
 
 func isLessonDay(currentDate time.Time, groupDays []string, dateType string) bool {
@@ -167,6 +163,7 @@ func getDayName(weekday time.Weekday) string {
 	}
 	return days[weekday]
 }
+
 func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId string) bool {
 	if actionRole == "TEACHER" {
 		checker := false
