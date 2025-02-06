@@ -91,7 +91,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	}
 
 	endOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 23, 59, 59, 999999999, tillDateParsed.Location()).AddDate(0, 1, -1)
-
+	fmt.Println(endOfMonth)
 	totalLessonsInMonth := calculateLessonsInMonth(groupDays, dateType, time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location()), endOfMonth)
 	if totalLessonsInMonth == 0 {
 		return 0, fmt.Errorf("no lessons scheduled for the given month, avoiding division by zero")
@@ -112,6 +112,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 
 	return remainingMoney, nil
 }
+
 func calculateLessonsInMonth(groupDays []string, dateType string, startDate, endDate time.Time) int {
 	totalLessons := 0
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {

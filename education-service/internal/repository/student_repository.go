@@ -603,7 +603,7 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 	defer cancelFunc()
 	if returnTheMoney {
 		for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
-			monthYearDate := d.Format("2006-01-02") // Format as YYYY-MM for clarity
+			monthYearDate := d.Format("2006-01-02")
 
 			manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
 			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYearDate)
