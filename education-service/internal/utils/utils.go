@@ -102,6 +102,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		return 0, fmt.Errorf("no lessons scheduled for the current month")
 	}
 	fmt.Println("lesson dates", lessonDates)
+	fmt.Println("lesson dates lenghth", len(lessonDates))
 
 	// Find first lesson date of the month
 	firstLessonDate := lessonDates[0]
