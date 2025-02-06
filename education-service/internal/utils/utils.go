@@ -104,22 +104,26 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	// Calculate passed lessons from start of month until till date
 	passedLessons := calculateLessonsInPeriod(groupDays, dateType, startOfMonth, tillDateParsed)
 
+	// Adjust passed lessons if tillDate is after the 3rd of the month
+	if tillDateParsed.Day() > 3 {
+		passedLessons-- // Skip one lesson
+	}
+
+	if passedLessons < 0 {
+		passedLessons = 0
+	}
+
 	// Calculate price per lesson
 	pricePerLesson := coursePrice / float64(totalLessonsInMonth)
 
 	// Calculate money to deduct based on passed lessons
 	moneyToDeduct := pricePerLesson * float64(passedLessons)
-	fmt.Println("course price", coursePrice)
-	fmt.Println("money for deduct", moneyToDeduct)
+
 	// Calculate remaining money
 	remainingMoney := coursePrice - moneyToDeduct
 
-	// Round the result
-	if remainingMoney < 0 {
-		remainingMoney = math.Ceil(remainingMoney)
-	} else {
-		remainingMoney = math.Floor(remainingMoney)
-	}
+	// Round the result correctly
+	remainingMoney = math.Round(remainingMoney)
 
 	return remainingMoney, nil
 }
