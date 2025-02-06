@@ -143,12 +143,13 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 	dayName := getDayName(currentDate.Weekday())
 	for _, groupDay := range groupDays {
 		if groupDay == dayName {
-			switch dateType {
-			case "JUFT":
-				return currentDate.Day()%2 == 0
-			case "TOQ":
-				return currentDate.Day()%2 != 0
-			default:
+			if dateType == "JUFT" && currentDate.Day()%2 == 0 {
+				return true
+			}
+			if dateType == "TOQ" && currentDate.Day()%2 != 0 {
+				return true
+			}
+			if dateType != "JUFT" && dateType != "TOQ" {
 				return true
 			}
 		}
