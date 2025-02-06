@@ -141,20 +141,31 @@ func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDa
 
 func isLessonDay(currentDate time.Time, groupDays []string, dateType string) bool {
 	dayName := getDayName(currentDate.Weekday())
+
+	// Check if current day is in the allowed groupDays
+	isGroupDay := false
 	for _, groupDay := range groupDays {
 		if groupDay == dayName {
-			if dateType == "JUFT" && currentDate.Day()%2 == 0 {
-				return true
-			}
-			if dateType == "TOQ" && currentDate.Day()%2 != 0 {
-				return true
-			}
-			if dateType != "JUFT" && dateType != "TOQ" {
-				return true
-			}
+			isGroupDay = true
+			break
 		}
 	}
-	return false
+
+	// If current date is not in groupDays, return false
+	if !isGroupDay {
+		return false
+	}
+
+	// Apply JUFT and TOQ conditions only if required
+	if dateType == "JUFT" {
+		return currentDate.Day()%2 == 0 // Even days
+	}
+	if dateType == "TOQ" {
+		return currentDate.Day()%2 != 0 // Odd days
+	}
+
+	// If no specific dateType filtering, return true for all valid groupDays
+	return true
 }
 
 func getDayName(weekday time.Weekday) string {
