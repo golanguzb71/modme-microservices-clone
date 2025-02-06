@@ -144,7 +144,7 @@ func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.Cha
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.ChangeConditionStudent(ctx, companyId, req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName)
+	return s.repo.ChangeConditionStudent(ctx, companyId, req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName, req.Comment)
 }
 
 func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetStudentsByGroupIdRequest) (*pb.GetStudentsByGroupIdResponse, error) {

@@ -195,7 +195,7 @@ func (r *StudentRepository) DeleteStudent(ctx context.Context, companyId string,
 			if err != nil {
 				return err
 			}
-			_, _ = r.ChangeConditionStudent(ctx, companyId, studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName)
+			_, _ = r.ChangeConditionStudent(ctx, companyId, studentId, groupId, "DELETE", returnMoney, time.Now().Format("2006-01-02"), actionById, actionByName, "")
 		}
 		_, err = r.db.Exec(`UPDATE students SET condition='ARCHIVED' where id=$1 and company_id=$2`, studentId, companyId)
 		if err != nil {
@@ -508,7 +508,7 @@ func (r *StudentRepository) TransferLessonDate(companyId string, groupId string,
 		Message: "accomplished",
 	}, nil
 }
-func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyId string, studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName string) (*pb.AbsResponse, error) {
+func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyId string, studentId string, groupId string, status string, returnTheMoney bool, tillDate string, actionById, actionByName, comment string) (*pb.AbsResponse, error) {
 	isEliminatedInTrial := false
 
 	if err := r.ensureFinanceClient(); err != nil {
@@ -588,10 +588,10 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 	}
 
 	insertHistoryStmt := `
-        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial , company_id)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9 , $10)
+        INSERT INTO group_student_condition_history (id, group_student_id, student_id, group_id, old_condition, current_condition, specific_date, return_the_money, created_at, is_eliminated_trial , company_id , comment)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9 , $10 , $11)
     `
-	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEliminatedInTrial, companyId)
+	_, err = tx.Exec(insertHistoryStmt, uuid.New(), groupStudentId, studentId, groupId, oldCondition, status, tillDate, returnTheMoney, isEliminatedInTrial, companyId, comment)
 	if err != nil {
 		tx.Rollback()
 		return nil, fmt.Errorf("failed to insert into group_student_condition_history: %v", err)

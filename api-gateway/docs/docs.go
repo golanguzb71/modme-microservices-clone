@@ -5815,6 +5815,9 @@ const docTemplate = `{
                 "actionByName": {
                     "type": "string"
                 },
+                "comment": {
+                    "type": "string"
+                },
                 "groupId": {
                     "type": "string"
                 },

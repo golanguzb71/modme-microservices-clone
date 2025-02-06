@@ -473,6 +473,7 @@ message ChangeConditionStudentRequest{
   string tillDate = 3;
   string actionById = 6;
   string actionByName = 7;
+  string comment = 8;
 }
 message TransferLessonRequest{
   string from = 1;
