@@ -82,28 +82,44 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	}
 
 	if manualPriceForCourse != nil {
-		coursePrice = coursePrice - *manualPriceForCourse
+		coursePrice = *manualPriceForCourse
 	}
 
+	// Parse the group start time
+	groupStart, err := time.Parse("2006-01-02", groupStartTime)
+	if err != nil {
+		return 0, fmt.Errorf("error parsing group start time: %v", err)
+	}
+
+	// Parse the till date
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	endOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 23, 59, 59, 999999999, tillDateParsed.Location()).AddDate(0, 1, -1)
-	fmt.Println(endOfMonth)
-	totalLessonsInMonth := calculateLessonsInMonth(groupDays, dateType, time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location()), endOfMonth)
-	if totalLessonsInMonth == 0 {
-		return 0, fmt.Errorf("no lessons scheduled for the given month, avoiding division by zero")
+	// Calculate total lessons from group start until course duration
+	courseEndDate := groupStart.AddDate(0, 0, courseDurationLesson*7/len(groupDays))
+	totalLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, courseEndDate)
+	if totalLessons == 0 {
+		return 0, fmt.Errorf("no lessons scheduled for the course duration")
 	}
 
-	remainingLessons := calculateRemainingLessons(groupDays, dateType, tillDateParsed, endOfMonth)
-	if remainingLessons > totalLessonsInMonth {
-		remainingLessons = totalLessonsInMonth
+	// Calculate passed lessons from group start until till date
+	passedLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, tillDateParsed)
+
+	// Calculate remaining lessons
+	remainingLessons := totalLessons - passedLessons
+	if remainingLessons < 0 {
+		remainingLessons = 0
 	}
 
-	remainingMoney := coursePrice / float64(totalLessonsInMonth) * float64(remainingLessons)
+	// Calculate price per lesson
+	pricePerLesson := coursePrice / float64(totalLessons)
 
+	// Calculate remaining money
+	remainingMoney := pricePerLesson * float64(remainingLessons)
+
+	// Round the result
 	if remainingMoney < 0 {
 		remainingMoney = math.Ceil(remainingMoney)
 	} else {
@@ -113,7 +129,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	return remainingMoney, nil
 }
 
-func calculateLessonsInMonth(groupDays []string, dateType string, startDate, endDate time.Time) int {
+func calculateLessonsInPeriod(groupDays []string, dateType string, startDate, endDate time.Time) int {
 	totalLessons := 0
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
 		if isLessonDay(currentDate, groupDays, dateType) {
@@ -121,16 +137,6 @@ func calculateLessonsInMonth(groupDays []string, dateType string, startDate, end
 		}
 	}
 	return totalLessons
-}
-
-func calculateRemainingLessons(groupDays []string, dateType string, currentDate, endDate time.Time) int {
-	remainingLessons := 0
-	for ; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
-		if isLessonDay(currentDate, groupDays, dateType) {
-			remainingLessons++
-		}
-	}
-	return remainingLessons
 }
 
 func isLessonDay(currentDate time.Time, groupDays []string, dateType string) bool {
