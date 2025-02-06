@@ -65,61 +65,56 @@ func RecoveryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryS
 func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId string, tillDate string) (float64, error) {
 	var coursePrice float64
 	var courseDurationLesson int
-	var groupStartDate string // Changed from groupStartTime to be more explicit
+	var groupStartTime string
 	var groupDays []string
 	var dateType string
 
 	query := `
-        SELECT c.price, c.course_duration, g.start_date, g.days, g.date_type  -- Changed from start_time to start_date
+        SELECT c.price, c.course_duration, g.start_time, g.days, g.date_type
         FROM groups g
         JOIN courses c ON g.course_id = c.id
         WHERE g.id = $1
     `
 
-	err := db.QueryRow(query, groupId).Scan(&coursePrice, &courseDurationLesson, &groupStartDate, pq.Array(&groupDays), &dateType)
+	err := db.QueryRow(query, groupId).Scan(&coursePrice, &courseDurationLesson, &groupStartTime, pq.Array(&groupDays), &dateType)
 	if err != nil {
 		return 0, fmt.Errorf("error getting course details: %v", err)
 	}
 
 	if manualPriceForCourse != nil {
-		coursePrice = *manualPriceForCourse
+		coursePrice = coursePrice - *manualPriceForCourse
 	}
 
-	// Parse the group start date
-	groupStart, err := time.Parse("2006-01-02", groupStartDate)
+	// Parse group start date
+	groupStartDate, err := time.Parse("2006-01-02", groupStartTime)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing group start date: %v", err)
 	}
 
-	// Parse the till date
+	// Parse till date
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	// Calculate total lessons from group start until course duration
-	courseEndDate := groupStart.AddDate(0, 0, courseDurationLesson*7/len(groupDays))
-	totalLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, courseEndDate)
-	if totalLessons == 0 {
-		return 0, fmt.Errorf("no lessons scheduled for the course duration")
+	if courseDurationLesson == 0 {
+		return 0, fmt.Errorf("course duration is zero, division by zero")
 	}
 
-	// Calculate passed lessons from group start until till date
-	passedLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, tillDateParsed)
+	// Calculate passed lessons from group start date to tillDate
+	passedLessons, err := calculatePassedLessons(groupStartDate, groupDays, dateType, courseDurationLesson, tillDateParsed)
+	if err != nil {
+		return 0, err
+	}
 
-	// Calculate remaining lessons
-	remainingLessons := totalLessons - passedLessons
+	remainingLessons := courseDurationLesson - passedLessons
 	if remainingLessons < 0 {
 		remainingLessons = 0
 	}
 
-	// Calculate price per lesson
-	pricePerLesson := coursePrice / float64(totalLessons)
+	remainingMoney := (coursePrice / float64(courseDurationLesson)) * float64(remainingLessons)
 
-	// Calculate remaining money
-	remainingMoney := pricePerLesson * float64(remainingLessons)
-
-	// Round the result
+	// Round remaining money
 	if remainingMoney < 0 {
 		remainingMoney = math.Ceil(remainingMoney)
 	} else {
@@ -129,16 +124,28 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	return remainingMoney, nil
 }
 
-func calculateLessonsInPeriod(groupDays []string, dateType string, startDate, endDate time.Time) int {
-	totalLessons := 0
-	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
-		if isLessonDay(currentDate, groupDays, dateType) {
-			totalLessons++
-		}
+// calculatePassedLessons counts the number of lessons from startDate to tillDate, up to maxLessons
+func calculatePassedLessons(startDate time.Time, groupDays []string, dateType string, maxLessons int, tillDate time.Time) (int, error) {
+	if startDate.After(tillDate) {
+		return 0, nil
 	}
-	return totalLessons
+
+	passed := 0
+	currentDate := startDate
+	for {
+		if currentDate.After(tillDate) || passed >= maxLessons {
+			break
+		}
+		if isLessonDay(currentDate, groupDays, dateType) {
+			passed++
+		}
+		currentDate = currentDate.AddDate(0, 0, 1)
+	}
+
+	return passed, nil
 }
 
+// isLessonDay checks if the currentDate is a lesson day based on groupDays and dateType
 func isLessonDay(currentDate time.Time, groupDays []string, dateType string) bool {
 	dayName := getDayName(currentDate.Weekday())
 	for _, groupDay := range groupDays {
@@ -156,6 +163,7 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 	return false
 }
 
+// getDayName returns the Uzbek day name for a given weekday
 func getDayName(weekday time.Weekday) string {
 	days := map[time.Weekday]string{
 		time.Monday:    "DUSHANBA",
