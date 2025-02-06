@@ -12,6 +12,7 @@ message DeleteAbsRequest{
   string id = 1;
 }
 
+
 message PageRequest{
   int32 page = 1;
   int32 size = 2;

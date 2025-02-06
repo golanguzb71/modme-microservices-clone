@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.21.12
-// source: group.proto
+// source: education.proto
 
 package pb
 
@@ -117,5 +117,107 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "group.proto",
+	Metadata: "education.proto",
+}
+
+const (
+	CompanyService_GetCompanyBySubdomain_FullMethodName = "/education.CompanyService/GetCompanyBySubdomain"
+)
+
+// CompanyServiceClient is the client API for CompanyService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type CompanyServiceClient interface {
+	GetCompanyBySubdomain(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error)
+}
+
+type companyServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewCompanyServiceClient(cc grpc.ClientConnInterface) CompanyServiceClient {
+	return &companyServiceClient{cc}
+}
+
+func (c *companyServiceClient) GetCompanyBySubdomain(ctx context.Context, in *GetCompanyRequest, opts ...grpc.CallOption) (*GetCompanyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCompanyResponse)
+	err := c.cc.Invoke(ctx, CompanyService_GetCompanyBySubdomain_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// CompanyServiceServer is the server API for CompanyService service.
+// All implementations must embed UnimplementedCompanyServiceServer
+// for forward compatibility.
+type CompanyServiceServer interface {
+	GetCompanyBySubdomain(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error)
+	mustEmbedUnimplementedCompanyServiceServer()
+}
+
+// UnimplementedCompanyServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedCompanyServiceServer struct{}
+
+func (UnimplementedCompanyServiceServer) GetCompanyBySubdomain(context.Context, *GetCompanyRequest) (*GetCompanyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCompanyBySubdomain not implemented")
+}
+func (UnimplementedCompanyServiceServer) mustEmbedUnimplementedCompanyServiceServer() {}
+func (UnimplementedCompanyServiceServer) testEmbeddedByValue()                        {}
+
+// UnsafeCompanyServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CompanyServiceServer will
+// result in compilation errors.
+type UnsafeCompanyServiceServer interface {
+	mustEmbedUnimplementedCompanyServiceServer()
+}
+
+func RegisterCompanyServiceServer(s grpc.ServiceRegistrar, srv CompanyServiceServer) {
+	// If the following call pancis, it indicates UnimplementedCompanyServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&CompanyService_ServiceDesc, srv)
+}
+
+func _CompanyService_GetCompanyBySubdomain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCompanyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CompanyServiceServer).GetCompanyBySubdomain(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CompanyService_GetCompanyBySubdomain_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CompanyServiceServer).GetCompanyBySubdomain(ctx, req.(*GetCompanyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// CompanyService_ServiceDesc is the grpc.ServiceDesc for CompanyService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var CompanyService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "education.CompanyService",
+	HandlerType: (*CompanyServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetCompanyBySubdomain",
+			Handler:    _CompanyService_GetCompanyBySubdomain_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "education.proto",
 }

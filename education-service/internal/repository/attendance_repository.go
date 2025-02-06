@@ -121,7 +121,6 @@ func (r *AttendanceRepository) DeleteAttendance(groupId string, studentId string
 	if rowsAffected == 0 {
 		return fmt.Errorf("attendance record not found for group_id: %s, student_id: %s, teacher_id: %s, attend_date: %s", groupId, studentId, teacherId, attendDate)
 	}
-	// writing teacher finance remove
 	return nil
 }
 func (r *AttendanceRepository) GetAttendanceByGroupAndDateRange(companyId string, ctx context.Context, groupId string, fromDate time.Time, tillDate time.Time, withOutdated bool, actionRole, actionId string) (*pb.GetAttendanceResponse, error) {

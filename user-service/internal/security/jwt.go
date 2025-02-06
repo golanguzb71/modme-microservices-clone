@@ -17,7 +17,7 @@ type Claims struct {
 }
 
 func GenerateToken(user *pb.GetUserByIdResponse) (string, error) {
-	expirationTime := time.Now().Add(24 * 10 * time.Hour)
+	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		Username:  user.Id,
 		Role:      user.Role,

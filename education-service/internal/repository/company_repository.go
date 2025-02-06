@@ -21,8 +21,11 @@ func NewCompanyRepository(db *sql.DB, uc *clients.UserClient) *CompanyRepository
 	return &CompanyRepository{db: db, userClient: uc}
 }
 
-func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyResponse, error) {
-	query := `
+func (r *CompanyRepository) GetCompanyByDomain(domain, companyId string) (*pb.GetCompanyResponse, error) {
+	var query string
+	var row *sql.Row
+	if domain != "" {
+		query = `
 		SELECT 
 			c.id, c.title, c.avatar, c.start_time, c.end_time, 
 			c.company_phone, c.subdomain, c.valid_date, 
@@ -35,11 +38,26 @@ func (r *CompanyRepository) GetCompanyByDomain(domain string) (*pb.GetCompanyRes
 		WHERE 
 			c.subdomain = $1
 	`
+		row = r.db.QueryRow(query, domain)
+	} else {
+		query = `
+		SELECT 
+			c.id, c.title, c.avatar, c.start_time, c.end_time, 
+			c.company_phone, c.subdomain, c.valid_date, 
+			t.id AS tariff_id, t.name AS tariff_name, t.sum AS tariff_price, t.discounts,
+			coalesce(c.discount_id , '0'), c.is_demo, c.created_at , (SELECT count(*) FROM students where condition = 'ACTIVE' and company_id=c.id) as studentcount
+		FROM 
+			company c
+		LEFT JOIN 
+			tariff t ON c.tariff_id = t.id
+		WHERE 
+			c.id = $1
+	`
+		row = r.db.QueryRow(query, companyId)
+	}
 
 	var company pb.GetCompanyResponse
 	var tariff pb.Tariff
-
-	row := r.db.QueryRow(query, domain)
 	err := row.Scan(
 		&company.Id, &company.Title, &company.AvatarUrl,
 		&company.StartTime, &company.EndTime, &company.CompanyPhone,

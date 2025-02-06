@@ -7,6 +7,40 @@ option go_package = "proto/pb";
 service GroupService{
   rpc GetGroupsByTeacherId(GetGroupsByTeacherIdRequest) returns(GetGroupsByTeacherResponse);
 }
+service CompanyService{
+  rpc GetCompanyBySubdomain(GetCompanyRequest) returns(GetCompanyResponse);
+}
+message GetCompanyRequest{
+  string domain = 1;
+  string id = 2;
+}
+message GetCompanyResponse{
+  string id = 1;
+  string title = 2;
+  string avatarUrl = 3;
+  string startTime = 4;
+  string endTime = 5;
+  string companyPhone = 6;
+  string subdomain = 7;
+  string valid_date = 8;
+  Tariff tariff = 9;
+  string discount_id = 10;
+  string created_at = 11;
+  bool is_demo = 12;
+  int32 active_student_count = 13;
+  string ceo_id = 14;
+}
+
+message Tariff {
+  int32 id = 1;
+  string name = 2;
+  int32 student_count = 3;
+  float sum = 4;
+  string discounts = 5;
+  bool is_deleted = 6;
+  string created_at = 7;
+}
+
 message GetGroupsByTeacherIdRequest{
   string teacherId = 1;
   bool isArchived = 2;

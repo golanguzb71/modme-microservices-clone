@@ -18,7 +18,7 @@ func NewCompanyService(repo *repository.CompanyRepository) *CompanyService {
 }
 
 func (cs *CompanyService) GetCompanyBySubdomain(ctx context.Context, req *pb.GetCompanyRequest) (*pb.GetCompanyResponse, error) {
-	return cs.companyRepo.GetCompanyByDomain(req.Domain)
+	return cs.companyRepo.GetCompanyByDomain(req.Domain, req.Id)
 }
 
 func (cs *CompanyService) CreateCompany(ctx context.Context, req *pb.CreateCompanyRequest) (*pb.AbsResponse, error) {

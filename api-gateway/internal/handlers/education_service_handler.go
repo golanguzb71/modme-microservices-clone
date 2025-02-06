@@ -166,7 +166,9 @@ func UpdateCourse(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	resp, err := educationClient.UpdateCourse(ctx, &req)
+	ctxR, cancel := etc.NewTimoutContext(ctx)
+	defer cancel()
+	resp, err := educationClient.UpdateCourse(ctxR, &req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

@@ -107,6 +107,7 @@ message CreateCompanyRequest{
 
 message GetCompanyRequest{
   string domain = 1;
+  string id = 2;
 }
 message GetCompanyResponse{
   string id = 1;
