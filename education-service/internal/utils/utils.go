@@ -85,39 +85,33 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		coursePrice = *manualPriceForCourse
 	}
 
-	// Parse the group start date from RFC3339 format
-	groupStart, err := time.Parse(time.RFC3339, groupStartDate)
-	if err != nil {
-		return 0, fmt.Errorf("error parsing group start date: %v", err)
-	}
-
 	// Parse the till date
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
 
-	// Calculate total lessons from group start until course duration
-	courseEndDate := groupStart.AddDate(0, 0, courseDurationLesson*7/len(groupDays))
-	totalLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, courseEndDate)
-	if totalLessons == 0 {
-		return 0, fmt.Errorf("no lessons scheduled for the course duration")
+	// Get start of month and end of month
+	startOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location())
+	endOfMonth := startOfMonth.AddDate(0, 1, -1)
+
+	// Calculate total lessons in the current month
+	totalLessonsInMonth := calculateLessonsInPeriod(groupDays, dateType, startOfMonth, endOfMonth)
+	if totalLessonsInMonth == 0 {
+		return 0, fmt.Errorf("no lessons scheduled for the current month")
 	}
 
-	// Calculate passed lessons from group start until till date
-	passedLessons := calculateLessonsInPeriod(groupDays, dateType, groupStart, tillDateParsed)
-
-	// Calculate remaining lessons
-	remainingLessons := totalLessons - passedLessons
-	if remainingLessons < 0 {
-		remainingLessons = 0
-	}
+	// Calculate passed lessons from start of month until till date
+	passedLessons := calculateLessonsInPeriod(groupDays, dateType, startOfMonth, tillDateParsed)
 
 	// Calculate price per lesson
-	pricePerLesson := coursePrice / float64(totalLessons)
+	pricePerLesson := coursePrice / float64(totalLessonsInMonth)
+
+	// Calculate money to deduct based on passed lessons
+	moneyToDeduct := pricePerLesson * float64(passedLessons)
 
 	// Calculate remaining money
-	remainingMoney := pricePerLesson * float64(remainingLessons)
+	remainingMoney := coursePrice - moneyToDeduct
 
 	// Round the result
 	if remainingMoney < 0 {
@@ -168,7 +162,6 @@ func getDayName(weekday time.Weekday) string {
 	}
 	return days[weekday]
 }
-
 func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId string) bool {
 	if actionRole == "TEACHER" {
 		checker := false
