@@ -85,6 +85,9 @@ func (r *CompanyRepository) CreateCompany(req *pb.CreateCompanyRequest) (*pb.Abs
 	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where subdomain=$1)`, req.Subdomain).Scan(&exists); err != nil || exists {
 		return nil, status.Error(codes.Aborted, "this subdomain already have got in database")
 	}
+	if err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM company where company_phone =$1)`, req.CompanyPhone).Scan(&exists); err != nil || exists {
+		return nil, status.Error(codes.Aborted, "this phone number already have got in database")
+	}
 	_, err := r.db.Exec(`INSERT INTO company(title, avatar, start_time, end_time, company_phone, subdomain, valid_date, tariff_id, discount_id, is_demo) VALUES ($1,$2, $3, $4, $5, $6 , $7,  $8 , $9 , $10)`,
 		req.Title,
 		req.AvatarUrl,
