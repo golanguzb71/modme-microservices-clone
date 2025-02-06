@@ -141,9 +141,11 @@ func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDa
 
 func isLessonDay(currentDate time.Time, groupDays []string, dateType string) bool {
 	dayName := getDayName(currentDate.Weekday())
+	fmt.Println("day name ", dayName)
 	fmt.Println("groupdays include that ", groupDays)
 	isGroupDay := false
 	for _, groupDay := range groupDays {
+		fmt.Println(" ===============", groupDay == dayName)
 		if groupDay == dayName {
 			isGroupDay = true
 			break
