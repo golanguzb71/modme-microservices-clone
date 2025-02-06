@@ -14,7 +14,8 @@ database:
 grpc:
   education_service:
     address: "sphere-education-service:8080"
-
+  user_service:
+    address: "sphere-user-service:8080"
 #server:
 #  port: 50053
 #

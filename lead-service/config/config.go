@@ -29,6 +29,9 @@ type GrpcConfig struct {
 	EducationService struct {
 		Address string `yaml:"address"`
 	} `yaml:"education_service"`
+	UserService struct {
+		Address string `yaml:"address"`
+	} `yaml:"user_service"`
 }
 
 func LoadConfig() (*Config, error) {

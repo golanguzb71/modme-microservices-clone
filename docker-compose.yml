@@ -69,8 +69,6 @@ services:
     build:
       context: ./user-service
       dockerfile: Dockerfile
-    ports:
-      - "9018:8080"
     environment:
       DB_HOST: postgres-sphere-user
       DB_PORT: 5432
@@ -86,8 +84,6 @@ services:
     build:
       context: ./education-service
       dockerfile: Dockerfile
-    ports:
-      - "9016:8080"
     environment:
       DB_HOST: postgres-sphere-education
       DB_PORT: 5432
@@ -103,8 +99,6 @@ services:
     build:
       context: ./lead-service
       dockerfile: Dockerfile
-    ports:
-      - "9017:8080"
     environment:
       DB_HOST: postgres-sphere-lead
       DB_PORT: 5432
@@ -120,8 +114,6 @@ services:
     build:
       context: ./finance-service
       dockerfile: Dockerfile
-    ports:
-      - "9021:8080"
     environment:
       DB_HOST: postgres-sphere-finance
       DB_PORT: 5432

@@ -18,10 +18,11 @@ type SetService struct {
 	repo          *repository.SetRepository
 	groupClient   *clients.GroupClient
 	studentClient *clients.StudentClient
+	userClient    *clients.UserClient
 }
 
-func NewSetService(repo *repository.SetRepository, client *clients.GroupClient, studentClient *clients.StudentClient) *SetService {
-	return &SetService{repo: repo, groupClient: client, studentClient: studentClient}
+func NewSetService(repo *repository.SetRepository, client *clients.GroupClient, studentClient *clients.StudentClient, userClient *clients.UserClient) *SetService {
+	return &SetService{repo: repo, groupClient: client, studentClient: studentClient, userClient: userClient}
 }
 
 func (s *SetService) CreateSet(ctx context.Context, req *pb.CreateSetRequest) (*pb.AbsResponse, error) {
@@ -133,7 +134,11 @@ func (s *SetService) GetById(ctx context.Context, req *pb.DeleteAbsRequest) (*pb
 	if err != nil {
 		return nil, err
 	}
+	user, err := s.userClient.GetUserById(ctx, resp.TeacherId)
+	if err != nil {
+		return nil, err
+	}
 	resp.CourseName = course.Name
-
+	resp.TeacherName = user.Name
 	return resp, nil
 }

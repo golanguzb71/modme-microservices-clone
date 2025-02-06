@@ -30,6 +30,7 @@ func RunServer() {
 	// lead_service_clients_start
 	groupClient := clients.NewGroupClient(cfg.Grpc.EducationService.Address)
 	studentClient := clients.NewStudentClient(cfg.Grpc.EducationService.Address)
+	userClient := clients.NewUserClient(cfg.Grpc.UserService.Address)
 
 	// lead_service_services_start
 	expectRepo := repository.NewExpectRepository(db)
@@ -39,7 +40,7 @@ func RunServer() {
 
 	leadService := service.NewLeadService(leadRepo)
 	expectService := service.NewExpectService(expectRepo)
-	setService := service.NewSetService(setRepo, groupClient, studentClient)
+	setService := service.NewSetService(setRepo, groupClient, studentClient, userClient)
 	leadDataService := service.NewLeadDataService(leadDataRepo)
 	// lead_service_services_end
 

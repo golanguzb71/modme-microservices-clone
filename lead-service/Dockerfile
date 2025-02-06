@@ -9,6 +9,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o lead-service ./cmd/main.go
 
+EXPOSE 8080
+
 FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
