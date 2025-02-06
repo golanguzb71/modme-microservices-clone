@@ -1411,7 +1411,9 @@ definitions:
       dateType:
         type: string
       dates:
-        type: string
+        items:
+          type: string
+        type: array
       lessonStartTime:
         type: string
       teacherId:

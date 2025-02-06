@@ -7422,7 +7422,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "dates": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "lessonStartTime": {
                     "type": "string"

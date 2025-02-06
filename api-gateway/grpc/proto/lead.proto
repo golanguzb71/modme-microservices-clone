@@ -127,7 +127,7 @@ message SetDataResponse{
   string courseId = 4;
   string courseName = 5;
   string dateType = 6;
-  string dates = 7;
+  repeated string dates = 7;
   string lessonStartTime = 8;
 }
 

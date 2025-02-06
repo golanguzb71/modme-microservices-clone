@@ -1068,14 +1068,14 @@ type SetDataResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title           string `protobuf:"bytes,1,opt,name=title,proto3" json:"title"`
-	TeacherId       string `protobuf:"bytes,2,opt,name=teacherId,proto3" json:"teacherId"`
-	TeacherName     string `protobuf:"bytes,3,opt,name=teacherName,proto3" json:"teacherName"`
-	CourseId        string `protobuf:"bytes,4,opt,name=courseId,proto3" json:"courseId"`
-	CourseName      string `protobuf:"bytes,5,opt,name=courseName,proto3" json:"courseName"`
-	DateType        string `protobuf:"bytes,6,opt,name=dateType,proto3" json:"dateType"`
-	Dates           string `protobuf:"bytes,7,opt,name=dates,proto3" json:"dates"`
-	LessonStartTime string `protobuf:"bytes,8,opt,name=lessonStartTime,proto3" json:"lessonStartTime"`
+	Title           string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title"`
+	TeacherId       string   `protobuf:"bytes,2,opt,name=teacherId,proto3" json:"teacherId"`
+	TeacherName     string   `protobuf:"bytes,3,opt,name=teacherName,proto3" json:"teacherName"`
+	CourseId        string   `protobuf:"bytes,4,opt,name=courseId,proto3" json:"courseId"`
+	CourseName      string   `protobuf:"bytes,5,opt,name=courseName,proto3" json:"courseName"`
+	DateType        string   `protobuf:"bytes,6,opt,name=dateType,proto3" json:"dateType"`
+	Dates           []string `protobuf:"bytes,7,rep,name=dates,proto3" json:"dates"`
+	LessonStartTime string   `protobuf:"bytes,8,opt,name=lessonStartTime,proto3" json:"lessonStartTime"`
 }
 
 func (x *SetDataResponse) Reset() {
@@ -1150,11 +1150,11 @@ func (x *SetDataResponse) GetDateType() string {
 	return ""
 }
 
-func (x *SetDataResponse) GetDates() string {
+func (x *SetDataResponse) GetDates() []string {
 	if x != nil {
 		return x.Dates
 	}
-	return ""
+	return nil
 }
 
 func (x *SetDataResponse) GetLessonStartTime() string {
@@ -1672,7 +1672,7 @@ var file_lead_proto_rawDesc = []byte{
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x4e, 0x61, 0x6d, 0x65,
 	0x12, 0x1a, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x08, 0x64, 0x61, 0x74, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x64, 0x61, 0x74, 0x65, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x61, 0x74,
+	0x64, 0x61, 0x74, 0x65, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x64, 0x61, 0x74,
 	0x65, 0x73, 0x12, 0x28, 0x0a, 0x0f, 0x6c, 0x65, 0x73, 0x73, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x72,
 	0x74, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x6c, 0x65, 0x73,
 	0x73, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x97, 0x02, 0x0a,
