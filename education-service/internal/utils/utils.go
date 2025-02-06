@@ -136,6 +136,7 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 	dayName := getDayName(currentDate.Weekday())
 	isGroupDay := false
 	for _, groupDay := range groupDays {
+		fmt.Println("how many in it false ", groupDay, dayName)
 		if groupDay == dayName {
 			fmt.Println("how many in it ", groupDay, dayName)
 			isGroupDay = true
