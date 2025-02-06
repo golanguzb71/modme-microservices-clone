@@ -89,13 +89,9 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	if err != nil {
 		return 0, fmt.Errorf("error parsing till date: %v", err)
 	}
-	fmt.Println("course price ", coursePrice)
-	fmt.Println("till date", tillDate)
 	// Get start and end of month
 	startOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location())
 	endOfMonth := startOfMonth.AddDate(0, 1, -1)
-	fmt.Println("start of month ", startOfMonth)
-	fmt.Println("end of month ", endOfMonth)
 	// Get all lesson dates for the month
 	lessonDates := getLessonDatesInMonth(groupDays, dateType, startOfMonth, endOfMonth)
 	if len(lessonDates) == 0 {
@@ -119,33 +115,21 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 			passedLessons++
 		}
 	}
-	fmt.Println("passed lesson count", passedLessons)
 
 	// Calculate money per lesson and remaining amount
 	pricePerLesson := coursePrice / float64(len(lessonDates))
 	remainingMoney := coursePrice - (float64(passedLessons) * pricePerLesson)
-	fmt.Println("price per lesson", pricePerLesson)
-	fmt.Println("remaining money ", remainingMoney)
 	return math.Round(remainingMoney), nil
 }
 
 func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDate time.Time) []time.Time {
 	var lessonDates []time.Time
-
-	if len(groupDays) == 0 {
-		fmt.Println("Warning: groupDays is empty, returning no lesson dates.")
-		return lessonDates
-	}
-
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
+		fmt.Println("current date", currentDate)
 		if isLessonDay(currentDate, groupDays, dateType) {
 			lessonDates = append(lessonDates, currentDate)
 		}
 	}
-
-	fmt.Println("Final lesson dates:", lessonDates)
-	fmt.Println("Total lessons in month:", len(lessonDates))
-
 	return lessonDates
 }
 
