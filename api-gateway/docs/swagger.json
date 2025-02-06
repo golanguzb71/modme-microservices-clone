@@ -4123,6 +4123,55 @@
                 }
             }
         },
+        "/api/set/get-by-id/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Retrieves lead details based on the provided ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sets"
+                ],
+                "summary": "ADMIN , CEO",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Lead ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with lead details",
+                        "schema": {
+                            "$ref": "#/definitions/pb.SetDataResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict error with details",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/set/update": {
             "put": {
                 "security": [
@@ -7346,6 +7395,35 @@
                     "type": "string"
                 },
                 "teacherId": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.SetDataResponse": {
+            "type": "object",
+            "properties": {
+                "courseId": {
+                    "type": "string"
+                },
+                "courseName": {
+                    "type": "string"
+                },
+                "dateType": {
+                    "type": "string"
+                },
+                "dates": {
+                    "type": "string"
+                },
+                "lessonStartTime": {
+                    "type": "string"
+                },
+                "teacherId": {
+                    "type": "string"
+                },
+                "teacherName": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

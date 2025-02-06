@@ -118,3 +118,10 @@ func (s *SetService) ChangeToSet(ctx context.Context, req *pb.ChangeToSetRequest
 	}
 	return &pb.AbsResponse{Status: 200, Message: "Set changed to group successfully"}, nil
 }
+func (s *SetService) GetById(ctx context.Context, req *pb.DeleteAbsRequest) (*pb.SetDataResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId == "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return s.repo.GetById(companyId, req.Id)
+}

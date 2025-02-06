@@ -103,6 +103,18 @@ service SetService{
   rpc UpdateSet(UpdateSetRequest) returns (common.AbsResponse);
   rpc DeleteSet(common.DeleteAbsRequest) returns (common.AbsResponse);
   rpc ChangeToSet(ChangeToSetRequest) returns(common.AbsResponse);
+  rpc GetById(common.DeleteAbsRequest) returns(SetDataResponse);
+}
+
+message SetDataResponse{
+  string title = 1;
+  string teacherId = 2;
+  string teacherName = 3;
+  string courseId = 4;
+  string courseName = 5;
+  string dateType = 6;
+  string dates = 7;
+  string lessonStartTime = 8;
 }
 
 message CreateSetRequest{

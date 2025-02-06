@@ -217,3 +217,7 @@ func (lc *LidClient) GetActiveLeadCount(ctx context.Context) int {
 	}
 	return int(count.ActiveLeadCount)
 }
+
+func (lc *LidClient) GetByIdSet(setId string, ctx context.Context) (*pb.SetDataResponse, error) {
+	return lc.setClient.GetById(ctx, &pb.DeleteAbsRequest{Id: setId})
+}

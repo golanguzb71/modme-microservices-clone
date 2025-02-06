@@ -540,6 +540,7 @@ const (
 	SetService_UpdateSet_FullMethodName   = "/lead.SetService/UpdateSet"
 	SetService_DeleteSet_FullMethodName   = "/lead.SetService/DeleteSet"
 	SetService_ChangeToSet_FullMethodName = "/lead.SetService/ChangeToSet"
+	SetService_GetById_FullMethodName     = "/lead.SetService/GetById"
 )
 
 // SetServiceClient is the client API for SetService service.
@@ -552,6 +553,7 @@ type SetServiceClient interface {
 	UpdateSet(ctx context.Context, in *UpdateSetRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	DeleteSet(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	ChangeToSet(ctx context.Context, in *ChangeToSetRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	GetById(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*SetDataResponse, error)
 }
 
 type setServiceClient struct {
@@ -602,6 +604,16 @@ func (c *setServiceClient) ChangeToSet(ctx context.Context, in *ChangeToSetReque
 	return out, nil
 }
 
+func (c *setServiceClient) GetById(ctx context.Context, in *DeleteAbsRequest, opts ...grpc.CallOption) (*SetDataResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetDataResponse)
+	err := c.cc.Invoke(ctx, SetService_GetById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SetServiceServer is the server API for SetService service.
 // All implementations must embed UnimplementedSetServiceServer
 // for forward compatibility.
@@ -612,6 +624,7 @@ type SetServiceServer interface {
 	UpdateSet(context.Context, *UpdateSetRequest) (*AbsResponse, error)
 	DeleteSet(context.Context, *DeleteAbsRequest) (*AbsResponse, error)
 	ChangeToSet(context.Context, *ChangeToSetRequest) (*AbsResponse, error)
+	GetById(context.Context, *DeleteAbsRequest) (*SetDataResponse, error)
 	mustEmbedUnimplementedSetServiceServer()
 }
 
@@ -633,6 +646,9 @@ func (UnimplementedSetServiceServer) DeleteSet(context.Context, *DeleteAbsReques
 }
 func (UnimplementedSetServiceServer) ChangeToSet(context.Context, *ChangeToSetRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeToSet not implemented")
+}
+func (UnimplementedSetServiceServer) GetById(context.Context, *DeleteAbsRequest) (*SetDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetById not implemented")
 }
 func (UnimplementedSetServiceServer) mustEmbedUnimplementedSetServiceServer() {}
 func (UnimplementedSetServiceServer) testEmbeddedByValue()                    {}
@@ -727,6 +743,24 @@ func _SetService_ChangeToSet_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SetService_GetById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAbsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SetServiceServer).GetById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SetService_GetById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SetServiceServer).GetById(ctx, req.(*DeleteAbsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SetService_ServiceDesc is the grpc.ServiceDesc for SetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -749,6 +783,10 @@ var SetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeToSet",
 			Handler:    _SetService_ChangeToSet_Handler,
+		},
+		{
+			MethodName: "GetById",
+			Handler:    _SetService_GetById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

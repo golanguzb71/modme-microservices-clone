@@ -1402,6 +1402,25 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.SetDataResponse:
+    properties:
+      courseId:
+        type: string
+      courseName:
+        type: string
+      dateType:
+        type: string
+      dates:
+        type: string
+      lessonStartTime:
+        type: string
+      teacherId:
+        type: string
+      teacherName:
+        type: string
+      title:
+        type: string
+    type: object
   pb.Student:
     properties:
       activatedAt:
@@ -4202,6 +4221,37 @@ paths:
       security:
       - Bearer: []
       summary: ADMIN
+      tags:
+      - sets
+  /api/set/get-by-id/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves lead details based on the provided ID.
+      parameters:
+      - description: Lead ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response with lead details
+          schema:
+            $ref: '#/definitions/pb.SetDataResponse'
+        "404":
+          description: Lead not found
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+        "409":
+          description: Conflict error with details
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: ADMIN , CEO
       tags:
       - sets
   /api/set/update:

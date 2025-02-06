@@ -476,3 +476,27 @@ func GetLeadReports(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 	return
 }
+
+// GetByIdSet retrieves lead details by ID.
+// @Summary ADMIN , CEO
+// @Description Retrieves lead details based on the provided ID.
+// @Tags sets
+// @Accept json
+// @Produce json
+// @Param id path string true "Lead ID"
+// @Success 200 {object} pb.SetDataResponse "Successful response with lead details"
+// @Failure 404 {object} utils.AbsResponse "Lead not found"
+// @Failure 409 {object} utils.AbsResponse "Conflict error with details"
+// @Security Bearer
+// @Router /api/set/get-by-id/{id} [get]
+func GetByIdSet(ctx *gin.Context) {
+	ctxR, cancelFunc := etc.NewTimoutContext(ctx)
+	defer cancelFunc()
+	id := ctx.Param("id")
+	resp, err := leadClient.GetByIdSet(id, ctxR)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusConflict, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, resp)
+}

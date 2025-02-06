@@ -29,6 +29,7 @@ func LeadRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		set.PUT("/update", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.UpdateSet)
 		set.DELETE("/delete/:id", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteSet)
 		set.PATCH("/change-to-group", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.ChangeToSet)
+		set.GET("/get-by-id/:id", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetByIdSet)
 	}
 	leadData := api.Group("/leadData")
 	{
