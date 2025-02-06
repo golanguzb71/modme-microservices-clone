@@ -125,7 +125,6 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDate time.Time) []time.Time {
 	var lessonDates []time.Time
 	for currentDate := startDate; !currentDate.After(endDate); currentDate = currentDate.AddDate(0, 0, 1) {
-		fmt.Println("current date", currentDate)
 		if isLessonDay(currentDate, groupDays, dateType) {
 			lessonDates = append(lessonDates, currentDate)
 		}
@@ -138,6 +137,7 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 	isGroupDay := false
 	for _, groupDay := range groupDays {
 		if groupDay == dayName {
+			fmt.Println("how many in it ", groupDay, dayName)
 			isGroupDay = true
 			break
 		}
@@ -147,14 +147,7 @@ func isLessonDay(currentDate time.Time, groupDays []string, dateType string) boo
 		return false
 	}
 
-	if dateType == "JUFT" {
-		return currentDate.Day()%2 == 0
-	}
-	if dateType == "TOQ" {
-		return currentDate.Day()%2 != 0
-	}
-
-	return true
+	return false
 }
 
 func getDayName(weekday time.Weekday) string {
