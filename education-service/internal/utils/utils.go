@@ -109,7 +109,8 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 
 	// Calculate money to deduct based on passed lessons
 	moneyToDeduct := pricePerLesson * float64(passedLessons)
-
+	fmt.Println("course price", coursePrice)
+	fmt.Println("money for deduct", moneyToDeduct)
 	// Calculate remaining money
 	remainingMoney := coursePrice - moneyToDeduct
 
