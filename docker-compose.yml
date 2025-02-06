@@ -1,5 +1,11 @@
 version: '3.8'
 
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   postgres-sphere-lead:
     image: postgres:15-alpine
@@ -16,6 +22,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging: *default-logging
+    labels:
+      - "service_name=postgres-lead"
 
   postgres-sphere-education:
     image: postgres:15-alpine
@@ -32,6 +41,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging: *default-logging
+    labels:
+      - "service_name=postgres-education"
 
   postgres-sphere-user:
     image: postgres:15-alpine
@@ -48,6 +60,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging: *default-logging
+    labels:
+      - "service_name=postgres-user"
 
   postgres-sphere-finance:
     image: postgres:15-alpine
@@ -64,6 +79,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging: *default-logging
+    labels:
+      - "service_name=postgres-finance"
 
   sphere-user-service:
     build:
@@ -79,6 +97,9 @@ services:
       postgres-sphere-user:
         condition: service_healthy
     restart: unless-stopped
+    logging: *default-logging
+    labels:
+      - "service_name=user-service"
 
   sphere-education-service:
     build:
@@ -94,6 +115,9 @@ services:
       postgres-sphere-education:
         condition: service_healthy
     restart: unless-stopped
+    logging: *default-logging
+    labels:
+      - "service_name=education-service"
 
   sphere-lead-service:
     build:
@@ -109,6 +133,9 @@ services:
       postgres-sphere-lead:
         condition: service_healthy
     restart: unless-stopped
+    logging: *default-logging
+    labels:
+      - "service_name=lead-service"
 
   sphere-finance-service:
     build:
@@ -124,6 +151,9 @@ services:
       postgres-sphere-finance:
         condition: service_healthy
     restart: unless-stopped
+    logging: *default-logging
+    labels:
+      - "service_name=finance-service"
 
   sphere-api-gateway:
     build:
@@ -139,6 +169,54 @@ services:
     volumes:
       - api_gateway_uploads:/uploads
     restart: unless-stopped
+    logging: *default-logging
+    labels:
+      - "service_name=api-gateway"
+
+  loki:
+    image: grafana/loki:2.9.2
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:3100/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  promtail:
+    image: grafana/promtail:2.9.2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail-config.yml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+      - GF_SECURITY_ADMIN_USER=abdulaziz
+      - GF_SECURITY_ADMIN_PASSWORD=backendlogs
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --tries=1 -O- http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_lead_data:
@@ -146,6 +224,8 @@ volumes:
   postgres_user_data:
   postgres_finance_data:
   api_gateway_uploads:
+  loki_data:
+  grafana_data:
 
 networks:
   default:
