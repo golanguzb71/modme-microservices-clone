@@ -601,41 +601,42 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 	currentDate := time.Now()
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
-	for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
-		monthYearDate := d.Format("2006-01-02") // Format as YYYY-MM for clarity
+	if returnTheMoney {
+		for d := fromDate; d.Before(currentDate) || d.Equal(currentDate); d = d.AddDate(0, 1, 0) {
+			monthYearDate := d.Format("2006-01-02") // Format as YYYY-MM for clarity
 
-		manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
-		amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYearDate)
-		if err != nil {
-			tx.Rollback()
-			return nil, fmt.Errorf("failed to calculate money for %s: %v", monthYearDate, err)
-		}
+			manaulPriceForCourse, _ := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
+			amount, err := utils.CalculateMoneyForStatus(r.db, manaulPriceForCourse, groupId, monthYearDate)
+			if err != nil {
+				tx.Rollback()
+				return nil, fmt.Errorf("failed to calculate money for %s: %v", monthYearDate, err)
+			}
 
-		var description, transactionType string
-		switch status {
-		case "FREEZE":
-			description = fmt.Sprintf("Student guruhdan muzlatildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
-			transactionType = "REFUND"
-		case "DELETE":
-			description = fmt.Sprintf("Student guruhdan o'chirildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
-			transactionType = "REFUND"
-		case "ACTIVE":
-			description = fmt.Sprintf("Student guruhga qo'shildi. %s oyi uchun pul hisoblandi va yechib olindi.", monthYearDate)
-			transactionType = "TAKE_OFF"
-		default:
-			tx.Rollback()
-			return nil, fmt.Errorf("unknown status: %s", status)
-		}
+			var description, transactionType string
+			switch status {
+			case "FREEZE":
+				description = fmt.Sprintf("Student guruhdan muzlatildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
+				transactionType = "REFUND"
+			case "DELETE":
+				description = fmt.Sprintf("Student guruhdan o'chirildi. %s oyi uchun pul qaytarib berildi.", monthYearDate)
+				transactionType = "REFUND"
+			case "ACTIVE":
+				description = fmt.Sprintf("Student guruhga qo'shildi. %s oyi uchun pul hisoblandi va yechib olindi.", monthYearDate)
+				transactionType = "TAKE_OFF"
+			default:
+				tx.Rollback()
+				return nil, fmt.Errorf("unknown status: %s", status)
+			}
 
-		_, err = r.financeClient.PaymentAdd(ctx,
-			description, monthYearDate, "CASH", fmt.Sprintf("%v", amount),
-			studentId, transactionType, actionById, actionByName, groupId)
-		if err != nil {
-			tx.Rollback()
-			return nil, fmt.Errorf("failed to add payment for %s: %v", monthYearDate, err)
+			_, err = r.financeClient.PaymentAdd(ctx,
+				description, monthYearDate, "CASH", fmt.Sprintf("%v", amount),
+				studentId, transactionType, actionById, actionByName, groupId)
+			if err != nil {
+				tx.Rollback()
+				return nil, fmt.Errorf("failed to add payment for %s: %v", monthYearDate, err)
+			}
 		}
 	}
-
 	if err := tx.Commit(); err != nil {
 		return nil, fmt.Errorf("failed to commit transaction: %v", err)
 	}
