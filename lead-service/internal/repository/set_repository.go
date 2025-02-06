@@ -70,14 +70,6 @@ func (r *SetRepository) GetLeadDataBySetId(companyId, setId string) ([]string, [
 }
 
 func (r *SetRepository) GetById(companyId string, setId string) (*pb.SetDataResponse, error) {
-	//string title = 1;
-	//string teacherId = 2;
-	//string teacherName = 3;
-	//string courseId = 4;
-	//string courseName = 5;
-	//string dateType = 6;
-	//string dates = 7;
-	//string lessonStartTime = 8;
 	resp := pb.SetDataResponse{}
 	err := r.db.QueryRow(`
 	SELECT  ss.title, course_id, teacher_id, date_type, days, start_time  FROM set_section ss  where id=$1 and company_id=$2

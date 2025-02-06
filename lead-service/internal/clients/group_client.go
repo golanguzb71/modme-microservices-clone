@@ -8,7 +8,8 @@ import (
 )
 
 type GroupClient struct {
-	client pb.GroupServiceClient
+	client       pb.GroupServiceClient
+	courseClient pb.CourseServiceClient
 }
 
 func NewGroupClient(addr string) *GroupClient {
@@ -18,7 +19,8 @@ func NewGroupClient(addr string) *GroupClient {
 		return nil
 	}
 	client := pb.NewGroupServiceClient(conn)
-	return &GroupClient{client: client}
+	courseClient := pb.NewCourseServiceClient(conn)
+	return &GroupClient{client: client, courseClient: courseClient}
 }
 
 func (gc *GroupClient) CreateGroup(ctx context.Context, req *pb.CreateGroupRequest) (error, string) {
@@ -27,4 +29,8 @@ func (gc *GroupClient) CreateGroup(ctx context.Context, req *pb.CreateGroupReque
 		return err, ""
 	}
 	return nil, resp.Message
+}
+
+func (gc *GroupClient) GetCourse(ctx context.Context, id string) (*pb.GetCourseByIdResponse, error) {
+	return gc.courseClient.GetCourseById(ctx, &pb.GetCourseByIdRequest{Id: id})
 }

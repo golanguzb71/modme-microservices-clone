@@ -123,5 +123,17 @@ func (s *SetService) GetById(ctx context.Context, req *pb.DeleteAbsRequest) (*pb
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetById(companyId, req.Id)
+	resp, err := s.repo.GetById(companyId, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
+	defer cancelFunc()
+	course, err := s.groupClient.GetCourse(ctx, resp.CourseId)
+	if err != nil {
+		return nil, err
+	}
+	resp.CourseName = course.Name
+
+	return resp, nil
 }

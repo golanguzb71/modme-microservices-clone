@@ -43,3 +43,20 @@ message CreateStudentRequest{
   string createdBy = 11;
 }
 // student service end
+
+service CourseService{
+  rpc GetCourseById(GetCourseByIdRequest)returns(GetCourseByIdResponse);
+}
+
+message GetCourseByIdRequest{
+  string id = 1;
+}
+message GetCourseByIdResponse{
+  string id = 7;
+  string name = 1;
+  int32 lessonDuration = 2;
+  int32 courseDuration = 3;
+  double price = 4;
+  string description = 5;
+  int32 studentCount = 6;
+}
