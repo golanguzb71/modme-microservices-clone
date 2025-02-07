@@ -256,6 +256,7 @@ volumes:
   loki_data:
   grafana_data:
   prometheus_data:
+  teleport_data:
 
 networks:
   default:
