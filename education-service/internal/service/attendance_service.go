@@ -160,16 +160,25 @@ func (s *AttendanceService) CalculateTeacherSalaryByAttendance(ctx context.Conte
 			var passedLessonCount int32
 			var totalSalary float32
 			var studentName string
+			var priceType string
+			var totalCount float64
+			var coursePrice float64
 			for _, attendance := range attendances {
 				passedLessonCount++
 				totalSalary += attendance.Price
 				studentName = attendance.StudentName
+				priceType = attendance.PriceType
+				totalCount = attendance.TotalCount
+				coursePrice = attendance.CoursePrice
 			}
 			absCalculate.Salaries = append(absCalculate.Salaries, &pb.StudentSalary{
 				StudentId:                studentId,
 				StudentName:              studentName,
 				PassedLessonCount:        passedLessonCount,
 				CalculatedSalaryInPeriod: int32(totalSalary),
+				PriceType:                priceType,
+				TotalCount:               totalCount,
+				CoursePrice:              coursePrice,
 			})
 		}
 
