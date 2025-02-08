@@ -47,6 +47,9 @@ type Attendance struct {
 	CreatedAt     time.Time
 	CreatedBy     string
 	CreatorRole   string
+	PriceType     string
+	TotalCount    float64
+	CoursePrice   float64
 }
 
 func (r *AttendanceRepository) ensureFinanceClient() error {
@@ -469,7 +472,10 @@ func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(companyId, teacher
 			status,
 			a.created_at,
 			created_by,
-			creator_role
+			creator_role,
+			price_type,
+			total_count,
+			course_price
 		FROM 
 			attendance a
 		JOIN students s
@@ -506,6 +512,8 @@ func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(companyId, teacher
 			&attendance.CreatedAt,
 			&attendance.CreatedBy,
 			&attendance.CreatorRole,
+			&attendance.PriceType,
+			&attendance.CoursePrice,
 		)
 		if err != nil {
 			return nil, err
