@@ -81,15 +81,18 @@ CREATE TABLE IF NOT EXISTS groups
 
 CREATE TABLE IF NOT EXISTS attendance
 (
-    is_discounted  boolean                                                  DEFAULT FALSE,
-    discount_owner varchar CHECK ( discount_owner in ('TEACHER', 'CENTER')) DEFAULT 'TEACHER',
+    is_discounted  boolean                                                               DEFAULT FALSE,
+    discount_owner varchar CHECK ( discount_owner in ('TEACHER', 'CENTER'))              DEFAULT 'TEACHER',
+    price_type     varchar CHECK ( price_type in ('PERCENT', 'FIXED', 'DISCOUNT')),
+    total_count    float                                                        NOT NULL DEFAULT 0,
+    course_price   float                                                        NOT NULL DEFAULT 0,
     price          float                                                        NOT NULL,
     group_id       bigint references groups (id),
     student_id     uuid                                                         NOT NULL,
     teacher_id     uuid                                                         NOT NULL,
     attend_date    date                                                         NOT NULL,
     status         int                                                          NOT NULL,
-    created_at     timestamp                                                DEFAULT NOW(),
+    created_at     timestamp                                                             DEFAULT NOW(),
     created_by     uuid                                                         NOT NULL,
     creator_role   varchar CHECK ( creator_role in ('ADMIN', 'CEO', 'TEACHER')) NOT NULL,
     company_id     int references company (id),

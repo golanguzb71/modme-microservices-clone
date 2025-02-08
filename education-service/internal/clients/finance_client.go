@@ -8,8 +8,9 @@ import (
 )
 
 type FinanceClient struct {
-	discountClient pb.DiscountServiceClient
-	paymentClient  pb.PaymentServiceClient
+	discountClient      pb.DiscountServiceClient
+	paymentClient       pb.PaymentServiceClient
+	teacherSalaryClient pb.TeacherSalaryServiceClient
 }
 
 func NewFinanceClient(addr string) (*FinanceClient, error) {
@@ -20,7 +21,8 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 
 	discountClient := pb.NewDiscountServiceClient(conn)
 	paymentClient := pb.NewPaymentServiceClient(conn)
-	return &FinanceClient{discountClient: discountClient, paymentClient: paymentClient}, nil
+	teacherSalaryClient := pb.NewTeacherSalaryServiceClient(conn)
+	return &FinanceClient{discountClient: discountClient, paymentClient: paymentClient, teacherSalaryClient: teacherSalaryClient}, nil
 
 }
 
@@ -48,4 +50,8 @@ func (fc *FinanceClient) PaymentAdd(ctx context.Context, comment, date, method, 
 		ActionByName: actionByName,
 		GroupId:      groupId,
 	})
+}
+
+func (fc *FinanceClient) GetTeacherSalaryByTeacherID(ctx context.Context, teacherId string) (*pb.AbsGetTeachersSalary, error) {
+	return fc.teacherSalaryClient.GetTeacherSalaryByTeacherID(ctx, &pb.DeleteTeacherSalaryRequest{TeacherId: teacherId})
 }

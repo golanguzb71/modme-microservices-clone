@@ -37,3 +37,19 @@ message PaymentAddRequest{
   string groupId = 9;
 }
 // payment service end
+
+// teacher salary service start
+service TeacherSalaryService{
+  rpc GetTeacherSalaryByTeacherID(DeleteTeacherSalaryRequest) returns(AbsGetTeachersSalary);
+}
+
+message DeleteTeacherSalaryRequest{
+  string teacherId = 1;
+}
+
+message AbsGetTeachersSalary{
+  string teacherId = 1;
+  string type = 2;
+  int32 amount = 3;
+  string teacherName = 4;
+}

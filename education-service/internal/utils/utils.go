@@ -171,8 +171,11 @@ func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId strin
 	return true
 }
 
-func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount *float64) error {
+func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount, courseP, fixedSum *float64) error {
 	var coursePrice float64
+	if fixedSum != nil {
+		coursePrice = *fixedSum
+	}
 	err := db.QueryRow(`SELECT price FROM courses c join groups g on c.id=g.course_id where g.id=$1`, groupId).Scan(&coursePrice)
 	if err != nil {
 		return err
@@ -180,6 +183,7 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 	if discountAmount != nil {
 		coursePrice = coursePrice - *discountAmount
 	}
+	*courseP = coursePrice
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
 	if err != nil {
 		return err

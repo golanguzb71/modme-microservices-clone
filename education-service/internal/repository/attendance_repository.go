@@ -6,6 +6,7 @@ import (
 	"education-service/internal/clients"
 	"education-service/internal/utils"
 	"education-service/proto/pb"
+	"errors"
 	"fmt"
 	"github.com/lib/pq"
 	"google.golang.org/grpc/codes"
@@ -64,36 +65,55 @@ func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.Finance
 	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
 }
 func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+	var (
+		isDiscounted bool
+		price        float64
+		priceType    string
+		totalCount   int
+		coursePrice  float64
+	)
+	ctx, c := utils.NewTimoutContext(ctx, companyId)
+	defer c()
+	resp, err := r.financeClient.GetTeacherSalaryByTeacherID(ctx, teacherId)
+	if err != nil {
+		return errors.New("error while getting teacher salary information")
+	}
 	if err := r.ensureFinanceClient(); err != nil {
 		return fmt.Errorf("error while ensuring finance client %v", err)
 	}
 	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
 		return fmt.Errorf("oops this teacherid not the same for this group")
 	}
-	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
-	defer cancelFunc()
-	isDiscounted := false
-	var price float64
 	discountAmount, discountOwner := r.financeClient.GetDiscountByStudentId(ctx, studentId, groupId)
-	if discountAmount != nil && discountOwner == "TEACHER" {
-		isDiscounted = true
-		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount); err != nil {
-			return fmt.Errorf("error while calculating money for lesson %v", err)
-		}
-	} else {
+
+	if resp.Type == "FIXED" {
+		priceType = "FIXED"
+		totalCount = int(resp.Amount)
+		f := float64(totalCount)
 		if discountAmount != nil {
 			isDiscounted = true
+			priceType = "FIXED_DISCOUNT"
 		}
-		if err := utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil); err != nil {
-			return fmt.Errorf("error while calculating money for lesson %v", err)
+		if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount, &coursePrice, &f); err != nil {
+			return errors.New("error while getting calculate money")
+		}
+	} else {
+		priceType = "PERCENT"
+		if discountAmount != nil {
+			isDiscounted = true
+			priceType = "PERCENT_DISCOUNT"
+			totalCount = int(resp.Amount)
+		}
+		if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount, &coursePrice, nil); err != nil {
+			return errors.New("error while getting calculate money")
 		}
 	}
 	query := `
-     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role , company_id)
-        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11 , $12)
+     	INSERT INTO attendance (is_discounted, discount_owner,  price , group_id , student_id , teacher_id, attend_date, status , created_at , created_by , creator_role , company_id , price_type , total_count , course_price)
+        VALUES ($1, $2, $3, $4, $5 , $6 , $7 , $8, $9 , $10 , $11 , $12 , $13 , $14, $15)
         ON CONFLICT DO NOTHING
     `
-	_, err := r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole, companyId)
+	_, err = r.db.Exec(query, isDiscounted, discountOwner, price, groupId, studentId, teacherId, attendDate, status, time.Now(), actionById, actionByRole, companyId, priceType, totalCount, coursePrice)
 	if err != nil {
 		return fmt.Errorf("error while creating attendance %v", err)
 	}
