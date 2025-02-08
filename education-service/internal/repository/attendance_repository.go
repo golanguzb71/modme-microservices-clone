@@ -106,6 +106,7 @@ func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, 
 			if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount, &coursePrice, &f); err != nil {
 				return errors.New("error while getting calculate money")
 			}
+			totalCount = int(f)
 		}
 	} else {
 		priceType = "PERCENT"

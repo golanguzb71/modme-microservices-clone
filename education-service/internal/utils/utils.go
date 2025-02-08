@@ -179,10 +179,17 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 	}
 	if fixedSum != nil {
 		coursePrice = *fixedSum
+		if discountAmount != nil {
+			percent := *discountAmount * 100 / coursePrice
+			teacherAmount := *fixedSum * percent / 100
+			*fixedSum = teacherAmount
+		}
+	} else {
+		if discountAmount != nil {
+			coursePrice = coursePrice - *discountAmount
+		}
 	}
-	if discountAmount != nil {
-		coursePrice = coursePrice - *discountAmount
-	}
+
 	*courseP = coursePrice
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
 	if err != nil {
