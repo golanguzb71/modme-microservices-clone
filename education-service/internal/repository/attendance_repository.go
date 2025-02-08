@@ -98,7 +98,7 @@ func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, 
 			isDiscounted = true
 			priceType = "FIXED_DISCOUNT"
 		}
-		if discountOwner == "TEACHER" {
+		if discountOwner != "TEACHER" {
 			if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil, &coursePrice, nil); err != nil {
 				return errors.New("error while getting calculate money")
 			}
