@@ -336,7 +336,7 @@ func (r *StudentRepository) SearchStudent(companyId string, value string) (*pb.S
 	query := `
         SELECT id, name, phone 
         FROM students 
-        WHERE company_id=$3 and  name ILIKE $1 OR phone ILIKE $2 ;
+        WHERE company_id=$3 and  name ILIKE $1 OR company_id=$3 and phone ILIKE $2 ;
     `
 
 	rows, err := r.db.Query(query, "%"+value+"%", "%"+value+"%", companyId)
