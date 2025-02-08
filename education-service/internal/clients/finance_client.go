@@ -3,6 +3,7 @@ package clients
 import (
 	"context"
 	"education-service/proto/pb"
+	"fmt"
 	"google.golang.org/grpc"
 	"strconv"
 )
@@ -29,6 +30,7 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) (*float64, string) {
 	resp, err := fc.discountClient.GetDiscountByStudentId(ctx, &pb.GetDiscountByStudentIdRequest{StudentId: studentId, GroupId: groupId})
 	if err != nil {
+		fmt.Printf("error while getting student discount %v\n", err)
 		return nil, "CENTER"
 	}
 	if !resp.IsHave {
