@@ -7497,14 +7497,23 @@ const docTemplate = `{
                 "calculatedSalaryInPeriod": {
                     "type": "integer"
                 },
+                "coursePrice": {
+                    "type": "number"
+                },
                 "passedLessonCount": {
                     "type": "integer"
+                },
+                "priceType": {
+                    "type": "string"
                 },
                 "studentId": {
                     "type": "string"
                 },
                 "studentName": {
                     "type": "string"
+                },
+                "totalCount": {
+                    "type": "number"
                 }
             }
         },

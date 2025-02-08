@@ -362,6 +362,9 @@ message StudentSalary {
   string studentName = 2;
   int32 passedLessonCount = 3;
   int32 calculatedSalaryInPeriod = 4;
+  string priceType = 5;
+  double totalCount = 6;
+  double coursePrice = 7;
 }
 
 message GetAttendanceRequest{
