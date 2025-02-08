@@ -513,6 +513,7 @@ func (r *AttendanceRepository) GetAttendanceByTeacherAndGroup(companyId, teacher
 			&attendance.CreatedBy,
 			&attendance.CreatorRole,
 			&attendance.PriceType,
+			&attendance.TotalCount,
 			&attendance.CoursePrice,
 		)
 		if err != nil {
