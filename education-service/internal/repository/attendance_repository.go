@@ -98,8 +98,14 @@ func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, 
 			isDiscounted = true
 			priceType = "FIXED_DISCOUNT"
 		}
-		if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount, &coursePrice, &f); err != nil {
-			return errors.New("error while getting calculate money")
+		if discountOwner == "TEACHER" {
+			if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil, &coursePrice, nil); err != nil {
+				return errors.New("error while getting calculate money")
+			}
+		} else {
+			if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, discountAmount, &coursePrice, &f); err != nil {
+				return errors.New("error while getting calculate money")
+			}
 		}
 	} else {
 		priceType = "PERCENT"
@@ -108,9 +114,6 @@ func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, 
 			isDiscounted = true
 			priceType = "PERCENT_DISCOUNT"
 		}
-		fmt.Println("=======================================")
-		fmt.Println(discountOwner)
-		fmt.Println("=======================================")
 		if discountOwner != "TEACHER" {
 			if err = utils.CalculateMoneyForLesson(r.db, &price, studentId, groupId, attendDate, nil, &coursePrice, nil); err != nil {
 				return errors.New("error while getting calculate money")
