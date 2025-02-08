@@ -65,6 +65,10 @@ func NewAttendanceRepository(db *sql.DB, financeClientChan chan *clients.Finance
 	return &AttendanceRepository{db: db, financeClientChan: financeClientChan}
 }
 func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, groupId string, studentId string, teacherId string, attendDate string, status int32, actionById, actionByRole string) error {
+	if err := r.ensureFinanceClient(); err != nil {
+		return fmt.Errorf("error while ensuring finance client %v", err)
+	}
+
 	var (
 		isDiscounted bool
 		price        float64
@@ -77,9 +81,6 @@ func (r *AttendanceRepository) CreateAttendance(ctx context.Context, companyId, 
 	resp, err := r.financeClient.GetTeacherSalaryByTeacherID(ctx, teacherId)
 	if err != nil {
 		return errors.New("error while getting teacher salary information")
-	}
-	if err := r.ensureFinanceClient(); err != nil {
-		return fmt.Errorf("error while ensuring finance client %v", err)
 	}
 	if !utils.CheckGroupAndTeacher(r.db, groupId, "TEACHER", teacherId) {
 		return fmt.Errorf("oops this teacherid not the same for this group")
