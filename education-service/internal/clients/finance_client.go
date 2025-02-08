@@ -34,6 +34,7 @@ func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, 
 		return nil, "CENTER"
 	}
 	if !resp.IsHave {
+		fmt.Println("response is have is false", resp.IsHave)
 		return nil, "CENTER"
 	}
 	discountAmount, err := strconv.ParseFloat(resp.Amount, 64)
