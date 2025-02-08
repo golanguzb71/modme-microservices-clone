@@ -30,11 +30,10 @@ func NewFinanceClient(addr string) (*FinanceClient, error) {
 func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, groupId string) (*float64, string) {
 	resp, err := fc.discountClient.GetDiscountByStudentId(ctx, &pb.GetDiscountByStudentIdRequest{StudentId: studentId, GroupId: groupId})
 	if err != nil {
-		fmt.Printf("error while getting student discount %v\n", err)
 		return nil, "CENTER"
 	}
+	fmt.Printf("=========================================\n %v", resp)
 	if !resp.IsHave {
-		fmt.Println("response is have is false", resp.IsHave)
 		return nil, "CENTER"
 	}
 	discountAmount, err := strconv.ParseFloat(resp.Amount, 64)
