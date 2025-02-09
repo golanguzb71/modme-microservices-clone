@@ -198,40 +198,16 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 	// Apply fixedSum or discountAmount logic
 	if fixedSum != nil {
 		if discountAmount != nil {
-<<<<<<< HEAD
-			percent := *discountAmount * 100 / coursePrice
-<<<<<<< HEAD
-			fmt.Printf("bu yerda foizi %v", percent)
-			teacherAmount := *fixedSum * percent / 100
-			fmt.Printf("bu yerda teacher uchun amount %v", teacherAmount)
-			*fixedSum = coursePrice - *discountAmount
-			fmt.Printf("bu yerda fixed summa %v", *fixedSum)
-			coursePrice = teacherAmount
-		} else {
-			coursePrice = *fixedSum
-=======
-			teacherAmount := *fixedSum * percent / 100
-=======
 			percent := (*discountAmount * 100) / coursePrice
 			teacherAmount := (*fixedSum * percent) / 100
->>>>>>> 288c25fe1cd02469199bb4e92537d2077630eb02
 			*fixedSum = teacherAmount
->>>>>>> 3d041c173cff982edb5382f52f8828dd233edd05
 		}
-<<<<<<< HEAD
-	} else {
-		if discountAmount != nil {
-			coursePrice = coursePrice - *discountAmount
-		}
-	}
-=======
 		coursePrice = *fixedSum
 	} else if discountAmount != nil {
 		coursePrice -= *discountAmount
 	}
 
 	// Set the courseP output parameter
->>>>>>> 288c25fe1cd02469199bb4e92537d2077630eb02
 	*courseP = coursePrice
 
 	// Parse the attendDate
