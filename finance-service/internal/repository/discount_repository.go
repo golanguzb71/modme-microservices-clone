@@ -218,7 +218,7 @@ func (r *DiscountRepository) GetDiscountByStudentId(companyId, studentId, groupI
 	var startAt, endAt string
 	var withTeacher bool
 
-	err := r.db.QueryRow(`SELECT discount, start_at, end_at , withteacher FROM student_discount WHERE student_id=$1 AND group_id=$2 and company_id=$3`, studentId, groupId, companyId).Scan(&discount, &startAt, &endAt, &withTeacher)
+	err := r.db.QueryRow(`SELECT discount, start_at, end_at , withteacher FROM student_discount WHERE student_id=$1 AND group_id=$2 and company_id=$3 `, studentId, groupId, companyId).Scan(&discount, &startAt, &endAt, &withTeacher)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("no discount found for the given student and group")
