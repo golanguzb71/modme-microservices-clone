@@ -181,8 +181,8 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 		if discountAmount != nil {
 			percent := *discountAmount * 100 / coursePrice
 			teacherAmount := *fixedSum * percent / 100
-			*fixedSum = teacherAmount
-			coursePrice = teacherAmount - *discountAmount
+			*fixedSum = teacherAmount - *discountAmount
+			coursePrice = *fixedSum
 		} else {
 			coursePrice = *fixedSum
 		}
