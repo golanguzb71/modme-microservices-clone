@@ -214,7 +214,7 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 	firstOfMonth := time.Date(parsedDate.Year(), parsedDate.Month(), 1, 0, 0, 0, 0, parsedDate.Location())
 	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
 	var lessonCount int
-	err = db.QueryRow(`
+	query := `
         WITH RECURSIVE dates AS (
             SELECT $1::date AS date
             UNION ALL
@@ -247,7 +247,8 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
         )
         SELECT COUNT(*) 
         FROM valid_days
-    `, firstOfMonth, lastOfMonth, groupId).Scan(&lessonCount)
+    `
+	err = db.QueryRow(query, firstOfMonth, lastOfMonth, groupId).Scan(&lessonCount)
 	if err != nil {
 		return err
 	}
