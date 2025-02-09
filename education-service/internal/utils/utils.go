@@ -201,20 +201,21 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 
 	if fixedSum != nil {
 		if discountAmount != nil {
-			fmt.Printf("discount amount %v", discountAmount)
+			fmt.Println("discount amount ", discountAmount)
 			percent := (*discountAmount * 100) / coursePrice
 			teacherAmount := (*fixedSum * percent) / 100
 			*fixedSum = coursePrice - *discountAmount
 			coursePrice = teacherAmount
 		} else {
-			fmt.Printf("discount yoq ekan ")
+			fmt.Println("discount yoq ekan ")
 			coursePrice = *fixedSum
 		}
 	} else if discountAmount != nil {
-		fmt.Printf("fixed summada emas ekan")
+		fmt.Println("fixed summada emas ekan")
 		coursePrice -= *discountAmount
 	}
 
+	fmt.Println("calculate moneyga kridi")
 	*courseP = coursePrice
 
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
