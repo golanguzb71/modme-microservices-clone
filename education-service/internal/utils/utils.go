@@ -93,9 +93,14 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	startOfMonth := time.Date(tillDateParsed.Year(), tillDateParsed.Month(), 1, 0, 0, 0, 0, tillDateParsed.Location())
 	endOfMonth := startOfMonth.AddDate(0, 1, -1)
 
-	groupEndDateParsed, err := time.Parse("2006-01-02", groupEndDate)
+	// Parse the timestamp format from the database
+	groupEndDateParsed, err := time.Parse(time.RFC3339, groupEndDate)
 	if err != nil {
-		return 0, fmt.Errorf("error parsing group end date: %v", err)
+		// Try alternate format if RFC3339 fails
+		groupEndDateParsed, err = time.Parse("2006-01-02T15:04:05Z", groupEndDate)
+		if err != nil {
+			return 0, fmt.Errorf("error parsing group end date: %v", err)
+		}
 	}
 
 	// Calculate total days in month
