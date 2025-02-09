@@ -207,9 +207,11 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 			*fixedSum = coursePrice - *discountAmount
 			coursePrice = teacherAmount
 		} else {
+			fmt.Printf("discount yoq ekan ")
 			coursePrice = *fixedSum
 		}
 	} else if discountAmount != nil {
+		fmt.Printf("fixed summada emas ekan")
 		coursePrice -= *discountAmount
 	}
 
