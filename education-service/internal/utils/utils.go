@@ -193,39 +193,35 @@ func CheckGroupAndTeacher(db *sql.DB, groupId, actionRole string, actionId strin
 }
 
 func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, groupId string, attendDate string, discountAmount, courseP, fixedSum *float64) error {
-	// Fetch the course price from the database
 	var coursePrice float64
 	err := db.QueryRow(`SELECT price FROM courses c JOIN groups g ON c.id = g.course_id WHERE g.id = $1`, groupId).Scan(&coursePrice)
 	if err != nil {
 		return fmt.Errorf("failed to fetch course price: %v", err)
 	}
 
-	// Apply fixedSum or discountAmount logic
 	if fixedSum != nil {
 		if discountAmount != nil {
 			percent := (*discountAmount * 100) / coursePrice
 			teacherAmount := (*fixedSum * percent) / 100
-			*fixedSum = teacherAmount
+			*fixedSum = coursePrice - *discountAmount
+			coursePrice = teacherAmount
+		} else {
+			coursePrice = *fixedSum
 		}
-		coursePrice = *fixedSum
 	} else if discountAmount != nil {
 		coursePrice -= *discountAmount
 	}
 
-	// Set the courseP output parameter
 	*courseP = coursePrice
 
-	// Parse the attendDate
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
 	if err != nil {
 		return fmt.Errorf("invalid attendDate format: %v", err)
 	}
 
-	// Calculate the first and last day of the month
 	firstOfMonth := time.Date(parsedDate.Year(), parsedDate.Month(), 1, 0, 0, 0, 0, parsedDate.Location())
 	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
 
-	// Query to count the number of valid lesson days in the month
 	var lessonCount int
 	query := `
         WITH RECURSIVE dates AS (
