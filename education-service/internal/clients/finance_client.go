@@ -3,7 +3,6 @@ package clients
 import (
 	"context"
 	"education-service/proto/pb"
-	"fmt"
 	"google.golang.org/grpc"
 	"strconv"
 )
@@ -32,7 +31,6 @@ func (fc *FinanceClient) GetDiscountByStudentId(ctx context.Context, studentId, 
 	if err != nil {
 		return nil, "CENTER"
 	}
-	fmt.Printf("=========================================\n %v", resp)
 	if !resp.IsHave {
 		return nil, "CENTER"
 	}
