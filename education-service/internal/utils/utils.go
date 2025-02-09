@@ -194,7 +194,6 @@ func CalculateMoneyForLesson(db *sql.DB, price *float64, studentId string, group
 			coursePrice = coursePrice - *discountAmount
 		}
 	}
-
 	*courseP = coursePrice
 	parsedDate, err := time.Parse("2006-01-02", attendDate)
 	if err != nil {
