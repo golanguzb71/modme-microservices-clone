@@ -61,7 +61,6 @@ func RecoveryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryS
 	}()
 	return handler(ctx, req)
 }
-
 func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId string, tillDate string) (float64, error) {
 	var coursePrice float64
 	var courseDurationLesson int
@@ -99,28 +98,33 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		return 0, fmt.Errorf("error parsing group end date: %v", err)
 	}
 
-	fullMonthLessons := getLessonDatesInMonth(groupDays, dateType, startOfMonth, endOfMonth)
-	totalPossibleLessons := len(fullMonthLessons)
+	// Calculate total days in month
+	daysInMonth := endOfMonth.Day()
 
+	// Calculate effective end date and days for price calculation
 	effectiveEndDate := endOfMonth
 	if groupEndDateParsed.Before(endOfMonth) {
 		effectiveEndDate = groupEndDateParsed
 	}
 
+	// Calculate the proportional price based on days
+	daysToConsider := effectiveEndDate.Day()
+	proportionalPrice := (coursePrice * float64(daysToConsider)) / float64(daysInMonth)
+
+	// Get lesson dates for the actual period
 	lessonDates := getLessonDatesInMonth(groupDays, dateType, startOfMonth, effectiveEndDate)
 	if len(lessonDates) == 0 {
 		return 0, fmt.Errorf("no lessons scheduled for the current month")
 	}
 
-	actualLessons := len(lessonDates)
-	adjustedCoursePrice := coursePrice * float64(actualLessons) / float64(totalPossibleLessons)
-
 	firstLessonDate := lessonDates[0]
 
+	// If we're before or on the first lesson date, return proportional price
 	if !tillDateParsed.After(firstLessonDate) {
-		return adjustedCoursePrice, nil
+		return math.Round(proportionalPrice), nil
 	}
 
+	// Count passed lessons
 	passedLessons := 0
 	for _, lessonDate := range lessonDates {
 		if lessonDate.Before(tillDateParsed) {
@@ -128,8 +132,10 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 		}
 	}
 
-	pricePerLesson := adjustedCoursePrice / float64(len(lessonDates))
-	remainingMoney := adjustedCoursePrice - (float64(passedLessons) * pricePerLesson)
+	// Calculate remaining money based on proportional price
+	pricePerLesson := proportionalPrice / float64(len(lessonDates))
+	remainingMoney := proportionalPrice - (float64(passedLessons) * pricePerLesson)
+
 	return math.Round(remainingMoney), nil
 }
 func getLessonDatesInMonth(groupDays []string, dateType string, startDate, endDate time.Time) []time.Time {
