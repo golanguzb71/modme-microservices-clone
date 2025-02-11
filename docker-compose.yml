@@ -246,28 +246,6 @@ services:
     depends_on:
       - prometheus
       - loki
-  teleport:
-    image: public.ecr.aws/gravitational/teleport:13
-    container_name: teleport
-    entrypoint: /usr/local/bin/teleport start -c /etc/teleport/teleport.yaml
-    ports:
-      - "3023:3023"  # SSH port
-      - "3024:3024"  # Auth port
-      - "3025:3025"  # Agent port
-      - "3080:3080"  # HTTPS portal
-    volumes:
-      - ./teleport/config/teleport.yaml:/etc/teleport/teleport.yaml:ro
-      - teleport_data:/var/lib/teleport
-    environment:
-      TELEPORT_ROLE: auth,proxy,node
-    healthcheck:
-      test: [ "CMD", "tctl", "status" ]
-      interval: 5s
-      timeout: 1s
-      retries: 3
-    logging: *default-logging
-    labels:
-      - "service_name=teleport"
 
 volumes:
   postgres_lead_data:
