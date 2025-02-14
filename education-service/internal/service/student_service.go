@@ -17,7 +17,6 @@ type StudentService struct {
 func NewStudentService(repo *repository.StudentRepository) *StudentService {
 	return &StudentService{repo: repo}
 }
-
 func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStudentRequest) (*pb.GetAllStudentResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -25,7 +24,6 @@ func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStuden
 	}
 	return s.repo.GetAllStudent(ctx, companyId, req.Condition, req.Page, req.Size)
 }
-
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -39,7 +37,6 @@ func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStuden
 		Message: "student created successfully",
 	}, nil
 }
-
 func (s *StudentService) UpdateStudent(ctx context.Context, req *pb.UpdateStudentRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -53,7 +50,6 @@ func (s *StudentService) UpdateStudent(ctx context.Context, req *pb.UpdateStuden
 		Message: "student updated successfully",
 	}, nil
 }
-
 func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteStudentRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -67,7 +63,6 @@ func (s *StudentService) DeleteStudent(ctx context.Context, req *pb.DeleteStuden
 		Message: "accomplished",
 	}, nil
 }
-
 func (s *StudentService) AddToGroup(ctx context.Context, req *pb.AddToGroupRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -81,7 +76,6 @@ func (s *StudentService) AddToGroup(ctx context.Context, req *pb.AddToGroupReque
 		Message: "students added to group",
 	}, nil
 }
-
 func (s *StudentService) GetStudentById(ctx context.Context, req *pb.NoteStudentByAbsRequest) (*pb.GetStudentByIdResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -138,7 +132,6 @@ func (s *StudentService) TransferLessonDate(ctx context.Context, req *pb.Transfe
 	}
 	return s.repo.TransferLessonDate(companyId, req.GroupId, req.From, req.To)
 }
-
 func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.ChangeConditionStudentRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -146,7 +139,6 @@ func (s *StudentService) ChangeConditionStudent(ctx context.Context, req *pb.Cha
 	}
 	return s.repo.ChangeConditionStudent(ctx, companyId, req.StudentId, req.GroupId, req.Status, req.ReturnTheMoney, req.TillDate, req.ActionById, req.ActionByName, req.Comment)
 }
-
 func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetStudentsByGroupIdRequest) (*pb.GetStudentsByGroupIdResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -154,7 +146,6 @@ func (s *StudentService) GetStudentsByGroupId(ctx context.Context, req *pb.GetSt
 	}
 	return s.repo.GetStudentsByGroupId(companyId, req.GroupId, req.WithOutdated)
 }
-
 func (s *StudentService) ChangeUserBalanceHistory(ctx context.Context, req *pb.ChangeUserBalanceHistoryRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
@@ -162,11 +153,17 @@ func (s *StudentService) ChangeUserBalanceHistory(ctx context.Context, req *pb.C
 	}
 	return s.repo.ChangeUserBalanceHistory(companyId, req.Comment, req.GroupId, req.CreatedBy, req.CreatedByName, req.GivenDate, req.Amount, req.PaymentType, req.StudentId)
 }
-
 func (s *StudentService) ChangeUserBalanceHistoryByDebit(ctx context.Context, req *pb.ChangeUserBalanceHistoryByDebitRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
 	return s.repo.ChangeUserBalanceHistoryByDebit(companyId, req.StudentId, req.OldDebit, req.CurrentDebit, req.GivenDate, req.Comment, req.PaymentType, req.CreatedBy, req.CreatedByName, req.GroupId)
+}
+func (s *StudentService) CalculateDiscountSumma(ctx context.Context, req *pb.CalculateDiscountSummaRequest) (*pb.CalculateDiscountResponse, error) {
+	companyId := utils.GetCompanyId(ctx)
+	if companyId != "" {
+		return nil, status.Error(codes.Aborted, "error while getting company from context")
+	}
+	return s.repo.CalculateDiscountSumma(companyId, req.GroupId, req.StartDate, req.EndDate, req.DiscountPrice, req.StudentId)
 }

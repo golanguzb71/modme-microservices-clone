@@ -76,3 +76,17 @@ func (ec *EducationClient) ChangeUserBalanceHistoryByDebit(ctx context.Context, 
 func (ec *EducationClient) GetGroupsAndCommentsByStudentId(ctx context.Context, studentId string) (*pb.GetGroupsByStudentResponse, error) {
 	return ec.groupClient.GetGroupsByStudentId(ctx, &pb.StudentIdRequest{StudentId: studentId})
 }
+
+func (ec *EducationClient) CalculateDiscountSumma(ctx context.Context, groupId string, studentId string, discountPrice string, startDate string, endDate string) (string, error) {
+	resp, err := ec.studentClient.CalculateDiscountSumma(ctx, &pb.CalculateDiscountSummaRequest{
+		GroupId:       groupId,
+		StudentId:     studentId,
+		DiscountPrice: discountPrice,
+		StartDate:     startDate,
+		EndDate:       endDate,
+	})
+	if err != nil {
+		return "", err
+	}
+	return resp.CalculatedPrice, nil
+}

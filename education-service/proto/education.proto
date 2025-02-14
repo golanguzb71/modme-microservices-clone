@@ -472,7 +472,20 @@ service StudentService{
   rpc GetStudentsByGroupId(GetStudentsByGroupIdRequest) returns(GetStudentsByGroupIdResponse);
   rpc ChangeUserBalanceHistory(ChangeUserBalanceHistoryRequest) returns(common.AbsResponse);
   rpc ChangeUserBalanceHistoryByDebit(ChangeUserBalanceHistoryByDebitRequest) returns(common.AbsResponse);
+  rpc CalculateDiscountSumma(CalculateDiscountSummaRequest) returns(CalculateDiscountResponse);
 }
+
+message CalculateDiscountSummaRequest{
+  string groupId = 1;
+  string studentId = 2;
+  string discountPrice = 3;
+  string startDate = 4;
+  string endDate = 5;
+}
+message CalculateDiscountResponse{
+  string calculatedPrice = 1;
+}
+
 message ChangeUserBalanceHistoryByDebitRequest{
   string studentId = 1;
   string oldDebit = 2;

@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
+	"github.com/spf13/cast"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"math"
@@ -932,4 +933,104 @@ func (r *StudentRepository) StudentBalanceTaker() {
 			extraRow.Close()
 		}
 	}
+}
+
+func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string) (*pb.CalculateDiscountResponse, error) {
+	// Convert string parameters to appropriate types
+	groupIDInt, err := strconv.ParseInt(groupId, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid group ID: %v", err)
+	}
+
+	discountPriceFloat, err := strconv.ParseFloat(discountPrice, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid discount price: %v", err)
+	}
+
+	// Get group information including end date
+	var group struct {
+		EndDate string
+		Days    []string
+	}
+
+	err = r.db.QueryRow(`
+        SELECT end_date, days 
+        FROM groups 
+        WHERE id = $1 AND company_id = $2
+    `, groupIDInt, companyId).Scan(&group.EndDate, pq.Array(&group.Days))
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get group info: %v", err)
+	}
+
+	var activationDate string
+	err = r.db.QueryRow(`
+        SELECT last_specific_date::date 
+        FROM group_students 
+        WHERE group_id = $1 AND student_id = $2 AND company_id = $3
+    `, groupIDInt, studentId, companyId).Scan(&activationDate)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get activation date: %v", err)
+	}
+
+	totalLessons, err := r.countLessonsBetweenDates(startDate, endDate, group.Days)
+	if err != nil {
+		return nil, fmt.Errorf("failed to count total lessons: %v", err)
+	}
+
+	passedLessons, err := r.countLessonsBetweenDates(activationDate, time.Now().Format("2006-01-02"), group.Days)
+	if err != nil {
+		return nil, fmt.Errorf("failed to count passed lessons: %v", err)
+	}
+
+	remainingLessons := totalLessons - passedLessons
+	if remainingLessons < 0 {
+		remainingLessons = 0
+	}
+
+	discountPerLesson := discountPriceFloat / float64(totalLessons)
+
+	finalDiscountAmount := discountPerLesson * float64(remainingLessons)
+
+	return &pb.CalculateDiscountResponse{
+		CalculatedPrice: cast.ToString(finalDiscountAmount),
+	}, nil
+}
+
+func (r *StudentRepository) countLessonsBetweenDates(startDate, endDate string, groupDays []string) (int, error) {
+	start, err := time.Parse("2006-01-02", startDate)
+	if err != nil {
+		return 0, err
+	}
+
+	end, err := time.Parse("2006-01-02", endDate)
+	if err != nil {
+		return 0, err
+	}
+
+	weekdays := make(map[string]time.Weekday)
+	weekdays["DUSHANBA"] = time.Monday
+	weekdays["SESHANBA"] = time.Tuesday
+	weekdays["CHORSHANBA"] = time.Wednesday
+	weekdays["PAYSHANBA"] = time.Thursday
+	weekdays["JUMA"] = time.Friday
+	weekdays["SHANBA"] = time.Saturday
+	weekdays["YAKSHANBA"] = time.Sunday
+
+	groupWeekdays := make(map[time.Weekday]bool)
+	for _, day := range groupDays {
+		if wd, ok := weekdays[day]; ok {
+			groupWeekdays[wd] = true
+		}
+	}
+
+	lessonCount := 0
+	for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
+		if groupWeekdays[d.Weekday()] {
+			lessonCount++
+		}
+	}
+
+	return lessonCount, nil
 }

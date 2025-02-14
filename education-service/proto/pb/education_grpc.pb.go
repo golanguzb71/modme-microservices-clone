@@ -1831,6 +1831,7 @@ const (
 	StudentService_GetStudentsByGroupId_FullMethodName            = "/education.StudentService/GetStudentsByGroupId"
 	StudentService_ChangeUserBalanceHistory_FullMethodName        = "/education.StudentService/ChangeUserBalanceHistory"
 	StudentService_ChangeUserBalanceHistoryByDebit_FullMethodName = "/education.StudentService/ChangeUserBalanceHistoryByDebit"
+	StudentService_CalculateDiscountSumma_FullMethodName          = "/education.StudentService/CalculateDiscountSumma"
 )
 
 // StudentServiceClient is the client API for StudentService service.
@@ -1856,6 +1857,7 @@ type StudentServiceClient interface {
 	GetStudentsByGroupId(ctx context.Context, in *GetStudentsByGroupIdRequest, opts ...grpc.CallOption) (*GetStudentsByGroupIdResponse, error)
 	ChangeUserBalanceHistory(ctx context.Context, in *ChangeUserBalanceHistoryRequest, opts ...grpc.CallOption) (*AbsResponse, error)
 	ChangeUserBalanceHistoryByDebit(ctx context.Context, in *ChangeUserBalanceHistoryByDebitRequest, opts ...grpc.CallOption) (*AbsResponse, error)
+	CalculateDiscountSumma(ctx context.Context, in *CalculateDiscountSummaRequest, opts ...grpc.CallOption) (*CalculateDiscountResponse, error)
 }
 
 type studentServiceClient struct {
@@ -2036,6 +2038,16 @@ func (c *studentServiceClient) ChangeUserBalanceHistoryByDebit(ctx context.Conte
 	return out, nil
 }
 
+func (c *studentServiceClient) CalculateDiscountSumma(ctx context.Context, in *CalculateDiscountSummaRequest, opts ...grpc.CallOption) (*CalculateDiscountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CalculateDiscountResponse)
+	err := c.cc.Invoke(ctx, StudentService_CalculateDiscountSumma_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility.
@@ -2059,6 +2071,7 @@ type StudentServiceServer interface {
 	GetStudentsByGroupId(context.Context, *GetStudentsByGroupIdRequest) (*GetStudentsByGroupIdResponse, error)
 	ChangeUserBalanceHistory(context.Context, *ChangeUserBalanceHistoryRequest) (*AbsResponse, error)
 	ChangeUserBalanceHistoryByDebit(context.Context, *ChangeUserBalanceHistoryByDebitRequest) (*AbsResponse, error)
+	CalculateDiscountSumma(context.Context, *CalculateDiscountSummaRequest) (*CalculateDiscountResponse, error)
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -2119,6 +2132,9 @@ func (UnimplementedStudentServiceServer) ChangeUserBalanceHistory(context.Contex
 }
 func (UnimplementedStudentServiceServer) ChangeUserBalanceHistoryByDebit(context.Context, *ChangeUserBalanceHistoryByDebitRequest) (*AbsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeUserBalanceHistoryByDebit not implemented")
+}
+func (UnimplementedStudentServiceServer) CalculateDiscountSumma(context.Context, *CalculateDiscountSummaRequest) (*CalculateDiscountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateDiscountSumma not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 func (UnimplementedStudentServiceServer) testEmbeddedByValue()                        {}
@@ -2447,6 +2463,24 @@ func _StudentService_ChangeUserBalanceHistoryByDebit_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_CalculateDiscountSumma_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateDiscountSummaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).CalculateDiscountSumma(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StudentService_CalculateDiscountSumma_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).CalculateDiscountSumma(ctx, req.(*CalculateDiscountSummaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2521,6 +2555,10 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangeUserBalanceHistoryByDebit",
 			Handler:    _StudentService_ChangeUserBalanceHistoryByDebit_Handler,
+		},
+		{
+			MethodName: "CalculateDiscountSumma",
+			Handler:    _StudentService_CalculateDiscountSumma_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

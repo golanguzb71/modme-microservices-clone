@@ -11,7 +11,6 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strconv"
 	"time"
 )
 
@@ -74,10 +73,6 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 		CreatedByName string
 		GroupID       int64
 	}
-	discountPri, err := strconv.ParseFloat(discountPrice, 64)
-	if err != nil {
-		return status.Errorf(codes.Aborted, "%v", err)
-	}
 	for rows.Next() {
 		var payment struct {
 			ID            string
@@ -101,8 +96,12 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	for _, payment := range payments {
-		payment.Amount = payment.Amount - discountPri
-		err := r.paymentRepo.AddPayment(ctx, companyId, payment.GivenDate, discountPrice, "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
+		discountAmount, err := r.studentClient.CalculateDiscountSumma(ctx, groupId, studentId, discountPrice, startDate, endDate)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		err = r.paymentRepo.AddPayment(ctx, companyId, payment.GivenDate, discountAmount, "CASH", "Studentga ushbu tolov amalga oshirilgan kunlar oralig'ida chegirma kiritildi va studentning qolgan puli qaytarib berildi.", studentId, payment.CreatedByName, payment.CreatedByID, groupId, true)
 		if err != nil {
 			tx.Rollback()
 			return err
