@@ -971,7 +971,6 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("failed to get activation date: %v", err)
 	}
 
-	// Parse all dates
 	paymentDateTime, err := parseDate(paymentDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse payment date: %v", err)
@@ -987,32 +986,39 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("failed to parse group end date: %v", err)
 	}
 
-	// Get first and last day of payment month
 	monthStart := time.Date(paymentDateTime.Year(), paymentDateTime.Month(), 1, 0, 0, 0, 0, paymentDateTime.Location())
 	monthEnd := monthStart.AddDate(0, 1, -1)
 
-	// Adjust end date if group ends in this month
-	if groupEndDateTime.Before(monthEnd) && groupEndDateTime.After(monthStart) {
-		monthEnd = groupEndDateTime
-	}
-
-	// Adjust start date if activation is in this month
-	if activationDateTime.After(monthStart) && activationDateTime.Before(monthEnd) {
-		monthStart = activationDateTime
-	}
-
-	// Calculate total lessons in the payment month (considering activation date and group end date)
 	totalMonthLessons, err := r.countLessonsBetweenDates(
 		monthStart.Format("2006-01-02"),
 		monthEnd.Format("2006-01-02"),
 		group.Days,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to count month lessons: %v", err)
+		return nil, fmt.Errorf("failed to count total month lessons: %v", err)
 	}
 
-	// Calculate discount amount based on total month lessons
-	finalDiscountAmount := discountPriceFloat * float64(totalMonthLessons) / float64(totalMonthLessons)
+	remainingStart := monthStart
+	remainingEnd := monthEnd
+
+	if groupEndDateTime.Before(monthEnd) && groupEndDateTime.After(monthStart) {
+		remainingEnd = groupEndDateTime
+	}
+
+	if activationDateTime.After(monthStart) && activationDateTime.Before(monthEnd) {
+		remainingStart = activationDateTime
+	}
+
+	remainingLessons, err := r.countLessonsBetweenDates(
+		remainingStart.Format("2006-01-02"),
+		remainingEnd.Format("2006-01-02"),
+		group.Days,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to count remaining lessons: %v", err)
+	}
+
+	finalDiscountAmount := discountPriceFloat * float64(remainingLessons) / float64(totalMonthLessons)
 
 	return &pb.CalculateDiscountResponse{
 		CalculatedPrice: cast.ToString(finalDiscountAmount),
