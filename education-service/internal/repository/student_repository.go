@@ -987,10 +987,7 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		remainingLessons = 0
 	}
 
-	discountPerLesson := discountPriceFloat / float64(totalLessons)
-
-	finalDiscountAmount := discountPerLesson * float64(remainingLessons)
-
+	finalDiscountAmount := float64(remainingLessons) * discountPriceFloat / float64(totalLessons)
 	return &pb.CalculateDiscountResponse{
 		CalculatedPrice: cast.ToString(finalDiscountAmount),
 	}, nil
