@@ -284,6 +284,7 @@ message PaymentAddRequest{
   string actionById = 7;
   string actionByName = 8;
   string groupId = 9;
+  string studentconditiondate = 10;
 }
 message PaymentUpdateRequest{
   string debit = 1;
@@ -314,6 +315,7 @@ service TeacherSalaryService{
 message GetTeachersSalaryRequest{
   repeated AbsGetTeachersSalary salaries = 1;
 }
+
 message AbsGetTeachersSalary{
   string teacherId = 1;
   string type = 2;

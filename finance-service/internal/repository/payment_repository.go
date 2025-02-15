@@ -73,7 +73,7 @@ func (r *PaymentRepository) AddPayment(ctx context.Context, companyId string, gi
 	return nil
 }
 
-func (r *PaymentRepository) TakeOffPayment(ctx context.Context, companyId string, date, sum, method, comment, studentId, actionByName, actionById, groupId string) error {
+func (r *PaymentRepository) TakeOffPayment(ctx context.Context, companyId string, date, sum, method, comment, studentId, actionByName, actionById, groupId, studentConditionDate string) error {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
@@ -104,13 +104,13 @@ func (r *PaymentRepository) TakeOffPayment(ctx context.Context, companyId string
 	defer cancelFunc()
 	paymentID := uuid.New()
 	query := `INSERT INTO student_payments 
-		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at, group_id , company_id)
-		VALUES ($1, $2, $3, $4, $5, $6, 'TAKE_OFF', $7, $8 , $9 , $10 , $11)`
+		(id, student_id, method, amount, given_date, comment, payment_type, created_by_id, created_by_name , created_at, group_id , company_id , student_activation_date)
+		VALUES ($1, $2, $3, $4, $5, $6, 'TAKE_OFF', $7, $8 , $9 , $10 , $11 , $12)`
 
 	if groupId == "" {
-		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, companyId)
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, companyId, studentConditionDate)
 	} else {
-		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId, companyId)
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId, companyId, studentId)
 	}
 	if err != nil {
 		return fmt.Errorf("failed to take off payment: %v", err)

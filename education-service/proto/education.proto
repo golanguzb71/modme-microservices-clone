@@ -482,6 +482,7 @@ message CalculateDiscountSummaRequest{
   string startDate = 4;
   string endDate = 5;
   string paymentDate = 6;
+  string studentActivationDateInThisGroupWhilePayment = 7;
 }
 message CalculateDiscountResponse{
   string calculatedPrice = 1;

@@ -50,9 +50,9 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 	}
 
 	rows, err := tx.Query(`
-        SELECT id, student_id, method, amount, given_date, comment, created_at, payment_type, created_by_id, created_by_name, group_id
+        SELECT id, student_id, method, amount, given_date, comment, created_at, payment_type, created_by_id, created_by_name, group_id , student_activation_date
         FROM student_payments
-        WHERE student_id = $1 AND group_id = $2 AND given_date BETWEEN $3 AND $4 AND payment_type = 'TAKE_OFF' AND company_id=$5`,
+        WHERE student_id = $1 AND group_id = $2 AND given_date BETWEEN $3 AND $4 AND payment_type = 'TAKE_OFF' AND company_id=$5 AND student_activation_date is not null`,
 		studentId, groupId, startDate, endDate, companyId)
 	if err != nil {
 		tx.Rollback()
@@ -61,33 +61,35 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 	defer rows.Close()
 
 	var payments []struct {
-		ID            string
-		StudentID     string
-		Method        string
-		Amount        float64
-		GivenDate     string
-		Comment       string
-		CreatedAt     string
-		PaymentType   string
-		CreatedByID   string
-		CreatedByName string
-		GroupID       int64
+		ID                    string
+		StudentID             string
+		Method                string
+		Amount                float64
+		GivenDate             string
+		Comment               string
+		CreatedAt             string
+		PaymentType           string
+		CreatedByID           string
+		CreatedByName         string
+		GroupID               int64
+		StudentActivationDate string
 	}
 	for rows.Next() {
 		var payment struct {
-			ID            string
-			StudentID     string
-			Method        string
-			Amount        float64
-			GivenDate     string
-			Comment       string
-			CreatedAt     string
-			PaymentType   string
-			CreatedByID   string
-			CreatedByName string
-			GroupID       int64
+			ID                    string
+			StudentID             string
+			Method                string
+			Amount                float64
+			GivenDate             string
+			Comment               string
+			CreatedAt             string
+			PaymentType           string
+			CreatedByID           string
+			CreatedByName         string
+			GroupID               int64
+			StudentActivationDate string
 		}
-		if err := rows.Scan(&payment.ID, &payment.StudentID, &payment.Method, &payment.Amount, &payment.GivenDate, &payment.Comment, &payment.CreatedAt, &payment.PaymentType, &payment.CreatedByID, &payment.CreatedByName, &payment.GroupID); err != nil {
+		if err := rows.Scan(&payment.ID, &payment.StudentID, &payment.Method, &payment.Amount, &payment.GivenDate, &payment.Comment, &payment.CreatedAt, &payment.PaymentType, &payment.CreatedByID, &payment.CreatedByName, &payment.GroupID, &payment.StudentActivationDate); err != nil {
 			tx.Rollback()
 			return status.Errorf(codes.Internal, "Error scanning student payments: %v", err)
 		}
@@ -96,7 +98,7 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	for _, payment := range payments {
-		discountAmount, err := r.studentClient.CalculateDiscountSumma(ctx, groupId, studentId, discountPrice, startDate, endDate, payment.GivenDate)
+		discountAmount, err := r.studentClient.CalculateDiscountSumma(ctx, groupId, studentId, discountPrice, startDate, endDate, payment.GivenDate, payment.StudentActivationDate)
 		if err != nil {
 			tx.Rollback()
 			return err

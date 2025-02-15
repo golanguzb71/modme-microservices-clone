@@ -35,6 +35,7 @@ message PaymentAddRequest{
   string actionById = 7;
   string actionByName = 8;
   string groupId = 9;
+  string studentconditiondate = 10;
 }
 // payment service end
 

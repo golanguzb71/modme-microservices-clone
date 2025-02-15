@@ -631,7 +631,7 @@ func (r *StudentRepository) ChangeConditionStudent(ctx context.Context, companyI
 
 			_, err = r.financeClient.PaymentAdd(ctx,
 				description, monthYearDate, "CASH", fmt.Sprintf("%v", amount),
-				studentId, transactionType, actionById, actionByName, groupId)
+				studentId, transactionType, actionById, actionByName, groupId, tillDate)
 			if err != nil {
 				tx.Rollback()
 				return nil, fmt.Errorf("failed to add payment for %s: %v", monthYearDate, err)
@@ -924,7 +924,8 @@ func (r *StudentRepository) StudentBalanceTaker() {
 					comment = "ushbu oy uchun oylik tolov student balansidan yechib olindi chegirma narxida"
 				}
 				//_, err := r.ChangeUserBalanceHistory("ushbu oy uchun oylik tolov student balansidan yechib olindi.", groupId, "00000000-0000-0000-0000-000000000000", "TIZIM", time.Now().Format("2006-01-02"), takingPrice, "TAKE_OFF", studentId)
-				_, err := r.financeClient.PaymentAdd(ctx, comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId)
+				_, err :=
+					r.financeClient.PaymentAdd(ctx, comment, time.Now().Format("2006-01-02"), "CASH", fmt.Sprintf("%.2f", takingPrice), studentId, "TAKE_OFF", "00000000-0000-0000-0000-000000000000", "TIZIM", groupId, time.Now().AddDate(0, 0, -1).String())
 				if err != nil {
 					fmt.Printf("error changing balance history active student %v", err)
 					continue
@@ -935,7 +936,7 @@ func (r *StudentRepository) StudentBalanceTaker() {
 	}
 }
 
-func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string, paymentDate string) (*pb.CalculateDiscountResponse, error) {
+func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string, paymentDate, activationDate string) (*pb.CalculateDiscountResponse, error) {
 	groupIDInt, err := strconv.ParseInt(groupId, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid group ID: %v", err)
@@ -960,17 +961,6 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 	if err != nil {
 		return nil, fmt.Errorf("failed to get group info: %v", err)
 	}
-
-	var activationDate string
-	err = r.db.QueryRow(`
-        SELECT last_specific_date::date 
-        FROM group_students 
-        WHERE group_id = $1 AND student_id = $2 AND company_id = $3
-    `, groupIDInt, studentId, companyId).Scan(&activationDate)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get activation date: %v", err)
-	}
-
 	paymentDateTime, err := parseDate(paymentDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse payment date: %v", err)
