@@ -110,7 +110,7 @@ func (r *PaymentRepository) TakeOffPayment(ctx context.Context, companyId string
 	if groupId == "" {
 		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), nil, companyId, studentConditionDate)
 	} else {
-		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId, companyId, studentId)
+		_, err = tx.Exec(query, paymentID, studentId, method, amount, parsedDate, comment, actionById, actionByName, time.Now(), groupId, companyId, studentConditionDate)
 	}
 	if err != nil {
 		return fmt.Errorf("failed to take off payment: %v", err)
