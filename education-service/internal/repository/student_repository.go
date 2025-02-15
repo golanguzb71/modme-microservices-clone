@@ -971,6 +971,7 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("failed to get activation date: %v", err)
 	}
 
+	// Parse all dates
 	paymentDateTime, err := parseDate(paymentDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse payment date: %v", err)
@@ -986,17 +987,21 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("failed to parse group end date: %v", err)
 	}
 
+	// Get first and last day of payment month
 	monthStart := time.Date(paymentDateTime.Year(), paymentDateTime.Month(), 1, 0, 0, 0, 0, paymentDateTime.Location())
 	monthEnd := monthStart.AddDate(0, 1, -1)
 
+	// Adjust end date if group ends in this month
 	if groupEndDateTime.Before(monthEnd) && groupEndDateTime.After(monthStart) {
 		monthEnd = groupEndDateTime
 	}
 
+	// Adjust start date if activation is in this month
 	if activationDateTime.After(monthStart) && activationDateTime.Before(monthEnd) {
 		monthStart = activationDateTime
 	}
 
+	// Calculate total lessons in the payment month (considering activation date and group end date)
 	totalMonthLessons, err := r.countLessonsBetweenDates(
 		monthStart.Format("2006-01-02"),
 		monthEnd.Format("2006-01-02"),
@@ -1006,42 +1011,13 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("failed to count month lessons: %v", err)
 	}
 
-	// If no lessons in month, return zero discount
-	if totalMonthLessons == 0 {
-		return &pb.CalculateDiscountResponse{
-			CalculatedPrice: "0",
-		}, nil
-	}
-
-	// Calculate passed lessons up to current date
-	currentDate := time.Now()
-	if currentDate.After(monthEnd) {
-		currentDate = monthEnd
-	}
-
-	passedLessons, err := r.countLessonsBetweenDates(
-		monthStart.Format("2006-01-02"),
-		currentDate.Format("2006-01-02"),
-		group.Days,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to count passed lessons: %v", err)
-	}
-
-	// Calculate remaining lessons
-	remainingLessons := totalMonthLessons - passedLessons
-	if remainingLessons < 0 {
-		remainingLessons = 0
-	}
-
-	// Calculate proportional discount
-	finalDiscountAmount := discountPriceFloat * float64(remainingLessons) / float64(totalMonthLessons)
+	// Calculate discount amount based on total month lessons
+	finalDiscountAmount := discountPriceFloat * float64(totalMonthLessons) / float64(totalMonthLessons)
 
 	return &pb.CalculateDiscountResponse{
 		CalculatedPrice: cast.ToString(finalDiscountAmount),
 	}, nil
 }
-
 func parseDate(input string) (time.Time, error) {
 	if t, err := time.Parse("2006-01-02T15:04:05Z", input); err == nil {
 		return t, nil
