@@ -996,13 +996,20 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 	}, nil
 }
 
+func parseDate(input string) (time.Time, error) {
+	if t, err := time.Parse("2006-01-02T15:04:05Z", input); err == nil {
+		return t, nil
+	}
+	return time.Parse("2006-01-02", input)
+}
+
 func (r *StudentRepository) countLessonsBetweenDates(startDate, endDate string, groupDays []string) (int, error) {
-	start, err := time.Parse("2006-01-02T15:04:05Z", startDate)
+	start, err := parseDate(startDate)
 	if err != nil {
 		return 0, err
 	}
 
-	end, err := time.Parse("2006-01-02T15:04:05Z", endDate)
+	end, err := parseDate(endDate)
 	if err != nil {
 		return 0, err
 	}
