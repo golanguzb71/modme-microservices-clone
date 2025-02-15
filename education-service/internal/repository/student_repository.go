@@ -997,12 +997,12 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 }
 
 func (r *StudentRepository) countLessonsBetweenDates(startDate, endDate string, groupDays []string) (int, error) {
-	start, err := time.Parse("2006-01-02", startDate)
+	start, err := time.Parse("2006-01-02T15:04:05.000Z", startDate)
 	if err != nil {
 		return 0, err
 	}
 
-	end, err := time.Parse("2006-01-02", endDate)
+	end, err := time.Parse("2006-01-02T15:04:05.000Z", endDate)
 	if err != nil {
 		return 0, err
 	}
