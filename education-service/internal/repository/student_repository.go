@@ -967,7 +967,7 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
         FROM group_students 
         WHERE group_id = $1 AND student_id = $2 AND company_id = $3
     `, groupIDInt, studentId, companyId).Scan(&activationDate)
-	fmt.Println("last specific date ", &activationDate)
+	fmt.Println("last specific date ", activationDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get activation date: %v", err)
 	}
