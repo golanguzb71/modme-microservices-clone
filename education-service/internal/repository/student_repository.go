@@ -935,7 +935,7 @@ func (r *StudentRepository) StudentBalanceTaker() {
 	}
 }
 
-func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string) (*pb.CalculateDiscountResponse, error) {
+func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string, paymentDate string) (*pb.CalculateDiscountResponse, error) {
 	groupIDInt, err := strconv.ParseInt(groupId, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid group ID: %v", err)
@@ -967,27 +967,76 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
         FROM group_students 
         WHERE group_id = $1 AND student_id = $2 AND company_id = $3
     `, groupIDInt, studentId, companyId).Scan(&activationDate)
-	fmt.Println("last specific date ", activationDate)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get activation date: %v", err)
 	}
 
-	totalLessons, err := r.countLessonsBetweenDates(startDate, endDate, group.Days)
+	paymentDateTime, err := parseDate(paymentDate)
 	if err != nil {
-		return nil, fmt.Errorf("failed to count total lessons: %v", err)
+		return nil, fmt.Errorf("failed to parse payment date: %v", err)
 	}
 
-	passedLessons, err := r.countLessonsBetweenDates(activationDate, time.Now().Format("2006-01-02"), group.Days)
+	activationDateTime, err := parseDate(activationDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse activation date: %v", err)
+	}
+
+	groupEndDateTime, err := parseDate(group.EndDate)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse group end date: %v", err)
+	}
+
+	monthStart := time.Date(paymentDateTime.Year(), paymentDateTime.Month(), 1, 0, 0, 0, 0, paymentDateTime.Location())
+	monthEnd := monthStart.AddDate(0, 1, -1)
+
+	if groupEndDateTime.Before(monthEnd) && groupEndDateTime.After(monthStart) {
+		monthEnd = groupEndDateTime
+	}
+
+	if activationDateTime.After(monthStart) && activationDateTime.Before(monthEnd) {
+		monthStart = activationDateTime
+	}
+
+	totalMonthLessons, err := r.countLessonsBetweenDates(
+		monthStart.Format("2006-01-02"),
+		monthEnd.Format("2006-01-02"),
+		group.Days,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to count month lessons: %v", err)
+	}
+
+	// If no lessons in month, return zero discount
+	if totalMonthLessons == 0 {
+		return &pb.CalculateDiscountResponse{
+			CalculatedPrice: "0",
+		}, nil
+	}
+
+	// Calculate passed lessons up to current date
+	currentDate := time.Now()
+	if currentDate.After(monthEnd) {
+		currentDate = monthEnd
+	}
+
+	passedLessons, err := r.countLessonsBetweenDates(
+		monthStart.Format("2006-01-02"),
+		currentDate.Format("2006-01-02"),
+		group.Days,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to count passed lessons: %v", err)
 	}
 
-	remainingLessons := totalLessons - passedLessons
+	// Calculate remaining lessons
+	remainingLessons := totalMonthLessons - passedLessons
 	if remainingLessons < 0 {
 		remainingLessons = 0
 	}
 
-	finalDiscountAmount := float64(remainingLessons) * discountPriceFloat / float64(totalLessons)
+	// Calculate proportional discount
+	finalDiscountAmount := discountPriceFloat * float64(remainingLessons) / float64(totalMonthLessons)
+
 	return &pb.CalculateDiscountResponse{
 		CalculatedPrice: cast.ToString(finalDiscountAmount),
 	}, nil

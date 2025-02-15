@@ -96,7 +96,7 @@ func (r *DiscountRepository) CreateDiscount(ctx context.Context, companyId, grou
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
 	for _, payment := range payments {
-		discountAmount, err := r.studentClient.CalculateDiscountSumma(ctx, groupId, studentId, discountPrice, startDate, endDate)
+		discountAmount, err := r.studentClient.CalculateDiscountSumma(ctx, groupId, studentId, discountPrice, startDate, endDate, payment.GivenDate)
 		if err != nil {
 			tx.Rollback()
 			return err

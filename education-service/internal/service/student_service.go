@@ -165,5 +165,5 @@ func (s *StudentService) CalculateDiscountSumma(ctx context.Context, req *pb.Cal
 	if companyId == "" {
 		return nil, status.Error(codes.Canceled, "error while getting company from context")
 	}
-	return s.repo.CalculateDiscountSumma(companyId, req.GroupId, req.StartDate, req.EndDate, req.DiscountPrice, req.StudentId)
+	return s.repo.CalculateDiscountSumma(companyId, req.GroupId, req.StartDate, req.EndDate, req.DiscountPrice, req.StudentId, req.PaymentDate)
 }

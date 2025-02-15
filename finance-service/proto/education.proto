@@ -36,6 +36,7 @@ message CalculateDiscountSummaRequest{
   string discountPrice = 3;
   string startDate = 4;
   string endDate = 5;
+  string paymentDate = 6;
 }
 message CalculateDiscountResponse{
   string calculatedPrice = 1;
