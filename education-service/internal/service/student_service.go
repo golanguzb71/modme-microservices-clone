@@ -163,7 +163,7 @@ func (s *StudentService) ChangeUserBalanceHistoryByDebit(ctx context.Context, re
 func (s *StudentService) CalculateDiscountSumma(ctx context.Context, req *pb.CalculateDiscountSummaRequest) (*pb.CalculateDiscountResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
 	if companyId != "" {
-		return nil, status.Error(codes.Aborted, "error while getting company from context")
+		return nil, status.Error(codes.Canceled, "error while getting company from context")
 	}
 	return s.repo.CalculateDiscountSumma(companyId, req.GroupId, req.StartDate, req.EndDate, req.DiscountPrice, req.StudentId)
 }

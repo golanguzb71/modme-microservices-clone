@@ -936,7 +936,6 @@ func (r *StudentRepository) StudentBalanceTaker() {
 }
 
 func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId string, startDate string, endDate string, discountPrice string, studentId string) (*pb.CalculateDiscountResponse, error) {
-	// Convert string parameters to appropriate types
 	groupIDInt, err := strconv.ParseInt(groupId, 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("invalid group ID: %v", err)
@@ -947,7 +946,6 @@ func (r *StudentRepository) CalculateDiscountSumma(companyId string, groupId str
 		return nil, fmt.Errorf("invalid discount price: %v", err)
 	}
 
-	// Get group information including end date
 	var group struct {
 		EndDate string
 		Days    []string
