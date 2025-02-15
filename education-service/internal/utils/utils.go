@@ -82,7 +82,7 @@ func CalculateMoneyForStatus(db *sql.DB, manualPriceForCourse *float64, groupId 
 	}
 
 	if manualPriceForCourse != nil {
-		coursePrice = *manualPriceForCourse
+		coursePrice = coursePrice - *manualPriceForCourse
 	}
 
 	tillDateParsed, err := time.Parse("2006-01-02", tillDate)
