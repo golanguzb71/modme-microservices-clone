@@ -2035,6 +2035,20 @@ const docTemplate = `{
                         "name": "to",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "amountTo",
+                        "name": "amountTo",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "amountFrom",
+                        "name": "amountFrom",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {

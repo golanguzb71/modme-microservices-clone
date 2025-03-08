@@ -2895,6 +2895,16 @@ paths:
         name: to
         required: true
         type: string
+      - description: amountTo
+        in: query
+        name: amountTo
+        required: true
+        type: string
+      - description: amountFrom
+        in: query
+        name: amountFrom
+        required: true
+        type: string
       produces:
       - application/json
       responses:

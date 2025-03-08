@@ -4,6 +4,7 @@ import (
 	"api-gateway/grpc/proto/pb"
 	"context"
 	"fmt"
+	"github.com/spf13/cast"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"strconv"
@@ -149,7 +150,7 @@ func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx conte
 	})
 }
 
-func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size, from, to string) (*pb.GetAllDebtsInformationResponse, error) {
+func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size, from, to, amountTo, amountFrom string) (*pb.GetAllDebtsInformationResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
 		return nil, err
@@ -163,8 +164,10 @@ func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size,
 			Page: int32(pageInt),
 			Size: int32(sizeInt),
 		},
-		From: from,
-		To:   to,
+		From:       from,
+		To:         to,
+		AmountFrom: cast.ToInt64(amountFrom),
+		AmountTo:   cast.ToInt64(amountTo),
 	})
 }
 
