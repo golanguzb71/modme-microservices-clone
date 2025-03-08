@@ -113,7 +113,7 @@ func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.Ge
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllDebtsInformation(ctx, companyId, req.From, req.To, req.PageParam.Page, req.PageParam.Size)
+	return ps.repo.GetAllDebtsInformation(ctx, companyId, req.From, req.To, req.AmountTo, req.AmountFrom, req.PageParam.Page, req.PageParam.Size)
 }
 func (ps *PaymentService) GetCommonFinanceInformation(ctx context.Context, req *emptypb.Empty) (*pb.GetCommonInformationResponse, error) {
 	companyId := utils.GetCompanyId(ctx)
