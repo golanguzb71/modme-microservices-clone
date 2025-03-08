@@ -169,6 +169,8 @@ message GetAllDebtsRequest{
   common.PageRequest pageParam = 1;
   string from = 2;
   string to = 3;
+  int64 amountFrom = 4;
+  int64 amountTo = 5;
 }
 message GetAllDebtsInformationResponse{
   int32 totalPageCount = 2;
