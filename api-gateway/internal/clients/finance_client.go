@@ -41,15 +41,12 @@ func (fc *FinanceClient) DeleteCategory(ctx context.Context, req string) (*pb.Ab
 func (fc *FinanceClient) GetAllCategories(ctx context.Context) (*pb.GetAllCategoryRequest, error) {
 	return fc.categoryClient.GetAllCategory(ctx, &emptypb.Empty{})
 }
-
 func (fc *FinanceClient) CreateExpense(ctx context.Context, req *pb.CreateExpenseRequest) (*pb.AbsResponse, error) {
 	return fc.expenseClient.CreateExpense(ctx, req)
 }
-
 func (fc *FinanceClient) DeleteExpense(ctx context.Context, id string) (*pb.AbsResponse, error) {
 	return fc.expenseClient.DeleteExpense(ctx, &pb.DeleteAbsRequest{Id: id})
 }
-
 func (fc *FinanceClient) GetAllInformation(ctx context.Context, id string, idType string, page int64, size int64, from string, to string) (*pb.GetAllExpenseResponse, error) {
 	return fc.expenseClient.GetAllExpense(ctx, &pb.GetAllExpenseRequest{
 		From: from,
@@ -62,34 +59,27 @@ func (fc *FinanceClient) GetAllInformation(ctx context.Context, id string, idTyp
 		},
 	})
 }
-
 func (fc *FinanceClient) GetHistoryDiscount(id string, ctx context.Context) (*pb.GetHistoryDiscountResponse, error) {
 	return fc.discountClient.GetHistoryDiscount(ctx, &pb.GetHistoryDiscountRequest{StudentId: id})
 }
-
 func (fc *FinanceClient) GetExpenseChartDiagram(from string, to string, ctx context.Context) (*pb.GetAllExpenseDiagramResponse, error) {
 	return fc.expenseClient.GetAllExpenseDiagram(ctx, &pb.GetAllExpenseDiagramRequest{
 		From: from,
 		To:   to,
 	})
 }
-
 func (fc *FinanceClient) PaymentAdd(ctx context.Context, req *pb.PaymentAddRequest) (*pb.AbsResponse, error) {
 	return fc.paymentClient.PaymentAdd(ctx, req)
 }
-
 func (fc *FinanceClient) PaymentReturn(ctx context.Context, req *pb.PaymentReturnRequest) (*pb.AbsResponse, error) {
 	return fc.paymentClient.PaymentReturn(ctx, req)
 }
-
 func (fc *FinanceClient) PaymentUpdate(ctx context.Context, p *pb.PaymentUpdateRequest) (*pb.AbsResponse, error) {
 	return fc.paymentClient.PaymentUpdate(ctx, p)
 }
-
 func (fc *FinanceClient) GetMonthlyStatusPayment(ctx context.Context, studentId string) (*pb.GetMonthlyStatusResponse, error) {
 	return fc.paymentClient.GetMonthlyStatus(ctx, &pb.GetMonthlyStatusRequest{UserId: studentId})
 }
-
 func (fc *FinanceClient) GetAllPayments(ctx context.Context, month string, studentId string) (*pb.GetAllPaymentsByMonthResponse, error) {
 	resp, err := fc.paymentClient.GetAllPaymentsByMonth(ctx, &pb.GetAllPaymentsByMonthRequest{
 		UserId: studentId,
@@ -109,47 +99,39 @@ func (fc *FinanceClient) GetAllPayments(ctx context.Context, month string, stude
 
 	return resp, nil
 }
-
 func (fc *FinanceClient) GetSalaryAllTeacher(ctx context.Context) (*pb.GetTeachersSalaryRequest, error) {
 	return fc.teacherSalaryClient.GetTeacherSalary(ctx, &emptypb.Empty{})
 }
-
 func (fc *FinanceClient) AddSalaryTeacher(ctx context.Context, req *pb.CreateTeacherSalaryRequest) (*pb.AbsResponse, error) {
 	return fc.teacherSalaryClient.CreateTeacherSalary(ctx, req)
 }
-
 func (fc *FinanceClient) DeleteTeacherSalary(ctx context.Context, teacherId string) (*pb.AbsResponse, error) {
 	return fc.teacherSalaryClient.DeleteTeacherSalary(ctx, &pb.DeleteTeacherSalaryRequest{TeacherId: teacherId})
 }
-
 func (fc *FinanceClient) GetAllTakeOfPayment(from string, to string, ctx context.Context) (*pb.GetAllPaymentTakeOffResponse, error) {
 	return fc.paymentClient.GetAllPaymentTakeOff(ctx, &pb.GetAllPaymentTakeOffRequest{
 		From: from,
 		To:   to,
 	})
 }
-
 func (fc *FinanceClient) GetPaymentTakeOffChart(from string, to string, ctx context.Context) (*pb.GetAllPaymentTakeOffChartResponse, error) {
 	return fc.paymentClient.GetAllPaymentTakeOffChart(ctx, &pb.GetAllPaymentTakeOffRequest{
 		From: from,
 		To:   to,
 	})
 }
-
 func (fc *FinanceClient) GetAllStudentPayment(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsResponse, error) {
 	return fc.paymentClient.GetAllStudentPayments(ctx, &pb.GetAllStudentPaymentsRequest{
 		From: from,
 		To:   to,
 	})
 }
-
 func (fc *FinanceClient) GetAllPaymentsStudent(from string, to string, ctx context.Context) (*pb.GetAllStudentPaymentsChartResponse, error) {
 	return fc.paymentClient.GetAllStudentPaymentsChart(ctx, &pb.GetAllStudentPaymentsRequest{
 		From: from,
 		To:   to,
 	})
 }
-
 func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size, from, to, amountTo, amountFrom string) (*pb.GetAllDebtsInformationResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
@@ -170,7 +152,6 @@ func (fc *FinanceClient) GetAllDebtsInformation(ctx context.Context, page, size,
 		AmountTo:   cast.ToInt64(amountTo),
 	})
 }
-
 func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, int) {
 	response, err := fc.paymentClient.GetCommonFinanceInformation(ctx, &emptypb.Empty{})
 	if err != nil {
@@ -178,7 +159,6 @@ func (fc *FinanceClient) GetCommonFinanceInformation(ctx context.Context) (int, 
 	}
 	return int(response.DebtorsCount), int(response.PayInCurrentMonth)
 }
-
 func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to string) (*pb.GetIncomeChartResponse, error) {
 	resp, err := fc.paymentClient.GetIncomeChart(ctx, &pb.GetIncomeChartRequest{
 		From: from,
@@ -189,11 +169,9 @@ func (fc *FinanceClient) GetChartIncome(ctx context.Context, from string, to str
 	}
 	return resp, err
 }
-
 func (fc *FinanceClient) GetTableGroups(ctx context.Context) (interface{}, error) {
 	return nil, nil
 }
-
 func NewFinanceClient(addr string) (*FinanceClient, error) {
 	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

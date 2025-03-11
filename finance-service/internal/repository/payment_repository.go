@@ -575,8 +575,6 @@ func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyI
 		return nil, fmt.Errorf("invalid page size: must be greater than zero")
 	}
 
-	offset := (page - 1) * size
-
 	query := `
 		SELECT 
 			student_id AS debtor_id,
@@ -585,18 +583,15 @@ func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyI
 		FROM 
 			student_payments
 		WHERE 
-			given_date BETWEEN $1 AND $2 
-			AND company_id = $5
+			given_date BETWEEN $1 AND $2 and company_id=$5
 		GROUP BY 
 			student_id
-		HAVING 
-			(COALESCE(SUM(CASE WHEN payment_type = 'ADD' OR payment_type = 'REFUND' THEN amount ELSE 0 END), 0) -
-			 COALESCE(SUM(CASE WHEN payment_type = 'TAKE_OFF' THEN amount ELSE 0 END), 0))
-			BETWEEN $6 AND $7
 		LIMIT $3 OFFSET $4;
 	`
 
-	rows, err := r.db.Query(query, from, to, size, offset, companyId, amountFrom, amountTo)
+	offset := (page - 1) * size
+
+	rows, err := r.db.Query(query, from, to, size, offset, companyId)
 	if err != nil {
 		return nil, err
 	}
@@ -616,7 +611,6 @@ func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyI
 			phoneNumber = "unknown phoneNumber"
 			balance = 0
 		}
-		// Only consider debts with a negative balance
 		if balance >= 0 {
 			continue
 		}
@@ -629,20 +623,8 @@ func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyI
 		debts = append(debts, &debt)
 	}
 
-	countQuery := `
-		SELECT COUNT(*) FROM (
-			SELECT student_id
-			FROM student_payments
-			WHERE given_date BETWEEN $1 AND $2 
-			  AND company_id = $3
-			GROUP BY student_id
-			HAVING (COALESCE(SUM(CASE WHEN payment_type = 'ADD' OR payment_type = 'REFUND' THEN amount ELSE 0 END), 0) -
-					COALESCE(SUM(CASE WHEN payment_type = 'TAKE_OFF' THEN amount ELSE 0 END), 0))
-				BETWEEN $4 AND $5
-		) AS sub;
-	`
 	var totalRecords int32
-	if err := r.db.QueryRow(countQuery, from, to, companyId, amountFrom, amountTo).Scan(&totalRecords); err != nil {
+	if err := r.db.QueryRow(`SELECT COUNT(DISTINCT student_id) FROM student_payments WHERE given_date BETWEEN $1 AND $2 AND company_id=$3`, from, to, companyId).Scan(&totalRecords); err != nil {
 		return nil, err
 	}
 
