@@ -52,20 +52,32 @@ func (r *GroupRepository) DeleteGroup(companyId string, id string) error {
 	}
 	return nil
 }
-func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, size int32, isArchive *bool, teacherId *string, courseId *int32, dateType *string, startDate *string, endDate *string, orderBy, orderDirection string) (*pb.GetGroupsResponse, error) {
+func (r *GroupRepository) GetGroup(
+	ctx context.Context,
+	companyId string,
+	page, size int32,
+	isArchive *bool,
+	teacherId *string,
+	courseId *int32,
+	dateType *string,
+	startDate *string,
+	endDate *string,
+	orderBy, orderDirection string,
+) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 
+	// ✅ Fix: Pass companyId as p_company_id to both filter_groups and sort_groups
 	query := `
-		SELECT * FROM sort_groups($7, $8)
+		SELECT * FROM sort_groups($8, $9, $10) -- ✅ Added companyId as parameter ($10)
 		WHERE id IN (
-			SELECT id FROM filter_groups($1, $2, $3, $4, $5, $6)
-			WHERE company_id = $9
+			SELECT id FROM filter_groups($1, $2, $3, $4, $5, $6, $7) -- ✅ Added companyId as last parameter ($7)
 		)
-		LIMIT $10 OFFSET $11;
+		LIMIT $11 OFFSET $12;
 	`
 
-	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id = $2;`
+	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 AND company_id = $2;`
 
+	// ✅ Fix: Ensure companyId is passed to countQuery
 	var totalCount int32
 	err := r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
 	if err != nil {
@@ -75,7 +87,8 @@ func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, 
 
 	totalPageCount := (totalCount + size - 1) / size
 
-	rows, err := r.db.Query(query, isArchive, teacherId, courseId, dateType, startDate, endDate, orderBy, orderDirection, companyId, size, offset)
+	// ✅ Fix: Corrected the order of parameters when executing the query
+	rows, err := r.db.Query(query, isArchive, teacherId, courseId, dateType, startDate, endDate, companyId, orderBy, orderDirection, companyId, size, offset)
 	if err != nil {
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
@@ -93,14 +106,17 @@ func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, 
 
 		err = rows.Scan(
 			&group.Id, &course.Id, &course.Name,
-			&group.TeacherId, &room.Id, &room.Name, &room.Capacity, &group.StartDate, &group.EndDate,
-			&group.IsArchived, &group.Name, &studentCount, &group.CreatedAt, pq.Array(&group.Days), &group.LessonStartTime, &group.DateType,
+			&group.TeacherId, &room.Id, &room.Name, &room.Capacity,
+			&group.StartDate, &group.EndDate, &group.IsArchived,
+			&group.Name, &studentCount, &group.CreatedAt,
+			pq.Array(&group.Days), &group.LessonStartTime, &group.DateType,
 		)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
 
+		// ✅ Fetch teacher name (optional, can be removed if not needed)
 		teacherName, err := r.userClient.GetTeacherById(ctx, group.TeacherId)
 		if err != nil {
 			log.Printf("Error fetching teacher by ID: %v", err)
