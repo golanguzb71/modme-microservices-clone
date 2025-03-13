@@ -61,7 +61,31 @@ func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) 
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	group, err := s.repo.GetGroup(ctx, companyId, req.Page.Page, req.Page.Size, req.IsArchived)
+
+	orderBy := req.OrderBy
+	if orderBy == "" {
+		orderBy = "name"
+	}
+
+	orderDirection := req.OrderDirection
+	if orderDirection == "" {
+		orderDirection = "ASC"
+	}
+
+	group, err := s.repo.GetGroup(
+		ctx,
+		companyId,
+		req.Page.Page,
+		req.Page.Size,
+		&req.IsArchived,
+		req.TeacherId,
+		req.CourseId,
+		req.DateType,
+		req.StartDate,
+		req.EndDate,
+		orderBy,
+		orderDirection,
+	)
 	if err != nil {
 		log.Printf("Error in GetGroups: %v", err)
 		return nil, err

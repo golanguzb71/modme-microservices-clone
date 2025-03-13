@@ -328,9 +328,16 @@ message GetGroupsResponse{
   repeated GetGroupAbsResponse groups = 1;
   int32 totalPageCount = 2;
 }
-message GetGroupsRequest{
+message GetGroupsRequest {
   bool isArchived = 1;
-  common.PageRequest page = 2;
+  optional string teacherId = 2;
+  optional int32 courseId = 3;
+  optional string dateType = 4;
+  optional string startDate = 5;
+  optional string endDate = 6;
+  common.PageRequest page = 7;
+  string orderBy = 8;
+  string orderDirection = 9;
 }
 // group service end
 

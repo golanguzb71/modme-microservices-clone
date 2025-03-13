@@ -79,6 +79,75 @@ CREATE TABLE IF NOT EXISTS groups
     company_id  int references company (id)
 );
 
+CREATE FUNCTION filter_groups(
+    p_is_archived BOOLEAN DEFAULT NULL,
+    p_teacher_id UUID DEFAULT NULL,
+    p_course_id INT DEFAULT NULL,
+    p_date_type VARCHAR DEFAULT NULL,
+    p_start_date DATE DEFAULT NULL,
+    p_end_date DATE DEFAULT NULL
+) RETURNS TABLE (
+                    id BIGINT,
+                    name VARCHAR,
+                    course_id INT,
+                    teacher_id UUID,
+                    room_id INT,
+                    date_type VARCHAR,
+                    days TEXT[],
+                    start_time VARCHAR,
+                    start_date DATE,
+                    end_date DATE,
+                    is_archived BOOLEAN,
+                    created_at TIMESTAMP,
+                    company_id INT
+                ) AS $$
+BEGIN
+    RETURN QUERY
+        SELECT * FROM groups
+        WHERE
+            (p_is_archived IS NULL OR is_archived = p_is_archived)
+          AND (p_teacher_id IS NULL OR teacher_id = p_teacher_id)
+          AND (p_course_id IS NULL OR course_id = p_course_id)
+          AND (p_date_type IS NULL OR date_type = p_date_type)
+          AND (p_start_date IS NULL OR start_date >= p_start_date)
+          AND (p_end_date IS NULL OR end_date <= p_end_date);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE FUNCTION sort_groups(
+    p_order_by TEXT DEFAULT 'name',
+    p_order_direction TEXT DEFAULT 'ASC'
+) RETURNS TABLE (
+                    id BIGINT,
+                    name VARCHAR,
+                    course_id INT,
+                    teacher_id UUID,
+                    room_id INT,
+                    date_type VARCHAR,
+                    days TEXT[],
+                    start_time VARCHAR,
+                    start_date DATE,
+                    end_date DATE,
+                    is_archived BOOLEAN,
+                    created_at TIMESTAMP,
+                    company_id INT
+                ) AS $$
+BEGIN
+    RETURN QUERY
+        EXECUTE format(
+            'SELECT * FROM groups
+             ORDER BY %I %s NULLS LAST',
+            p_order_by,
+            CASE
+                WHEN p_order_direction ILIKE 'DESC' THEN 'DESC'
+                ELSE 'ASC'
+                END
+                );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
 CREATE TABLE IF NOT EXISTS attendance
 (
     is_discounted  boolean                                                               DEFAULT FALSE,

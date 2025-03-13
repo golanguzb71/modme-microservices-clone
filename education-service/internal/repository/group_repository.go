@@ -52,39 +52,20 @@ func (r *GroupRepository) DeleteGroup(companyId string, id string) error {
 	}
 	return nil
 }
-func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, size int32, isArchive bool) (*pb.GetGroupsResponse, error) {
+func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, size int32, isArchive *bool, teacherId *string, courseId *int32, dateType *string, startDate *string, endDate *string, orderBy, orderDirection string) (*pb.GetGroupsResponse, error) {
 	offset := (page - 1) * size
 
 	query := `
-		SELECT 
-			g.id, 
-			g.course_id, 
-			COALESCE(c.title, 'Unknown Course') as course_title, 
-			g.teacher_id,
-			g.room_id, 
-			COALESCE(r.title, 'Unknown Room') as room_title, 
-			r.capacity, 
-			g.start_date, 
-			g.end_date, 
-			g.is_archived, 
-			g.name, 
-			COUNT(gs.id) as student_count, 
-			g.created_at, 
-			g.days, 
-			g.start_time, 
-			g.date_type
-		FROM groups g
-		LEFT JOIN courses c ON g.course_id = c.id
-		LEFT JOIN rooms r ON g.room_id = r.id
-		LEFT JOIN group_students gs ON g.id = gs.group_id
-		WHERE g.is_archived = $1 and g.company_id = $4
-		GROUP BY g.id, c.title, r.title, r.capacity
-		LIMIT $2 OFFSET $3;
+		SELECT * FROM sort_groups($7, $8)
+		WHERE id IN (
+			SELECT id FROM filter_groups($1, $2, $3, $4, $5, $6)
+			WHERE company_id = $9
+		)
+		LIMIT $10 OFFSET $11;
 	`
 
 	countQuery := `SELECT COUNT(*) FROM groups WHERE is_archived = $1 and company_id = $2;`
 
-	fmt.Printf("countQuery params: isArchived=%v, companyId=%v", isArchive, companyId)
 	var totalCount int32
 	err := r.db.QueryRow(countQuery, isArchive, companyId).Scan(&totalCount)
 	if err != nil {
@@ -94,13 +75,15 @@ func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, 
 
 	totalPageCount := (totalCount + size - 1) / size
 
-	rows, err := r.db.Query(query, isArchive, size, offset, companyId)
+	rows, err := r.db.Query(query, isArchive, teacherId, courseId, dateType, startDate, endDate, orderBy, orderDirection, companyId, size, offset)
 	if err != nil {
 		return nil, fmt.Errorf("error querying database: %w", err)
 	}
 	defer rows.Close()
+
 	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
 	defer cancelFunc()
+
 	var groups []*pb.GetGroupAbsResponse
 	for rows.Next() {
 		var group pb.GetGroupAbsResponse
@@ -117,6 +100,7 @@ func (r *GroupRepository) GetGroup(ctx context.Context, companyId string, page, 
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("error scanning row: %w", err)
 		}
+
 		teacherName, err := r.userClient.GetTeacherById(ctx, group.TeacherId)
 		if err != nil {
 			log.Printf("Error fetching teacher by ID: %v", err)
