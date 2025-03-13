@@ -2782,8 +2782,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/group/get-all/{isArchived}": {
-            "get": {
+        "/api/group/get-all": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -2799,26 +2799,13 @@ const docTemplate = `{
                 "summary": "ADMIN , CEO",
                 "parameters": [
                     {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "Is Archived",
-                        "name": "isArchived",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "Number of items per page",
-                        "name": "size",
-                        "in": "query"
+                        "description": "Group Data",
+                        "name": "group",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetGroupsRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -6886,6 +6873,38 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.GetGroupByTeacherAbs"
                     }
+                }
+            }
+        },
+        "pb.GetGroupsRequest": {
+            "type": "object",
+            "properties": {
+                "courseId": {
+                    "type": "integer"
+                },
+                "dateType": {
+                    "type": "string"
+                },
+                "endDate": {
+                    "type": "string"
+                },
+                "isArchived": {
+                    "type": "boolean"
+                },
+                "orderBy": {
+                    "type": "string"
+                },
+                "orderDirection": {
+                    "type": "string"
+                },
+                "page": {
+                    "$ref": "#/definitions/pb.PageRequest"
+                },
+                "startDate": {
+                    "type": "string"
+                },
+                "teacherId": {
+                    "type": "string"
                 }
             }
         },

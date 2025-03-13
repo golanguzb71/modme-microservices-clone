@@ -54,7 +54,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 		group.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateGroup)
 		group.PUT("/update", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.UpdateGroup)
 		group.DELETE("/delete/:id", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteGroup)
-		group.GET("/get-all/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllGroup)
+		group.POST("/get-all", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllGroup)
 		group.GET("/get-by-id/:id", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetGroupById)
 		group.GET("/get-by-course/:courseId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetGroupByCourseId)
 		group.POST("/transfer-date", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.TransferLessonDate)

@@ -333,33 +333,22 @@ func DeleteGroup(ctx *gin.Context) {
 // @Tags groups
 // @Produce json
 // @Security Bearer
-// @Param isArchived path bool true "Is Archived" example(true)
-// @Param page query int false "Page number" default(1)
-// @Param size query int false "Number of items per page" default(10)
+// @Param group body pb.GetGroupsRequest true "Group Data"
 // @Success 200 {array} pb.GetGroupsResponse "List of groups"
 // @Failure 400 {object} utils.AbsResponse "Bad Request"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
-// @Router /api/group/get-all/{isArchived} [get]
+// @Router /api/group/get-all [post]
 func GetAllGroup(ctx *gin.Context) {
+	var (
+		req *pb.GetGroupsRequest
+	)
 	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
-	isArchived := ctx.Param("isArchived")
-	parseBool, err := strconv.ParseBool(isArchived)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid isArchived parameter"})
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	pageStr := ctx.Query("page")
-	sizeStr := ctx.Query("size")
-	page, err := strconv.ParseInt(pageStr, 10, 32)
-	if err != nil || page < 1 {
-		page = 1
-	}
-	size, err := strconv.ParseInt(sizeStr, 10, 32)
-	if err != nil || size < 1 {
-		size = 10
-	}
-	resp, err := educationClient.GetAllGroup(ctxR, parseBool, int32(page), int32(size))
+	resp, err := educationClient.GetAllGroup(ctxR, req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return
@@ -970,7 +959,13 @@ func GetTableGroups(ctx *gin.Context) {
 
 	queryDateType := ctx.Query("dateType")
 
-	response, err := educationClient.GetAllGroup(ctxR, false, 1, 10000)
+	response, err := educationClient.GetAllGroup(ctxR, &pb.GetGroupsRequest{
+		IsArchived: false,
+		Page: &pb.PageRequest{
+			Page: 1,
+			Size: 100000,
+		},
+	})
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
