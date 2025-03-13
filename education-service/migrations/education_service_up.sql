@@ -102,7 +102,7 @@ CREATE OR REPLACE FUNCTION filter_groups(
                       name          VARCHAR,
                       student_count INT,
                       created_at    TIMESTAMP,
-                      days          TEXT[],
+                      days          TEXT[],  -- ✅ Fixed: Explicitly casted to TEXT[]
                       start_time    VARCHAR,
                       date_type     VARCHAR
                   ) AS
@@ -122,7 +122,7 @@ BEGIN
                g.name,
                (SELECT COUNT(gs.id) FROM group_students gs WHERE gs.group_id = g.id) AS student_count,
                g.created_at,
-               g.days,
+               g.days::TEXT[],  -- ✅ Fixed: Explicitly casted to TEXT[]
                g.start_time,
                g.date_type
         FROM groups g
@@ -134,9 +134,10 @@ BEGIN
           AND (p_date_type IS NULL OR g.date_type = p_date_type)
           AND (p_start_date IS NULL OR g.start_date >= p_start_date)
           AND (p_end_date IS NULL OR g.end_date <= p_end_date)
-          AND (p_company_id IS NULL OR g.company_id = p_company_id);  -- Added filtering for company_id
+          AND (p_company_id IS NULL OR g.company_id = p_company_id);
 END;
 $$ LANGUAGE plpgsql;
+
 
 
 
@@ -145,50 +146,46 @@ CREATE OR REPLACE FUNCTION sort_groups(
     p_order_direction TEXT DEFAULT 'ASC',
     p_company_id INTEGER DEFAULT NULL
 )
-    RETURNS TABLE
-            (
-                id            BIGINT,
-                course_id     INT,
-                course_name   VARCHAR,
-                teacher_id    UUID,
-                room_id       INT,
-                room_name     VARCHAR,
-                room_capacity INT,
-                start_date    DATE,
-                end_date      DATE,
-                is_archived   BOOLEAN,
-                name          VARCHAR,
-                student_count INT,
-                created_at    TIMESTAMP,
-                days          TEXT[],
-                start_time    VARCHAR,
-                date_type     VARCHAR
-            )
-AS
+    RETURNS TABLE (
+                      id            BIGINT,
+                      course_id     INT,
+                      course_name   VARCHAR,
+                      teacher_id    UUID,
+                      room_id       INT,
+                      room_name     VARCHAR,
+                      room_capacity INT,
+                      start_date    DATE,
+                      end_date      DATE,
+                      is_archived   BOOLEAN,
+                      name          VARCHAR,
+                      student_count INT,
+                      created_at    TIMESTAMP,
+                      days          TEXT[],  -- ✅ Fixed: Explicitly casted to TEXT[]
+                      start_time    VARCHAR,
+                      date_type     VARCHAR
+                  ) AS
 $$
 BEGIN
     RETURN QUERY
-        EXECUTE format(
-            'SELECT
-                g.id, g.course_id, c.title AS course_name,
-                g.teacher_id, g.room_id, r.title AS room_name, r.capacity AS room_capacity,
-                g.start_date, g.end_date, g.is_archived, g.name,
-                (SELECT COUNT(gs.id) FROM group_students gs WHERE gs.group_id = g.id) AS student_count,
-                g.created_at, g.days, g.start_time, g.date_type
-            FROM groups g
-            LEFT JOIN courses c ON g.course_id = c.id
-            LEFT JOIN rooms r ON g.room_id = r.id
-            WHERE g.company_id = %L
-            ORDER BY %I %s NULLS LAST',
-            p_company_id,
-            p_order_by,
-            CASE
-                WHEN p_order_direction ILIKE 'DESC' THEN 'DESC'
-                ELSE 'ASC'
-                END
-                );
+        SELECT
+            g.id, g.course_id, c.title AS course_name,
+            g.teacher_id, g.room_id, r.title AS room_name, r.capacity AS room_capacity,
+            g.start_date, g.end_date, g.is_archived, g.name,
+            (SELECT COUNT(gs.id) FROM group_students gs WHERE gs.group_id = g.id) AS student_count,
+            g.created_at, g.days::TEXT[],  -- ✅ Fixed: Explicitly casted to TEXT[]
+            g.start_time, g.date_type
+        FROM groups g
+                 LEFT JOIN courses c ON g.course_id = c.id
+                 LEFT JOIN rooms r ON g.room_id = r.id
+        WHERE g.company_id = p_company_id
+        ORDER BY
+            CASE WHEN p_order_by = 'name' THEN g.name END,
+            CASE WHEN p_order_by = 'start_date' THEN g.start_date END,
+            CASE WHEN p_order_by = 'end_date' THEN g.end_date END
+            NULLS LAST;
 END;
 $$ LANGUAGE plpgsql;
+
 
 
 

@@ -64,7 +64,7 @@ func (s *GroupService) GetGroups(ctx context.Context, req *pb.GetGroupsRequest) 
 
 	orderBy := req.OrderBy
 	if orderBy == "" {
-		orderBy = "name"
+		orderBy = "created_at"
 	}
 
 	orderDirection := req.OrderDirection
