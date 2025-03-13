@@ -52,7 +52,10 @@ func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, req
 		return
 	}
 	defer rows.Close()
-
+	var fetchAll bool
+	if len(requestedIds) == 1 && requestedIds[0] == "all" {
+		fetchAll = true
+	}
 	var sections []*pb.Section
 	for rows.Next() {
 		section := &pb.Section{}
@@ -61,8 +64,9 @@ func calculateSet(companyId string, p *pb.GetLeadCommonResponse, db *sql.DB, req
 			return
 		}
 		section.Type = "set"
-
-		if containsString(requestedIds, section.Id) {
+		if fetchAll {
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "set")
+		} else if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "set")
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where set_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
@@ -82,6 +86,10 @@ func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sq
 		return
 	}
 	defer rows.Close()
+	var fetchAll bool
+	if len(requestedIds) == 1 && requestedIds[0] == "all" {
+		fetchAll = true
+	}
 
 	var sections []*pb.Section
 	for rows.Next() {
@@ -91,8 +99,9 @@ func calculateExpectations(companyId string, p *pb.GetLeadCommonResponse, db *sq
 			return
 		}
 		section.Type = "expectation"
-
-		if containsString(requestedIds, section.Id) {
+		if fetchAll {
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "expectation")
+		} else if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "expectation")
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where expect_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
@@ -112,7 +121,10 @@ func calculateLeadsWithDetails(companyId string, p *pb.GetLeadCommonResponse, db
 		return
 	}
 	defer rows.Close()
-
+	var fetchAll bool
+	if len(requestedIds) == 1 && requestedIds[0] == "all" {
+		fetchAll = true
+	}
 	var sections []*pb.Section
 	for rows.Next() {
 		section := &pb.Section{}
@@ -121,7 +133,9 @@ func calculateLeadsWithDetails(companyId string, p *pb.GetLeadCommonResponse, db
 			return
 		}
 		section.Type = "lead"
-		if containsString(requestedIds, section.Id) {
+		if fetchAll {
+			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "lead")
+		} else if containsString(requestedIds, section.Id) {
 			section.Leads = fetchLeadsForSection(companyId, db, section.Id, "lead")
 		}
 		_ = db.QueryRow(`SELECT count(*) FROM lead_user where lead_id=$1 and company_id=$2`, section.Id, companyId).Scan(&section.LeadsCount)
