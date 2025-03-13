@@ -78,8 +78,7 @@ CREATE TABLE IF NOT EXISTS groups
                                                                ARRAY ['DUSHANBA', 'SESHANBA', 'CHORSHANBA', 'PAYSHANBA', 'JUMA', 'SHANBA', 'YAKSHANBA']),
     company_id  int references company (id)
 );
-
-CREATE FUNCTION filter_groups(
+CREATE OR REPLACE FUNCTION filter_groups(
     p_is_archived BOOLEAN DEFAULT NULL,
     p_teacher_id UUID DEFAULT NULL,
     p_course_id INT DEFAULT NULL,
@@ -88,55 +87,78 @@ CREATE FUNCTION filter_groups(
     p_end_date DATE DEFAULT NULL
 ) RETURNS TABLE (
                     id BIGINT,
-                    name VARCHAR,
                     course_id INT,
+                    course_name VARCHAR,
                     teacher_id UUID,
                     room_id INT,
-                    date_type VARCHAR,
-                    days TEXT[],
-                    start_time VARCHAR,
+                    room_name VARCHAR,
+                    room_capacity INT,
                     start_date DATE,
                     end_date DATE,
                     is_archived BOOLEAN,
+                    name VARCHAR,
+                    student_count INT,
                     created_at TIMESTAMP,
-                    company_id INT
+                    days TEXT[],
+                    start_time VARCHAR,
+                    date_type VARCHAR
                 ) AS $$
 BEGIN
     RETURN QUERY
-        SELECT * FROM groups
+        SELECT
+            g.id, g.course_id, c.title AS course_name,
+            g.teacher_id, g.room_id, r.title AS room_name, r.capacity AS room_capacity,
+            g.start_date, g.end_date, g.is_archived, g.name,
+            (SELECT COUNT(gs.id) FROM group_students gs WHERE gs.group_id = g.id) AS student_count,
+            g.created_at, g.days, g.start_time, g.date_type
+        FROM groups g
+                 LEFT JOIN courses c ON g.course_id = c.id
+                 LEFT JOIN rooms r ON g.room_id = r.id
         WHERE
-            (p_is_archived IS NULL OR is_archived = p_is_archived)
-          AND (p_teacher_id IS NULL OR teacher_id = p_teacher_id)
-          AND (p_course_id IS NULL OR course_id = p_course_id)
-          AND (p_date_type IS NULL OR date_type = p_date_type)
-          AND (p_start_date IS NULL OR start_date >= p_start_date)
-          AND (p_end_date IS NULL OR end_date <= p_end_date);
+            (p_is_archived IS NULL OR g.is_archived = p_is_archived)
+          AND (p_teacher_id IS NULL OR g.teacher_id = p_teacher_id)
+          AND (p_course_id IS NULL OR g.course_id = p_course_id)
+          AND (p_date_type IS NULL OR g.date_type = p_date_type)
+          AND (p_start_date IS NULL OR g.start_date >= p_start_date)
+          AND (p_end_date IS NULL OR g.end_date <= p_end_date);
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION sort_groups(
+
+CREATE OR REPLACE FUNCTION sort_groups(
     p_order_by TEXT DEFAULT 'name',
     p_order_direction TEXT DEFAULT 'ASC'
 ) RETURNS TABLE (
                     id BIGINT,
-                    name VARCHAR,
                     course_id INT,
+                    course_name VARCHAR,
                     teacher_id UUID,
                     room_id INT,
-                    date_type VARCHAR,
-                    days TEXT[],
-                    start_time VARCHAR,
+                    room_name VARCHAR,
+                    room_capacity INT,
                     start_date DATE,
                     end_date DATE,
                     is_archived BOOLEAN,
+                    name VARCHAR,
+                    student_count INT,
                     created_at TIMESTAMP,
-                    company_id INT
+                    days TEXT[],
+                    start_time VARCHAR,
+                    date_type VARCHAR
                 ) AS $$
 BEGIN
     RETURN QUERY
         EXECUTE format(
-            'SELECT * FROM groups
-             ORDER BY %I %s NULLS LAST',
+            'SELECT
+                g.id, g.course_id, c.title AS course_name,
+                g.teacher_id, g.room_id, r.title AS room_name, r.capacity AS room_capacity,
+                g.start_date, g.end_date, g.is_archived, g.name,
+                (SELECT COUNT(gs.id) FROM group_students gs WHERE gs.group_id = g.id) AS student_count,
+                g.created_at, g.days, g.start_time, g.date_type
+            FROM groups g
+            LEFT JOIN courses c ON g.course_id = c.id
+            LEFT JOIN rooms r ON g.room_id = r.id
+            ORDER BY %I %s NULLS LAST',
             p_order_by,
             CASE
                 WHEN p_order_direction ILIKE 'DESC' THEN 'DESC'
@@ -145,6 +167,7 @@ BEGIN
                 );
 END;
 $$ LANGUAGE plpgsql;
+
 
 
 
