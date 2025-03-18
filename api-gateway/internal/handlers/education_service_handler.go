@@ -484,9 +484,7 @@ func GetGroupByCourseId(ctx *gin.Context) {
 // @Tags students
 // @Produce json
 // @Security Bearer
-// @Param condition path string true "Condition" Enums(ARCHIVED, ACTIVE)
-// @Param page query string false "Page number"
-// @Param size query string false "Page size"
+// @Param filter body pb.GetAllStudentRequest true "filter students"
 // @Success 200 {object} pb.GetAllStudentResponse "List of students"
 // @Failure 400 {object} utils.AbsResponse "Invalid condition"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"

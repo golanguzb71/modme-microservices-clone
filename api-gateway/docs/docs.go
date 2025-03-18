@@ -4447,27 +4447,13 @@ const docTemplate = `{
                 "summary": "ADMIN",
                 "parameters": [
                     {
-                        "enum": [
-                            "ARCHIVED",
-                            "ACTIVE"
-                        ],
-                        "type": "string",
-                        "description": "Condition",
-                        "name": "condition",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Page size",
-                        "name": "size",
-                        "in": "query"
+                        "description": "filter students",
+                        "name": "filter",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -6567,6 +6553,32 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/pb.AbsStudentPayments"
                     }
+                }
+            }
+        },
+        "pb.GetAllStudentRequest": {
+            "type": "object",
+            "properties": {
+                "condition": {
+                    "type": "string"
+                },
+                "courseId": {
+                    "type": "string"
+                },
+                "nameOrSurname": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "trainingDatesEnd": {
+                    "type": "string"
+                },
+                "trainingDatesStart": {
+                    "type": "string"
                 }
             }
         },

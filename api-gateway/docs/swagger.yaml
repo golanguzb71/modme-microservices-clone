@@ -856,6 +856,23 @@ definitions:
           $ref: '#/definitions/pb.AbsStudentPayments'
         type: array
     type: object
+  pb.GetAllStudentRequest:
+    properties:
+      condition:
+        type: string
+      courseId:
+        type: string
+      nameOrSurname:
+        type: string
+      page:
+        type: string
+      size:
+        type: string
+      trainingDatesEnd:
+        type: string
+      trainingDatesStart:
+        type: string
+    type: object
   pb.GetAllStudentResponse:
     properties:
       response:
@@ -4445,22 +4462,12 @@ paths:
   /api/student/get-all:
     post:
       parameters:
-      - description: Condition
-        enum:
-        - ARCHIVED
-        - ACTIVE
-        in: path
-        name: condition
+      - description: filter students
+        in: body
+        name: filter
         required: true
-        type: string
-      - description: Page number
-        in: query
-        name: page
-        type: string
-      - description: Page size
-        in: query
-        name: size
-        type: string
+        schema:
+          $ref: '#/definitions/pb.GetAllStudentRequest'
       produces:
       - application/json
       responses:
