@@ -22,7 +22,7 @@ func (s *StudentService) GetAllStudent(ctx context.Context, req *pb.GetAllStuden
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return s.repo.GetAllStudent(ctx, companyId, req.Condition, req.Page, req.Size)
+	return s.repo.GetAllStudent(ctx, companyId, req.Condition, req.Page, req.Size, req.CourseId, req.NameOrSurname, req.TrainingDatesStart, req.TrainingDatesEnd)
 }
 func (s *StudentService) CreateStudent(ctx context.Context, req *pb.CreateStudentRequest) (*pb.AbsResponse, error) {
 	companyId := utils.GetCompanyId(ctx)

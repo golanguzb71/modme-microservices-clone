@@ -17,6 +17,7 @@ import (
 	"math"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -42,7 +43,7 @@ func (r *StudentRepository) ensureFinanceClient() error {
 	}
 	return nil
 }
-func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
+func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string, condition string, page string, size string, courseId string, nameOrSurname string, trainingDateStart, trainingDateEnd string) (*pb.GetAllStudentResponse, error) {
 	pageInt, err := strconv.Atoi(page)
 	if err != nil || pageInt < 1 {
 		return nil, fmt.Errorf("invalid page value: %v", err)
@@ -53,23 +54,38 @@ func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string,
 	}
 	offset := (pageInt - 1) * sizeInt
 
-	countQuery := `SELECT COUNT(*) FROM students WHERE condition = $1 and company_id=$2`
+	whereConditions := []string{"condition = $1", "company_id = $2"}
+	args := []interface{}{condition, companyId}
+	paramCount := 2
+
+	if nameOrSurname != "" {
+		paramCount++
+		whereConditions = append(whereConditions, fmt.Sprintf("(name ILIKE $%d OR surname ILIKE $%d)", paramCount, paramCount))
+		args = append(args, "%"+nameOrSurname+"%")
+	}
+
+	whereClause := strings.Join(whereConditions, " AND ")
+
+	countQuery := fmt.Sprintf("SELECT COUNT(*) FROM students WHERE %s", whereClause)
 	var totalCount int32
-	err = r.db.QueryRow(countQuery, condition, companyId).Scan(&totalCount)
+	err = r.db.QueryRow(countQuery, args...).Scan(&totalCount)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get total count: %v", err)
 	}
 
 	totalPages := int32(math.Ceil(float64(totalCount) / float64(sizeInt)))
 
-	studentQuery := `
+	studentQuery := fmt.Sprintf(`
     SELECT id, name, gender, date_of_birth, phone, address, passport_id, additional_contact, 
            balance, condition, telegram_username, created_at
     FROM students
-    WHERE condition = $1 and company_id=$4
+    WHERE %s
     ORDER BY created_at desc 
-    LIMIT $2 OFFSET $3`
-	studentRows, err := r.db.Query(studentQuery, condition, sizeInt, offset, companyId)
+    LIMIT $%d OFFSET $%d`, whereClause, paramCount+1, paramCount+2)
+
+	args = append(args, sizeInt, offset)
+
+	studentRows, err := r.db.Query(studentQuery, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute student query: %v", err)
 	}
@@ -98,7 +114,29 @@ func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string,
 		studentIDs[i] = student.Id
 	}
 
-	groupQuery := `
+	groupQueryWhere := "s.id = ANY($1) AND c.company_id = $2"
+	groupQueryArgs := []interface{}{pq.Array(studentIDs), companyId}
+	groupParamCount := 2
+
+	if courseId != "" {
+		groupParamCount++
+		groupQueryWhere += fmt.Sprintf(" AND c.id = $%d", groupParamCount)
+		groupQueryArgs = append(groupQueryArgs, courseId)
+	}
+
+	if trainingDateStart != "" {
+		groupParamCount++
+		groupQueryWhere += fmt.Sprintf(" AND g.start_date >= $%d", groupParamCount)
+		groupQueryArgs = append(groupQueryArgs, trainingDateStart)
+	}
+
+	if trainingDateEnd != "" {
+		groupParamCount++
+		groupQueryWhere += fmt.Sprintf(" AND g.start_date <= $%d", groupParamCount)
+		groupQueryArgs = append(groupQueryArgs, trainingDateEnd)
+	}
+
+	groupQuery := fmt.Sprintf(`
     SELECT 
         s.id AS student_id,
         g.id AS group_id, g.name AS group_name, g.start_date, g.end_date, g.date_type, g.days, g.start_time,
@@ -107,12 +145,12 @@ func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string,
         gs.condition AS student_group_condition, g.room_id, gs.last_specific_date AS student_activated_at
     FROM students s
     JOIN group_students gs ON s.id = gs.student_id
-    JOIN groups g ON gs.group_id = g.id and g.is_archived='false'
+    JOIN groups g ON gs.group_id = g.id AND g.is_archived = 'false'
     JOIN courses c ON g.course_id = c.id
-    WHERE s.id = ANY($1) and c.company_id=$2
-    ORDER BY s.id, g.id`
+    WHERE %s
+    ORDER BY s.id, g.id`, groupQueryWhere)
 
-	groupRows, err := r.db.Query(groupQuery, pq.Array(studentIDs), companyId)
+	groupRows, err := r.db.Query(groupQuery, groupQueryArgs...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute group query: %v", err)
 	}

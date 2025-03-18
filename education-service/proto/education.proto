@@ -596,6 +596,10 @@ message GetAllStudentRequest{
   string condition = 1;
   string page = 2;
   string size = 3;
+  string nameOrSurname = 4;
+  string courseId = 5;
+  string trainingDatesStart = 6;
+  string trainingDatesEnd = 7;
 }
 message GetAllStudentResponse{
   repeated GetGroupsAbsForStudent response = 1;
