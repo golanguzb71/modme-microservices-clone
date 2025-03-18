@@ -493,7 +493,7 @@ func GetAllStudent(ctx *gin.Context) {
 	var (
 		req *pb.GetAllStudentRequest
 	)
-	err := ctx.ShouldBindJSON(req)
+	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
