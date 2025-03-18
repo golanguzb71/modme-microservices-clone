@@ -490,18 +490,20 @@ func GetGroupByCourseId(ctx *gin.Context) {
 // @Success 200 {object} pb.GetAllStudentResponse "List of students"
 // @Failure 400 {object} utils.AbsResponse "Invalid condition"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
-// @Router /api/student/get-all/{condition} [get]
+// @Router /api/student/get-all [post]
 func GetAllStudent(ctx *gin.Context) {
-	ctxR, cancel := etc.NewTimoutContext(ctx)
-	defer cancel()
-	condition := ctx.Param("condition")
-	if condition != "ARCHIVED" && condition != "ACTIVE" {
-		utils.RespondError(ctx, http.StatusBadRequest, "Invalid condition")
+	var (
+		req *pb.GetAllStudentRequest
+	)
+	err := ctx.ShouldBindJSON(req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	page := ctx.Query("page")
-	size := ctx.Query("size")
-	response, err := educationClient.GetAllStudent(ctxR, condition, page, size)
+
+	ctxR, cancel := etc.NewTimoutContext(ctx)
+	defer cancel()
+	response, err := educationClient.GetAllStudent(ctxR, req)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusInternalServerError, err.Error())
 		return

@@ -68,7 +68,7 @@ func EducationRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	}
 	student := api.Group("/student")
 	{
-		student.GET("/get-all/:condition", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudent)
+		student.POST("/get-all", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudent)
 		student.GET("/get-student-by-id/:studentId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetStudentById)
 		student.GET("/search-student/:value", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.SearchStudent)
 		student.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateStudent)

@@ -111,12 +111,8 @@ func (lc *EducationClient) GetGroupByCourseId(ctx context.Context, courseId stri
 	return lc.groupClient.GetGroupsByCourseId(ctx, &pb.GetGroupByIdRequest{Id: courseId})
 }
 
-func (lc *EducationClient) GetAllStudent(ctx context.Context, condition string, page string, size string) (*pb.GetAllStudentResponse, error) {
-	response, err := lc.studentClient.GetAllStudent(ctx, &pb.GetAllStudentRequest{
-		Condition: condition,
-		Page:      page,
-		Size:      size,
-	})
+func (lc *EducationClient) GetAllStudent(ctx context.Context, req *pb.GetAllStudentRequest) (*pb.GetAllStudentResponse, error) {
+	response, err := lc.studentClient.GetAllStudent(ctx, req)
 	if err != nil {
 		return nil, err
 	}

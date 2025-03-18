@@ -4431,8 +4431,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/student/get-all/{condition}": {
-            "get": {
+        "/api/student/get-all": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []

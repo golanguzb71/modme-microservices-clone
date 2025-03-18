@@ -4442,8 +4442,8 @@ paths:
       summary: ADMIN
       tags:
       - students
-  /api/student/get-all/{condition}:
-    get:
+  /api/student/get-all:
+    post:
       parameters:
       - description: Condition
         enum:
