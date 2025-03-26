@@ -206,9 +206,25 @@ message GetAllStudentPaymentsChartResponse{
   repeated AbsTakeOfChartResponse paymentsChart = 5;
 }
 message GetAllStudentPaymentsRequest{
+  common.PageRequest page=6;
   string from = 1;
   string to = 2;
+  repeated Filters filters = 4;
+  repeated SortBy sorts = 5;
 }
+
+message Filters {
+  string field = 1;
+  string type = 2;
+  string value = 3;
+}
+
+message SortBy {
+  string field = 1;
+  string type = 2;
+}
+
+
 message GetAllStudentPaymentsResponse{
   repeated AbsStudentPayments payments = 1;
 }

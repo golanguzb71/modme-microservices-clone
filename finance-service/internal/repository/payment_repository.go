@@ -459,29 +459,90 @@ func (r *PaymentRepository) GetAllPaymentTakeOffChart(ctx context.Context, compa
 
 	return response, nil
 }
+func (r *PaymentRepository) GetAllStudentPayments(
+	ctx context.Context,
+	companyId string,
+	from string,
+	to string,
+	filters []*pb.Filters,
+	sorts []*pb.SortBy,
+	pageRequest *pb.PageRequest,
+) (*pb.GetAllStudentPaymentsResponse, error) {
 
-func (r *PaymentRepository) GetAllStudentPayments(ctx context.Context, companyId string, from string, to string) (*pb.GetAllStudentPaymentsResponse, error) {
 	query := `
 SELECT 
-       student_id,
-       method,
-       amount,
-       given_date,
-       comment,
-       created_by_id,
-       created_by_name
+    student_id,
+    method,
+    amount,
+    given_date,
+    comment,
+    created_by_id,
+    created_by_name
 FROM student_payments
-where given_date between $1 and $2
-  and payment_type = 'ADD' and company_id=$3  order by created_at desc 
+WHERE given_date BETWEEN $1 AND $2
+  AND payment_type = 'ADD'
+  AND company_id = $3
 `
-	rows, err := r.db.Query(query, from, to, companyId)
+
+	args := []interface{}{from, to, companyId}
+	argIndex := 4
+
+	// Add filters
+	allowedFields := map[string]bool{
+		"method":        true,
+		"group_id":      true,
+		"student_id":    true,
+		"created_by_id": true,
+		"amount":        true,
+	}
+
+	for _, f := range filters {
+		if f.Field == "" || f.Value == "" || !allowedFields[f.Field] {
+			continue
+		}
+		operator := getSQLOperator(f.Type)
+		if operator == "" {
+			continue
+		}
+		query += fmt.Sprintf(" AND %s %s $%d", f.Field, operator, argIndex)
+		args = append(args, f.Value)
+		argIndex++
+	}
+
+	// Sorting
+	if len(sorts) > 0 {
+		query += " ORDER BY "
+		orderClauses := []string{}
+		for _, s := range sorts {
+			order := "ASC"
+			if strings.ToUpper(s.Type) == "DESC" {
+				order = "DESC"
+			}
+			orderClauses = append(orderClauses, fmt.Sprintf("%s %s", s.Field, order))
+		}
+		query += strings.Join(orderClauses, ", ")
+	} else {
+		query += " ORDER BY created_at DESC"
+	}
+
+	// Pagination
+	if pageRequest != nil && pageRequest.Size > 0 {
+		offset := (pageRequest.Page - 1) * pageRequest.Size
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
+		args = append(args, pageRequest.Size, offset)
+	}
+
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
-	ctx, cancelFunc := utils.NewTimoutContext(ctx, companyId)
-	defer cancelFunc()
 	defer rows.Close()
+
+	ctx, cancel := utils.NewTimoutContext(ctx, companyId)
+	defer cancel()
+
 	resp := pb.GetAllStudentPaymentsResponse{}
+
 	for rows.Next() {
 		el := pb.AbsStudentPayments{}
 		err := rows.Scan(&el.StudentId, &el.Method, &el.Amount, &el.GivenDate, &el.Comment, &el.CreatorId, &el.CreatorName)
@@ -492,34 +553,67 @@ where given_date between $1 and $2
 		el.StudentName = name
 		resp.Payments = append(resp.Payments, &el)
 	}
+
 	return &resp, nil
 }
 
-func (r *PaymentRepository) GetAllStudentPaymentsChart(ctx context.Context, companyId string, from string, to string) (*pb.GetAllStudentPaymentsChartResponse, error) {
+func (r *PaymentRepository) GetAllStudentPaymentsChart(
+	ctx context.Context,
+	companyId string,
+	from string,
+	to string,
+	filters []*pb.Filters,
+	sorts []*pb.SortBy,
+	_ *pb.PageRequest,
+) (*pb.GetAllStudentPaymentsChartResponse, error) {
 	var (
-		cash  float64
-		payme float64
-		click float64
+		cash, payme, click float64
 	)
-	resp := pb.GetAllStudentPaymentsChartResponse{}
-	query := `
-SELECT coalesce((SELECT sum(amount)
-                 FROM student_payments
-                 where method = 'CASH' and payment_type != 'TAKE_OFF'
-                   and given_date between $1 and $2 and company_id=$3), 0),
-       coalesce((SELECT sum(amount)
-                 FROM student_payments
-                 where method = 'PAYME' and payment_type != 'TAKE_OFF'
-                   and given_date between $1 and $2 and company_id=$3 ), 0),
-       coalesce((SELECT sum(amount)
-                 FROM student_payments
-                 where method = 'CLICK' and payment_type != 'TAKE_OFF'
-                   and given_date between $1 and $2 and company_id=$3), 0)
-`
 
-	err := r.db.QueryRow(query, from, to, companyId).Scan(&cash, &payme, &click)
+	resp := pb.GetAllStudentPaymentsChartResponse{}
+
+	baseConditions := []string{
+		"payment_type != 'TAKE_OFF'",
+		"given_date BETWEEN $1 AND $2",
+		"company_id = $3",
+	}
+
+	args := []interface{}{from, to, companyId}
+	argIndex := 4
+
+	allowedFields := map[string]bool{
+		"method":        true,
+		"group_id":      true,
+		"student_id":    true,
+		"created_by_id": true,
+		"amount":        true,
+	}
+
+	for _, f := range filters {
+		if f.Field == "" || f.Value == "" || !allowedFields[f.Field] {
+			continue
+		}
+		operator := getSQLOperator(f.Type)
+		if operator == "" {
+			continue
+		}
+		baseConditions = append(baseConditions, fmt.Sprintf("%s %s $%d", f.Field, operator, argIndex))
+		args = append(args, f.Value)
+		argIndex++
+	}
+
+	conditionStr := strings.Join(baseConditions, " AND ")
+
+	summaryQuery := fmt.Sprintf(`
+SELECT
+  COALESCE((SELECT SUM(amount) FROM student_payments WHERE method = 'CASH' AND %s), 0),
+  COALESCE((SELECT SUM(amount) FROM student_payments WHERE method = 'PAYME' AND %s), 0),
+  COALESCE((SELECT SUM(amount) FROM student_payments WHERE method = 'CLICK' AND %s), 0)
+`, conditionStr, conditionStr, conditionStr)
+
+	err := r.db.QueryRow(summaryQuery, args...).Scan(&cash, &payme, &click)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error scanning revenue summary: %w", err)
 	}
 
 	resp.TotalRevenue = strconv.FormatFloat(cash+payme+click, 'f', 2, 64)
@@ -527,39 +621,71 @@ SELECT coalesce((SELECT sum(amount)
 	resp.Click = strconv.FormatFloat(click, 'f', 2, 64)
 	resp.Payme = strconv.FormatFloat(payme, 'f', 2, 64)
 
-	query = `
-        SELECT 
-            given_date, 
-            SUM(amount)
-        FROM 
-            student_payments
-        WHERE 
-            payment_type = 'ADD'
-            AND given_date BETWEEN $1 AND $2
-        	and company_id=$3
-        GROUP BY 
-            given_date
-        ORDER BY 
-            given_date;
-    `
+	chartQuery := `
+SELECT 
+  given_date, 
+  SUM(amount)
+FROM 
+  student_payments
+WHERE 
+  payment_type = 'ADD' 
+  AND given_date BETWEEN $1 AND $2 
+  AND company_id = $3
+`
+	chartArgs := []interface{}{from, to, companyId}
+	chartIndex := 4
 
-	rows, err := r.db.Query(query, from, to, companyId)
+	for _, f := range filters {
+		if f.Field == "" || f.Value == "" || !allowedFields[f.Field] {
+			continue
+		}
+		operator := getSQLOperator(f.Type)
+		if operator == "" {
+			continue
+		}
+		chartQuery += fmt.Sprintf(" AND %s %s $%d", f.Field, operator, chartIndex)
+		chartArgs = append(chartArgs, f.Value)
+		chartIndex++
+	}
+
+	chartQuery += `
+GROUP BY given_date
+`
+
+	// Sorting
+	if len(sorts) > 0 {
+		chartQuery += " ORDER BY "
+		orderParts := []string{}
+		for _, s := range sorts {
+			order := "ASC"
+			if strings.ToUpper(s.Type) == "DESC" {
+				order = "DESC"
+			}
+			switch s.Field {
+			case "given_date":
+				orderParts = append(orderParts, fmt.Sprintf("%s %s", s.Field, order))
+			}
+		}
+		if len(orderParts) > 0 {
+			chartQuery += strings.Join(orderParts, ", ")
+		} else {
+			chartQuery += "given_date"
+		}
+	} else {
+		chartQuery += " ORDER BY given_date"
+	}
+
+	rows, err := r.db.Query(chartQuery, chartArgs...)
 	if err != nil {
-		return nil, fmt.Errorf("error querying payment chart data: %w", err)
+		return nil, fmt.Errorf("error querying chart data: %w", err)
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var chartEntry pb.AbsTakeOfChartResponse
-
-		err := rows.Scan(
-			&chartEntry.YearMonth,
-			&chartEntry.Amount,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning chart data row: %w", err)
+		if err := rows.Scan(&chartEntry.YearMonth, &chartEntry.Amount); err != nil {
+			return nil, fmt.Errorf("error scanning chart row: %w", err)
 		}
-
 		resp.PaymentsChart = append(resp.PaymentsChart, &chartEntry)
 	}
 
@@ -568,6 +694,25 @@ SELECT coalesce((SELECT sum(amount)
 	}
 
 	return &resp, nil
+}
+
+func getSQLOperator(op string) string {
+	switch op {
+	case "=", "==":
+		return "="
+	case "!=", "<>":
+		return "!="
+	case "<":
+		return "<"
+	case "<=":
+		return "<="
+	case ">":
+		return ">"
+	case ">=":
+		return ">="
+	default:
+		return ""
+	}
 }
 
 func (r *PaymentRepository) GetAllDebtsInformation(ctx context.Context, companyId string, from, to string, amountFrom, amountTo int64, page, size int32) (*pb.GetAllDebtsInformationResponse, error) {

@@ -97,7 +97,7 @@ func (ps *PaymentService) GetAllStudentPayments(ctx context.Context, req *pb.Get
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllStudentPayments(ctx, companyId, req.From, req.To)
+	return ps.repo.GetAllStudentPayments(ctx, companyId, req.From, req.To, req.Filters, req.Sorts, req.Page)
 }
 
 func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *pb.GetAllStudentPaymentsRequest) (*pb.GetAllStudentPaymentsChartResponse, error) {
@@ -105,7 +105,7 @@ func (ps *PaymentService) GetAllStudentPaymentsChart(ctx context.Context, req *p
 	if companyId == "" {
 		return nil, status.Error(codes.Aborted, "error while getting company from context")
 	}
-	return ps.repo.GetAllStudentPaymentsChart(ctx, companyId, req.From, req.To)
+	return ps.repo.GetAllStudentPaymentsChart(ctx, companyId, req.From, req.To, req.Filters, req.Sorts, req.Page)
 }
 
 func (ps *PaymentService) GetAllDebtsInformation(ctx context.Context, req *pb.GetAllDebtsRequest) (*pb.GetAllDebtsInformationResponse, error) {
