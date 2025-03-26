@@ -39,8 +39,8 @@ func FinanceRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 			payment.GET("/get-all-payments/:studentId/:month", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPayments)
 			payment.GET("/payment-take-off/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllTakeOffPayment)
 			payment.GET("/payment-take-off/chart/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetPaymentTakeOffChart)
-			payment.GET("/all-student-payments/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudentPayment)
-			payment.GET("/all-student-payments/chart/:from/:to", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPaymentsStudentChart)
+			payment.POST("/all-student-payments", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStudentPayment)
+			payment.POST("/all-student-payments/chart", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllPaymentsStudentChart)
 			payment.GET("/get-all-debts/:page/:size", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllDebtsInformation)
 		}
 		salary := finance.Group("/salary")

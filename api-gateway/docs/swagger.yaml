@@ -721,6 +721,15 @@ definitions:
       name:
         type: string
     type: object
+  pb.Filters:
+    properties:
+      field:
+        type: string
+      type:
+        type: string
+      value:
+        type: string
+    type: object
   pb.FreezeDetail:
     properties:
       reason:
@@ -847,6 +856,23 @@ definitions:
           $ref: '#/definitions/pb.AbsTakeOfChartResponse'
         type: array
       totalRevenue:
+        type: string
+    type: object
+  pb.GetAllStudentPaymentsRequest:
+    properties:
+      filters:
+        items:
+          $ref: '#/definitions/pb.Filters'
+        type: array
+      from:
+        type: string
+      page:
+        $ref: '#/definitions/pb.PageRequest'
+      sorts:
+        items:
+          $ref: '#/definitions/pb.SortBy'
+        type: array
+      to:
         type: string
     type: object
   pb.GetAllStudentPaymentsResponse:
@@ -1463,6 +1489,13 @@ definitions:
       teacherName:
         type: string
       title:
+        type: string
+    type: object
+  pb.SortBy:
+    properties:
+      field:
+        type: string
+      type:
         type: string
     type: object
   pb.Student:
@@ -2837,21 +2870,17 @@ paths:
       summary: ADMIN , CEO
       tags:
       - expense
-  /api/finance/payment/all-student-payments/{from}/{to}:
-    get:
+  /api/finance/payment/all-student-payments:
+    post:
       description: Retrieves a list of student payments between the provided 'from'
         and 'to' date parameters.
       parameters:
-      - description: 'Start date (format: YYYY-MM-DD)'
-        in: path
-        name: from
+      - description: get all student payment request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 'End date (format: YYYY-MM-DD)'
-        in: path
-        name: to
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/pb.GetAllStudentPaymentsRequest'
       produces:
       - application/json
       responses:
@@ -2872,21 +2901,17 @@ paths:
       summary: ADMIN , CEO
       tags:
       - payments
-  /api/finance/payment/all-student-payments/chart/{from}/{to}:
-    get:
+  /api/finance/payment/all-student-payments/chart:
+    post:
       description: Fetches payment data for students between the given 'from' and
         'to' dates to be used in chart visualizations.
       parameters:
-      - description: 'Start date (format: YYYY-MM-DD)'
-        in: path
-        name: from
+      - description: get all student payment request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: 'End date (format: YYYY-MM-DD)'
-        in: path
-        name: to
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/pb.GetAllStudentPaymentsRequest'
       produces:
       - application/json
       responses:

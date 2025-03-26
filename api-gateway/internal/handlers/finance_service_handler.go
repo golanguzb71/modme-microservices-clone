@@ -622,19 +622,24 @@ func GetPaymentTakeOffChart(ctx *gin.Context) {
 // @Description Retrieves a list of student payments between the provided 'from' and 'to' date parameters.
 // @Tags payments
 // @Produce json
-// @Param from path string true "Start date (format: YYYY-MM-DD)"
-// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Param request body pb.GetAllStudentPaymentsRequest true "get all student payment request"
 // @Success 200 {object} pb.GetAllStudentPaymentsResponse "List of payments"
 // @Failure 409 {object} utils.AbsResponse "Conflict error with an explanation"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Security Bearer
-// @Router /api/finance/payment/all-student-payments/{from}/{to} [get]
+// @Router /api/finance/payment/all-student-payments [post]
 func GetAllStudentPayment(ctx *gin.Context) {
+	var (
+		req pb.GetAllStudentPaymentsRequest
+	)
 	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
-	from := ctx.Param("from")
-	to := ctx.Param("to")
-	resp, err := financeClient.GetAllStudentPayment(from, to, ctxR)
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp, err := financeClient.GetAllStudentPayment(&req, ctxR)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return
@@ -648,19 +653,24 @@ func GetAllStudentPayment(ctx *gin.Context) {
 // @Description Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.
 // @Tags payments
 // @Produce json
-// @Param from path string true "Start date (format: YYYY-MM-DD)"
-// @Param to path string true "End date (format: YYYY-MM-DD)"
+// @Param request body pb.GetAllStudentPaymentsRequest true "get all student payment request"
 // @Success 200 {object} pb.GetAllStudentPaymentsChartResponse "Chart data of payments"
 // @Failure 409 {object} utils.AbsResponse "Conflict error with an explanation"
 // @Failure 500 {object} utils.AbsResponse "Internal server error"
 // @Security Bearer
-// @Router /api/finance/payment/all-student-payments/chart/{from}/{to} [get]
+// @Router /api/finance/payment/all-student-payments/chart [post]
 func GetAllPaymentsStudentChart(ctx *gin.Context) {
+	var (
+		req pb.GetAllStudentPaymentsRequest
+	)
 	ctxR, cancel := etc.NewTimoutContext(ctx)
 	defer cancel()
-	from := ctx.Param("from")
-	to := ctx.Param("to")
-	resp, err := financeClient.GetAllPaymentsStudent(from, to, ctxR)
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		utils.RespondError(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	resp, err := financeClient.GetAllPaymentsStudent(&req, ctxR)
 	if err != nil {
 		utils.RespondError(ctx, http.StatusConflict, err.Error())
 		return

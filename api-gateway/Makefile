@@ -11,7 +11,7 @@ clean:
 	rm -f docs/docs.go docs/swagger.json docs/swagger.yaml
 
 clean_omit:
-	find ./grpc/proto/pb -name "*.pb.go" -exec sh -c 'sed -i "s/,omitempty//" {}' \;
+	find ./grpc/proto/pb -name "*.pb.go" -exec sed -i '' 's/,omitempty//g' {} +
 run:
 	go run cmd/main.go
 

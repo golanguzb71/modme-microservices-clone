@@ -1883,42 +1883,37 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment/all-student-payments/chart/{from}/{to}": {
-            "get": {
+        "/api/finance/payment/all-student-payments": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.",
+                "description": "Retrieves a list of student payments between the provided 'from' and 'to' date parameters.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "payments"
                 ],
-                "summary": "ADMIN ,CEO",
+                "summary": "ADMIN , CEO",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Start date (format: YYYY-MM-DD)",
-                        "name": "from",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End date (format: YYYY-MM-DD)",
-                        "name": "to",
-                        "in": "path",
-                        "required": true
+                        "description": "get all student payment request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Chart data of payments",
+                        "description": "List of payments",
                         "schema": {
-                            "$ref": "#/definitions/pb.GetAllStudentPaymentsChartResponse"
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsResponse"
                         }
                     },
                     "409": {
@@ -1936,42 +1931,37 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/finance/payment/all-student-payments/{from}/{to}": {
-            "get": {
+        "/api/finance/payment/all-student-payments/chart": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "Retrieves a list of student payments between the provided 'from' and 'to' date parameters.",
+                "description": "Fetches payment data for students between the given 'from' and 'to' dates to be used in chart visualizations.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "payments"
                 ],
-                "summary": "ADMIN , CEO",
+                "summary": "ADMIN ,CEO",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Start date (format: YYYY-MM-DD)",
-                        "name": "from",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "End date (format: YYYY-MM-DD)",
-                        "name": "to",
-                        "in": "path",
-                        "required": true
+                        "description": "get all student payment request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of payments",
+                        "description": "Chart data of payments",
                         "schema": {
-                            "$ref": "#/definitions/pb.GetAllStudentPaymentsResponse"
+                            "$ref": "#/definitions/pb.GetAllStudentPaymentsChartResponse"
                         }
                     },
                     "409": {
@@ -6347,6 +6337,20 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.Filters": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.FreezeDetail": {
             "type": "object",
             "properties": {
@@ -6541,6 +6545,32 @@ const docTemplate = `{
                     }
                 },
                 "totalRevenue": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetAllStudentPaymentsRequest": {
+            "type": "object",
+            "properties": {
+                "filters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.Filters"
+                    }
+                },
+                "from": {
+                    "type": "string"
+                },
+                "page": {
+                    "$ref": "#/definitions/pb.PageRequest"
+                },
+                "sorts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.SortBy"
+                    }
+                },
+                "to": {
                     "type": "string"
                 }
             }
@@ -7488,6 +7518,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.SortBy": {
+            "type": "object",
+            "properties": {
+                "field": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
