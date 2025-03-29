@@ -63,6 +63,11 @@ func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string,
 		whereConditions = append(whereConditions, fmt.Sprintf("name ILIKE $%d", paramCount))
 		args = append(args, "%"+nameOrSurname+"%")
 	}
+	if nameOrSurname != "" {
+		paramCount++
+		whereConditions = append(whereConditions, fmt.Sprintf("phone ILIKE $%d", paramCount))
+		args = append(args, "%"+nameOrSurname+"%")
+	}
 
 	whereClause := strings.Join(whereConditions, " AND ")
 
