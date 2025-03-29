@@ -58,12 +58,12 @@ func (r *StudentRepository) GetAllStudent(ctx context.Context, companyId string,
 	args := []interface{}{condition, companyId}
 	paramCount := 2
 
-	if nameOrSurname != "" {
+	if nameOrSurname != "" && nameOrSurname[0] != '+' {
 		paramCount++
 		whereConditions = append(whereConditions, fmt.Sprintf("name ILIKE $%d", paramCount))
 		args = append(args, "%"+nameOrSurname+"%")
 	}
-	if nameOrSurname != "" {
+	if nameOrSurname != "" && nameOrSurname[0] == '+' {
 		paramCount++
 		whereConditions = append(whereConditions, fmt.Sprintf("phone ILIKE $%d", paramCount))
 		args = append(args, "%"+nameOrSurname+"%")
