@@ -176,7 +176,7 @@ func (r *UserRepository) DeleteUser(ctx context.Context, companyId string, id st
 }
 func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.GetAllEmployeeResponse, error) {
 	query := `
-        SELECT id, full_name, phone_number, role, birth_date, gender, is_deleted, created_at 
+        SELECT id, full_name, phone_number, role, birth_date, gender, is_deleted, created_at , has_access_finance
         FROM users 
         WHERE is_deleted = $1 AND role IN ('ADMIN', 'EMPLOYEE' , 'FINANCIST') and company_id=$2
     `
@@ -192,7 +192,7 @@ func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.
 	for rows.Next() {
 		var emp pb.GetUserByIdResponse
 		var createdAt time.Time
-		err := rows.Scan(&emp.Id, &emp.Name, &emp.PhoneNumber, &emp.Role, &emp.BirthDate, &emp.Gender, &emp.IsDeleted, &createdAt)
+		err := rows.Scan(&emp.Id, &emp.Name, &emp.PhoneNumber, &emp.Role, &emp.BirthDate, &emp.Gender, &emp.IsDeleted, &createdAt, &emp.HasAccessFinance)
 		if err != nil {
 			return nil, err
 		}
