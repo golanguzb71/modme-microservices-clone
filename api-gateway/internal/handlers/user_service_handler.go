@@ -111,7 +111,7 @@ func UpdateUserById(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
-	if user.Role == "TEACHER" || user.Role == "EMPLOYEE" {
+	if user.Role == "TEACHER" || user.Role == "EMPLOYEE" || user.Role == "FINANCIST" {
 		req.Id = user.Id
 	}
 	err = ctx.ShouldBindJSON(&req)
