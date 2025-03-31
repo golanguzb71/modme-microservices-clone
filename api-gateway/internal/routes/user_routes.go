@@ -12,15 +12,15 @@ func UserRoutes(api *gin.RouterGroup, userClient *client.UserClient) {
 	{
 		user.POST("/login", handlers.Login)
 		user.POST("/create", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.CreateUser)
-		user.GET("/get-teachers/:isDeleted", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetTeachers)
-		user.GET("/get-user/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetUserById)
-		user.PATCH("/update", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.UpdateUserById)
+		user.GET("/get-teachers/:isDeleted", etc.AuthMiddleware([]string{"ADMIN", "CEO", "FINANIST"}, userClient), handlers.GetTeachers)
+		user.GET("/get-user/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO", "FINANCIST"}, userClient), handlers.GetUserById)
+		user.PATCH("/update", etc.AuthMiddleware([]string{"ADMIN", "CEO", "FINANCIST"}, userClient), handlers.UpdateUserById)
 		user.DELETE("/delete/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.DeleteUserById)
-		user.GET("/get-all-employee/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllEmployee)
-		user.GET("/get-my-profile", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER", "SUPER_CEO"}, userClient), handlers.GetMyInformation)
-		user.GET("/get-all-staff/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO"}, userClient), handlers.GetAllStaff)
-		user.GET("/history/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER"}, userClient), handlers.GetUserHistoryById)
-		user.PUT("/update-password/:userId/:password", etc.AuthMiddleware([]string{"CEO"}, userClient), handlers.UpdateUserPassword)
+		user.GET("/get-all-employee/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO", "FINANCIST"}, userClient), handlers.GetAllEmployee)
+		user.GET("/get-my-profile", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER", "SUPER_CEO", "FINANCIST"}, userClient), handlers.GetMyInformation)
+		user.GET("/get-all-staff/:isArchived", etc.AuthMiddleware([]string{"ADMIN", "CEO", "FINANCIST"}, userClient), handlers.GetAllStaff)
+		user.GET("/history/:userId", etc.AuthMiddleware([]string{"ADMIN", "CEO", "TEACHER", "FINANCIST"}, userClient), handlers.GetUserHistoryById)
+		user.PUT("/update-password/:userId/:password", etc.AuthMiddleware([]string{"CEO", "FINANCIST"}, userClient), handlers.UpdateUserPassword)
 	}
 	companyUser := api.Group("/company-user")
 	{
