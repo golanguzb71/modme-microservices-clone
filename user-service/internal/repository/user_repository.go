@@ -108,7 +108,7 @@ func (r *UserRepository) GetUserById(companyId string, userId string) (*pb.GetUs
 }
 func (r *UserRepository) UpdateUser(companyId string, userId string, name string, gender bool, role string, birthDate string, phoneNumber, password string, accessFinance bool) (*pb.AbsResponse, error) {
 	var err error
-
+	fmt.Printf("heree access to finance %v\n", accessFinance)
 	if password != "" {
 		query := `
         UPDATE users 
