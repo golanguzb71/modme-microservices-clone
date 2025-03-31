@@ -7782,6 +7782,9 @@ const docTemplate = `{
         "pb.UpdateUserRequest": {
             "type": "object",
             "properties": {
+                "accessFinance": {
+                    "type": "boolean"
+                },
                 "birthDate": {
                     "type": "string"
                 },

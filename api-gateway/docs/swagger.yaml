@@ -1661,6 +1661,8 @@ definitions:
     type: object
   pb.UpdateUserRequest:
     properties:
+      accessFinance:
+        type: boolean
       birthDate:
         type: string
       gender:

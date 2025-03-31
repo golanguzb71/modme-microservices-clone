@@ -334,6 +334,7 @@ type UpdateUserRequest struct {
 	BirthDate     string                 `protobuf:"bytes,4,opt,name=birthDate,proto3" json:"birthDate,omitempty"`
 	Gender        bool                   `protobuf:"varint,5,opt,name=gender,proto3" json:"gender,omitempty"`
 	Password      string                 `protobuf:"bytes,7,opt,name=password,proto3" json:"password,omitempty"`
+	AccessFinance bool                   `protobuf:"varint,8,opt,name=accessFinance,proto3" json:"accessFinance,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -415,6 +416,13 @@ func (x *UpdateUserRequest) GetPassword() string {
 		return x.Password
 	}
 	return ""
+}
+
+func (x *UpdateUserRequest) GetAccessFinance() bool {
+	if x != nil {
+		return x.AccessFinance
+	}
+	return false
 }
 
 type GetAllEmployeeRequest struct {
@@ -1099,7 +1107,7 @@ const file_user_proto_rawDesc = "" +
 	"\fupdatedField\x18\x01 \x01(\tR\fupdatedField\x12\x1a\n" +
 	"\boldValue\x18\x02 \x01(\tR\boldValue\x12\"\n" +
 	"\fcurrentValue\x18\x03 \x01(\tR\fcurrentValue\x12\x1c\n" +
-	"\tcreatedAt\x18\x04 \x01(\tR\tcreatedAt\"\xbf\x01\n" +
+	"\tcreatedAt\x18\x04 \x01(\tR\tcreatedAt\"\xe5\x01\n" +
 	"\x11UpdateUserRequest\x12\x0e\n" +
 	"\x02id\x18\x06 \x01(\tR\x02id\x12 \n" +
 	"\vphoneNumber\x18\x01 \x01(\tR\vphoneNumber\x12\x12\n" +
@@ -1107,7 +1115,8 @@ const file_user_proto_rawDesc = "" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
 	"\tbirthDate\x18\x04 \x01(\tR\tbirthDate\x12\x16\n" +
 	"\x06gender\x18\x05 \x01(\bR\x06gender\x12\x1a\n" +
-	"\bpassword\x18\a \x01(\tR\bpassword\"7\n" +
+	"\bpassword\x18\a \x01(\tR\bpassword\x12$\n" +
+	"\raccessFinance\x18\b \x01(\bR\raccessFinance\"7\n" +
 	"\x15GetAllEmployeeRequest\x12\x1e\n" +
 	"\n" +
 	"isArchived\x18\x01 \x01(\bR\n" +
