@@ -60,6 +60,7 @@ message GetUserByIdResponse{
   bool is_deleted = 7;
   string createdAt = 8;
   int32 companyId = 9;
+  bool has_access_finance=10;
 }
 message CreateUserRequest{
   string fullName = 1;

@@ -454,18 +454,19 @@ func (x *UserAbsRequest) GetUserId() string {
 }
 
 type GetUserByIdResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
-	PhoneNumber   string                 `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
-	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role"`
-	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name"`
-	BirthDate     string                 `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
-	Gender        bool                   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
-	IsDeleted     bool                   `protobuf:"varint,7,opt,name=is_deleted,json=isDeleted,proto3" json:"is_deleted"`
-	CreatedAt     string                 `protobuf:"bytes,8,opt,name=createdAt,proto3" json:"createdAt"`
-	CompanyId     int32                  `protobuf:"varint,9,opt,name=companyId,proto3" json:"companyId"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	PhoneNumber      string                 `protobuf:"bytes,2,opt,name=phoneNumber,proto3" json:"phoneNumber"`
+	Role             string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role"`
+	Name             string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name"`
+	BirthDate        string                 `protobuf:"bytes,5,opt,name=birthDate,proto3" json:"birthDate"`
+	Gender           bool                   `protobuf:"varint,6,opt,name=gender,proto3" json:"gender"`
+	IsDeleted        bool                   `protobuf:"varint,7,opt,name=is_deleted,json=isDeleted,proto3" json:"is_deleted"`
+	CreatedAt        string                 `protobuf:"bytes,8,opt,name=createdAt,proto3" json:"createdAt"`
+	CompanyId        int32                  `protobuf:"varint,9,opt,name=companyId,proto3" json:"companyId"`
+	HasAccessFinance bool                   `protobuf:"varint,10,opt,name=has_access_finance,json=hasAccessFinance,proto3" json:"has_access_finance"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *GetUserByIdResponse) Reset() {
@@ -559,6 +560,13 @@ func (x *GetUserByIdResponse) GetCompanyId() int32 {
 		return x.CompanyId
 	}
 	return 0
+}
+
+func (x *GetUserByIdResponse) GetHasAccessFinance() bool {
+	if x != nil {
+		return x.HasAccessFinance
+	}
+	return false
 }
 
 type CreateUserRequest struct {
@@ -1006,7 +1014,7 @@ const file_user_proto_rawDesc = "" +
 	"\x16GetAllEmployeeResponse\x127\n" +
 	"\temployees\x18\x01 \x03(\v2\x19.user.GetUserByIdResponseR\temployees\"(\n" +
 	"\x0eUserAbsRequest\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\"\x80\x02\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\"\xae\x02\n" +
 	"\x13GetUserByIdResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\vphoneNumber\x18\x02 \x01(\tR\vphoneNumber\x12\x12\n" +
@@ -1017,7 +1025,9 @@ const file_user_proto_rawDesc = "" +
 	"\n" +
 	"is_deleted\x18\a \x01(\bR\tisDeleted\x12\x1c\n" +
 	"\tcreatedAt\x18\b \x01(\tR\tcreatedAt\x12\x1c\n" +
-	"\tcompanyId\x18\t \x01(\x05R\tcompanyId\"\xb7\x01\n" +
+	"\tcompanyId\x18\t \x01(\x05R\tcompanyId\x12,\n" +
+	"\x12has_access_finance\x18\n" +
+	" \x01(\bR\x10hasAccessFinance\"\xb7\x01\n" +
 	"\x11CreateUserRequest\x12\x1a\n" +
 	"\bfullName\x18\x01 \x01(\tR\bfullName\x12 \n" +
 	"\vphoneNumber\x18\x02 \x01(\tR\vphoneNumber\x12\x1a\n" +

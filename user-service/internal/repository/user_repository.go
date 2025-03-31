@@ -180,7 +180,7 @@ func (r *UserRepository) GetAllEmployee(companyId string, isArchived bool) (*pb.
 	query := `
         SELECT id, full_name, phone_number, role, birth_date, gender, is_deleted, created_at 
         FROM users 
-        WHERE is_deleted = $1 AND role IN ('ADMIN', 'EMPLOYEE') and company_id=$2
+        WHERE is_deleted = $1 AND role IN ('ADMIN', 'EMPLOYEE' , 'FINANCIST') and company_id=$2
     `
 
 	rows, err := r.db.Query(query, isArchived, companyId)

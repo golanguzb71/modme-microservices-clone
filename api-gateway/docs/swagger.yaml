@@ -1287,6 +1287,8 @@ definitions:
         type: string
       gender:
         type: boolean
+      has_access_finance:
+        type: boolean
       id:
         type: string
       is_deleted:

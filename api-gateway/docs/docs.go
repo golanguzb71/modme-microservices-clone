@@ -7209,6 +7209,9 @@ const docTemplate = `{
                 "gender": {
                     "type": "boolean"
                 },
+                "has_access_finance": {
+                    "type": "boolean"
+                },
                 "id": {
                     "type": "string"
                 },
