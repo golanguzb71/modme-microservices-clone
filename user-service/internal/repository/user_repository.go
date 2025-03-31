@@ -376,9 +376,10 @@ func (r *UserRepository) GetUserByIdFilter(id string) (*pb.GetUserByIdResponse, 
        gender,
        is_deleted,
        created_at,
-       coalesce(company_id ,0)
+       coalesce(company_id ,0),
+       has_access_finance
        FROM users where id=$1`
-		err := r.db.QueryRow(query, id).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId)
+		err := r.db.QueryRow(query, id).Scan(&res.Id, &res.Name, &res.PhoneNumber, &password, &res.Role, &res.BirthDate, &res.Gender, &res.IsDeleted, &res.CreatedAt, &res.CompanyId, &res.HasAccessFinance)
 		if err != nil {
 			return nil, "", err
 		}
