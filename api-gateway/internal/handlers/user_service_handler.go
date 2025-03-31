@@ -227,7 +227,7 @@ func GetMyInformation(ctx *gin.Context) {
 		utils.RespondError(ctx, http.StatusUnauthorized, err.Error())
 		return
 	}
-	if user.Role == "ADMIN" || user.Role == "CEO" || user.Role == "SUPER_CEO" {
+	if user.Role == "ADMIN" || user.Role == "CEO" || user.Role == "SUPER_CEO" || user.Role == "FINANCIST" {
 		ctx.JSON(http.StatusOK, user)
 		return
 	}
