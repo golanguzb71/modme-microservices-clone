@@ -1413,3 +1413,29 @@ func FinanceUpdateByCompany(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, res)
 }
+
+// GetStatisticCompany godoc
+// @Summary SUPER_CEO
+// @Description
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param body body pb.GetStatisticRequest true "Параметры запроса статистики компании"
+// @Success 200 {object} pb.GetStatisticResponse "Успешный ответ со статистикой"
+// @Failure 400 {object} utils.AbsResponse "Неверный запрос"
+// @Router /api/company/statistic [post]
+// @Security Bearer
+func GetStatisticCompany(ctx *gin.Context) {
+	req := pb.GetStatisticRequest{}
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	response, err := educationClient.GetStatisticCompany(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	ctx.JSON(http.StatusOK, response)
+}

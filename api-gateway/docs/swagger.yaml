@@ -420,6 +420,19 @@ definitions:
       teacherId:
         type: string
     type: object
+  pb.CompanyCommonDetails:
+    properties:
+      activeCompanies:
+        type: integer
+      activeStudents:
+        type: integer
+      debtorCompanies:
+        type: integer
+      demoCompanies:
+        type: integer
+      wholeCompanies:
+        type: integer
+    type: object
   pb.CompanyFinance:
     properties:
       comment:
@@ -1224,6 +1237,26 @@ definitions:
           $ref: '#/definitions/pb.AbsNote'
         type: array
     type: object
+  pb.GetStatisticRequest:
+    properties:
+      from:
+        type: string
+      to:
+        type: string
+    type: object
+  pb.GetStatisticResponse:
+    properties:
+      details:
+        $ref: '#/definitions/pb.CompanyCommonDetails'
+      paymentDetails:
+        items:
+          $ref: '#/definitions/pb.OtherDetails'
+        type: array
+      registerDetails:
+        items:
+          $ref: '#/definitions/pb.OtherDetails'
+        type: array
+    type: object
   pb.GetTeachersResponse:
     properties:
       teachers:
@@ -1366,6 +1399,13 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/pb.GetUserByIdResponse'
+    type: object
+  pb.OtherDetails:
+    properties:
+      details:
+        additionalProperties:
+          type: string
+        type: object
     type: object
   pb.PageRequest:
     properties:
@@ -2126,6 +2166,33 @@ paths:
             $ref: '#/definitions/pb.GetAllResponse'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.AbsResponse'
+      security:
+      - Bearer: []
+      summary: SUPER_CEO
+      tags:
+      - company
+  /api/company/statistic:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Параметры запроса статистики компании
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GetStatisticRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ со статистикой
+          schema:
+            $ref: '#/definitions/pb.GetStatisticResponse'
+        "400":
+          description: Неверный запрос
           schema:
             $ref: '#/definitions/utils.AbsResponse'
       security:

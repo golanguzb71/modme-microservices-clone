@@ -22,6 +22,238 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetStatisticResponse struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Details         *CompanyCommonDetails  `protobuf:"bytes,1,opt,name=details,proto3" json:"details"`
+	RegisterDetails []*OtherDetails        `protobuf:"bytes,2,rep,name=registerDetails,proto3" json:"registerDetails"`
+	PaymentDetails  []*OtherDetails        `protobuf:"bytes,3,rep,name=paymentDetails,proto3" json:"paymentDetails"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GetStatisticResponse) Reset() {
+	*x = GetStatisticResponse{}
+	mi := &file_education_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetStatisticResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetStatisticResponse) ProtoMessage() {}
+
+func (x *GetStatisticResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetStatisticResponse.ProtoReflect.Descriptor instead.
+func (*GetStatisticResponse) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetStatisticResponse) GetDetails() *CompanyCommonDetails {
+	if x != nil {
+		return x.Details
+	}
+	return nil
+}
+
+func (x *GetStatisticResponse) GetRegisterDetails() []*OtherDetails {
+	if x != nil {
+		return x.RegisterDetails
+	}
+	return nil
+}
+
+func (x *GetStatisticResponse) GetPaymentDetails() []*OtherDetails {
+	if x != nil {
+		return x.PaymentDetails
+	}
+	return nil
+}
+
+type OtherDetails struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Details       map[string]string      `protobuf:"bytes,1,rep,name=details,proto3" json:"details" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OtherDetails) Reset() {
+	*x = OtherDetails{}
+	mi := &file_education_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OtherDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OtherDetails) ProtoMessage() {}
+
+func (x *OtherDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OtherDetails.ProtoReflect.Descriptor instead.
+func (*OtherDetails) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *OtherDetails) GetDetails() map[string]string {
+	if x != nil {
+		return x.Details
+	}
+	return nil
+}
+
+type CompanyCommonDetails struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ActiveStudents  int32                  `protobuf:"varint,1,opt,name=activeStudents,proto3" json:"activeStudents"`
+	WholeCompanies  int32                  `protobuf:"varint,2,opt,name=wholeCompanies,proto3" json:"wholeCompanies"`
+	DebtorCompanies int32                  `protobuf:"varint,3,opt,name=debtorCompanies,proto3" json:"debtorCompanies"`
+	ActiveCompanies int32                  `protobuf:"varint,4,opt,name=activeCompanies,proto3" json:"activeCompanies"`
+	DemoCompanies   int32                  `protobuf:"varint,5,opt,name=demoCompanies,proto3" json:"demoCompanies"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *CompanyCommonDetails) Reset() {
+	*x = CompanyCommonDetails{}
+	mi := &file_education_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CompanyCommonDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CompanyCommonDetails) ProtoMessage() {}
+
+func (x *CompanyCommonDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CompanyCommonDetails.ProtoReflect.Descriptor instead.
+func (*CompanyCommonDetails) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CompanyCommonDetails) GetActiveStudents() int32 {
+	if x != nil {
+		return x.ActiveStudents
+	}
+	return 0
+}
+
+func (x *CompanyCommonDetails) GetWholeCompanies() int32 {
+	if x != nil {
+		return x.WholeCompanies
+	}
+	return 0
+}
+
+func (x *CompanyCommonDetails) GetDebtorCompanies() int32 {
+	if x != nil {
+		return x.DebtorCompanies
+	}
+	return 0
+}
+
+func (x *CompanyCommonDetails) GetActiveCompanies() int32 {
+	if x != nil {
+		return x.ActiveCompanies
+	}
+	return 0
+}
+
+func (x *CompanyCommonDetails) GetDemoCompanies() int32 {
+	if x != nil {
+		return x.DemoCompanies
+	}
+	return 0
+}
+
+type GetStatisticRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	From          string                 `protobuf:"bytes,1,opt,name=from,proto3" json:"from"`
+	To            string                 `protobuf:"bytes,2,opt,name=to,proto3" json:"to"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetStatisticRequest) Reset() {
+	*x = GetStatisticRequest{}
+	mi := &file_education_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetStatisticRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetStatisticRequest) ProtoMessage() {}
+
+func (x *GetStatisticRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_education_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetStatisticRequest.ProtoReflect.Descriptor instead.
+func (*GetStatisticRequest) Descriptor() ([]byte, []int) {
+	return file_education_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetStatisticRequest) GetFrom() string {
+	if x != nil {
+		return x.From
+	}
+	return ""
+}
+
+func (x *GetStatisticRequest) GetTo() string {
+	if x != nil {
+		return x.To
+	}
+	return ""
+}
+
 type UpdateCompanyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
@@ -41,7 +273,7 @@ type UpdateCompanyRequest struct {
 
 func (x *UpdateCompanyRequest) Reset() {
 	*x = UpdateCompanyRequest{}
-	mi := &file_education_proto_msgTypes[0]
+	mi := &file_education_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -53,7 +285,7 @@ func (x *UpdateCompanyRequest) String() string {
 func (*UpdateCompanyRequest) ProtoMessage() {}
 
 func (x *UpdateCompanyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[0]
+	mi := &file_education_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -66,7 +298,7 @@ func (x *UpdateCompanyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCompanyRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCompanyRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{0}
+	return file_education_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateCompanyRequest) GetId() string {
@@ -156,7 +388,7 @@ type GetAllResponse struct {
 
 func (x *GetAllResponse) Reset() {
 	*x = GetAllResponse{}
-	mi := &file_education_proto_msgTypes[1]
+	mi := &file_education_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -168,7 +400,7 @@ func (x *GetAllResponse) String() string {
 func (*GetAllResponse) ProtoMessage() {}
 
 func (x *GetAllResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[1]
+	mi := &file_education_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +413,7 @@ func (x *GetAllResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllResponse.ProtoReflect.Descriptor instead.
 func (*GetAllResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{1}
+	return file_education_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetAllResponse) GetItems() []*GetCompanyResponse {
@@ -216,7 +448,7 @@ type CreateCompanyRequest struct {
 
 func (x *CreateCompanyRequest) Reset() {
 	*x = CreateCompanyRequest{}
-	mi := &file_education_proto_msgTypes[2]
+	mi := &file_education_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +460,7 @@ func (x *CreateCompanyRequest) String() string {
 func (*CreateCompanyRequest) ProtoMessage() {}
 
 func (x *CreateCompanyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[2]
+	mi := &file_education_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +473,7 @@ func (x *CreateCompanyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCompanyRequest.ProtoReflect.Descriptor instead.
 func (*CreateCompanyRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{2}
+	return file_education_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateCompanyRequest) GetTitle() string {
@@ -323,7 +555,7 @@ type GetCompanyRequest struct {
 
 func (x *GetCompanyRequest) Reset() {
 	*x = GetCompanyRequest{}
-	mi := &file_education_proto_msgTypes[3]
+	mi := &file_education_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -335,7 +567,7 @@ func (x *GetCompanyRequest) String() string {
 func (*GetCompanyRequest) ProtoMessage() {}
 
 func (x *GetCompanyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[3]
+	mi := &file_education_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -348,7 +580,7 @@ func (x *GetCompanyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCompanyRequest.ProtoReflect.Descriptor instead.
 func (*GetCompanyRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{3}
+	return file_education_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetCompanyRequest) GetDomain() string {
@@ -380,7 +612,7 @@ type GetCompanyResponse struct {
 
 func (x *GetCompanyResponse) Reset() {
 	*x = GetCompanyResponse{}
-	mi := &file_education_proto_msgTypes[4]
+	mi := &file_education_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -392,7 +624,7 @@ func (x *GetCompanyResponse) String() string {
 func (*GetCompanyResponse) ProtoMessage() {}
 
 func (x *GetCompanyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[4]
+	mi := &file_education_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -405,7 +637,7 @@ func (x *GetCompanyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCompanyResponse.ProtoReflect.Descriptor instead.
 func (*GetCompanyResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{4}
+	return file_education_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetCompanyResponse) GetId() string {
@@ -521,7 +753,7 @@ type Tariff struct {
 
 func (x *Tariff) Reset() {
 	*x = Tariff{}
-	mi := &file_education_proto_msgTypes[5]
+	mi := &file_education_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -533,7 +765,7 @@ func (x *Tariff) String() string {
 func (*Tariff) ProtoMessage() {}
 
 func (x *Tariff) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[5]
+	mi := &file_education_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -546,7 +778,7 @@ func (x *Tariff) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tariff.ProtoReflect.Descriptor instead.
 func (*Tariff) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{5}
+	return file_education_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Tariff) GetId() int32 {
@@ -608,7 +840,7 @@ type TariffList struct {
 
 func (x *TariffList) Reset() {
 	*x = TariffList{}
-	mi := &file_education_proto_msgTypes[6]
+	mi := &file_education_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -620,7 +852,7 @@ func (x *TariffList) String() string {
 func (*TariffList) ProtoMessage() {}
 
 func (x *TariffList) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[6]
+	mi := &file_education_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -633,7 +865,7 @@ func (x *TariffList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TariffList.ProtoReflect.Descriptor instead.
 func (*TariffList) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{6}
+	return file_education_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *TariffList) GetCount() int32 {
@@ -668,7 +900,7 @@ type CompanyFinance struct {
 
 func (x *CompanyFinance) Reset() {
 	*x = CompanyFinance{}
-	mi := &file_education_proto_msgTypes[7]
+	mi := &file_education_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -680,7 +912,7 @@ func (x *CompanyFinance) String() string {
 func (*CompanyFinance) ProtoMessage() {}
 
 func (x *CompanyFinance) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[7]
+	mi := &file_education_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -693,7 +925,7 @@ func (x *CompanyFinance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyFinance.ProtoReflect.Descriptor instead.
 func (*CompanyFinance) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{7}
+	return file_education_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CompanyFinance) GetId() int32 {
@@ -784,7 +1016,7 @@ type CompanyFinanceSelf struct {
 
 func (x *CompanyFinanceSelf) Reset() {
 	*x = CompanyFinanceSelf{}
-	mi := &file_education_proto_msgTypes[8]
+	mi := &file_education_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -796,7 +1028,7 @@ func (x *CompanyFinanceSelf) String() string {
 func (*CompanyFinanceSelf) ProtoMessage() {}
 
 func (x *CompanyFinanceSelf) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[8]
+	mi := &file_education_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -809,7 +1041,7 @@ func (x *CompanyFinanceSelf) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyFinanceSelf.ProtoReflect.Descriptor instead.
 func (*CompanyFinanceSelf) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{8}
+	return file_education_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *CompanyFinanceSelf) GetId() int32 {
@@ -896,7 +1128,7 @@ type CompanyFinanceSelfList struct {
 
 func (x *CompanyFinanceSelfList) Reset() {
 	*x = CompanyFinanceSelfList{}
-	mi := &file_education_proto_msgTypes[9]
+	mi := &file_education_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -908,7 +1140,7 @@ func (x *CompanyFinanceSelfList) String() string {
 func (*CompanyFinanceSelfList) ProtoMessage() {}
 
 func (x *CompanyFinanceSelfList) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[9]
+	mi := &file_education_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -921,7 +1153,7 @@ func (x *CompanyFinanceSelfList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyFinanceSelfList.ProtoReflect.Descriptor instead.
 func (*CompanyFinanceSelfList) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{9}
+	return file_education_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *CompanyFinanceSelfList) GetCount() int32 {
@@ -976,7 +1208,7 @@ type CompanyFinanceList struct {
 
 func (x *CompanyFinanceList) Reset() {
 	*x = CompanyFinanceList{}
-	mi := &file_education_proto_msgTypes[10]
+	mi := &file_education_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -988,7 +1220,7 @@ func (x *CompanyFinanceList) String() string {
 func (*CompanyFinanceList) ProtoMessage() {}
 
 func (x *CompanyFinanceList) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[10]
+	mi := &file_education_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1001,7 +1233,7 @@ func (x *CompanyFinanceList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyFinanceList.ProtoReflect.Descriptor instead.
 func (*CompanyFinanceList) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{10}
+	return file_education_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *CompanyFinanceList) GetCount() int32 {
@@ -1037,7 +1269,7 @@ type CompanyFinanceForList struct {
 
 func (x *CompanyFinanceForList) Reset() {
 	*x = CompanyFinanceForList{}
-	mi := &file_education_proto_msgTypes[11]
+	mi := &file_education_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1049,7 +1281,7 @@ func (x *CompanyFinanceForList) String() string {
 func (*CompanyFinanceForList) ProtoMessage() {}
 
 func (x *CompanyFinanceForList) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[11]
+	mi := &file_education_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1062,7 +1294,7 @@ func (x *CompanyFinanceForList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompanyFinanceForList.ProtoReflect.Descriptor instead.
 func (*CompanyFinanceForList) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{11}
+	return file_education_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CompanyFinanceForList) GetId() int32 {
@@ -1152,7 +1384,7 @@ type CreateRoomRequest struct {
 
 func (x *CreateRoomRequest) Reset() {
 	*x = CreateRoomRequest{}
-	mi := &file_education_proto_msgTypes[12]
+	mi := &file_education_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1164,7 +1396,7 @@ func (x *CreateRoomRequest) String() string {
 func (*CreateRoomRequest) ProtoMessage() {}
 
 func (x *CreateRoomRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[12]
+	mi := &file_education_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1177,7 +1409,7 @@ func (x *CreateRoomRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateRoomRequest.ProtoReflect.Descriptor instead.
 func (*CreateRoomRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{12}
+	return file_education_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CreateRoomRequest) GetName() string {
@@ -1203,7 +1435,7 @@ type GetUpdateRoomAbs struct {
 
 func (x *GetUpdateRoomAbs) Reset() {
 	*x = GetUpdateRoomAbs{}
-	mi := &file_education_proto_msgTypes[13]
+	mi := &file_education_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1215,7 +1447,7 @@ func (x *GetUpdateRoomAbs) String() string {
 func (*GetUpdateRoomAbs) ProtoMessage() {}
 
 func (x *GetUpdateRoomAbs) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[13]
+	mi := &file_education_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1228,7 +1460,7 @@ func (x *GetUpdateRoomAbs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUpdateRoomAbs.ProtoReflect.Descriptor instead.
 func (*GetUpdateRoomAbs) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{13}
+	return file_education_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetUpdateRoomAbs) GetRooms() []*AbsRoom {
@@ -1249,7 +1481,7 @@ type AbsRoom struct {
 
 func (x *AbsRoom) Reset() {
 	*x = AbsRoom{}
-	mi := &file_education_proto_msgTypes[14]
+	mi := &file_education_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1261,7 +1493,7 @@ func (x *AbsRoom) String() string {
 func (*AbsRoom) ProtoMessage() {}
 
 func (x *AbsRoom) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[14]
+	mi := &file_education_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1274,7 +1506,7 @@ func (x *AbsRoom) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsRoom.ProtoReflect.Descriptor instead.
 func (*AbsRoom) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{14}
+	return file_education_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *AbsRoom) GetId() string {
@@ -1311,7 +1543,7 @@ type CreateCourseRequest struct {
 
 func (x *CreateCourseRequest) Reset() {
 	*x = CreateCourseRequest{}
-	mi := &file_education_proto_msgTypes[15]
+	mi := &file_education_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1323,7 +1555,7 @@ func (x *CreateCourseRequest) String() string {
 func (*CreateCourseRequest) ProtoMessage() {}
 
 func (x *CreateCourseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[15]
+	mi := &file_education_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1336,7 +1568,7 @@ func (x *CreateCourseRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCourseRequest.ProtoReflect.Descriptor instead.
 func (*CreateCourseRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{15}
+	return file_education_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *CreateCourseRequest) GetName() string {
@@ -1383,7 +1615,7 @@ type GetUpdateCourseAbs struct {
 
 func (x *GetUpdateCourseAbs) Reset() {
 	*x = GetUpdateCourseAbs{}
-	mi := &file_education_proto_msgTypes[16]
+	mi := &file_education_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1395,7 +1627,7 @@ func (x *GetUpdateCourseAbs) String() string {
 func (*GetUpdateCourseAbs) ProtoMessage() {}
 
 func (x *GetUpdateCourseAbs) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[16]
+	mi := &file_education_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1408,7 +1640,7 @@ func (x *GetUpdateCourseAbs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUpdateCourseAbs.ProtoReflect.Descriptor instead.
 func (*GetUpdateCourseAbs) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{16}
+	return file_education_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetUpdateCourseAbs) GetCourses() []*AbsCourse {
@@ -1432,7 +1664,7 @@ type AbsCourse struct {
 
 func (x *AbsCourse) Reset() {
 	*x = AbsCourse{}
-	mi := &file_education_proto_msgTypes[17]
+	mi := &file_education_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1444,7 +1676,7 @@ func (x *AbsCourse) String() string {
 func (*AbsCourse) ProtoMessage() {}
 
 func (x *AbsCourse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[17]
+	mi := &file_education_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1457,7 +1689,7 @@ func (x *AbsCourse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsCourse.ProtoReflect.Descriptor instead.
 func (*AbsCourse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{17}
+	return file_education_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *AbsCourse) GetId() string {
@@ -1517,7 +1749,7 @@ type GetCourseByIdResponse struct {
 
 func (x *GetCourseByIdResponse) Reset() {
 	*x = GetCourseByIdResponse{}
-	mi := &file_education_proto_msgTypes[18]
+	mi := &file_education_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1529,7 +1761,7 @@ func (x *GetCourseByIdResponse) String() string {
 func (*GetCourseByIdResponse) ProtoMessage() {}
 
 func (x *GetCourseByIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[18]
+	mi := &file_education_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1542,7 +1774,7 @@ func (x *GetCourseByIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCourseByIdResponse.ProtoReflect.Descriptor instead.
 func (*GetCourseByIdResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{18}
+	return file_education_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetCourseByIdResponse) GetId() string {
@@ -1603,7 +1835,7 @@ type GetCourseByIdRequest struct {
 
 func (x *GetCourseByIdRequest) Reset() {
 	*x = GetCourseByIdRequest{}
-	mi := &file_education_proto_msgTypes[19]
+	mi := &file_education_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1615,7 +1847,7 @@ func (x *GetCourseByIdRequest) String() string {
 func (*GetCourseByIdRequest) ProtoMessage() {}
 
 func (x *GetCourseByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[19]
+	mi := &file_education_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1628,7 +1860,7 @@ func (x *GetCourseByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetCourseByIdRequest.ProtoReflect.Descriptor instead.
 func (*GetCourseByIdRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{19}
+	return file_education_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GetCourseByIdRequest) GetId() string {
@@ -1650,7 +1882,7 @@ type GetLeftAfterTrialPeriodRequest struct {
 
 func (x *GetLeftAfterTrialPeriodRequest) Reset() {
 	*x = GetLeftAfterTrialPeriodRequest{}
-	mi := &file_education_proto_msgTypes[20]
+	mi := &file_education_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1662,7 +1894,7 @@ func (x *GetLeftAfterTrialPeriodRequest) String() string {
 func (*GetLeftAfterTrialPeriodRequest) ProtoMessage() {}
 
 func (x *GetLeftAfterTrialPeriodRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[20]
+	mi := &file_education_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1675,7 +1907,7 @@ func (x *GetLeftAfterTrialPeriodRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLeftAfterTrialPeriodRequest.ProtoReflect.Descriptor instead.
 func (*GetLeftAfterTrialPeriodRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{20}
+	return file_education_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GetLeftAfterTrialPeriodRequest) GetFrom() string {
@@ -1716,7 +1948,7 @@ type GetLeftAfterTrialPeriodResponse struct {
 
 func (x *GetLeftAfterTrialPeriodResponse) Reset() {
 	*x = GetLeftAfterTrialPeriodResponse{}
-	mi := &file_education_proto_msgTypes[21]
+	mi := &file_education_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1728,7 +1960,7 @@ func (x *GetLeftAfterTrialPeriodResponse) String() string {
 func (*GetLeftAfterTrialPeriodResponse) ProtoMessage() {}
 
 func (x *GetLeftAfterTrialPeriodResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[21]
+	mi := &file_education_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1741,7 +1973,7 @@ func (x *GetLeftAfterTrialPeriodResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLeftAfterTrialPeriodResponse.ProtoReflect.Descriptor instead.
 func (*GetLeftAfterTrialPeriodResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{21}
+	return file_education_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GetLeftAfterTrialPeriodResponse) GetItems() []*AbsGetLeftAfter {
@@ -1775,7 +2007,7 @@ type AbsGetLeftAfter struct {
 
 func (x *AbsGetLeftAfter) Reset() {
 	*x = AbsGetLeftAfter{}
-	mi := &file_education_proto_msgTypes[22]
+	mi := &file_education_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1787,7 +2019,7 @@ func (x *AbsGetLeftAfter) String() string {
 func (*AbsGetLeftAfter) ProtoMessage() {}
 
 func (x *AbsGetLeftAfter) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[22]
+	mi := &file_education_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1800,7 +2032,7 @@ func (x *AbsGetLeftAfter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsGetLeftAfter.ProtoReflect.Descriptor instead.
 func (*AbsGetLeftAfter) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{22}
+	return file_education_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *AbsGetLeftAfter) GetStudentId() string {
@@ -1879,7 +2111,7 @@ type GetCommonInformationEducationResponse struct {
 
 func (x *GetCommonInformationEducationResponse) Reset() {
 	*x = GetCommonInformationEducationResponse{}
-	mi := &file_education_proto_msgTypes[23]
+	mi := &file_education_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1891,7 +2123,7 @@ func (x *GetCommonInformationEducationResponse) String() string {
 func (*GetCommonInformationEducationResponse) ProtoMessage() {}
 
 func (x *GetCommonInformationEducationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[23]
+	mi := &file_education_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1904,7 +2136,7 @@ func (x *GetCommonInformationEducationResponse) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GetCommonInformationEducationResponse.ProtoReflect.Descriptor instead.
 func (*GetCommonInformationEducationResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{23}
+	return file_education_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GetCommonInformationEducationResponse) GetActiveStudentCount() int32 {
@@ -1952,7 +2184,7 @@ type GetGroupsByTeacherIdRequest struct {
 
 func (x *GetGroupsByTeacherIdRequest) Reset() {
 	*x = GetGroupsByTeacherIdRequest{}
-	mi := &file_education_proto_msgTypes[24]
+	mi := &file_education_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1964,7 +2196,7 @@ func (x *GetGroupsByTeacherIdRequest) String() string {
 func (*GetGroupsByTeacherIdRequest) ProtoMessage() {}
 
 func (x *GetGroupsByTeacherIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[24]
+	mi := &file_education_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1977,7 +2209,7 @@ func (x *GetGroupsByTeacherIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsByTeacherIdRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupsByTeacherIdRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{24}
+	return file_education_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetGroupsByTeacherIdRequest) GetTeacherId() string {
@@ -2003,7 +2235,7 @@ type GetGroupsByTeacherResponse struct {
 
 func (x *GetGroupsByTeacherResponse) Reset() {
 	*x = GetGroupsByTeacherResponse{}
-	mi := &file_education_proto_msgTypes[25]
+	mi := &file_education_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2015,7 +2247,7 @@ func (x *GetGroupsByTeacherResponse) String() string {
 func (*GetGroupsByTeacherResponse) ProtoMessage() {}
 
 func (x *GetGroupsByTeacherResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[25]
+	mi := &file_education_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2028,7 +2260,7 @@ func (x *GetGroupsByTeacherResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsByTeacherResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupsByTeacherResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{25}
+	return file_education_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetGroupsByTeacherResponse) GetGroups() []*GetGroupByTeacherAbs {
@@ -2056,7 +2288,7 @@ type GetGroupByTeacherAbs struct {
 
 func (x *GetGroupByTeacherAbs) Reset() {
 	*x = GetGroupByTeacherAbs{}
-	mi := &file_education_proto_msgTypes[26]
+	mi := &file_education_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2068,7 +2300,7 @@ func (x *GetGroupByTeacherAbs) String() string {
 func (*GetGroupByTeacherAbs) ProtoMessage() {}
 
 func (x *GetGroupByTeacherAbs) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[26]
+	mi := &file_education_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2081,7 +2313,7 @@ func (x *GetGroupByTeacherAbs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupByTeacherAbs.ProtoReflect.Descriptor instead.
 func (*GetGroupByTeacherAbs) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{26}
+	return file_education_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GetGroupByTeacherAbs) GetId() string {
@@ -2171,7 +2403,7 @@ type CreateGroupRequest struct {
 
 func (x *CreateGroupRequest) Reset() {
 	*x = CreateGroupRequest{}
-	mi := &file_education_proto_msgTypes[27]
+	mi := &file_education_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2183,7 +2415,7 @@ func (x *CreateGroupRequest) String() string {
 func (*CreateGroupRequest) ProtoMessage() {}
 
 func (x *CreateGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[27]
+	mi := &file_education_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2196,7 +2428,7 @@ func (x *CreateGroupRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGroupRequest.ProtoReflect.Descriptor instead.
 func (*CreateGroupRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{27}
+	return file_education_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *CreateGroupRequest) GetName() string {
@@ -2273,7 +2505,7 @@ type GetGroupByIdRequest struct {
 
 func (x *GetGroupByIdRequest) Reset() {
 	*x = GetGroupByIdRequest{}
-	mi := &file_education_proto_msgTypes[28]
+	mi := &file_education_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2285,7 +2517,7 @@ func (x *GetGroupByIdRequest) String() string {
 func (*GetGroupByIdRequest) ProtoMessage() {}
 
 func (x *GetGroupByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[28]
+	mi := &file_education_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2298,7 +2530,7 @@ func (x *GetGroupByIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupByIdRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupByIdRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{28}
+	return file_education_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GetGroupByIdRequest) GetId() string {
@@ -2340,7 +2572,7 @@ type GetUpdateGroupAbs struct {
 
 func (x *GetUpdateGroupAbs) Reset() {
 	*x = GetUpdateGroupAbs{}
-	mi := &file_education_proto_msgTypes[29]
+	mi := &file_education_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2352,7 +2584,7 @@ func (x *GetUpdateGroupAbs) String() string {
 func (*GetUpdateGroupAbs) ProtoMessage() {}
 
 func (x *GetUpdateGroupAbs) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[29]
+	mi := &file_education_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2365,7 +2597,7 @@ func (x *GetUpdateGroupAbs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUpdateGroupAbs.ProtoReflect.Descriptor instead.
 func (*GetUpdateGroupAbs) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{29}
+	return file_education_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *GetUpdateGroupAbs) GetId() string {
@@ -2447,7 +2679,7 @@ type GetGroupsByCourseResponse struct {
 
 func (x *GetGroupsByCourseResponse) Reset() {
 	*x = GetGroupsByCourseResponse{}
-	mi := &file_education_proto_msgTypes[30]
+	mi := &file_education_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2459,7 +2691,7 @@ func (x *GetGroupsByCourseResponse) String() string {
 func (*GetGroupsByCourseResponse) ProtoMessage() {}
 
 func (x *GetGroupsByCourseResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[30]
+	mi := &file_education_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2472,7 +2704,7 @@ func (x *GetGroupsByCourseResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsByCourseResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupsByCourseResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{30}
+	return file_education_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GetGroupsByCourseResponse) GetGroups() []*GetGroupByCourseAbsResponse {
@@ -2497,7 +2729,7 @@ type GetGroupByCourseAbsResponse struct {
 
 func (x *GetGroupByCourseAbsResponse) Reset() {
 	*x = GetGroupByCourseAbsResponse{}
-	mi := &file_education_proto_msgTypes[31]
+	mi := &file_education_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2509,7 +2741,7 @@ func (x *GetGroupByCourseAbsResponse) String() string {
 func (*GetGroupByCourseAbsResponse) ProtoMessage() {}
 
 func (x *GetGroupByCourseAbsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[31]
+	mi := &file_education_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2522,7 +2754,7 @@ func (x *GetGroupByCourseAbsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupByCourseAbsResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupByCourseAbsResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{31}
+	return file_education_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GetGroupByCourseAbsResponse) GetId() string {
@@ -2596,7 +2828,7 @@ type GetGroupAbsResponse struct {
 
 func (x *GetGroupAbsResponse) Reset() {
 	*x = GetGroupAbsResponse{}
-	mi := &file_education_proto_msgTypes[32]
+	mi := &file_education_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2608,7 +2840,7 @@ func (x *GetGroupAbsResponse) String() string {
 func (*GetGroupAbsResponse) ProtoMessage() {}
 
 func (x *GetGroupAbsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[32]
+	mi := &file_education_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2621,7 +2853,7 @@ func (x *GetGroupAbsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupAbsResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupAbsResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{32}
+	return file_education_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GetGroupAbsResponse) GetId() string {
@@ -2732,7 +2964,7 @@ type GetGroupsResponse struct {
 
 func (x *GetGroupsResponse) Reset() {
 	*x = GetGroupsResponse{}
-	mi := &file_education_proto_msgTypes[33]
+	mi := &file_education_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2744,7 +2976,7 @@ func (x *GetGroupsResponse) String() string {
 func (*GetGroupsResponse) ProtoMessage() {}
 
 func (x *GetGroupsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[33]
+	mi := &file_education_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2757,7 +2989,7 @@ func (x *GetGroupsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupsResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{33}
+	return file_education_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *GetGroupsResponse) GetGroups() []*GetGroupAbsResponse {
@@ -2791,7 +3023,7 @@ type GetGroupsRequest struct {
 
 func (x *GetGroupsRequest) Reset() {
 	*x = GetGroupsRequest{}
-	mi := &file_education_proto_msgTypes[34]
+	mi := &file_education_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2803,7 +3035,7 @@ func (x *GetGroupsRequest) String() string {
 func (*GetGroupsRequest) ProtoMessage() {}
 
 func (x *GetGroupsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[34]
+	mi := &file_education_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2816,7 +3048,7 @@ func (x *GetGroupsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupsRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{34}
+	return file_education_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *GetGroupsRequest) GetIsArchived() bool {
@@ -2893,7 +3125,7 @@ type CalculateTeacherSalaryRequest struct {
 
 func (x *CalculateTeacherSalaryRequest) Reset() {
 	*x = CalculateTeacherSalaryRequest{}
-	mi := &file_education_proto_msgTypes[35]
+	mi := &file_education_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2905,7 +3137,7 @@ func (x *CalculateTeacherSalaryRequest) String() string {
 func (*CalculateTeacherSalaryRequest) ProtoMessage() {}
 
 func (x *CalculateTeacherSalaryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[35]
+	mi := &file_education_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2918,7 +3150,7 @@ func (x *CalculateTeacherSalaryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateTeacherSalaryRequest.ProtoReflect.Descriptor instead.
 func (*CalculateTeacherSalaryRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{35}
+	return file_education_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *CalculateTeacherSalaryRequest) GetFrom() string {
@@ -2951,7 +3183,7 @@ type CalculateTeacherSalaryResponse struct {
 
 func (x *CalculateTeacherSalaryResponse) Reset() {
 	*x = CalculateTeacherSalaryResponse{}
-	mi := &file_education_proto_msgTypes[36]
+	mi := &file_education_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2963,7 +3195,7 @@ func (x *CalculateTeacherSalaryResponse) String() string {
 func (*CalculateTeacherSalaryResponse) ProtoMessage() {}
 
 func (x *CalculateTeacherSalaryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[36]
+	mi := &file_education_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2976,7 +3208,7 @@ func (x *CalculateTeacherSalaryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateTeacherSalaryResponse.ProtoReflect.Descriptor instead.
 func (*CalculateTeacherSalaryResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{36}
+	return file_education_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *CalculateTeacherSalaryResponse) GetSalaries() []*AbsCalculateSalary {
@@ -2998,7 +3230,7 @@ type AbsCalculateSalary struct {
 
 func (x *AbsCalculateSalary) Reset() {
 	*x = AbsCalculateSalary{}
-	mi := &file_education_proto_msgTypes[37]
+	mi := &file_education_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3010,7 +3242,7 @@ func (x *AbsCalculateSalary) String() string {
 func (*AbsCalculateSalary) ProtoMessage() {}
 
 func (x *AbsCalculateSalary) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[37]
+	mi := &file_education_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3023,7 +3255,7 @@ func (x *AbsCalculateSalary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsCalculateSalary.ProtoReflect.Descriptor instead.
 func (*AbsCalculateSalary) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{37}
+	return file_education_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *AbsCalculateSalary) GetGroupId() string {
@@ -3069,7 +3301,7 @@ type StudentSalary struct {
 
 func (x *StudentSalary) Reset() {
 	*x = StudentSalary{}
-	mi := &file_education_proto_msgTypes[38]
+	mi := &file_education_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3081,7 +3313,7 @@ func (x *StudentSalary) String() string {
 func (*StudentSalary) ProtoMessage() {}
 
 func (x *StudentSalary) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[38]
+	mi := &file_education_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3094,7 +3326,7 @@ func (x *StudentSalary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StudentSalary.ProtoReflect.Descriptor instead.
 func (*StudentSalary) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{38}
+	return file_education_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *StudentSalary) GetStudentId() string {
@@ -3160,7 +3392,7 @@ type GetAttendanceRequest struct {
 
 func (x *GetAttendanceRequest) Reset() {
 	*x = GetAttendanceRequest{}
-	mi := &file_education_proto_msgTypes[39]
+	mi := &file_education_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3172,7 +3404,7 @@ func (x *GetAttendanceRequest) String() string {
 func (*GetAttendanceRequest) ProtoMessage() {}
 
 func (x *GetAttendanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[39]
+	mi := &file_education_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3185,7 +3417,7 @@ func (x *GetAttendanceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAttendanceRequest.ProtoReflect.Descriptor instead.
 func (*GetAttendanceRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{39}
+	return file_education_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *GetAttendanceRequest) GetGroupId() string {
@@ -3240,7 +3472,7 @@ type GetAttendanceResponse struct {
 
 func (x *GetAttendanceResponse) Reset() {
 	*x = GetAttendanceResponse{}
-	mi := &file_education_proto_msgTypes[40]
+	mi := &file_education_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3252,7 +3484,7 @@ func (x *GetAttendanceResponse) String() string {
 func (*GetAttendanceResponse) ProtoMessage() {}
 
 func (x *GetAttendanceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[40]
+	mi := &file_education_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3265,7 +3497,7 @@ func (x *GetAttendanceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAttendanceResponse.ProtoReflect.Descriptor instead.
 func (*GetAttendanceResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{40}
+	return file_education_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *GetAttendanceResponse) GetDays() []*Day {
@@ -3292,7 +3524,7 @@ type Day struct {
 
 func (x *Day) Reset() {
 	*x = Day{}
-	mi := &file_education_proto_msgTypes[41]
+	mi := &file_education_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3304,7 +3536,7 @@ func (x *Day) String() string {
 func (*Day) ProtoMessage() {}
 
 func (x *Day) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[41]
+	mi := &file_education_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3317,7 +3549,7 @@ func (x *Day) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Day.ProtoReflect.Descriptor instead.
 func (*Day) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{41}
+	return file_education_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *Day) GetDate() string {
@@ -3354,7 +3586,7 @@ type Student struct {
 
 func (x *Student) Reset() {
 	*x = Student{}
-	mi := &file_education_proto_msgTypes[42]
+	mi := &file_education_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3366,7 +3598,7 @@ func (x *Student) String() string {
 func (*Student) ProtoMessage() {}
 
 func (x *Student) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[42]
+	mi := &file_education_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3379,7 +3611,7 @@ func (x *Student) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Student.ProtoReflect.Descriptor instead.
 func (*Student) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{42}
+	return file_education_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *Student) GetId() string {
@@ -3479,7 +3711,7 @@ type Attendance struct {
 
 func (x *Attendance) Reset() {
 	*x = Attendance{}
-	mi := &file_education_proto_msgTypes[43]
+	mi := &file_education_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3491,7 +3723,7 @@ func (x *Attendance) String() string {
 func (*Attendance) ProtoMessage() {}
 
 func (x *Attendance) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[43]
+	mi := &file_education_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3504,7 +3736,7 @@ func (x *Attendance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Attendance.ProtoReflect.Descriptor instead.
 func (*Attendance) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{43}
+	return file_education_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *Attendance) GetId() string {
@@ -3552,7 +3784,7 @@ type FreezeDetail struct {
 
 func (x *FreezeDetail) Reset() {
 	*x = FreezeDetail{}
-	mi := &file_education_proto_msgTypes[44]
+	mi := &file_education_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3564,7 +3796,7 @@ func (x *FreezeDetail) String() string {
 func (*FreezeDetail) ProtoMessage() {}
 
 func (x *FreezeDetail) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[44]
+	mi := &file_education_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3577,7 +3809,7 @@ func (x *FreezeDetail) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FreezeDetail.ProtoReflect.Descriptor instead.
 func (*FreezeDetail) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{44}
+	return file_education_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *FreezeDetail) GetReason() string {
@@ -3609,7 +3841,7 @@ type SetAttendanceRequest struct {
 
 func (x *SetAttendanceRequest) Reset() {
 	*x = SetAttendanceRequest{}
-	mi := &file_education_proto_msgTypes[45]
+	mi := &file_education_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3621,7 +3853,7 @@ func (x *SetAttendanceRequest) String() string {
 func (*SetAttendanceRequest) ProtoMessage() {}
 
 func (x *SetAttendanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[45]
+	mi := &file_education_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3634,7 +3866,7 @@ func (x *SetAttendanceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetAttendanceRequest.ProtoReflect.Descriptor instead.
 func (*SetAttendanceRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{45}
+	return file_education_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *SetAttendanceRequest) GetAttendDate() string {
@@ -3702,7 +3934,7 @@ type ChangeUserBalanceHistoryRequest struct {
 
 func (x *ChangeUserBalanceHistoryRequest) Reset() {
 	*x = ChangeUserBalanceHistoryRequest{}
-	mi := &file_education_proto_msgTypes[46]
+	mi := &file_education_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3714,7 +3946,7 @@ func (x *ChangeUserBalanceHistoryRequest) String() string {
 func (*ChangeUserBalanceHistoryRequest) ProtoMessage() {}
 
 func (x *ChangeUserBalanceHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[46]
+	mi := &file_education_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3727,7 +3959,7 @@ func (x *ChangeUserBalanceHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeUserBalanceHistoryRequest.ProtoReflect.Descriptor instead.
 func (*ChangeUserBalanceHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{46}
+	return file_education_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ChangeUserBalanceHistoryRequest) GetStudentId() string {
@@ -3798,7 +4030,7 @@ type DeleteStudentRequest struct {
 
 func (x *DeleteStudentRequest) Reset() {
 	*x = DeleteStudentRequest{}
-	mi := &file_education_proto_msgTypes[47]
+	mi := &file_education_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3810,7 +4042,7 @@ func (x *DeleteStudentRequest) String() string {
 func (*DeleteStudentRequest) ProtoMessage() {}
 
 func (x *DeleteStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[47]
+	mi := &file_education_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3823,7 +4055,7 @@ func (x *DeleteStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteStudentRequest.ProtoReflect.Descriptor instead.
 func (*DeleteStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{47}
+	return file_education_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *DeleteStudentRequest) GetStudentId() string {
@@ -3863,7 +4095,7 @@ type GetStudentsByGroupIdResponse struct {
 
 func (x *GetStudentsByGroupIdResponse) Reset() {
 	*x = GetStudentsByGroupIdResponse{}
-	mi := &file_education_proto_msgTypes[48]
+	mi := &file_education_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3875,7 +4107,7 @@ func (x *GetStudentsByGroupIdResponse) String() string {
 func (*GetStudentsByGroupIdResponse) ProtoMessage() {}
 
 func (x *GetStudentsByGroupIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[48]
+	mi := &file_education_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3888,7 +4120,7 @@ func (x *GetStudentsByGroupIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStudentsByGroupIdResponse.ProtoReflect.Descriptor instead.
 func (*GetStudentsByGroupIdResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{48}
+	return file_education_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *GetStudentsByGroupIdResponse) GetStudents() []*AbsStudent {
@@ -3908,7 +4140,7 @@ type GetStudentsByGroupIdRequest struct {
 
 func (x *GetStudentsByGroupIdRequest) Reset() {
 	*x = GetStudentsByGroupIdRequest{}
-	mi := &file_education_proto_msgTypes[49]
+	mi := &file_education_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3920,7 +4152,7 @@ func (x *GetStudentsByGroupIdRequest) String() string {
 func (*GetStudentsByGroupIdRequest) ProtoMessage() {}
 
 func (x *GetStudentsByGroupIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[49]
+	mi := &file_education_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3933,7 +4165,7 @@ func (x *GetStudentsByGroupIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStudentsByGroupIdRequest.ProtoReflect.Descriptor instead.
 func (*GetStudentsByGroupIdRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{49}
+	return file_education_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *GetStudentsByGroupIdRequest) GetGroupId() string {
@@ -3966,7 +4198,7 @@ type ChangeConditionStudentRequest struct {
 
 func (x *ChangeConditionStudentRequest) Reset() {
 	*x = ChangeConditionStudentRequest{}
-	mi := &file_education_proto_msgTypes[50]
+	mi := &file_education_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3978,7 +4210,7 @@ func (x *ChangeConditionStudentRequest) String() string {
 func (*ChangeConditionStudentRequest) ProtoMessage() {}
 
 func (x *ChangeConditionStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[50]
+	mi := &file_education_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3991,7 +4223,7 @@ func (x *ChangeConditionStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeConditionStudentRequest.ProtoReflect.Descriptor instead.
 func (*ChangeConditionStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{50}
+	return file_education_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *ChangeConditionStudentRequest) GetStudentId() string {
@@ -4061,7 +4293,7 @@ type TransferLessonRequest struct {
 
 func (x *TransferLessonRequest) Reset() {
 	*x = TransferLessonRequest{}
-	mi := &file_education_proto_msgTypes[51]
+	mi := &file_education_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4073,7 +4305,7 @@ func (x *TransferLessonRequest) String() string {
 func (*TransferLessonRequest) ProtoMessage() {}
 
 func (x *TransferLessonRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[51]
+	mi := &file_education_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4086,7 +4318,7 @@ func (x *TransferLessonRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TransferLessonRequest.ProtoReflect.Descriptor instead.
 func (*TransferLessonRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{51}
+	return file_education_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *TransferLessonRequest) GetFrom() string {
@@ -4120,7 +4352,7 @@ type GetHistoryGroupResponse struct {
 
 func (x *GetHistoryGroupResponse) Reset() {
 	*x = GetHistoryGroupResponse{}
-	mi := &file_education_proto_msgTypes[52]
+	mi := &file_education_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4132,7 +4364,7 @@ func (x *GetHistoryGroupResponse) String() string {
 func (*GetHistoryGroupResponse) ProtoMessage() {}
 
 func (x *GetHistoryGroupResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[52]
+	mi := &file_education_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4145,7 +4377,7 @@ func (x *GetHistoryGroupResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetHistoryGroupResponse.ProtoReflect.Descriptor instead.
 func (*GetHistoryGroupResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{52}
+	return file_education_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *GetHistoryGroupResponse) GetGroupHistory() []*AbsHistory {
@@ -4172,7 +4404,7 @@ type GetHistoryStudentResponse struct {
 
 func (x *GetHistoryStudentResponse) Reset() {
 	*x = GetHistoryStudentResponse{}
-	mi := &file_education_proto_msgTypes[53]
+	mi := &file_education_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4184,7 +4416,7 @@ func (x *GetHistoryStudentResponse) String() string {
 func (*GetHistoryStudentResponse) ProtoMessage() {}
 
 func (x *GetHistoryStudentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[53]
+	mi := &file_education_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4197,7 +4429,7 @@ func (x *GetHistoryStudentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetHistoryStudentResponse.ProtoReflect.Descriptor instead.
 func (*GetHistoryStudentResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{53}
+	return file_education_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *GetHistoryStudentResponse) GetStudentHistory() []*AbsHistory {
@@ -4229,7 +4461,7 @@ type AbsStudentHistory struct {
 
 func (x *AbsStudentHistory) Reset() {
 	*x = AbsStudentHistory{}
-	mi := &file_education_proto_msgTypes[54]
+	mi := &file_education_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4241,7 +4473,7 @@ func (x *AbsStudentHistory) String() string {
 func (*AbsStudentHistory) ProtoMessage() {}
 
 func (x *AbsStudentHistory) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[54]
+	mi := &file_education_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4254,7 +4486,7 @@ func (x *AbsStudentHistory) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsStudentHistory.ProtoReflect.Descriptor instead.
 func (*AbsStudentHistory) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{54}
+	return file_education_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *AbsStudentHistory) GetStudent() *AbsStudent {
@@ -4324,7 +4556,7 @@ type AbsGroup struct {
 
 func (x *AbsGroup) Reset() {
 	*x = AbsGroup{}
-	mi := &file_education_proto_msgTypes[55]
+	mi := &file_education_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4336,7 +4568,7 @@ func (x *AbsGroup) String() string {
 func (*AbsGroup) ProtoMessage() {}
 
 func (x *AbsGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[55]
+	mi := &file_education_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4349,7 +4581,7 @@ func (x *AbsGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsGroup.ProtoReflect.Descriptor instead.
 func (*AbsGroup) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{55}
+	return file_education_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *AbsGroup) GetId() string {
@@ -4434,7 +4666,7 @@ type AbsHistory struct {
 
 func (x *AbsHistory) Reset() {
 	*x = AbsHistory{}
-	mi := &file_education_proto_msgTypes[56]
+	mi := &file_education_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4446,7 +4678,7 @@ func (x *AbsHistory) String() string {
 func (*AbsHistory) ProtoMessage() {}
 
 func (x *AbsHistory) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[56]
+	mi := &file_education_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4459,7 +4691,7 @@ func (x *AbsHistory) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsHistory.ProtoReflect.Descriptor instead.
 func (*AbsHistory) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{56}
+	return file_education_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *AbsHistory) GetId() string {
@@ -4499,7 +4731,7 @@ type SearchStudentRequest struct {
 
 func (x *SearchStudentRequest) Reset() {
 	*x = SearchStudentRequest{}
-	mi := &file_education_proto_msgTypes[57]
+	mi := &file_education_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4511,7 +4743,7 @@ func (x *SearchStudentRequest) String() string {
 func (*SearchStudentRequest) ProtoMessage() {}
 
 func (x *SearchStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[57]
+	mi := &file_education_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4524,7 +4756,7 @@ func (x *SearchStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchStudentRequest.ProtoReflect.Descriptor instead.
 func (*SearchStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{57}
+	return file_education_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *SearchStudentRequest) GetValue() string {
@@ -4543,7 +4775,7 @@ type SearchStudentResponse struct {
 
 func (x *SearchStudentResponse) Reset() {
 	*x = SearchStudentResponse{}
-	mi := &file_education_proto_msgTypes[58]
+	mi := &file_education_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4555,7 +4787,7 @@ func (x *SearchStudentResponse) String() string {
 func (*SearchStudentResponse) ProtoMessage() {}
 
 func (x *SearchStudentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[58]
+	mi := &file_education_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4568,7 +4800,7 @@ func (x *SearchStudentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchStudentResponse.ProtoReflect.Descriptor instead.
 func (*SearchStudentResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{58}
+	return file_education_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *SearchStudentResponse) GetStudents() []*AbsStudent {
@@ -4589,7 +4821,7 @@ type AbsStudent struct {
 
 func (x *AbsStudent) Reset() {
 	*x = AbsStudent{}
-	mi := &file_education_proto_msgTypes[59]
+	mi := &file_education_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4601,7 +4833,7 @@ func (x *AbsStudent) String() string {
 func (*AbsStudent) ProtoMessage() {}
 
 func (x *AbsStudent) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[59]
+	mi := &file_education_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4614,7 +4846,7 @@ func (x *AbsStudent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsStudent.ProtoReflect.Descriptor instead.
 func (*AbsStudent) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{59}
+	return file_education_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *AbsStudent) GetId() string {
@@ -4653,7 +4885,7 @@ type GetAllStudentRequest struct {
 
 func (x *GetAllStudentRequest) Reset() {
 	*x = GetAllStudentRequest{}
-	mi := &file_education_proto_msgTypes[60]
+	mi := &file_education_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4665,7 +4897,7 @@ func (x *GetAllStudentRequest) String() string {
 func (*GetAllStudentRequest) ProtoMessage() {}
 
 func (x *GetAllStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[60]
+	mi := &file_education_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4678,7 +4910,7 @@ func (x *GetAllStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllStudentRequest.ProtoReflect.Descriptor instead.
 func (*GetAllStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{60}
+	return file_education_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *GetAllStudentRequest) GetCondition() string {
@@ -4740,7 +4972,7 @@ type GetAllStudentResponse struct {
 
 func (x *GetAllStudentResponse) Reset() {
 	*x = GetAllStudentResponse{}
-	mi := &file_education_proto_msgTypes[61]
+	mi := &file_education_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4752,7 +4984,7 @@ func (x *GetAllStudentResponse) String() string {
 func (*GetAllStudentResponse) ProtoMessage() {}
 
 func (x *GetAllStudentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[61]
+	mi := &file_education_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4765,7 +4997,7 @@ func (x *GetAllStudentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllStudentResponse.ProtoReflect.Descriptor instead.
 func (*GetAllStudentResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{61}
+	return file_education_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *GetAllStudentResponse) GetResponse() []*GetGroupsAbsForStudent {
@@ -4803,7 +5035,7 @@ type GetGroupsAbsForStudent struct {
 
 func (x *GetGroupsAbsForStudent) Reset() {
 	*x = GetGroupsAbsForStudent{}
-	mi := &file_education_proto_msgTypes[62]
+	mi := &file_education_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4815,7 +5047,7 @@ func (x *GetGroupsAbsForStudent) String() string {
 func (*GetGroupsAbsForStudent) ProtoMessage() {}
 
 func (x *GetGroupsAbsForStudent) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[62]
+	mi := &file_education_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4828,7 +5060,7 @@ func (x *GetGroupsAbsForStudent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupsAbsForStudent.ProtoReflect.Descriptor instead.
 func (*GetGroupsAbsForStudent) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{62}
+	return file_education_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *GetGroupsAbsForStudent) GetId() string {
@@ -4942,7 +5174,7 @@ type GroupGetAllStudentAbs struct {
 
 func (x *GroupGetAllStudentAbs) Reset() {
 	*x = GroupGetAllStudentAbs{}
-	mi := &file_education_proto_msgTypes[63]
+	mi := &file_education_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4954,7 +5186,7 @@ func (x *GroupGetAllStudentAbs) String() string {
 func (*GroupGetAllStudentAbs) ProtoMessage() {}
 
 func (x *GroupGetAllStudentAbs) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[63]
+	mi := &file_education_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4967,7 +5199,7 @@ func (x *GroupGetAllStudentAbs) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupGetAllStudentAbs.ProtoReflect.Descriptor instead.
 func (*GroupGetAllStudentAbs) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{63}
+	return file_education_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *GroupGetAllStudentAbs) GetId() string {
@@ -5073,7 +5305,7 @@ type CreateStudentRequest struct {
 
 func (x *CreateStudentRequest) Reset() {
 	*x = CreateStudentRequest{}
-	mi := &file_education_proto_msgTypes[64]
+	mi := &file_education_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5085,7 +5317,7 @@ func (x *CreateStudentRequest) String() string {
 func (*CreateStudentRequest) ProtoMessage() {}
 
 func (x *CreateStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[64]
+	mi := &file_education_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5098,7 +5330,7 @@ func (x *CreateStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateStudentRequest.ProtoReflect.Descriptor instead.
 func (*CreateStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{64}
+	return file_education_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *CreateStudentRequest) GetPhoneNumber() string {
@@ -5194,7 +5426,7 @@ type UpdateStudentRequest struct {
 
 func (x *UpdateStudentRequest) Reset() {
 	*x = UpdateStudentRequest{}
-	mi := &file_education_proto_msgTypes[65]
+	mi := &file_education_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5206,7 +5438,7 @@ func (x *UpdateStudentRequest) String() string {
 func (*UpdateStudentRequest) ProtoMessage() {}
 
 func (x *UpdateStudentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[65]
+	mi := &file_education_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5219,7 +5451,7 @@ func (x *UpdateStudentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateStudentRequest.ProtoReflect.Descriptor instead.
 func (*UpdateStudentRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{65}
+	return file_education_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *UpdateStudentRequest) GetStudentId() string {
@@ -5290,7 +5522,7 @@ type AddToGroupRequest struct {
 
 func (x *AddToGroupRequest) Reset() {
 	*x = AddToGroupRequest{}
-	mi := &file_education_proto_msgTypes[66]
+	mi := &file_education_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5302,7 +5534,7 @@ func (x *AddToGroupRequest) String() string {
 func (*AddToGroupRequest) ProtoMessage() {}
 
 func (x *AddToGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[66]
+	mi := &file_education_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5315,7 +5547,7 @@ func (x *AddToGroupRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddToGroupRequest.ProtoReflect.Descriptor instead.
 func (*AddToGroupRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{66}
+	return file_education_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *AddToGroupRequest) GetCreatedDate() string {
@@ -5364,7 +5596,7 @@ type GetStudentByIdResponse struct {
 
 func (x *GetStudentByIdResponse) Reset() {
 	*x = GetStudentByIdResponse{}
-	mi := &file_education_proto_msgTypes[67]
+	mi := &file_education_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5376,7 +5608,7 @@ func (x *GetStudentByIdResponse) String() string {
 func (*GetStudentByIdResponse) ProtoMessage() {}
 
 func (x *GetStudentByIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[67]
+	mi := &file_education_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5389,7 +5621,7 @@ func (x *GetStudentByIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStudentByIdResponse.ProtoReflect.Descriptor instead.
 func (*GetStudentByIdResponse) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{67}
+	return file_education_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *GetStudentByIdResponse) GetId() string {
@@ -5471,7 +5703,7 @@ type NoteStudentByAbsRequest struct {
 
 func (x *NoteStudentByAbsRequest) Reset() {
 	*x = NoteStudentByAbsRequest{}
-	mi := &file_education_proto_msgTypes[68]
+	mi := &file_education_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5483,7 +5715,7 @@ func (x *NoteStudentByAbsRequest) String() string {
 func (*NoteStudentByAbsRequest) ProtoMessage() {}
 
 func (x *NoteStudentByAbsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[68]
+	mi := &file_education_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5496,7 +5728,7 @@ func (x *NoteStudentByAbsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NoteStudentByAbsRequest.ProtoReflect.Descriptor instead.
 func (*NoteStudentByAbsRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{68}
+	return file_education_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *NoteStudentByAbsRequest) GetId() string {
@@ -5528,7 +5760,7 @@ type GetGroupStudent struct {
 
 func (x *GetGroupStudent) Reset() {
 	*x = GetGroupStudent{}
-	mi := &file_education_proto_msgTypes[69]
+	mi := &file_education_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5540,7 +5772,7 @@ func (x *GetGroupStudent) String() string {
 func (*GetGroupStudent) ProtoMessage() {}
 
 func (x *GetGroupStudent) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[69]
+	mi := &file_education_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5553,7 +5785,7 @@ func (x *GetGroupStudent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupStudent.ProtoReflect.Descriptor instead.
 func (*GetGroupStudent) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{69}
+	return file_education_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *GetGroupStudent) GetId() string {
@@ -5663,7 +5895,7 @@ type GetNotesByStudent struct {
 
 func (x *GetNotesByStudent) Reset() {
 	*x = GetNotesByStudent{}
-	mi := &file_education_proto_msgTypes[70]
+	mi := &file_education_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5675,7 +5907,7 @@ func (x *GetNotesByStudent) String() string {
 func (*GetNotesByStudent) ProtoMessage() {}
 
 func (x *GetNotesByStudent) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[70]
+	mi := &file_education_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5688,7 +5920,7 @@ func (x *GetNotesByStudent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetNotesByStudent.ProtoReflect.Descriptor instead.
 func (*GetNotesByStudent) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{70}
+	return file_education_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *GetNotesByStudent) GetNotes() []*AbsNote {
@@ -5709,7 +5941,7 @@ type AbsNote struct {
 
 func (x *AbsNote) Reset() {
 	*x = AbsNote{}
-	mi := &file_education_proto_msgTypes[71]
+	mi := &file_education_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5721,7 +5953,7 @@ func (x *AbsNote) String() string {
 func (*AbsNote) ProtoMessage() {}
 
 func (x *AbsNote) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[71]
+	mi := &file_education_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5734,7 +5966,7 @@ func (x *AbsNote) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AbsNote.ProtoReflect.Descriptor instead.
 func (*AbsNote) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{71}
+	return file_education_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *AbsNote) GetId() string {
@@ -5768,7 +6000,7 @@ type CreateNoteRequest struct {
 
 func (x *CreateNoteRequest) Reset() {
 	*x = CreateNoteRequest{}
-	mi := &file_education_proto_msgTypes[72]
+	mi := &file_education_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5780,7 +6012,7 @@ func (x *CreateNoteRequest) String() string {
 func (*CreateNoteRequest) ProtoMessage() {}
 
 func (x *CreateNoteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_education_proto_msgTypes[72]
+	mi := &file_education_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5793,7 +6025,7 @@ func (x *CreateNoteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateNoteRequest.ProtoReflect.Descriptor instead.
 func (*CreateNoteRequest) Descriptor() ([]byte, []int) {
-	return file_education_proto_rawDescGZIP(), []int{72}
+	return file_education_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *CreateNoteRequest) GetNote() string {
@@ -5814,7 +6046,25 @@ var File_education_proto protoreflect.FileDescriptor
 
 const file_education_proto_rawDesc = "" +
 	"\n" +
-	"\x0feducation.proto\x12\teducation\x1a\fcommon.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xca\x02\n" +
+	"\x0feducation.proto\x12\teducation\x1a\fcommon.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xd5\x01\n" +
+	"\x14GetStatisticResponse\x129\n" +
+	"\adetails\x18\x01 \x01(\v2\x1f.education.CompanyCommonDetailsR\adetails\x12A\n" +
+	"\x0fregisterDetails\x18\x02 \x03(\v2\x17.education.OtherDetailsR\x0fregisterDetails\x12?\n" +
+	"\x0epaymentDetails\x18\x03 \x03(\v2\x17.education.OtherDetailsR\x0epaymentDetails\"\x8a\x01\n" +
+	"\fOtherDetails\x12>\n" +
+	"\adetails\x18\x01 \x03(\v2$.education.OtherDetails.DetailsEntryR\adetails\x1a:\n" +
+	"\fDetailsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xe0\x01\n" +
+	"\x14CompanyCommonDetails\x12&\n" +
+	"\x0eactiveStudents\x18\x01 \x01(\x05R\x0eactiveStudents\x12&\n" +
+	"\x0ewholeCompanies\x18\x02 \x01(\x05R\x0ewholeCompanies\x12(\n" +
+	"\x0fdebtorCompanies\x18\x03 \x01(\x05R\x0fdebtorCompanies\x12(\n" +
+	"\x0factiveCompanies\x18\x04 \x01(\x05R\x0factiveCompanies\x12$\n" +
+	"\rdemoCompanies\x18\x05 \x01(\x05R\rdemoCompanies\"9\n" +
+	"\x13GetStatisticRequest\x12\x12\n" +
+	"\x04from\x18\x01 \x01(\tR\x04from\x12\x0e\n" +
+	"\x02to\x18\x02 \x01(\tR\x02to\"\xca\x02\n" +
 	"\x14UpdateCompanyRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x1c\n" +
@@ -6373,12 +6623,13 @@ const file_education_proto_rawDesc = "" +
 	"\tcreatedAt\x18\x03 \x01(\tR\tcreatedAt\"E\n" +
 	"\x11CreateNoteRequest\x12\x12\n" +
 	"\x04note\x18\x01 \x01(\tR\x04note\x12\x1c\n" +
-	"\tstudentId\x18\x02 \x01(\tR\tstudentId2\xae\x02\n" +
+	"\tstudentId\x18\x02 \x01(\tR\tstudentId2\xff\x02\n" +
 	"\x0eCompanyService\x12T\n" +
 	"\x15GetCompanyBySubdomain\x12\x1c.education.GetCompanyRequest\x1a\x1d.education.GetCompanyResponse\x12E\n" +
 	"\rCreateCompany\x12\x1f.education.CreateCompanyRequest\x1a\x13.common.AbsResponse\x128\n" +
 	"\x06GetAll\x12\x13.common.PageRequest\x1a\x19.education.GetAllResponse\x12E\n" +
-	"\rUpdateCompany\x12\x1f.education.UpdateCompanyRequest\x1a\x13.common.AbsResponse2\xd5\x01\n" +
+	"\rUpdateCompany\x12\x1f.education.UpdateCompanyRequest\x1a\x13.common.AbsResponse\x12O\n" +
+	"\fGetStatistic\x12\x1e.education.GetStatisticRequest\x1a\x1f.education.GetStatisticResponse2\xd5\x01\n" +
 	"\rTariffService\x12.\n" +
 	"\x06Create\x12\x11.education.Tariff\x1a\x11.education.Tariff\x12.\n" +
 	"\x06Update\x12\x11.education.Tariff\x1a\x11.education.Tariff\x12.\n" +
@@ -6451,229 +6702,240 @@ func file_education_proto_rawDescGZIP() []byte {
 	return file_education_proto_rawDescData
 }
 
-var file_education_proto_msgTypes = make([]protoimpl.MessageInfo, 73)
+var file_education_proto_msgTypes = make([]protoimpl.MessageInfo, 78)
 var file_education_proto_goTypes = []any{
-	(*UpdateCompanyRequest)(nil),                  // 0: education.UpdateCompanyRequest
-	(*GetAllResponse)(nil),                        // 1: education.GetAllResponse
-	(*CreateCompanyRequest)(nil),                  // 2: education.CreateCompanyRequest
-	(*GetCompanyRequest)(nil),                     // 3: education.GetCompanyRequest
-	(*GetCompanyResponse)(nil),                    // 4: education.GetCompanyResponse
-	(*Tariff)(nil),                                // 5: education.Tariff
-	(*TariffList)(nil),                            // 6: education.TariffList
-	(*CompanyFinance)(nil),                        // 7: education.CompanyFinance
-	(*CompanyFinanceSelf)(nil),                    // 8: education.CompanyFinanceSelf
-	(*CompanyFinanceSelfList)(nil),                // 9: education.CompanyFinanceSelfList
-	(*CompanyFinanceList)(nil),                    // 10: education.CompanyFinanceList
-	(*CompanyFinanceForList)(nil),                 // 11: education.CompanyFinanceForList
-	(*CreateRoomRequest)(nil),                     // 12: education.CreateRoomRequest
-	(*GetUpdateRoomAbs)(nil),                      // 13: education.GetUpdateRoomAbs
-	(*AbsRoom)(nil),                               // 14: education.AbsRoom
-	(*CreateCourseRequest)(nil),                   // 15: education.CreateCourseRequest
-	(*GetUpdateCourseAbs)(nil),                    // 16: education.GetUpdateCourseAbs
-	(*AbsCourse)(nil),                             // 17: education.AbsCourse
-	(*GetCourseByIdResponse)(nil),                 // 18: education.GetCourseByIdResponse
-	(*GetCourseByIdRequest)(nil),                  // 19: education.GetCourseByIdRequest
-	(*GetLeftAfterTrialPeriodRequest)(nil),        // 20: education.GetLeftAfterTrialPeriodRequest
-	(*GetLeftAfterTrialPeriodResponse)(nil),       // 21: education.GetLeftAfterTrialPeriodResponse
-	(*AbsGetLeftAfter)(nil),                       // 22: education.AbsGetLeftAfter
-	(*GetCommonInformationEducationResponse)(nil), // 23: education.GetCommonInformationEducationResponse
-	(*GetGroupsByTeacherIdRequest)(nil),           // 24: education.GetGroupsByTeacherIdRequest
-	(*GetGroupsByTeacherResponse)(nil),            // 25: education.GetGroupsByTeacherResponse
-	(*GetGroupByTeacherAbs)(nil),                  // 26: education.GetGroupByTeacherAbs
-	(*CreateGroupRequest)(nil),                    // 27: education.CreateGroupRequest
-	(*GetGroupByIdRequest)(nil),                   // 28: education.GetGroupByIdRequest
-	(*GetUpdateGroupAbs)(nil),                     // 29: education.GetUpdateGroupAbs
-	(*GetGroupsByCourseResponse)(nil),             // 30: education.GetGroupsByCourseResponse
-	(*GetGroupByCourseAbsResponse)(nil),           // 31: education.GetGroupByCourseAbsResponse
-	(*GetGroupAbsResponse)(nil),                   // 32: education.GetGroupAbsResponse
-	(*GetGroupsResponse)(nil),                     // 33: education.GetGroupsResponse
-	(*GetGroupsRequest)(nil),                      // 34: education.GetGroupsRequest
-	(*CalculateTeacherSalaryRequest)(nil),         // 35: education.CalculateTeacherSalaryRequest
-	(*CalculateTeacherSalaryResponse)(nil),        // 36: education.CalculateTeacherSalaryResponse
-	(*AbsCalculateSalary)(nil),                    // 37: education.AbsCalculateSalary
-	(*StudentSalary)(nil),                         // 38: education.StudentSalary
-	(*GetAttendanceRequest)(nil),                  // 39: education.GetAttendanceRequest
-	(*GetAttendanceResponse)(nil),                 // 40: education.GetAttendanceResponse
-	(*Day)(nil),                                   // 41: education.Day
-	(*Student)(nil),                               // 42: education.Student
-	(*Attendance)(nil),                            // 43: education.Attendance
-	(*FreezeDetail)(nil),                          // 44: education.FreezeDetail
-	(*SetAttendanceRequest)(nil),                  // 45: education.SetAttendanceRequest
-	(*ChangeUserBalanceHistoryRequest)(nil),       // 46: education.ChangeUserBalanceHistoryRequest
-	(*DeleteStudentRequest)(nil),                  // 47: education.DeleteStudentRequest
-	(*GetStudentsByGroupIdResponse)(nil),          // 48: education.GetStudentsByGroupIdResponse
-	(*GetStudentsByGroupIdRequest)(nil),           // 49: education.GetStudentsByGroupIdRequest
-	(*ChangeConditionStudentRequest)(nil),         // 50: education.ChangeConditionStudentRequest
-	(*TransferLessonRequest)(nil),                 // 51: education.TransferLessonRequest
-	(*GetHistoryGroupResponse)(nil),               // 52: education.GetHistoryGroupResponse
-	(*GetHistoryStudentResponse)(nil),             // 53: education.GetHistoryStudentResponse
-	(*AbsStudentHistory)(nil),                     // 54: education.AbsStudentHistory
-	(*AbsGroup)(nil),                              // 55: education.AbsGroup
-	(*AbsHistory)(nil),                            // 56: education.AbsHistory
-	(*SearchStudentRequest)(nil),                  // 57: education.SearchStudentRequest
-	(*SearchStudentResponse)(nil),                 // 58: education.SearchStudentResponse
-	(*AbsStudent)(nil),                            // 59: education.AbsStudent
-	(*GetAllStudentRequest)(nil),                  // 60: education.GetAllStudentRequest
-	(*GetAllStudentResponse)(nil),                 // 61: education.GetAllStudentResponse
-	(*GetGroupsAbsForStudent)(nil),                // 62: education.GetGroupsAbsForStudent
-	(*GroupGetAllStudentAbs)(nil),                 // 63: education.GroupGetAllStudentAbs
-	(*CreateStudentRequest)(nil),                  // 64: education.CreateStudentRequest
-	(*UpdateStudentRequest)(nil),                  // 65: education.UpdateStudentRequest
-	(*AddToGroupRequest)(nil),                     // 66: education.AddToGroupRequest
-	(*GetStudentByIdResponse)(nil),                // 67: education.GetStudentByIdResponse
-	(*NoteStudentByAbsRequest)(nil),               // 68: education.NoteStudentByAbsRequest
-	(*GetGroupStudent)(nil),                       // 69: education.GetGroupStudent
-	(*GetNotesByStudent)(nil),                     // 70: education.GetNotesByStudent
-	(*AbsNote)(nil),                               // 71: education.AbsNote
-	(*CreateNoteRequest)(nil),                     // 72: education.CreateNoteRequest
-	(*PageRequest)(nil),                           // 73: common.PageRequest
-	(*emptypb.Empty)(nil),                         // 74: google.protobuf.Empty
-	(*DeleteAbsRequest)(nil),                      // 75: common.DeleteAbsRequest
-	(*AbsResponse)(nil),                           // 76: common.AbsResponse
+	(*GetStatisticResponse)(nil),                  // 0: education.GetStatisticResponse
+	(*OtherDetails)(nil),                          // 1: education.OtherDetails
+	(*CompanyCommonDetails)(nil),                  // 2: education.CompanyCommonDetails
+	(*GetStatisticRequest)(nil),                   // 3: education.GetStatisticRequest
+	(*UpdateCompanyRequest)(nil),                  // 4: education.UpdateCompanyRequest
+	(*GetAllResponse)(nil),                        // 5: education.GetAllResponse
+	(*CreateCompanyRequest)(nil),                  // 6: education.CreateCompanyRequest
+	(*GetCompanyRequest)(nil),                     // 7: education.GetCompanyRequest
+	(*GetCompanyResponse)(nil),                    // 8: education.GetCompanyResponse
+	(*Tariff)(nil),                                // 9: education.Tariff
+	(*TariffList)(nil),                            // 10: education.TariffList
+	(*CompanyFinance)(nil),                        // 11: education.CompanyFinance
+	(*CompanyFinanceSelf)(nil),                    // 12: education.CompanyFinanceSelf
+	(*CompanyFinanceSelfList)(nil),                // 13: education.CompanyFinanceSelfList
+	(*CompanyFinanceList)(nil),                    // 14: education.CompanyFinanceList
+	(*CompanyFinanceForList)(nil),                 // 15: education.CompanyFinanceForList
+	(*CreateRoomRequest)(nil),                     // 16: education.CreateRoomRequest
+	(*GetUpdateRoomAbs)(nil),                      // 17: education.GetUpdateRoomAbs
+	(*AbsRoom)(nil),                               // 18: education.AbsRoom
+	(*CreateCourseRequest)(nil),                   // 19: education.CreateCourseRequest
+	(*GetUpdateCourseAbs)(nil),                    // 20: education.GetUpdateCourseAbs
+	(*AbsCourse)(nil),                             // 21: education.AbsCourse
+	(*GetCourseByIdResponse)(nil),                 // 22: education.GetCourseByIdResponse
+	(*GetCourseByIdRequest)(nil),                  // 23: education.GetCourseByIdRequest
+	(*GetLeftAfterTrialPeriodRequest)(nil),        // 24: education.GetLeftAfterTrialPeriodRequest
+	(*GetLeftAfterTrialPeriodResponse)(nil),       // 25: education.GetLeftAfterTrialPeriodResponse
+	(*AbsGetLeftAfter)(nil),                       // 26: education.AbsGetLeftAfter
+	(*GetCommonInformationEducationResponse)(nil), // 27: education.GetCommonInformationEducationResponse
+	(*GetGroupsByTeacherIdRequest)(nil),           // 28: education.GetGroupsByTeacherIdRequest
+	(*GetGroupsByTeacherResponse)(nil),            // 29: education.GetGroupsByTeacherResponse
+	(*GetGroupByTeacherAbs)(nil),                  // 30: education.GetGroupByTeacherAbs
+	(*CreateGroupRequest)(nil),                    // 31: education.CreateGroupRequest
+	(*GetGroupByIdRequest)(nil),                   // 32: education.GetGroupByIdRequest
+	(*GetUpdateGroupAbs)(nil),                     // 33: education.GetUpdateGroupAbs
+	(*GetGroupsByCourseResponse)(nil),             // 34: education.GetGroupsByCourseResponse
+	(*GetGroupByCourseAbsResponse)(nil),           // 35: education.GetGroupByCourseAbsResponse
+	(*GetGroupAbsResponse)(nil),                   // 36: education.GetGroupAbsResponse
+	(*GetGroupsResponse)(nil),                     // 37: education.GetGroupsResponse
+	(*GetGroupsRequest)(nil),                      // 38: education.GetGroupsRequest
+	(*CalculateTeacherSalaryRequest)(nil),         // 39: education.CalculateTeacherSalaryRequest
+	(*CalculateTeacherSalaryResponse)(nil),        // 40: education.CalculateTeacherSalaryResponse
+	(*AbsCalculateSalary)(nil),                    // 41: education.AbsCalculateSalary
+	(*StudentSalary)(nil),                         // 42: education.StudentSalary
+	(*GetAttendanceRequest)(nil),                  // 43: education.GetAttendanceRequest
+	(*GetAttendanceResponse)(nil),                 // 44: education.GetAttendanceResponse
+	(*Day)(nil),                                   // 45: education.Day
+	(*Student)(nil),                               // 46: education.Student
+	(*Attendance)(nil),                            // 47: education.Attendance
+	(*FreezeDetail)(nil),                          // 48: education.FreezeDetail
+	(*SetAttendanceRequest)(nil),                  // 49: education.SetAttendanceRequest
+	(*ChangeUserBalanceHistoryRequest)(nil),       // 50: education.ChangeUserBalanceHistoryRequest
+	(*DeleteStudentRequest)(nil),                  // 51: education.DeleteStudentRequest
+	(*GetStudentsByGroupIdResponse)(nil),          // 52: education.GetStudentsByGroupIdResponse
+	(*GetStudentsByGroupIdRequest)(nil),           // 53: education.GetStudentsByGroupIdRequest
+	(*ChangeConditionStudentRequest)(nil),         // 54: education.ChangeConditionStudentRequest
+	(*TransferLessonRequest)(nil),                 // 55: education.TransferLessonRequest
+	(*GetHistoryGroupResponse)(nil),               // 56: education.GetHistoryGroupResponse
+	(*GetHistoryStudentResponse)(nil),             // 57: education.GetHistoryStudentResponse
+	(*AbsStudentHistory)(nil),                     // 58: education.AbsStudentHistory
+	(*AbsGroup)(nil),                              // 59: education.AbsGroup
+	(*AbsHistory)(nil),                            // 60: education.AbsHistory
+	(*SearchStudentRequest)(nil),                  // 61: education.SearchStudentRequest
+	(*SearchStudentResponse)(nil),                 // 62: education.SearchStudentResponse
+	(*AbsStudent)(nil),                            // 63: education.AbsStudent
+	(*GetAllStudentRequest)(nil),                  // 64: education.GetAllStudentRequest
+	(*GetAllStudentResponse)(nil),                 // 65: education.GetAllStudentResponse
+	(*GetGroupsAbsForStudent)(nil),                // 66: education.GetGroupsAbsForStudent
+	(*GroupGetAllStudentAbs)(nil),                 // 67: education.GroupGetAllStudentAbs
+	(*CreateStudentRequest)(nil),                  // 68: education.CreateStudentRequest
+	(*UpdateStudentRequest)(nil),                  // 69: education.UpdateStudentRequest
+	(*AddToGroupRequest)(nil),                     // 70: education.AddToGroupRequest
+	(*GetStudentByIdResponse)(nil),                // 71: education.GetStudentByIdResponse
+	(*NoteStudentByAbsRequest)(nil),               // 72: education.NoteStudentByAbsRequest
+	(*GetGroupStudent)(nil),                       // 73: education.GetGroupStudent
+	(*GetNotesByStudent)(nil),                     // 74: education.GetNotesByStudent
+	(*AbsNote)(nil),                               // 75: education.AbsNote
+	(*CreateNoteRequest)(nil),                     // 76: education.CreateNoteRequest
+	nil,                                           // 77: education.OtherDetails.DetailsEntry
+	(*PageRequest)(nil),                           // 78: common.PageRequest
+	(*emptypb.Empty)(nil),                         // 79: google.protobuf.Empty
+	(*DeleteAbsRequest)(nil),                      // 80: common.DeleteAbsRequest
+	(*AbsResponse)(nil),                           // 81: common.AbsResponse
 }
 var file_education_proto_depIdxs = []int32{
-	4,  // 0: education.GetAllResponse.items:type_name -> education.GetCompanyResponse
-	5,  // 1: education.GetCompanyResponse.tariff:type_name -> education.Tariff
-	5,  // 2: education.TariffList.items:type_name -> education.Tariff
-	8,  // 3: education.CompanyFinanceSelfList.items:type_name -> education.CompanyFinanceSelf
-	11, // 4: education.CompanyFinanceList.items:type_name -> education.CompanyFinanceForList
-	14, // 5: education.GetUpdateRoomAbs.rooms:type_name -> education.AbsRoom
-	17, // 6: education.GetUpdateCourseAbs.courses:type_name -> education.AbsCourse
-	22, // 7: education.GetLeftAfterTrialPeriodResponse.items:type_name -> education.AbsGetLeftAfter
-	26, // 8: education.GetGroupsByTeacherResponse.groups:type_name -> education.GetGroupByTeacherAbs
-	59, // 9: education.GetGroupByTeacherAbs.students:type_name -> education.AbsStudent
-	31, // 10: education.GetGroupsByCourseResponse.groups:type_name -> education.GetGroupByCourseAbsResponse
-	17, // 11: education.GetGroupAbsResponse.course:type_name -> education.AbsCourse
-	14, // 12: education.GetGroupAbsResponse.room:type_name -> education.AbsRoom
-	32, // 13: education.GetGroupsResponse.groups:type_name -> education.GetGroupAbsResponse
-	73, // 14: education.GetGroupsRequest.page:type_name -> common.PageRequest
-	37, // 15: education.CalculateTeacherSalaryResponse.salaries:type_name -> education.AbsCalculateSalary
-	38, // 16: education.AbsCalculateSalary.salaries:type_name -> education.StudentSalary
-	41, // 17: education.GetAttendanceResponse.days:type_name -> education.Day
-	42, // 18: education.GetAttendanceResponse.students:type_name -> education.Student
-	43, // 19: education.Student.attendance:type_name -> education.Attendance
-	44, // 20: education.Student.freezeDetail:type_name -> education.FreezeDetail
-	59, // 21: education.GetStudentsByGroupIdResponse.students:type_name -> education.AbsStudent
-	56, // 22: education.GetHistoryGroupResponse.groupHistory:type_name -> education.AbsHistory
-	54, // 23: education.GetHistoryGroupResponse.studentsHistory:type_name -> education.AbsStudentHistory
-	56, // 24: education.GetHistoryStudentResponse.studentHistory:type_name -> education.AbsHistory
-	54, // 25: education.GetHistoryStudentResponse.conditionsHistory:type_name -> education.AbsStudentHistory
-	59, // 26: education.AbsStudentHistory.student:type_name -> education.AbsStudent
-	55, // 27: education.AbsStudentHistory.group:type_name -> education.AbsGroup
-	17, // 28: education.AbsGroup.course:type_name -> education.AbsCourse
-	59, // 29: education.SearchStudentResponse.students:type_name -> education.AbsStudent
-	62, // 30: education.GetAllStudentResponse.response:type_name -> education.GetGroupsAbsForStudent
-	63, // 31: education.GetGroupsAbsForStudent.groups:type_name -> education.GroupGetAllStudentAbs
-	17, // 32: education.GroupGetAllStudentAbs.course:type_name -> education.AbsCourse
-	69, // 33: education.GetStudentByIdResponse.groups:type_name -> education.GetGroupStudent
-	14, // 34: education.GetGroupStudent.room:type_name -> education.AbsRoom
-	17, // 35: education.GetGroupStudent.course:type_name -> education.AbsCourse
-	71, // 36: education.GetNotesByStudent.notes:type_name -> education.AbsNote
-	3,  // 37: education.CompanyService.GetCompanyBySubdomain:input_type -> education.GetCompanyRequest
-	2,  // 38: education.CompanyService.CreateCompany:input_type -> education.CreateCompanyRequest
-	73, // 39: education.CompanyService.GetAll:input_type -> common.PageRequest
-	0,  // 40: education.CompanyService.UpdateCompany:input_type -> education.UpdateCompanyRequest
-	5,  // 41: education.TariffService.Create:input_type -> education.Tariff
-	5,  // 42: education.TariffService.Update:input_type -> education.Tariff
-	5,  // 43: education.TariffService.Delete:input_type -> education.Tariff
-	74, // 44: education.TariffService.Get:input_type -> google.protobuf.Empty
-	7,  // 45: education.CompanyFinanceService.Create:input_type -> education.CompanyFinance
-	75, // 46: education.CompanyFinanceService.Delete:input_type -> common.DeleteAbsRequest
-	73, // 47: education.CompanyFinanceService.GetAll:input_type -> common.PageRequest
-	73, // 48: education.CompanyFinanceService.GetByCompany:input_type -> common.PageRequest
-	7,  // 49: education.CompanyFinanceService.UpdateByCompany:input_type -> education.CompanyFinance
-	12, // 50: education.RoomService.CreateRoom:input_type -> education.CreateRoomRequest
-	74, // 51: education.RoomService.GetRooms:input_type -> google.protobuf.Empty
-	14, // 52: education.RoomService.UpdateRoom:input_type -> education.AbsRoom
-	75, // 53: education.RoomService.DeleteRoom:input_type -> common.DeleteAbsRequest
-	15, // 54: education.CourseService.CreateCourse:input_type -> education.CreateCourseRequest
-	74, // 55: education.CourseService.GetCourses:input_type -> google.protobuf.Empty
-	19, // 56: education.CourseService.GetCourseById:input_type -> education.GetCourseByIdRequest
-	17, // 57: education.CourseService.UpdateCourse:input_type -> education.AbsCourse
-	75, // 58: education.CourseService.DeleteCourse:input_type -> common.DeleteAbsRequest
-	27, // 59: education.GroupService.CreateGroup:input_type -> education.CreateGroupRequest
-	34, // 60: education.GroupService.GetGroups:input_type -> education.GetGroupsRequest
-	28, // 61: education.GroupService.GetGroupById:input_type -> education.GetGroupByIdRequest
-	28, // 62: education.GroupService.GetGroupsByCourseId:input_type -> education.GetGroupByIdRequest
-	29, // 63: education.GroupService.UpdateGroup:input_type -> education.GetUpdateGroupAbs
-	75, // 64: education.GroupService.DeleteGroup:input_type -> common.DeleteAbsRequest
-	24, // 65: education.GroupService.GetGroupsByTeacherId:input_type -> education.GetGroupsByTeacherIdRequest
-	74, // 66: education.GroupService.GetCommonInformationEducation:input_type -> google.protobuf.Empty
-	20, // 67: education.GroupService.GetLeftAfterTrialPeriod:input_type -> education.GetLeftAfterTrialPeriodRequest
-	39, // 68: education.AttendanceService.GetAttendance:input_type -> education.GetAttendanceRequest
-	45, // 69: education.AttendanceService.SetAttendance:input_type -> education.SetAttendanceRequest
-	35, // 70: education.AttendanceService.CalculateTeacherSalaryByAttendance:input_type -> education.CalculateTeacherSalaryRequest
-	60, // 71: education.StudentService.GetAllStudent:input_type -> education.GetAllStudentRequest
-	64, // 72: education.StudentService.CreateStudent:input_type -> education.CreateStudentRequest
-	65, // 73: education.StudentService.UpdateStudent:input_type -> education.UpdateStudentRequest
-	47, // 74: education.StudentService.DeleteStudent:input_type -> education.DeleteStudentRequest
-	66, // 75: education.StudentService.AddToGroup:input_type -> education.AddToGroupRequest
-	68, // 76: education.StudentService.GetStudentById:input_type -> education.NoteStudentByAbsRequest
-	68, // 77: education.StudentService.GetNoteByStudent:input_type -> education.NoteStudentByAbsRequest
-	72, // 78: education.StudentService.CreateNoteForStudent:input_type -> education.CreateNoteRequest
-	68, // 79: education.StudentService.DeleteStudentNote:input_type -> education.NoteStudentByAbsRequest
-	57, // 80: education.StudentService.SearchStudent:input_type -> education.SearchStudentRequest
-	68, // 81: education.StudentService.GetHistoryGroupById:input_type -> education.NoteStudentByAbsRequest
-	68, // 82: education.StudentService.GetHistoryStudentById:input_type -> education.NoteStudentByAbsRequest
-	51, // 83: education.StudentService.TransferLessonDate:input_type -> education.TransferLessonRequest
-	50, // 84: education.StudentService.ChangeConditionStudent:input_type -> education.ChangeConditionStudentRequest
-	49, // 85: education.StudentService.GetStudentsByGroupId:input_type -> education.GetStudentsByGroupIdRequest
-	46, // 86: education.StudentService.ChangeUserBalanceHistory:input_type -> education.ChangeUserBalanceHistoryRequest
-	4,  // 87: education.CompanyService.GetCompanyBySubdomain:output_type -> education.GetCompanyResponse
-	76, // 88: education.CompanyService.CreateCompany:output_type -> common.AbsResponse
-	1,  // 89: education.CompanyService.GetAll:output_type -> education.GetAllResponse
-	76, // 90: education.CompanyService.UpdateCompany:output_type -> common.AbsResponse
-	5,  // 91: education.TariffService.Create:output_type -> education.Tariff
-	5,  // 92: education.TariffService.Update:output_type -> education.Tariff
-	5,  // 93: education.TariffService.Delete:output_type -> education.Tariff
-	6,  // 94: education.TariffService.Get:output_type -> education.TariffList
-	7,  // 95: education.CompanyFinanceService.Create:output_type -> education.CompanyFinance
-	76, // 96: education.CompanyFinanceService.Delete:output_type -> common.AbsResponse
-	10, // 97: education.CompanyFinanceService.GetAll:output_type -> education.CompanyFinanceList
-	9,  // 98: education.CompanyFinanceService.GetByCompany:output_type -> education.CompanyFinanceSelfList
-	7,  // 99: education.CompanyFinanceService.UpdateByCompany:output_type -> education.CompanyFinance
-	76, // 100: education.RoomService.CreateRoom:output_type -> common.AbsResponse
-	13, // 101: education.RoomService.GetRooms:output_type -> education.GetUpdateRoomAbs
-	76, // 102: education.RoomService.UpdateRoom:output_type -> common.AbsResponse
-	76, // 103: education.RoomService.DeleteRoom:output_type -> common.AbsResponse
-	76, // 104: education.CourseService.CreateCourse:output_type -> common.AbsResponse
-	16, // 105: education.CourseService.GetCourses:output_type -> education.GetUpdateCourseAbs
-	18, // 106: education.CourseService.GetCourseById:output_type -> education.GetCourseByIdResponse
-	76, // 107: education.CourseService.UpdateCourse:output_type -> common.AbsResponse
-	76, // 108: education.CourseService.DeleteCourse:output_type -> common.AbsResponse
-	76, // 109: education.GroupService.CreateGroup:output_type -> common.AbsResponse
-	33, // 110: education.GroupService.GetGroups:output_type -> education.GetGroupsResponse
-	32, // 111: education.GroupService.GetGroupById:output_type -> education.GetGroupAbsResponse
-	30, // 112: education.GroupService.GetGroupsByCourseId:output_type -> education.GetGroupsByCourseResponse
-	76, // 113: education.GroupService.UpdateGroup:output_type -> common.AbsResponse
-	76, // 114: education.GroupService.DeleteGroup:output_type -> common.AbsResponse
-	25, // 115: education.GroupService.GetGroupsByTeacherId:output_type -> education.GetGroupsByTeacherResponse
-	23, // 116: education.GroupService.GetCommonInformationEducation:output_type -> education.GetCommonInformationEducationResponse
-	21, // 117: education.GroupService.GetLeftAfterTrialPeriod:output_type -> education.GetLeftAfterTrialPeriodResponse
-	40, // 118: education.AttendanceService.GetAttendance:output_type -> education.GetAttendanceResponse
-	76, // 119: education.AttendanceService.SetAttendance:output_type -> common.AbsResponse
-	36, // 120: education.AttendanceService.CalculateTeacherSalaryByAttendance:output_type -> education.CalculateTeacherSalaryResponse
-	61, // 121: education.StudentService.GetAllStudent:output_type -> education.GetAllStudentResponse
-	76, // 122: education.StudentService.CreateStudent:output_type -> common.AbsResponse
-	76, // 123: education.StudentService.UpdateStudent:output_type -> common.AbsResponse
-	76, // 124: education.StudentService.DeleteStudent:output_type -> common.AbsResponse
-	76, // 125: education.StudentService.AddToGroup:output_type -> common.AbsResponse
-	67, // 126: education.StudentService.GetStudentById:output_type -> education.GetStudentByIdResponse
-	70, // 127: education.StudentService.GetNoteByStudent:output_type -> education.GetNotesByStudent
-	76, // 128: education.StudentService.CreateNoteForStudent:output_type -> common.AbsResponse
-	76, // 129: education.StudentService.DeleteStudentNote:output_type -> common.AbsResponse
-	58, // 130: education.StudentService.SearchStudent:output_type -> education.SearchStudentResponse
-	52, // 131: education.StudentService.GetHistoryGroupById:output_type -> education.GetHistoryGroupResponse
-	53, // 132: education.StudentService.GetHistoryStudentById:output_type -> education.GetHistoryStudentResponse
-	76, // 133: education.StudentService.TransferLessonDate:output_type -> common.AbsResponse
-	76, // 134: education.StudentService.ChangeConditionStudent:output_type -> common.AbsResponse
-	48, // 135: education.StudentService.GetStudentsByGroupId:output_type -> education.GetStudentsByGroupIdResponse
-	76, // 136: education.StudentService.ChangeUserBalanceHistory:output_type -> common.AbsResponse
-	87, // [87:137] is the sub-list for method output_type
-	37, // [37:87] is the sub-list for method input_type
-	37, // [37:37] is the sub-list for extension type_name
-	37, // [37:37] is the sub-list for extension extendee
-	0,  // [0:37] is the sub-list for field type_name
+	2,  // 0: education.GetStatisticResponse.details:type_name -> education.CompanyCommonDetails
+	1,  // 1: education.GetStatisticResponse.registerDetails:type_name -> education.OtherDetails
+	1,  // 2: education.GetStatisticResponse.paymentDetails:type_name -> education.OtherDetails
+	77, // 3: education.OtherDetails.details:type_name -> education.OtherDetails.DetailsEntry
+	8,  // 4: education.GetAllResponse.items:type_name -> education.GetCompanyResponse
+	9,  // 5: education.GetCompanyResponse.tariff:type_name -> education.Tariff
+	9,  // 6: education.TariffList.items:type_name -> education.Tariff
+	12, // 7: education.CompanyFinanceSelfList.items:type_name -> education.CompanyFinanceSelf
+	15, // 8: education.CompanyFinanceList.items:type_name -> education.CompanyFinanceForList
+	18, // 9: education.GetUpdateRoomAbs.rooms:type_name -> education.AbsRoom
+	21, // 10: education.GetUpdateCourseAbs.courses:type_name -> education.AbsCourse
+	26, // 11: education.GetLeftAfterTrialPeriodResponse.items:type_name -> education.AbsGetLeftAfter
+	30, // 12: education.GetGroupsByTeacherResponse.groups:type_name -> education.GetGroupByTeacherAbs
+	63, // 13: education.GetGroupByTeacherAbs.students:type_name -> education.AbsStudent
+	35, // 14: education.GetGroupsByCourseResponse.groups:type_name -> education.GetGroupByCourseAbsResponse
+	21, // 15: education.GetGroupAbsResponse.course:type_name -> education.AbsCourse
+	18, // 16: education.GetGroupAbsResponse.room:type_name -> education.AbsRoom
+	36, // 17: education.GetGroupsResponse.groups:type_name -> education.GetGroupAbsResponse
+	78, // 18: education.GetGroupsRequest.page:type_name -> common.PageRequest
+	41, // 19: education.CalculateTeacherSalaryResponse.salaries:type_name -> education.AbsCalculateSalary
+	42, // 20: education.AbsCalculateSalary.salaries:type_name -> education.StudentSalary
+	45, // 21: education.GetAttendanceResponse.days:type_name -> education.Day
+	46, // 22: education.GetAttendanceResponse.students:type_name -> education.Student
+	47, // 23: education.Student.attendance:type_name -> education.Attendance
+	48, // 24: education.Student.freezeDetail:type_name -> education.FreezeDetail
+	63, // 25: education.GetStudentsByGroupIdResponse.students:type_name -> education.AbsStudent
+	60, // 26: education.GetHistoryGroupResponse.groupHistory:type_name -> education.AbsHistory
+	58, // 27: education.GetHistoryGroupResponse.studentsHistory:type_name -> education.AbsStudentHistory
+	60, // 28: education.GetHistoryStudentResponse.studentHistory:type_name -> education.AbsHistory
+	58, // 29: education.GetHistoryStudentResponse.conditionsHistory:type_name -> education.AbsStudentHistory
+	63, // 30: education.AbsStudentHistory.student:type_name -> education.AbsStudent
+	59, // 31: education.AbsStudentHistory.group:type_name -> education.AbsGroup
+	21, // 32: education.AbsGroup.course:type_name -> education.AbsCourse
+	63, // 33: education.SearchStudentResponse.students:type_name -> education.AbsStudent
+	66, // 34: education.GetAllStudentResponse.response:type_name -> education.GetGroupsAbsForStudent
+	67, // 35: education.GetGroupsAbsForStudent.groups:type_name -> education.GroupGetAllStudentAbs
+	21, // 36: education.GroupGetAllStudentAbs.course:type_name -> education.AbsCourse
+	73, // 37: education.GetStudentByIdResponse.groups:type_name -> education.GetGroupStudent
+	18, // 38: education.GetGroupStudent.room:type_name -> education.AbsRoom
+	21, // 39: education.GetGroupStudent.course:type_name -> education.AbsCourse
+	75, // 40: education.GetNotesByStudent.notes:type_name -> education.AbsNote
+	7,  // 41: education.CompanyService.GetCompanyBySubdomain:input_type -> education.GetCompanyRequest
+	6,  // 42: education.CompanyService.CreateCompany:input_type -> education.CreateCompanyRequest
+	78, // 43: education.CompanyService.GetAll:input_type -> common.PageRequest
+	4,  // 44: education.CompanyService.UpdateCompany:input_type -> education.UpdateCompanyRequest
+	3,  // 45: education.CompanyService.GetStatistic:input_type -> education.GetStatisticRequest
+	9,  // 46: education.TariffService.Create:input_type -> education.Tariff
+	9,  // 47: education.TariffService.Update:input_type -> education.Tariff
+	9,  // 48: education.TariffService.Delete:input_type -> education.Tariff
+	79, // 49: education.TariffService.Get:input_type -> google.protobuf.Empty
+	11, // 50: education.CompanyFinanceService.Create:input_type -> education.CompanyFinance
+	80, // 51: education.CompanyFinanceService.Delete:input_type -> common.DeleteAbsRequest
+	78, // 52: education.CompanyFinanceService.GetAll:input_type -> common.PageRequest
+	78, // 53: education.CompanyFinanceService.GetByCompany:input_type -> common.PageRequest
+	11, // 54: education.CompanyFinanceService.UpdateByCompany:input_type -> education.CompanyFinance
+	16, // 55: education.RoomService.CreateRoom:input_type -> education.CreateRoomRequest
+	79, // 56: education.RoomService.GetRooms:input_type -> google.protobuf.Empty
+	18, // 57: education.RoomService.UpdateRoom:input_type -> education.AbsRoom
+	80, // 58: education.RoomService.DeleteRoom:input_type -> common.DeleteAbsRequest
+	19, // 59: education.CourseService.CreateCourse:input_type -> education.CreateCourseRequest
+	79, // 60: education.CourseService.GetCourses:input_type -> google.protobuf.Empty
+	23, // 61: education.CourseService.GetCourseById:input_type -> education.GetCourseByIdRequest
+	21, // 62: education.CourseService.UpdateCourse:input_type -> education.AbsCourse
+	80, // 63: education.CourseService.DeleteCourse:input_type -> common.DeleteAbsRequest
+	31, // 64: education.GroupService.CreateGroup:input_type -> education.CreateGroupRequest
+	38, // 65: education.GroupService.GetGroups:input_type -> education.GetGroupsRequest
+	32, // 66: education.GroupService.GetGroupById:input_type -> education.GetGroupByIdRequest
+	32, // 67: education.GroupService.GetGroupsByCourseId:input_type -> education.GetGroupByIdRequest
+	33, // 68: education.GroupService.UpdateGroup:input_type -> education.GetUpdateGroupAbs
+	80, // 69: education.GroupService.DeleteGroup:input_type -> common.DeleteAbsRequest
+	28, // 70: education.GroupService.GetGroupsByTeacherId:input_type -> education.GetGroupsByTeacherIdRequest
+	79, // 71: education.GroupService.GetCommonInformationEducation:input_type -> google.protobuf.Empty
+	24, // 72: education.GroupService.GetLeftAfterTrialPeriod:input_type -> education.GetLeftAfterTrialPeriodRequest
+	43, // 73: education.AttendanceService.GetAttendance:input_type -> education.GetAttendanceRequest
+	49, // 74: education.AttendanceService.SetAttendance:input_type -> education.SetAttendanceRequest
+	39, // 75: education.AttendanceService.CalculateTeacherSalaryByAttendance:input_type -> education.CalculateTeacherSalaryRequest
+	64, // 76: education.StudentService.GetAllStudent:input_type -> education.GetAllStudentRequest
+	68, // 77: education.StudentService.CreateStudent:input_type -> education.CreateStudentRequest
+	69, // 78: education.StudentService.UpdateStudent:input_type -> education.UpdateStudentRequest
+	51, // 79: education.StudentService.DeleteStudent:input_type -> education.DeleteStudentRequest
+	70, // 80: education.StudentService.AddToGroup:input_type -> education.AddToGroupRequest
+	72, // 81: education.StudentService.GetStudentById:input_type -> education.NoteStudentByAbsRequest
+	72, // 82: education.StudentService.GetNoteByStudent:input_type -> education.NoteStudentByAbsRequest
+	76, // 83: education.StudentService.CreateNoteForStudent:input_type -> education.CreateNoteRequest
+	72, // 84: education.StudentService.DeleteStudentNote:input_type -> education.NoteStudentByAbsRequest
+	61, // 85: education.StudentService.SearchStudent:input_type -> education.SearchStudentRequest
+	72, // 86: education.StudentService.GetHistoryGroupById:input_type -> education.NoteStudentByAbsRequest
+	72, // 87: education.StudentService.GetHistoryStudentById:input_type -> education.NoteStudentByAbsRequest
+	55, // 88: education.StudentService.TransferLessonDate:input_type -> education.TransferLessonRequest
+	54, // 89: education.StudentService.ChangeConditionStudent:input_type -> education.ChangeConditionStudentRequest
+	53, // 90: education.StudentService.GetStudentsByGroupId:input_type -> education.GetStudentsByGroupIdRequest
+	50, // 91: education.StudentService.ChangeUserBalanceHistory:input_type -> education.ChangeUserBalanceHistoryRequest
+	8,  // 92: education.CompanyService.GetCompanyBySubdomain:output_type -> education.GetCompanyResponse
+	81, // 93: education.CompanyService.CreateCompany:output_type -> common.AbsResponse
+	5,  // 94: education.CompanyService.GetAll:output_type -> education.GetAllResponse
+	81, // 95: education.CompanyService.UpdateCompany:output_type -> common.AbsResponse
+	0,  // 96: education.CompanyService.GetStatistic:output_type -> education.GetStatisticResponse
+	9,  // 97: education.TariffService.Create:output_type -> education.Tariff
+	9,  // 98: education.TariffService.Update:output_type -> education.Tariff
+	9,  // 99: education.TariffService.Delete:output_type -> education.Tariff
+	10, // 100: education.TariffService.Get:output_type -> education.TariffList
+	11, // 101: education.CompanyFinanceService.Create:output_type -> education.CompanyFinance
+	81, // 102: education.CompanyFinanceService.Delete:output_type -> common.AbsResponse
+	14, // 103: education.CompanyFinanceService.GetAll:output_type -> education.CompanyFinanceList
+	13, // 104: education.CompanyFinanceService.GetByCompany:output_type -> education.CompanyFinanceSelfList
+	11, // 105: education.CompanyFinanceService.UpdateByCompany:output_type -> education.CompanyFinance
+	81, // 106: education.RoomService.CreateRoom:output_type -> common.AbsResponse
+	17, // 107: education.RoomService.GetRooms:output_type -> education.GetUpdateRoomAbs
+	81, // 108: education.RoomService.UpdateRoom:output_type -> common.AbsResponse
+	81, // 109: education.RoomService.DeleteRoom:output_type -> common.AbsResponse
+	81, // 110: education.CourseService.CreateCourse:output_type -> common.AbsResponse
+	20, // 111: education.CourseService.GetCourses:output_type -> education.GetUpdateCourseAbs
+	22, // 112: education.CourseService.GetCourseById:output_type -> education.GetCourseByIdResponse
+	81, // 113: education.CourseService.UpdateCourse:output_type -> common.AbsResponse
+	81, // 114: education.CourseService.DeleteCourse:output_type -> common.AbsResponse
+	81, // 115: education.GroupService.CreateGroup:output_type -> common.AbsResponse
+	37, // 116: education.GroupService.GetGroups:output_type -> education.GetGroupsResponse
+	36, // 117: education.GroupService.GetGroupById:output_type -> education.GetGroupAbsResponse
+	34, // 118: education.GroupService.GetGroupsByCourseId:output_type -> education.GetGroupsByCourseResponse
+	81, // 119: education.GroupService.UpdateGroup:output_type -> common.AbsResponse
+	81, // 120: education.GroupService.DeleteGroup:output_type -> common.AbsResponse
+	29, // 121: education.GroupService.GetGroupsByTeacherId:output_type -> education.GetGroupsByTeacherResponse
+	27, // 122: education.GroupService.GetCommonInformationEducation:output_type -> education.GetCommonInformationEducationResponse
+	25, // 123: education.GroupService.GetLeftAfterTrialPeriod:output_type -> education.GetLeftAfterTrialPeriodResponse
+	44, // 124: education.AttendanceService.GetAttendance:output_type -> education.GetAttendanceResponse
+	81, // 125: education.AttendanceService.SetAttendance:output_type -> common.AbsResponse
+	40, // 126: education.AttendanceService.CalculateTeacherSalaryByAttendance:output_type -> education.CalculateTeacherSalaryResponse
+	65, // 127: education.StudentService.GetAllStudent:output_type -> education.GetAllStudentResponse
+	81, // 128: education.StudentService.CreateStudent:output_type -> common.AbsResponse
+	81, // 129: education.StudentService.UpdateStudent:output_type -> common.AbsResponse
+	81, // 130: education.StudentService.DeleteStudent:output_type -> common.AbsResponse
+	81, // 131: education.StudentService.AddToGroup:output_type -> common.AbsResponse
+	71, // 132: education.StudentService.GetStudentById:output_type -> education.GetStudentByIdResponse
+	74, // 133: education.StudentService.GetNoteByStudent:output_type -> education.GetNotesByStudent
+	81, // 134: education.StudentService.CreateNoteForStudent:output_type -> common.AbsResponse
+	81, // 135: education.StudentService.DeleteStudentNote:output_type -> common.AbsResponse
+	62, // 136: education.StudentService.SearchStudent:output_type -> education.SearchStudentResponse
+	56, // 137: education.StudentService.GetHistoryGroupById:output_type -> education.GetHistoryGroupResponse
+	57, // 138: education.StudentService.GetHistoryStudentById:output_type -> education.GetHistoryStudentResponse
+	81, // 139: education.StudentService.TransferLessonDate:output_type -> common.AbsResponse
+	81, // 140: education.StudentService.ChangeConditionStudent:output_type -> common.AbsResponse
+	52, // 141: education.StudentService.GetStudentsByGroupId:output_type -> education.GetStudentsByGroupIdResponse
+	81, // 142: education.StudentService.ChangeUserBalanceHistory:output_type -> common.AbsResponse
+	92, // [92:143] is the sub-list for method output_type
+	41, // [41:92] is the sub-list for method input_type
+	41, // [41:41] is the sub-list for extension type_name
+	41, // [41:41] is the sub-list for extension extendee
+	0,  // [0:41] is the sub-list for field type_name
 }
 
 func init() { file_education_proto_init() }
@@ -6682,14 +6944,14 @@ func file_education_proto_init() {
 		return
 	}
 	file_common_proto_init()
-	file_education_proto_msgTypes[34].OneofWrappers = []any{}
+	file_education_proto_msgTypes[38].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_education_proto_rawDesc), len(file_education_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   73,
+			NumMessages:   78,
 			NumExtensions: 0,
 			NumServices:   8,
 		},

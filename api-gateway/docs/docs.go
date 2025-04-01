@@ -717,6 +717,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/company/statistic": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "SUPER_CEO",
+                "parameters": [
+                    {
+                        "description": "Параметры запроса статистики компании",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetStatisticRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ со статистикой",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GetStatisticResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AbsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/company/subdomain/{domain}": {
             "get": {
                 "description": "Retrieve the data company by domain",
@@ -5875,6 +5919,26 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.CompanyCommonDetails": {
+            "type": "object",
+            "properties": {
+                "activeCompanies": {
+                    "type": "integer"
+                },
+                "activeStudents": {
+                    "type": "integer"
+                },
+                "debtorCompanies": {
+                    "type": "integer"
+                },
+                "demoCompanies": {
+                    "type": "integer"
+                },
+                "wholeCompanies": {
+                    "type": "integer"
+                }
+            }
+        },
         "pb.CompanyFinance": {
             "type": "object",
             "properties": {
@@ -7112,6 +7176,37 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.GetStatisticRequest": {
+            "type": "object",
+            "properties": {
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.GetStatisticResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "$ref": "#/definitions/pb.CompanyCommonDetails"
+                },
+                "paymentDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.OtherDetails"
+                    }
+                },
+                "registerDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/pb.OtherDetails"
+                    }
+                }
+            }
+        },
         "pb.GetTeachersResponse": {
             "type": "object",
             "properties": {
@@ -7329,6 +7424,17 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/pb.GetUserByIdResponse"
+                }
+            }
+        },
+        "pb.OtherDetails": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },

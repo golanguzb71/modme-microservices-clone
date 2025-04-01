@@ -11,8 +11,27 @@ service CompanyService{
   rpc CreateCompany(CreateCompanyRequest) returns(common.AbsResponse);
   rpc GetAll(common.PageRequest)returns(GetAllResponse);
   rpc UpdateCompany(UpdateCompanyRequest) returns(common.AbsResponse);
+  rpc GetStatistic(GetStatisticRequest) returns (GetStatisticResponse);
 }
-
+message GetStatisticResponse{
+    CompanyCommonDetails details=1;
+    repeated OtherDetails registerDetails=2;
+    repeated OtherDetails paymentDetails=3;
+}
+ message   OtherDetails{
+  map<string, string> details=1;
+ }
+message CompanyCommonDetails{
+int32 activeStudents=1;
+int32 wholeCompanies=2;
+int32 debtorCompanies=3;
+int32 activeCompanies=4;
+int32 demoCompanies=5;
+}
+message GetStatisticRequest{
+  string from=1;
+  string to=2;
+}
 message UpdateCompanyRequest{
   string id = 1;
   string title = 2;

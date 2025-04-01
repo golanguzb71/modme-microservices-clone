@@ -275,3 +275,7 @@ func (lc *EducationClient) FinanceGetAll(req *pb.PageRequest) (*pb.CompanyFinanc
 func (lc *EducationClient) FinanceUpdate(req *pb.CompanyFinance) (*pb.CompanyFinance, error) {
 	return lc.companyFinanceClient.UpdateByCompany(context.TODO(), req)
 }
+
+func (lc *EducationClient) GetStatisticCompany(req *pb.GetStatisticRequest) (*pb.GetStatisticResponse, error) {
+	return lc.companyClient.GetStatistic(context.TODO(), req)
+}
