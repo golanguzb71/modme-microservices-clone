@@ -717,7 +717,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/company/statistic": {
+        "/api/company/get-statistic": {
             "post": {
                 "security": [
                     {

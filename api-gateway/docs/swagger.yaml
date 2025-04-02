@@ -2173,7 +2173,7 @@ paths:
       summary: SUPER_CEO
       tags:
       - company
-  /api/company/statistic:
+  /api/company/get-statistic:
     post:
       consumes:
       - application/json
