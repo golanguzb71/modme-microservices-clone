@@ -210,3 +210,98 @@ func (r *CompanyRepository) UpdateCompany(req *pb.UpdateCompanyRequest) (*pb.Abs
 		Message: "Company updated successfully",
 	}, nil
 }
+
+func (r *CompanyRepository) GetStatistic(req *pb.GetStatisticRequest) (*pb.GetStatisticResponse, error) {
+	response := &pb.GetStatisticResponse{}
+
+	var active, demo, debtor, total, students int64
+	err := r.db.QueryRow(`
+		SELECT 
+			COUNT(*) FILTER (WHERE is_demo = false) AS active,
+			COUNT(*) FILTER (WHERE is_demo = true) AS demo,
+			COUNT(*) AS total
+		FROM company
+	`).Scan(&active, &demo, &total)
+	if err != nil {
+		return nil, err
+	}
+
+	debtor = 0
+	students = 0
+
+	response.Details = &pb.CompanyCommonDetails{
+		ActiveCompanies: int32(active),
+		ActiveStudents:  int32(students),
+		DebtorCompanies: int32(debtor),
+		DemoCompanies:   int32(demo),
+		WholeCompanies:  int32(total),
+	}
+
+	// Подготовка диапазона дат
+	from := req.From
+	to := req.To
+	if from == "" {
+		from = "2000-01-01"
+	}
+	if to == "" {
+		to = "2999-12-31"
+	}
+
+	// 2. Регистрации компаний по месяцам (в рамках диапазона)
+	registerQuery := `
+		SELECT TO_CHAR(created_at, 'YYYY-MM') AS month, COUNT(*) 
+		FROM company 
+		WHERE created_at BETWEEN $1 AND $2
+		GROUP BY month 
+		ORDER BY month
+	`
+	registerRows, err := r.db.Query(registerQuery, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer registerRows.Close()
+
+	for registerRows.Next() {
+		var month string
+		var count int
+		if err := registerRows.Scan(&month, &count); err != nil {
+			return nil, err
+		}
+		response.RegisterDetails = append(response.RegisterDetails, &pb.OtherDetails{
+			Details: map[string]string{
+				"month":               month,
+				"registeredCompanies": fmt.Sprintf("%d", count),
+			},
+		})
+	}
+
+	// 3. Платежи компаний по месяцам (в рамках диапазона)
+	paymentQuery := `
+		SELECT TO_CHAR(created_at, 'YYYY-MM') AS month, SUM(sum) 
+		FROM company_payments
+		WHERE created_at BETWEEN $1 AND $2
+		GROUP BY month 
+		ORDER BY month
+	`
+	paymentRows, err := r.db.Query(paymentQuery, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer paymentRows.Close()
+
+	for paymentRows.Next() {
+		var month string
+		var totalSum float64
+		if err := paymentRows.Scan(&month, &totalSum); err != nil {
+			return nil, err
+		}
+		response.PaymentDetails = append(response.PaymentDetails, &pb.OtherDetails{
+			Details: map[string]string{
+				"month":       month,
+				"totalAmount": fmt.Sprintf("%.2f", totalSum),
+			},
+		})
+	}
+
+	return response, nil
+}

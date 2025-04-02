@@ -31,3 +31,7 @@ func (cs *CompanyService) GetAll(ctx context.Context, req *pb.PageRequest) (*pb.
 func (cs *CompanyService) UpdateCompany(ctx context.Context, req *pb.UpdateCompanyRequest) (*pb.AbsResponse, error) {
 	return cs.companyRepo.UpdateCompany(req)
 }
+
+func (cs *CompanyService) GetStatistic(ctx context.Context, req *pb.GetStatisticRequest) (*pb.GetStatisticResponse, error) {
+	return cs.companyRepo.GetStatistic(req)
+}
