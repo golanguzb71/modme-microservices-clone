@@ -1423,7 +1423,7 @@ func FinanceUpdateByCompany(ctx *gin.Context) {
 // @Param body body pb.GetStatisticRequest true "Параметры запроса статистики компании"
 // @Success 200 {object} pb.GetStatisticResponse "Успешный ответ со статистикой"
 // @Failure 400 {object} utils.AbsResponse "Неверный запрос"
-// @Router /api/company/statistic [post]
+// @Router /api/company/get-statistic [post]
 // @Security Bearer
 func GetStatisticCompany(ctx *gin.Context) {
 	req := pb.GetStatisticRequest{}
