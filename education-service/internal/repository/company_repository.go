@@ -217,7 +217,7 @@ func (r *CompanyRepository) GetStatistic(req *pb.GetStatisticRequest) (*pb.GetSt
 	var active, demo, debtor, total, students int64
 	err := r.db.QueryRow(`
 		SELECT 
-			COUNT(*) FILTER (WHERE is_demo = false) AS active,
+			COUNT(*) FILTER (WHERE is_demo = false AND valid_date > NOW()) AS active,
 			COUNT(*) FILTER (WHERE is_demo = true) AS demo,
 			COUNT(*) AS total
 		FROM company
@@ -226,8 +226,11 @@ func (r *CompanyRepository) GetStatistic(req *pb.GetStatisticRequest) (*pb.GetSt
 		return nil, err
 	}
 
-	debtor = 0
-	students = 0
+	debtor = total - (active + demo)
+	err = r.db.QueryRow(`SELECT COUNT(*) FROM students WHERE condition = 'ACTIVE'`).Scan(&students)
+	if err != nil {
+		return nil, err
+	}
 
 	response.Details = &pb.CompanyCommonDetails{
 		ActiveCompanies: int32(active),
